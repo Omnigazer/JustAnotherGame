@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omniplatformer", "Game1\Omniplatformer.csproj", "{664365AF-D8BA-44D9-9A55-05443690E21D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{664365AF-D8BA-44D9-9A55-05443690E21D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{664365AF-D8BA-44D9-9A55-05443690E21D}.Debug|x86.ActiveCfg = Debug|x86
+		{664365AF-D8BA-44D9-9A55-05443690E21D}.Debug|x86.Build.0 = Debug|x86
+		{664365AF-D8BA-44D9-9A55-05443690E21D}.Release|Any CPU.ActiveCfg = Release|x86
+		{664365AF-D8BA-44D9-9A55-05443690E21D}.Release|x86.ActiveCfg = Release|x86
+		{664365AF-D8BA-44D9-9A55-05443690E21D}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DDBE1021-14DB-46B4-9DC9-EB8A5C6D9DC2}
+	EndGlobalSection
+EndGlobal
