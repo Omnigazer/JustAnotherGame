@@ -34,7 +34,7 @@ namespace Omniplatformer.Components
 
         // Movement counters and flags               
         // TODO: face_direction should move to renderable
-        public Direction face_direction;
+        // public Direction face_direction;
         public Direction move_direction;
 
         public GameObject CurrentPlatform { get; set; } // Platform the character is currently standing on
@@ -53,7 +53,7 @@ namespace Omniplatformer.Components
 
         // Check what kinds of objects are we colliding here
         // TODO: problematic method & overrides, refactor
-        public override void ProcessCollisionInteractions(Dictionary<Direction, GameObject> collisions)
+        public override void ProcessCollisionInteractions(List<(Direction, GameObject)> collisions)
         {            
             // default all interactions to false
             // CanClimb = false; // TODO: maybe move this flag where it actually does something
@@ -128,19 +128,20 @@ namespace Omniplatformer.Components
         }
 
         public void ProcessWalking()
-        {            
+        {
+            var pos = GetComponent<PositionComponent>();
             switch (move_direction)
             {
                 case Direction.Left:
                     {
-                        face_direction = Direction.Left;
+                        pos.SetLocalFace(HorizontalDirection.Left);                        
                         // CurrentMovement += new Vector2(-move_speed, 0);
                         CurrentMovement += new Vector2(-Acceleration, 0);
                         break;
                     }
                 case Direction.Right:
                     {
-                        face_direction = Direction.Right;
+                        pos.SetLocalFace(HorizontalDirection.Right);                        
                         // CurrentMovement += new Vector2(move_speed, 0);
                         CurrentMovement += new Vector2(Acceleration, 0);
                         break;
@@ -162,31 +163,32 @@ namespace Omniplatformer.Components
         {
             PositionComponent pos = GetComponent<PositionComponent>();
             PositionComponent their_pos = target.GetComponent<PositionComponent>();
+            
             switch (direction)
             {
                 // TODO: Refactor this to move, although this should never happen to objects that can't move
                 case Direction.Right:
                     {
-                        var new_x = their_pos.Center.X - (their_pos.halfsize.X + pos.halfsize.X);
-                        pos.SetLocalPosition(new Vector2(new_x, pos.Center.Y));                        
+                        var new_x = their_pos.WorldPosition.Center.X - (their_pos.WorldPosition.halfsize.X + pos.WorldPosition.halfsize.X);
+                        pos.SetLocalCenter(new Vector2(new_x, pos.WorldPosition.Center.Y));                        
                         break;
                     }
                 case Direction.Left:
                     {
-                        var new_x = their_pos.Center.X + (their_pos.halfsize.X + pos.halfsize.X);
-                        pos.SetLocalPosition(new Vector2(new_x, pos.Center.Y));                                                
+                        var new_x = their_pos.WorldPosition.Center.X + (their_pos.WorldPosition.halfsize.X + pos.WorldPosition.halfsize.X);
+                        pos.SetLocalCenter(new Vector2(new_x, pos.WorldPosition.Center.Y));
                         break;
                     }
                 case Direction.Up:
                     {
-                        var new_y = their_pos.Center.Y - (their_pos.halfsize.Y + pos.halfsize.Y);                        
-                        pos.SetLocalPosition(new Vector2(pos.Center.X, new_y));
+                        var new_y = their_pos.WorldPosition.Center.Y - (their_pos.WorldPosition.halfsize.Y + pos.WorldPosition.halfsize.Y);                        
+                        pos.SetLocalCenter(new Vector2(pos.WorldPosition.Center.X, new_y));
                         break;
                     }
                 case Direction.Down:
                     {
-                        var new_y = their_pos.Center.Y + (their_pos.halfsize.Y + pos.halfsize.Y);
-                        pos.SetLocalPosition(new Vector2(pos.Center.X, new_y));
+                        var new_y = their_pos.WorldPosition.Center.Y + (their_pos.WorldPosition.halfsize.Y + pos.WorldPosition.halfsize.Y);
+                        pos.SetLocalCenter(new Vector2(pos.WorldPosition.Center.X, new_y));
 
                         if (CurrentPlatform == null)
                         {

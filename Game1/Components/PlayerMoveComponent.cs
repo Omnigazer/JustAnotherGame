@@ -112,7 +112,7 @@ namespace Omniplatformer.Components
         }
 
         // TODO: problematic method & overrides, refactor
-        public override void ProcessCollisionInteractions(Dictionary<Direction, GameObject> collisions)
+        public override void ProcessCollisionInteractions(List<(Direction, GameObject)> collisions)
         {
             CanClimb = false;
             base.ProcessCollisionInteractions(collisions);

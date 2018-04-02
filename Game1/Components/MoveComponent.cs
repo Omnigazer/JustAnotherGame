@@ -37,7 +37,7 @@ namespace Omniplatformer.Components
 
         // Check what kinds of objects are we colliding here
         // TODO: problematic method & overrides, refactor
-        public virtual void ProcessCollisionInteractions(Dictionary<Direction, GameObject> collisions)
+        public virtual void ProcessCollisionInteractions(List<(Direction, GameObject)> collisions)
         {
             foreach (var (direction, obj) in collisions)
             {

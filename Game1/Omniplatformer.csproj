@@ -41,10 +41,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AnchorPoint.cs" />
     <Compile Include="Components\DamageHitComponent.cs" />
     <Compile Include="Components\HitComponent.cs" />
     <Compile Include="Components\RelativePositionComponent.cs" />
     <Compile Include="Deconstruct.cs" />
+    <Compile Include="HorizontalDirection.cs" />
     <Compile Include="Graphics\MultiplyBlendState.cs" />
     <Compile Include="Graphics\MinAlphaBlendState.cs" />
     <Compile Include="Bonus.cs" />
@@ -101,6 +103,9 @@
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +115,7 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

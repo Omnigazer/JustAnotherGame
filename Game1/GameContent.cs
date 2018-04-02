@@ -59,13 +59,14 @@ namespace Omniplatformer
             AdditiveEffect = Content.Load<Effect>("additiveeffect");
             // AlphaEffect = Content.Load<Effect>("alphaeffect");
             DistortEffect = Content.Load<Effect>("distorteffect");
-            
 
             whitePixel = new Texture2D(GraphicsService.Instance.GraphicsDevice, 1, 1);
+            whitePixel = new Texture2D(GraphicsService.Instance.GraphicsDevice, 2, 2);
 
             // Create a 1D array of color data to fill the pixel texture with.  
             Color[] colorData = {
-                    Color.White,
+                    // Color.White
+                    Color.White, Color.White, Color.White, Color.White
                 };
             whitePixel.SetData(colorData);
 

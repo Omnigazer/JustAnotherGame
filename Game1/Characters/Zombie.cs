@@ -30,7 +30,7 @@ namespace Omniplatformer.Characters
             var player_pos = GameService.Player.GetComponent<PositionComponent>();
             var pos = GetComponent<PositionComponent>();
             var movable = GetComponent<CharMoveComponent>();
-            movable.move_direction = pos.Center.X < player_pos.Center.X ? Direction.Right : Direction.Left;
+            movable.move_direction = pos.WorldPosition.Center.X < player_pos.WorldPosition.Center.X ? Direction.Right : Direction.Left;
         }
 
         public void WalkAbout()

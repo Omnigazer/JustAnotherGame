@@ -51,8 +51,8 @@ namespace Omniplatformer.Components
 
         protected override Texture2D getCurrentSprite()
         {
-            var movable = GetComponent<CharMoveComponent>();
-            if (movable.face_direction == Direction.Left)
+            var pos = GetComponent<PositionComponent>();
+            if (pos.WorldPosition.face_direction == HorizontalDirection.Left)
             {
                 return left_texture;
             }

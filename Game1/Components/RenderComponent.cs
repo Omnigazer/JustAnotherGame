@@ -49,12 +49,12 @@ namespace Omniplatformer.Components
             PositionComponent pos = GetComponent<PositionComponent>();
 
             var height = GraphicsService.Instance.GraphicsDevice.Viewport.Height;
-            var new_center = new Vector2(pos.Center.X, height - pos.Center.Y);
+            var new_center = new Vector2(pos.WorldPosition.Center.X, height - pos.WorldPosition.Center.Y);
 
-            var pt = pos.halfsize.ToPoint();
+            var pt = pos.WorldPosition.halfsize.ToPoint();
             pt.X *= 2;
             pt.Y *= 2;
-            return new Rectangle((new_center - pos.halfsize).ToPoint(), pt);
+            return new Rectangle((new_center - pos.WorldPosition.halfsize).ToPoint(), pt);
         }
 
         public virtual void DrawToLightMask()
@@ -75,14 +75,14 @@ namespace Omniplatformer.Components
         public virtual void Draw()
         {
             PositionComponent pos = GetComponent<PositionComponent>();            
-            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor(), rotation: pos.RotationAngle);
+            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor(), rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin);
         }        
 
         // TODO: move these to more specific renderable implementations        
         public virtual void Draw(float alpha)
         {
             PositionComponent pos = GetComponent<PositionComponent>();
-            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor() * alpha, rotation: pos.RotationAngle);            
+            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor() * alpha, rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin);            
         }        
     }
 }
