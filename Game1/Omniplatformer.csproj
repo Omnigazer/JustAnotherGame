@@ -90,6 +90,7 @@
     <Compile Include="ForegroundQuad.cs" />
     <Compile Include="RenderSystem.cs" />
     <Compile Include="SolidPlatform.cs" />
+    <Compile Include="Team.cs" />
     <Compile Include="TestProjectile.cs" />
     <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

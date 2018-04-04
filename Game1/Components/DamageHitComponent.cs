@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Omniplatformer.Components
 {
+    /// <summary>
+    /// Used for the usual monster-player collision attacks
+    /// </summary>
     class DamageHitComponent : HitComponent
     {
         /// <summary>
@@ -17,10 +20,17 @@ namespace Omniplatformer.Components
             Damage = damage;
         }
 
-        public override void Hit(GameObject obj)
+        /// <summary>
+        /// Represents the damaging hit action
+        /// </summary>
+        /// <param name="target"></param>
+        public override void Hit(GameObject target)
         {
-            obj.ApplyDamage(Damage);
-            base.Hit(obj);
+            // TODO: implement more accurate determining of eligible teams
+            // also direct referencing of GameObject
+            if (target.Team != GameObject.Team)
+            target.ApplyDamage(Damage);
+            base.Hit(target);
         }
     }
 }

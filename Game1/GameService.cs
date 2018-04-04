@@ -16,5 +16,7 @@ namespace Omniplatformer
         }
 
         public static Player Player => Instance.player;
+        public static List<Character> Characters => Instance.characters;
+        public static List<GameObject> Platforms => Instance.platforms;
     }
 }

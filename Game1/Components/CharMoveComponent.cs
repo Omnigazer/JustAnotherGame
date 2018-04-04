@@ -263,7 +263,14 @@ namespace Omniplatformer.Components
             float capped_x = Math.Min(movable.CurrentMovement.X, x_cap);
             capped_x = Math.Max(capped_x, -x_cap);
             float capped_y = Math.Max(movable.CurrentMovement.Y, fall_cap);
-            movable.CurrentMovement = new Vector2(capped_x, capped_y);
+            // movable.CurrentMovement = new Vector2(capped_x, capped_y);
+            
+            // HorizontalSpeed = capped_x;
+            if (Math.Abs(HorizontalSpeed) > MaxMoveSpeed)
+            {
+                HorizontalSpeed -= Acceleration * Math.Sign(HorizontalSpeed);
+            }
+            VerticalSpeed = capped_y;
         }
                 
         public float GetHorizontalFriction()

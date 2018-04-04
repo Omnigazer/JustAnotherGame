@@ -17,12 +17,13 @@ namespace Omniplatformer.Characters
         public bool Aggressive { get; set; }
         public Zombie(Vector2 center, Vector2 halfsize)
         {
+            Team = Team.Enemy;
+            CurrentHitPoints = MaxHitPoints = 8;
+
             Components.Add(new PositionComponent(this, center, halfsize));
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
-            Components.Add(new CharMoveComponent(this, movespeed: 2));
-            Components.Add(new DamageHitComponent(this, damage: 5));
-
-            CurrentHitPoints = MaxHitPoints = 60;            
+            Components.Add(new CharMoveComponent(this, movespeed: 1.4f));
+            Components.Add(new DamageHitComponent(this, damage: 3));            
         }       
 
         public void MoveTowardsPlayer()

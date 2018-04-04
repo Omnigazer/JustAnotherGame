@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Omniplatformer
 {
-    public enum Animation
-    {
-        Default,
-        Hit,
-        Attack,
-        Death
+    public enum Team
+    {        
+        Friend,
+        Neutral,
+        Enemy
     }
 }

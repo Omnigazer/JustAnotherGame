@@ -32,6 +32,7 @@ namespace Omniplatformer
         public virtual bool Climbable { get; set; }
         public virtual bool Pickupable { get; set; }
         public virtual bool Hittable { get; set; }
+        public Team Team { get; set; }
 
         // Graphics
         // SpriteBatch spriteBatch;        
@@ -45,7 +46,8 @@ namespace Omniplatformer
         {
             Components = new List<Component>();
             // TODO: move solid implementation to derived classes                        
-            Solid = true;                        
+            Solid = true;
+            Team = Team.Neutral;
         }
 
         // Process a single game frame
@@ -62,7 +64,6 @@ namespace Omniplatformer
         {
             
         }
-
 
         // Typecasts
         public static explicit operator RenderComponent(GameObject obj)

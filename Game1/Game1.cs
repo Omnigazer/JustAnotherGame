@@ -21,14 +21,16 @@ namespace Omniplatformer
         
         // Game objects
         public Player player;        
-        List<GameObject> platforms = new List<GameObject>();
-        List<Character> characters = new List<Character>();        
-        List<Projectile> projectiles = new List<Projectile>();               
+        public List<GameObject> platforms = new List<GameObject>();
+        public List<Character> characters = new List<Character>();        
+        public List<Projectile> projectiles = new List<Projectile>();               
 
         // check if these keys were released prior to this tick
         bool space_released = true;
         bool fire_released = true;
-        bool game_over;
+        bool attack_released = true;
+        bool wield_released = true;
+        bool game_over;        
 
         // mouse position on last tick
         Point last_position = Point.Zero;
@@ -60,7 +62,9 @@ namespace Omniplatformer
         public void InitServices()
         {
             GameService.Init(this);            
-        }              
+        }
+
+        WieldedItem sword;
 
         void InitGameObjects()
         {
@@ -82,14 +86,17 @@ namespace Omniplatformer
             
             RegisterObject(ladder);
 
-            var wielded = new WieldedItem(player, new Vector2(10, 0));
-            RegisterObject(wielded);
+            sword = new WieldedItem(damage: 1);
+            // sword = new WieldedItem(player, new Vector2(12, 30), 0);
+            RegisterObject(sword);
 
-            RegisterObject(new Zombie(
-                new Vector2(-600, 100),
+            for (int i = 0; i < 5;i++)
+            {
+                RegisterObject(new Zombie(
+                new Vector2(-600 - 200 * i, 100),
                 new Vector2(15, 20)
-            ));            
-            
+                ));
+            }          
 
             RegisterObject(new SolidPlatform(
                 new Vector2(400, 800),
@@ -376,13 +383,15 @@ namespace Omniplatformer
 
             if (Keyboard.GetState().IsKeyDown(Keys.NumPad4))
             {
-                var pos = (PositionComponent)player;
+                // var pos = (PositionComponent)player;
+                var pos = (PositionComponent)sword;
                 pos.Rotate(0.1f);                
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.NumPad6))
             {
-                var pos = (PositionComponent)player;
+                // var pos = (PositionComponent)player;
+                var pos = (PositionComponent)sword;
                 pos.Rotate(-0.1f);                
             }
 
@@ -442,6 +451,40 @@ namespace Omniplatformer
             else
             {
                 fire_released = true;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.X))
+            {
+                //var p = new TestProjectile(new Vector2(200, 200), new Vector2(5,5));
+                //p.direction = new Vector2(3, 0);
+                //projectiles.Add(p);
+                if (attack_released)
+                {
+                    attack_released = false;
+                    // projectiles.Add(player.Fire());
+                    player.Swing();
+                }
+            }
+            else
+            {
+                attack_released = true;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.C))
+            {
+                //var p = new TestProjectile(new Vector2(200, 200), new Vector2(5,5));
+                //p.direction = new Vector2(3, 0);
+                //projectiles.Add(p);
+                if (wield_released)
+                {
+                    wield_released = false;
+                    // projectiles.Add(player.Fire());
+                    player.ToggleItem(sword);
+                }
+            }
+            else
+            {
+                wield_released = true;
             }
 
             // fps is assumed to be 30 while we're tick-based

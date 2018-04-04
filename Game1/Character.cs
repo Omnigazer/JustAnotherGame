@@ -13,10 +13,10 @@ namespace Omniplatformer
     {          
         public float CurrentHitPoints { get; set; }
         public float MaxHitPoints { get; set; }
-        public bool Vulnerable { get; set; }
+        public bool Vulnerable { get; set; }                
 
         public Character()
-        {                       
+        {                
             CurrentHitPoints = MaxHitPoints = 50;
             Hittable = true;
             Solid = false;

@@ -52,7 +52,7 @@ namespace Omniplatformer.Components
 
         public virtual Vector2 GetMoveVector()
         {
-            return Vector2.Zero;
+            return CurrentMovement;
         }
 
         // TODO: extract this into the movable
@@ -62,6 +62,11 @@ namespace Omniplatformer.Components
             var displacement = GetMoveVector();
             Move(displacement);
         }        
+
+        public virtual void AdjustSpeed(Vector2 v)
+        {
+            CurrentMovement += v;
+        }
         
         public virtual void Move(Vector2 displacement)
         {

@@ -8,14 +8,19 @@ using Microsoft.Xna.Framework;
 
 namespace Omniplatformer
 {
-    class WieldedItem : GameObject
+    public class WieldedItem : GameObject
     {
-        public WieldedItem(Character parent, Vector2 origin)
+        public int Damage { get; set; }
+        public Vector2 Knockback { get; set; }
+
+        public WieldedItem(int damage)
         {
             Solid = false;
-            var size = new Vector2(5, 10);
-            Components.Add(new PositionComponent(this, origin, size) { parent_pos = (PositionComponent)parent });
-            Components.Add(new RenderComponent(this, Color.RoyalBlue));
-        }
+            Damage = damage;
+            Knockback = new Vector2(-50, -10);
+            var halfsize = new Vector2(3, 25);
+            Components.Add(new PositionComponent(this, Vector2.Zero, halfsize, 0, new Vector2(0, 1)));
+            Components.Add(new RenderComponent(this, Color.White, GameContent.Instance.cursor));
+        }        
     }
 }

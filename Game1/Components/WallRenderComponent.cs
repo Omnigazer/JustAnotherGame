@@ -20,9 +20,10 @@ namespace Omniplatformer.Components
         
         public override void Draw()
         {
-            if (CurrentAnimation == Animation.Death)
+            if (CurrentAnimations.ContainsKey(Animation.Death))
             {
-                float alpha = (float)(current_animation_length - current_animation_ticks) / current_animation_length;
+                var (ticks, length) = CurrentAnimations[Animation.Death];
+                float alpha = (float)(length - ticks) / length;
                 base.Draw(alpha);
             }
             else

@@ -12,11 +12,12 @@ namespace Omniplatformer
     public class TestProjectile : Projectile
     {    
         public TestProjectile(Vector2 center, Vector2 halfsize): base(center, halfsize)
-        {            
+        {
+            Team = Team.Friend;
             Components.Add(new PositionComponent(this, center, halfsize));
             Components.Add(new GlowingRenderComponent(this));
             Components.Add(new ProjectileMoveComponent(this));
-            Components.Add(new DamageHitComponent(this, damage: 5));
+            Components.Add(new DamageHitComponent(this, damage: 1));
         }                
     }
 }

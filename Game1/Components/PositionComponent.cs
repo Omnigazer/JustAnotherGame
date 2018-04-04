@@ -237,7 +237,23 @@ namespace Omniplatformer.Components
             var my_rect = GetRectangle();
             float my_area = (float)(my_rect.Width * my_rect.Height);
             return GetIntersectionArea(obj) / my_area;
-        }            
+        }       
+        
+        // TODO: properly implement this
+        public GameObject GetClosestObject(Vector2 direction, Func<GameObject, bool> predicate = null)
+        {
+            // TODO: count the range from the anchor
+            // TODO: this doesn't work properly with angled directions, should be raycast or something           
+
+            // rect from vector
+            Rectangle rect = new Rectangle(WorldPosition.Center.ToPoint(), new Vector2(Math.Abs(direction.X), Math.Abs(direction.Y)).ToPoint());
+            rect.Offset(Math.Min(direction.X, 0), Math.Min(direction.Y, 0));            
+            
+            IEnumerable<GameObject> list = GameService.Characters.Union(GameService.Platforms).Where(x => x.Hittable && rect.Intersects(((PositionComponent)x).GetRectangle()));
+            if (predicate != null)
+                list = list.Where(predicate);
+            return list.FirstOrDefault();
+        }
 
         public void Rotate(float angle)
         {
@@ -254,6 +270,17 @@ namespace Omniplatformer.Components
         {
             local_position.Center = center;
             // local_position = new Position(center, local_position.halfsize, local_position.RotationAngle, local_position.Origin, local_position.face_direction);            
+        }
+
+        public void SetParent(GameObject obj, AnchorPoint anchor = AnchorPoint.Default)
+        {
+            parent_pos = (PositionComponent)obj;
+            parent_anchor = anchor;
+        }
+
+        public void ClearParent()
+        {
+            parent_pos = null;
         }
     }
 }

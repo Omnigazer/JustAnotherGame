@@ -12,6 +12,7 @@ namespace Omniplatformer.Components
     {
         public int ZIndex { get; set; } = Layers.Default;
         public Color color = Color.AliceBlue;
+        public Texture2D Texture { get; set; }
         public RenderComponent(GameObject obj) : base(obj)
         {
             
@@ -22,9 +23,16 @@ namespace Omniplatformer.Components
             this.color = color;
         }
 
-        public RenderComponent(GameObject obj, Color color, int z_index) : base(obj)
+        public RenderComponent(GameObject obj, Color color, int z_index = 0) : base(obj)
         {
             this.color = color;
+            this.ZIndex = z_index;
+        }
+
+        public RenderComponent(GameObject obj, Color color, Texture2D texture, int z_index = 0) : base(obj)
+        {
+            this.color = color;
+            Texture = texture;
             this.ZIndex = z_index;
         }
 
@@ -40,7 +48,7 @@ namespace Omniplatformer.Components
 
         protected virtual Texture2D getCurrentSprite()
         {            
-            return GameContent.Instance.whitePixel;
+            return Texture ?? GameContent.Instance.whitePixel;
         }
 
         // TODO: Move this to the render component

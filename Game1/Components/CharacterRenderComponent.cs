@@ -35,19 +35,38 @@ namespace Omniplatformer.Components
                 }
             }
             return Color.Gray;
-        }        
+        }
 
         public override void Draw()
-        {            
-            if (CurrentAnimation == Animation.Hit)
-            {                
+        {
+            
+            if (CurrentAnimations.ContainsKey(Animation.Hit))
+            {
                 PositionComponent pos = GetComponent<PositionComponent>();
                 // or just change the color
-                GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), Color.Red);                
+                GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), Color.Red);
+            }
+            else if (CurrentAnimations.ContainsKey(Animation.Attack))
+            {
+                base.Draw();
             }
             else
-                base.Draw();            
-        }        
+                base.Draw();
+        }
+
+        public override void Tick()
+        {
+            if (CurrentAnimations.ContainsKey(Animation.Attack))
+            {
+                float amp = (float)Math.PI / 2;
+                float step = amp / current_animation_length;
+                PositionComponent pos = GetComponent<PositionComponent>();
+                var anchor = pos.CurrentAnchors[AnchorPoint.Hand];
+                anchor = new Position(anchor) { RotationAngle = anchor.RotationAngle + step };
+                pos.CurrentAnchors[AnchorPoint.Hand] = anchor;
+            }
+            base.Tick();            
+        }
 
         protected override Texture2D getCurrentSprite()
         {
