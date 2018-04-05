@@ -32,7 +32,7 @@ namespace Omniplatformer.HUD
         GraphicsDevice GraphicsDevice { get { return GraphicsService.GraphicsDevice; } }
         RenderTarget2D healthLightsTarget;
 
-        public void DrawHealthBarLightMask()
+        void DrawHealthBarLightMask()
         {
             var lightMask = GameContent.Instance.healthBarLightMask;
             var spriteBatch = GraphicsService.Instance;
@@ -47,7 +47,7 @@ namespace Omniplatformer.HUD
             GraphicsDevice.SetRenderTarget(null);
         }
 
-        public void DrawCursor()
+        void DrawCursor()
         {
             var spriteBatch = GraphicsService.Instance;
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
@@ -90,7 +90,7 @@ namespace Omniplatformer.HUD
             distort_loop = (distort_loop + distort_speed) % distort_amp;
         }
 
-        public void ApplyDistort()
+        void ApplyDistort()
         {
             var distortEffect = GameContent.Instance.DistortEffect;
             distortEffect.Parameters["OffsetPower"].SetValue(0.05f);
@@ -103,7 +103,7 @@ namespace Omniplatformer.HUD
             distortEffect.CurrentTechnique.Passes[0].Apply();
         }
 
-        public void DrawHealthBar()
+        void DrawHealthBar()
         {
             ContinueLoop();
             var spriteBatch = GraphicsService.Instance;
