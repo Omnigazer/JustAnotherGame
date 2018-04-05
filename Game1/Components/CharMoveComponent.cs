@@ -257,22 +257,44 @@ namespace Omniplatformer.Components
         public virtual void CapMovement()
         {
             var movable = GetComponent<MoveComponent>();
-            float x_cap = MaxMoveSpeed;
-            float fall_cap = -max_fall_speed;
-
-            float capped_x = Math.Min(movable.CurrentMovement.X, x_cap);
-            capped_x = Math.Max(capped_x, -x_cap);
-            float capped_y = Math.Max(movable.CurrentMovement.Y, fall_cap);
-            // movable.CurrentMovement = new Vector2(capped_x, capped_y);
             
-            // HorizontalSpeed = capped_x;
-            if (Math.Abs(HorizontalSpeed) > MaxMoveSpeed)
+            float fall_cap = GetDownSpeedCap();            
+            float capped_y = Math.Max(movable.CurrentMovement.Y, fall_cap);            
+            capped_y = Math.Min(capped_y, GetUpSpeedCap());            
+            if (Math.Abs(HorizontalSpeed) > GetHorizontalSpeedCap())
             {
-                HorizontalSpeed -= Acceleration * Math.Sign(HorizontalSpeed);
+                HorizontalSpeed -= 2 * Acceleration * Math.Sign(HorizontalSpeed);
             }
             VerticalSpeed = capped_y;
         }
-                
+
+        /// <summary>
+        /// Maximum horizontal speed
+        /// </summary>
+        /// <returns></returns>
+        public virtual float GetHorizontalSpeedCap()
+        {
+            return MaxMoveSpeed;
+        }
+
+        /// <summary>
+        /// Maximum "up" speed
+        /// </summary>
+        /// <returns></returns>
+        public virtual float GetUpSpeedCap()
+        {
+            return max_fall_speed;
+        }
+
+        /// <summary>
+        /// Maximum "down" speed
+        /// </summary>
+        /// <returns></returns>
+        public virtual float GetDownSpeedCap()
+        {
+            return -max_fall_speed;
+        }
+
         public float GetHorizontalFriction()
         {
             if (Math.Abs(CurrentPlatform.Friction) <= Math.Abs(CurrentMovement.X))

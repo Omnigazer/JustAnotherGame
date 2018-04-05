@@ -155,26 +155,18 @@ namespace Omniplatformer.Components
                 if (!IsJumping)
                     ResetJumps();
             }
-        }
-
-        public override void CapMovement()
+        }        
+        
+        public override float GetUpSpeedCap()
         {
-            var movable = GetComponent<MoveComponent>();
-            // maybe should refer to the base method            
-            float x_cap = MaxMoveSpeed;
-            float y_cap = max_jumpspeed;
             if (IsJumping)
             {
-                y_cap = soft_jump_cap;
+                return soft_jump_cap;
             }
-
-            float fall_cap = -max_fall_speed;
-
-            float capped_x = Math.Min(movable.CurrentMovement.X, x_cap);
-            capped_x = Math.Max(capped_x, -x_cap);
-            float capped_y = Math.Min(movable.CurrentMovement.Y, y_cap);
-            capped_y = Math.Max(capped_y, fall_cap);
-            movable.CurrentMovement = new Vector2(capped_x, capped_y);
+            else
+            {
+                return max_jumpspeed;
+            }
         }
 
         public void ProcessClimbing()
