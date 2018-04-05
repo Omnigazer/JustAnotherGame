@@ -11,7 +11,7 @@ namespace Omniplatformer.Components
     {
         // protected Animation CurrentAnimation { get; set; }
         /// <summary>
-        /// 
+        ///
         /// </summary>
         protected Dictionary<Animation, (int, int)> CurrentAnimations { get; set; } = new Dictionary<Animation, (int, int)>();
 
@@ -29,15 +29,15 @@ namespace Omniplatformer.Components
 
         public AnimatedRenderComponent(GameObject obj) : base(obj)
         {
-            
+
         }
 
         public AnimatedRenderComponent(GameObject obj, Color color) : base(obj, color)
         {
         }
-        
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="animation"></param>
         /// <param name="length" description="length in ticks"></param>
@@ -49,7 +49,7 @@ namespace Omniplatformer.Components
                 current_animation_ticks = 0;
                 current_animation_length = length;
                 CurrentAnimation = animation;
-            } 
+            }
             */
 
             // TODO: implement interruption logic here
@@ -78,27 +78,27 @@ namespace Omniplatformer.Components
         }
 
         public override void Tick()
-        {            
-            foreach (var (animation, (ticks, length)) in CurrentAnimations.ToList())            
+        {
+            foreach (var (animation, (ticks, length)) in CurrentAnimations.ToList())
             {
                 CurrentAnimations[animation] = (ticks + 1, length);
                 if (ticks + 1 >= length)
                 {
                     EndAnimation(animation);
-                }                
+                }
             }
             /*
             if (CurrentAnimation != Animation.Default && ++current_animation_ticks >= current_animation_length)
             {
                 EndAnimation();
-            } 
+            }
             */
         }
 
         // TODO: get a state for this
         public override void Draw()
         {
-            base.Draw();            
+            base.Draw();
         }
     }
 }

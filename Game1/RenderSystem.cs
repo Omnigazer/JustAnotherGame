@@ -40,7 +40,7 @@ namespace Omniplatformer
         public RenderSystem(Game1 game)
         {
             Game = game;
-            GraphicsDevice = game.GraphicsDevice;            
+            GraphicsDevice = game.GraphicsDevice;
             Camera = new Camera();
             playerHUD = new HUDContainer();
             SetResolution(
@@ -85,7 +85,7 @@ namespace Omniplatformer
         {
             var spriteBatch = GraphicsService.Instance;
             GraphicsDevice.SetRenderTarget(secretTarget);
-            GraphicsDevice.Clear(Color.Transparent);            
+            GraphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Camera.TranslationMatrix);
             // spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Matrix.Identity);
 
@@ -101,9 +101,9 @@ namespace Omniplatformer
             var green_rect = new Rectangle(location, size);
             spriteBatch.Draw(GameContent.Instance.greenPixel, green_rect, Color.White);
             spriteBatch.End();
-            
+
             spriteBatch.Begin(SpriteSortMode.Immediate, new MinAlphaBlendState());
-            spriteBatch.Draw(alphaMaskTarget, Vector2.Zero, Color.White);            
+            spriteBatch.Draw(alphaMaskTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
         }
 
@@ -125,7 +125,7 @@ namespace Omniplatformer
             Vector2 mask_halfsize = new Vector2(400, 300);
             // Draw light mask in the center
             spriteBatch.Draw(lightMask, ScreenToView(Camera.ViewportCenter.ToPoint()) - mask_halfsize, GetLightColor());
-            // Draw light mask for the cursor                                    
+            // Draw light mask for the cursor
             spriteBatch.Draw(lightMask, ScreenToView(Mouse.GetState().Position) - mask_halfsize, GetLightColor());
             spriteBatch.End();
         }
@@ -138,8 +138,8 @@ namespace Omniplatformer
             Vector2 mask_halfsize = new Vector2(400, 300); // TODO: Magic number / hardcoded
             var spriteBatch = GraphicsService.Instance;
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Camera.TranslationMatrix);
-            foreach (var drawable in drawables)             
-            {                
+            foreach (var drawable in drawables)
+            {
                 drawable.DrawToLightMask();
             }
             spriteBatch.End();
@@ -177,21 +177,21 @@ namespace Omniplatformer
             GraphicsDevice.Clear(Color.Black);
             // TODO: refactor this to a batch of draw calls to in-game objects, including cursor
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, null, null, null, null, Camera.NonTranslationMatrix);
-            // Render revealing cursor-based alpha mask            
+            // Render revealing cursor-based alpha mask
             Vector2 mask_halfsize = new Vector2(150, 150);
             var location = (ScreenToView(Mouse.GetState().Position) - mask_halfsize).ToPoint();
             // location = Mouse.GetState().Position - mask_halfsize.ToPoint();
             var size = (mask_halfsize * 2).ToPoint();
             var rect = new Rectangle(location, size);
             spriteBatch.Draw(alphaMask, rect, Color.White);
-            spriteBatch.End();            
+            spriteBatch.End();
 
             // Pseudocode for object-based revealing draw calls
-            /* 
+            /*
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, null, null, null, null, camera.TranslationMatrix);
-            foreach (var drawable in drawables) 
+            foreach (var drawable in drawables)
             {
-                drawable.DrawToRevealingMask();                
+                drawable.DrawToRevealingMask();
             }
             spriteBatch.Draw(alphaMask, rect, Color.White);
             spriteBatch.End();
@@ -201,7 +201,7 @@ namespace Omniplatformer
         public void DrawToMainLayer()
         {
             var spriteBatch = GraphicsService.Instance;
-            // Main layer            
+            // Main layer
             GraphicsDevice.SetRenderTarget(mainTarget);
             GraphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Camera.TranslationMatrix);
@@ -219,8 +219,8 @@ namespace Omniplatformer
             spriteBatch.Draw(lightsTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
             */
-            
-        }        
+
+        }
 
         public void DrawToHUD()
         {
@@ -263,20 +263,20 @@ namespace Omniplatformer
                 spriteBatch.Draw(secretTarget, Vector2.Zero, Color.White);
             // spriteBatch.Draw(finalSecretTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
-            
+
             spriteBatch.Begin(SpriteSortMode.Immediate, new MultiplyBlendState());
             spriteBatch.Draw(lightsTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
-            
+
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             spriteBatch.Draw(HUDTarget, Vector2.Zero, Color.White);
             // spriteBatch.Draw(lightsTarget, Vector2.Zero, Color.White);
-            spriteBatch.End();            
+            spriteBatch.End();
         }
 
         //public Rectangle ScreenToGame(Rectangle rect)
         //{
-            
+
             /*
             var viewport = GraphicsDevice.Viewport;
             // Flip the camera

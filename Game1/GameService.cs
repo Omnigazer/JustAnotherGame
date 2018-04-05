@@ -8,10 +8,10 @@ namespace Omniplatformer
 {
     public class GameService
     {
-        static Game1 Instance { get; set; }        
+        static Game1 Instance { get; set; }
 
         public static void Init(Game1 game)
-        {            
+        {
             Instance = game;
         }
 

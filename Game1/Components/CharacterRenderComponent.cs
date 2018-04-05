@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Omniplatformer.Components
 {
     class CharacterRenderComponent : AnimatedRenderComponent
-    {        
+    {
         protected Texture2D left_texture, right_texture;
 
         public CharacterRenderComponent(GameObject obj, Texture2D left_texture, Texture2D right_texture) : base(obj)
@@ -18,11 +18,11 @@ namespace Omniplatformer.Components
             this.left_texture = left_texture;
             this.right_texture = right_texture;
         }
-        
+
         public override Color GetColor()
         {
             // TODO: get rid of this and move it into player-specific renderer
-            var movable = GetComponent<PlayerMoveComponent>();            
+            var movable = GetComponent<PlayerMoveComponent>();
             if (movable != null)
             {
                 if (movable.IsPinnedToWall())
@@ -39,7 +39,7 @@ namespace Omniplatformer.Components
 
         public override void Draw()
         {
-            
+
             if (CurrentAnimations.ContainsKey(Animation.Hit))
             {
                 PositionComponent pos = GetComponent<PositionComponent>();
@@ -65,7 +65,7 @@ namespace Omniplatformer.Components
                 anchor = new Position(anchor) { RotationAngle = anchor.RotationAngle + step };
                 pos.CurrentAnchors[AnchorPoint.Hand] = anchor;
             }
-            base.Tick();            
+            base.Tick();
         }
 
         protected override Texture2D getCurrentSprite()
@@ -78,7 +78,7 @@ namespace Omniplatformer.Components
             else
             {
                 return right_texture;
-            }            
+            }
         }
     }
 }

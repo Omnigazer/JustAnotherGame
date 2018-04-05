@@ -14,12 +14,12 @@ namespace Omniplatformer.Components
         const float max_jumpspeed = 30;
         const float soft_jump_cap = 0.3f * max_jumpspeed;
 
-        // Movement dynamic caps        
+        // Movement dynamic caps
         public int max_jumps = 2;
         public int max_jump_ticks = 25; // Max jump time
-        const int wall_jump_pin_ticks = 8; // Time required to be spent against the wall to walljump        
+        const int wall_jump_pin_ticks = 8; // Time required to be spent against the wall to walljump
 
-        // Movement counters       
+        // Movement counters
         public int remaining_jumps;
         public int current_jump_ticks;
         public int current_pin_ticks; // represents time spent against a wall or a climbable object, such as a rope
@@ -33,7 +33,7 @@ namespace Omniplatformer.Components
         }
 
         public override void Tick()
-        {           
+        {
             if (IsJumping && --current_jump_ticks <= 0)
             {
                 StopJumping();
@@ -155,8 +155,8 @@ namespace Omniplatformer.Components
                 if (!IsJumping)
                     ResetJumps();
             }
-        }        
-        
+        }
+
         public override float GetUpSpeedCap()
         {
             if (IsJumping)
@@ -194,7 +194,7 @@ namespace Omniplatformer.Components
 
         // TODO: refactor this
         public override Vector2 GetMoveVector()
-        {            
+        {
             if (IsClimbing)
             {
                 ProcessClimbing();

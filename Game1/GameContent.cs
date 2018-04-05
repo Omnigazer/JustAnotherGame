@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Omniplatformer
 {
     public class GameContent
-    {        
+    {
         public Texture2D characterLeft { get; set; }
         public Texture2D characterRight { get; set; }
         public Texture2D cursor { get; set; }
@@ -19,7 +19,7 @@ namespace Omniplatformer
         public Texture2D greenPixel { get; set; }
         public Texture2D testLiquid { get; set; }
         public Texture2D causticsMap { get; set; }
-        public SoundEffect startSound { get; set; }        
+        public SoundEffect startSound { get; set; }
         public SpriteFont defaultFont { get; set; }
 
         public Texture2D alphaMask { get; set; }
@@ -63,7 +63,7 @@ namespace Omniplatformer
             whitePixel = new Texture2D(GraphicsService.Instance.GraphicsDevice, 1, 1);
             whitePixel = new Texture2D(GraphicsService.Instance.GraphicsDevice, 2, 2);
 
-            // Create a 1D array of color data to fill the pixel texture with.  
+            // Create a 1D array of color data to fill the pixel texture with.
             Color[] colorData = {
                     // Color.White
                     Color.White, Color.White, Color.White, Color.White
@@ -76,7 +76,7 @@ namespace Omniplatformer
                 };
             greenPixel.SetData(colorData2);
             //load sounds
-            // startSound = Content.Load<SoundEffect>("StartSound");            
+            // startSound = Content.Load<SoundEffect>("StartSound");
 
             //load fonts
             defaultFont = Content.Load<SpriteFont>("DefaultFont");

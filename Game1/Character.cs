@@ -10,18 +10,18 @@ using Omniplatformer.Components;
 namespace Omniplatformer
 {
     public abstract class Character : GameObject
-    {          
+    {
         public float CurrentHitPoints { get; set; }
         public float MaxHitPoints { get; set; }
-        public bool Vulnerable { get; set; }                
+        public bool Vulnerable { get; set; }
 
         public Character()
-        {                
+        {
             CurrentHitPoints = MaxHitPoints = 50;
             Hittable = true;
             Solid = false;
             Vulnerable = true;
-        }                                                  
+        }
 
         public virtual float GetHorizontalFriction()
         {
@@ -35,8 +35,8 @@ namespace Omniplatformer
             drawable.StartAnimation(Animation.Hit, 15);
             if (CurrentHitPoints <= 0)
             {
-                onDestroy();                                
-            }            
+                onDestroy();
+            }
         }
     }
 }

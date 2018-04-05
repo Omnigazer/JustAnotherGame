@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Omniplatformer
 {
     public enum Team
-    {        
+    {
         Friend,
         Neutral,
         Enemy

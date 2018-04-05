@@ -38,14 +38,14 @@ namespace Omniplatformer
             {  }
             // var origin = Vector2.Zero;
             // var origin = new Vector2(110.5f, 192.5f);
-            // var origin = texture.Bounds.Center.ToVector2();                      
+            // var origin = texture.Bounds.Center.ToVector2();
             var origin = new Vector2(texture.Bounds.Width * clamped_origin.X, texture.Bounds.Height * clamped_origin.Y);
-            var screen_rect = game.GameToScreen(rect);            
+            var screen_rect = game.GameToScreen(rect);
             if (origin.Length() > 0)
                 screen_rect.Offset(rect.Size.X * clamped_origin.X, rect.Size.Y * clamped_origin.Y);
-            
+
             Instance.Draw(texture: texture, destinationRectangle: screen_rect, color: color, rotation: rotation, origin: origin,
-                effects: SpriteEffects.None, layerDepth: 0, sourceRectangle: null); // default parameters            
+                effects: SpriteEffects.None, layerDepth: 0, sourceRectangle: null); // default parameters
         }
     }
 }

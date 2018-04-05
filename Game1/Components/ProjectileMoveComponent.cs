@@ -19,8 +19,8 @@ namespace Omniplatformer.Components
         // Check what kinds of objects are we colliding here
         // TODO: problematic method & overrides, refactor
         public override void ProcessCollisionInteractions(List<(Direction, GameObject)> collisions)
-        {            
-            base.ProcessCollisionInteractions(collisions);            
+        {
+            base.ProcessCollisionInteractions(collisions);
         }
 
         protected override void ProcessCollision(Direction direction, GameObject obj)
@@ -28,18 +28,18 @@ namespace Omniplatformer.Components
             base.ProcessCollision(direction, obj);
             if (direction != Direction.None && (obj.Solid || obj.Hittable))
             {
-                var hittable = GetComponent<HitComponent>();                
-                hittable?.Hit(obj);                
+                var hittable = GetComponent<HitComponent>();
+                hittable?.Hit(obj);
                 // TODO: might have to extract this
                 GameObject.onDestroy();
                 // Hit(obj);
-            }            
+            }
         }
 
         public override Vector2 GetMoveVector()
         {
-            CurrentMovement = direction;         
-            return CurrentMovement;            
-        }        
+            CurrentMovement = direction;
+            return CurrentMovement;
+        }
     }
 }

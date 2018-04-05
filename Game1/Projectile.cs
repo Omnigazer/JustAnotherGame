@@ -13,8 +13,8 @@ namespace Omniplatformer
         const int default_ttl = 500;
         public Projectile(Vector2 center, Vector2 halfsize)
         {
-            TTL = default_ttl;            
-        }        
+            TTL = default_ttl;
+        }
         public int TTL { get; set; }
         public override void Tick()
         {

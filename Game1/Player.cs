@@ -120,7 +120,7 @@ namespace Omniplatformer
                 var movable = (MoveComponent)obj;
                 var pos = GetComponent<PositionComponent>();
                 movable?.AdjustSpeed(new Vector2((int)pos.WorldPosition.face_direction * knockback.X, knockback.Y));
-            } 
+            }
             */
 
         }
@@ -144,7 +144,7 @@ namespace Omniplatformer
 
         #endregion
 
-        #region Gameplay logic   
+        #region Gameplay logic
 
         public void ReplenishMana(ManaType type, float amount)
         {

@@ -15,9 +15,9 @@ namespace Omniplatformer.HUD
         }
 
         public override void Draw()
-        {            
+        {
             var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);            
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             // int bar_border_thickness = 5;
             Point border_size = new Point(Thickness, Thickness);
             Point size = new Point(Width, Height);
@@ -38,7 +38,7 @@ namespace Omniplatformer.HUD
             source_rect = new Rectangle(0, 0, GameContent.Instance.causticsMap.Width, GameContent.Instance.causticsMap.Height / 4);
             spriteBatch.Draw(GameContent.Instance.causticsMap, inner_rect, source_rect, Color.White);
             spriteBatch.End();
-            base.Draw();          
+            base.Draw();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Omniplatformer.Components
         public Texture2D Texture { get; set; }
         public RenderComponent(GameObject obj) : base(obj)
         {
-            
+
         }
 
         public RenderComponent(GameObject obj, Color color) : base(obj)
@@ -44,16 +44,16 @@ namespace Omniplatformer.Components
         public virtual Color GetColor()
         {
             return color;
-        }        
+        }
 
         protected virtual Texture2D getCurrentSprite()
-        {            
+        {
             return Texture ?? GameContent.Instance.whitePixel;
         }
 
         // TODO: Move this to the render component
         public Rectangle GetDrawRectangle()
-        {            
+        {
             PositionComponent pos = GetComponent<PositionComponent>();
 
             var height = GraphicsService.Instance.GraphicsDevice.Viewport.Height;
@@ -82,15 +82,15 @@ namespace Omniplatformer.Components
 
         public virtual void Draw()
         {
-            PositionComponent pos = GetComponent<PositionComponent>();            
+            PositionComponent pos = GetComponent<PositionComponent>();
             GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor(), rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin);
-        }        
+        }
 
-        // TODO: move these to more specific renderable implementations        
+        // TODO: move these to more specific renderable implementations
         public virtual void Draw(float alpha)
         {
             PositionComponent pos = GetComponent<PositionComponent>();
-            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor() * alpha, rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin);            
-        }        
+            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor() * alpha, rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin);
+        }
     }
 }

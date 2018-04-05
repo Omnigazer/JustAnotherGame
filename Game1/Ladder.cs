@@ -12,7 +12,7 @@ namespace Omniplatformer
     {
         public Ladder(Vector2 center, Vector2 halfsize)
         {
-            Solid = false; Climbable = true;            
+            Solid = false; Climbable = true;
             Components.Add(new PositionComponent(this, center, halfsize));
             // TODO: Add Purple Color to this renderer
             Components.Add(new RenderComponent(this, Color.Purple));

@@ -22,6 +22,6 @@ namespace Omniplatformer
             Components.Add(new PositionComponent(this, Vector2.Zero, halfsize, 0, new Vector2(0, 1)));
             Components.Add(new RenderComponent(this, Color.White, GameContent.Instance.cursor));
             Components.Add(new DamageHitComponent(this, damage, Knockback));
-        }        
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace Omniplatformer.Components
         public bool IsOnGround { get; set; }
         public bool IsInLiquid { get; set; }
         public float LiquidImmersion { get; set; }
-        public bool IsNextToCeiling { get; set; }        
+        public bool IsNextToCeiling { get; set; }
         public bool IsNextToLeftWall { get; set; }
         public bool IsNextToRightWall { get; set; }
         public bool IsNextToWall => IsNextToLeftWall || IsNextToRightWall;
@@ -32,7 +32,7 @@ namespace Omniplatformer.Components
         public float ClimbSpeed => 3;
         public float Acceleration => 0.5f;
 
-        // Movement counters and flags               
+        // Movement counters and flags
         // TODO: face_direction should move to renderable
         // public Direction face_direction;
         public Direction move_direction;
@@ -54,7 +54,7 @@ namespace Omniplatformer.Components
         // Check what kinds of objects are we colliding here
         // TODO: problematic method & overrides, refactor
         public override void ProcessCollisionInteractions(List<(Direction, GameObject)> collisions)
-        {            
+        {
             // default all interactions to false
             // CanClimb = false; // TODO: maybe move this flag where it actually does something
             IsOnGround = false;
@@ -79,7 +79,7 @@ namespace Omniplatformer.Components
             var pos = GetComponent<PositionComponent>();
             var movable = GetComponent<MoveComponent>();
             if (obj.Solid)
-            {                
+            {
                 var new_direction = pos.Collides(obj);
                 PinTo(obj, new_direction);
                 if (new_direction == Direction.Down) { IsOnGround = true; }
@@ -103,8 +103,8 @@ namespace Omniplatformer.Components
             if (obj.Hittable)
             {
                 var hittable = GetComponent<HitComponent>();
-                hittable?.Hit(obj);                
-            }           
+                hittable?.Hit(obj);
+            }
 
             base.ProcessCollision(direction, obj);
         }
@@ -134,14 +134,14 @@ namespace Omniplatformer.Components
             {
                 case Direction.Left:
                     {
-                        pos.SetLocalFace(HorizontalDirection.Left);                        
+                        pos.SetLocalFace(HorizontalDirection.Left);
                         // CurrentMovement += new Vector2(-move_speed, 0);
                         CurrentMovement += new Vector2(-Acceleration, 0);
                         break;
                     }
                 case Direction.Right:
                     {
-                        pos.SetLocalFace(HorizontalDirection.Right);                        
+                        pos.SetLocalFace(HorizontalDirection.Right);
                         // CurrentMovement += new Vector2(move_speed, 0);
                         CurrentMovement += new Vector2(Acceleration, 0);
                         break;
@@ -163,14 +163,14 @@ namespace Omniplatformer.Components
         {
             PositionComponent pos = GetComponent<PositionComponent>();
             PositionComponent their_pos = target.GetComponent<PositionComponent>();
-            
+
             switch (direction)
             {
                 // TODO: Refactor this to move, although this should never happen to objects that can't move
                 case Direction.Right:
                     {
                         var new_x = their_pos.WorldPosition.Center.X - (their_pos.WorldPosition.halfsize.X + pos.WorldPosition.halfsize.X);
-                        pos.SetLocalCenter(new Vector2(new_x, pos.WorldPosition.Center.Y));                        
+                        pos.SetLocalCenter(new Vector2(new_x, pos.WorldPosition.Center.Y));
                         break;
                     }
                 case Direction.Left:
@@ -181,7 +181,7 @@ namespace Omniplatformer.Components
                     }
                 case Direction.Up:
                     {
-                        var new_y = their_pos.WorldPosition.Center.Y - (their_pos.WorldPosition.halfsize.Y + pos.WorldPosition.halfsize.Y);                        
+                        var new_y = their_pos.WorldPosition.Center.Y - (their_pos.WorldPosition.halfsize.Y + pos.WorldPosition.halfsize.Y);
                         pos.SetLocalCenter(new Vector2(pos.WorldPosition.Center.X, new_y));
                         break;
                     }
@@ -195,7 +195,7 @@ namespace Omniplatformer.Components
                             var movable = target.GetComponent<MoveComponent>();
                             if (movable != null)
                             {
-                                movable._onMove += Target_onMove;                                
+                                movable._onMove += Target_onMove;
                             }
                             CurrentPlatform = target;
                         }
@@ -211,13 +211,13 @@ namespace Omniplatformer.Components
                 var movable = CurrentPlatform.GetComponent<MoveComponent>();
                 if (movable != null)
                     movable._onMove -= Target_onMove;
-            }                
+            }
             CurrentPlatform = null;
         }
 
         private void Target_onMove(object sender, MoveEventArgs e)
         {
-            Move(e.displacement);            
+            Move(e.displacement);
         }
 
         // TODO: maybe extract this into another component
@@ -239,13 +239,13 @@ namespace Omniplatformer.Components
         }
 
         public virtual void RestrictMovement()
-        {            
+        {
             if (IsNextToCeiling)
             {
-                //current_jumpspeed = 0;                    
+                //current_jumpspeed = 0;
                 if (CurrentMovement.Y > 0)
                     CurrentMovement = new Vector2(CurrentMovement.X, 0);
-            }            
+            }
 
             if (IsOnGround)
             {
@@ -257,10 +257,10 @@ namespace Omniplatformer.Components
         public virtual void CapMovement()
         {
             var movable = GetComponent<MoveComponent>();
-            
-            float fall_cap = GetDownSpeedCap();            
-            float capped_y = Math.Max(movable.CurrentMovement.Y, fall_cap);            
-            capped_y = Math.Min(capped_y, GetUpSpeedCap());            
+
+            float fall_cap = GetDownSpeedCap();
+            float capped_y = Math.Max(movable.CurrentMovement.Y, fall_cap);
+            capped_y = Math.Min(capped_y, GetUpSpeedCap());
             if (Math.Abs(HorizontalSpeed) > GetHorizontalSpeedCap())
             {
                 HorizontalSpeed -= 2 * Acceleration * Math.Sign(HorizontalSpeed);
@@ -305,6 +305,6 @@ namespace Omniplatformer.Components
             {
                 return -CurrentMovement.X;
             }
-        }        
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace Omniplatformer
             Components.Add(new PositionComponent(this, center, halfsize));
             // TODO: Add Aqua Color to this renderer
             Components.Add(new RenderComponent(this, Color.Green));
-        }        
+        }
         public Bonus Bonus { get; set; }
     }
 }

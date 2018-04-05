@@ -17,7 +17,7 @@ namespace Omniplatformer.Components
         public WallRenderComponent(GameObject obj, Color color) : base(obj, color)
         {
         }
-        
+
         public override void Draw()
         {
             if (CurrentAnimations.ContainsKey(Animation.Death))
@@ -29,7 +29,7 @@ namespace Omniplatformer.Components
             else
             {
                 base.Draw();
-            }            
+            }
         }
     }
 }

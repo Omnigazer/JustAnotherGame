@@ -14,7 +14,7 @@ namespace Omniplatformer.Components
         {
             GameObject = obj;
         }
-        
+
         public T GetComponent<T>() where T : Component
         {
             return GameObject.GetComponent<T>();

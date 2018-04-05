@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Omniplatformer.HUD
 {
     class ManaBar
-    {        
+    {
         // public Player Player { get; set; }
         public Player Player => GameService.Player;
         public Point Position { get; set; }

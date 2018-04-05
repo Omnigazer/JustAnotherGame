@@ -47,11 +47,11 @@ namespace Omniplatformer.Components
 
         /*
         public static Vector2 operator *(Position a, Position b)
-        {                
+        {
             var dir_multiplier = (b.face_direction == Direction.Left ? -1 : 1);
-            var v = new Vector2(a.Center.X * dir_multiplier, a.Center.Y);                
+            var v = new Vector2(a.Center.X * dir_multiplier, a.Center.Y);
             return Vector2.Transform(v, Matrix.CreateRotationZ(-b.RotationAngle) * Matrix.CreateTranslation(b.Center.X, b.Center.Y, 0));
-        } 
+        }
         */
         public static Position operator *(Position a, Position b)
         {
@@ -63,22 +63,22 @@ namespace Omniplatformer.Components
                     //a.RotationAngle + b.RotationAngle,
                     dir_multiplier * a.RotationAngle + b.RotationAngle,
                     a.Origin,
-                    // a.face_direction                    
+                    // a.face_direction
                     (HorizontalDirection)((int)a.face_direction * (int)b.face_direction)
                 );
-            // 
+            //
         }
     }
 
     public class PositionComponent : Component
-    {        
-        // TODO: TEST        
+    {
+        // TODO: TEST
         public PositionComponent parent_pos;
         public AnchorPoint parent_anchor = AnchorPoint.Default;
 
-        public Position local_position;        
+        public Position local_position;
         public Position WorldPosition => parent_pos != null ? local_position * parent_pos.GetAnchor(parent_anchor) : local_position;
-        
+
         // public float RotationAngle { get; set; }
         // protected Vector2 _local_center;
         // public virtual Vector2 Center { get => _center; set => _center = value; }
@@ -88,21 +88,21 @@ namespace Omniplatformer.Components
 
         public PositionComponent(GameObject obj, Vector2 center, Vector2 halfsize) : base(obj)
         {
-            local_position = new Position(center, halfsize);            
+            local_position = new Position(center, halfsize);
             // _local_center = center;
             // this.halfsize = halfsize;
         }
 
         public PositionComponent(GameObject obj, Vector2 center, Vector2 halfsize, float angle) : base(obj)
         {
-            local_position = new Position(center, halfsize, angle);            
+            local_position = new Position(center, halfsize, angle);
             // _local_center = center;
             // this.halfsize = halfsize;
         }
 
         public PositionComponent(GameObject obj, Vector2 center, Vector2 halfsize, float angle, Vector2 origin) : base(obj)
         {
-            local_position = new Position(center, halfsize, angle, origin);            
+            local_position = new Position(center, halfsize, angle, origin);
             // _local_center = center;
             // this.halfsize = halfsize;
         }
@@ -124,7 +124,7 @@ namespace Omniplatformer.Components
                     }
                 default:
                     {
-                        return local_position;                        
+                        return local_position;
                     }
             }
         }
@@ -144,15 +144,15 @@ namespace Omniplatformer.Components
 
         /*
         public static Vector2 operator *(Vector2 vector, PositionComponent position)
-        {                           
+        {
             vector.X *= (position.face_direction == Direction.Left ? -1 : 1);
-            return Vector2.Transform(vector, Matrix.CreateRotationZ(-position.RotationAngle) * Matrix.CreateTranslation(position.Center.X, position.Center.Y, 0));                        
+            return Vector2.Transform(vector, Matrix.CreateRotationZ(-position.RotationAngle) * Matrix.CreateTranslation(position.Center.X, position.Center.Y, 0));
         }
         */
 
         public void AdjustPosition(Vector2 displacement)
         {
-            local_position.Center += displacement;            
+            local_position.Center += displacement;
         }
 
         /*
@@ -168,7 +168,7 @@ namespace Omniplatformer.Components
             pt.X *= 2;
             pt.Y *= 2;
             return new Rectangle((WorldPosition.Center - WorldPosition.halfsize).ToPoint(), pt);
-        }        
+        }
 
         public bool Contains(Vector2 pt)
         {
@@ -182,10 +182,10 @@ namespace Omniplatformer.Components
             PositionComponent pos = (PositionComponent)obj;
             if (pos == null)
                 return false;
-            
+
             if (Math.Abs(WorldPosition.Center.X - pos.WorldPosition.Center.X) > WorldPosition.halfsize.X + pos.WorldPosition.halfsize.X) return false;
             if (Math.Abs(WorldPosition.Center.Y - pos.WorldPosition.Center.Y) > WorldPosition.halfsize.Y + pos.WorldPosition.halfsize.Y) return false;
-            return true;            
+            return true;
         }
 
         public Direction Collides(GameObject other)
@@ -237,18 +237,18 @@ namespace Omniplatformer.Components
             var my_rect = GetRectangle();
             float my_area = (float)(my_rect.Width * my_rect.Height);
             return GetIntersectionArea(obj) / my_area;
-        }       
-        
+        }
+
         // TODO: properly implement this
         public GameObject GetClosestObject(Vector2 direction, Func<GameObject, bool> predicate = null)
         {
             // TODO: count the range from the anchor
-            // TODO: this doesn't work properly with angled directions, should be raycast or something           
+            // TODO: this doesn't work properly with angled directions, should be raycast or something
 
             // rect from vector
             Rectangle rect = new Rectangle(WorldPosition.Center.ToPoint(), new Vector2(Math.Abs(direction.X), Math.Abs(direction.Y)).ToPoint());
-            rect.Offset(Math.Min(direction.X, 0), Math.Min(direction.Y, 0));            
-            
+            rect.Offset(Math.Min(direction.X, 0), Math.Min(direction.Y, 0));
+
             IEnumerable<GameObject> list = GameService.Characters.Union(GameService.Platforms).Where(x => x.Hittable && rect.Intersects(((PositionComponent)x).GetRectangle()));
             if (predicate != null)
                 list = list.Where(predicate);
@@ -269,7 +269,7 @@ namespace Omniplatformer.Components
         public void SetLocalCenter(Vector2 center)
         {
             local_position.Center = center;
-            // local_position = new Position(center, local_position.halfsize, local_position.RotationAngle, local_position.Origin, local_position.face_direction);            
+            // local_position = new Position(center, local_position.halfsize, local_position.RotationAngle, local_position.Origin, local_position.face_direction);
         }
 
         public void SetParent(GameObject obj, AnchorPoint anchor = AnchorPoint.Default)

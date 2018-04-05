@@ -10,8 +10,8 @@ namespace Omniplatformer.Components
     {
         public HitComponent(GameObject obj) : base(obj)
         {
-        }       
-        
+        }
+
         public virtual void Hit(GameObject obj)
         {
 

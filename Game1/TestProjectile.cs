@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Omniplatformer
 {
     public class TestProjectile : Projectile
-    {    
+    {
         public TestProjectile(Vector2 center, Vector2 halfsize): base(center, halfsize)
         {
             Team = Team.Friend;
@@ -18,6 +18,6 @@ namespace Omniplatformer
             Components.Add(new GlowingRenderComponent(this));
             Components.Add(new ProjectileMoveComponent(this));
             Components.Add(new DamageHitComponent(this, damage: 1));
-        }                
+        }
     }
 }

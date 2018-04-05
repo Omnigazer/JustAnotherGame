@@ -11,20 +11,20 @@ using System.Windows;
 namespace Omniplatformer
 {
     public abstract class GameObject
-    {    
+    {
         public T GetComponent<T>() where T : Component
         {
-            return Components.Find(x => x is T) as T;            
+            return Components.Find(x => x is T) as T;
         }
-        
-        protected List<Component> Components { get; set; }                
-        
+
+        protected List<Component> Components { get; set; }
+
         public float Friction {
             get
             {
-                return 0.2f;                                
-            }            
-        }        
+                return 0.2f;
+            }
+        }
 
         // Candidates for component extraction
         public virtual bool Solid { get; set; }
@@ -35,17 +35,17 @@ namespace Omniplatformer
         public Team Team { get; set; }
 
         // Graphics
-        // SpriteBatch spriteBatch;        
+        // SpriteBatch spriteBatch;
         public event EventHandler _onDestroy = delegate { };
         public void onDestroy()
         {
             _onDestroy(this, new EventArgs());
-        }                
-        
+        }
+
         public GameObject()
         {
             Components = new List<Component>();
-            // TODO: move solid implementation to derived classes                        
+            // TODO: move solid implementation to derived classes
             Solid = true;
             Team = Team.Neutral;
         }
@@ -57,12 +57,12 @@ namespace Omniplatformer
             {
                 c.Tick();
             }
-        }        
+        }
 
         // TODO: move this into a damageable component
         public virtual void ApplyDamage(float damage)
         {
-            
+
         }
 
         // Typecasts

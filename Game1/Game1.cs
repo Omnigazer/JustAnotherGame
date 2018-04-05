@@ -16,21 +16,21 @@ namespace Omniplatformer
     public class Game1 : Game
     {
         // Graphics objects
-        public GraphicsDeviceManager graphics;                     
-        public RenderSystem RenderSystem { get; set; }                
-        
+        public GraphicsDeviceManager graphics;
+        public RenderSystem RenderSystem { get; set; }
+
         // Game objects
-        public Player player;        
+        public Player player;
         public List<GameObject> platforms = new List<GameObject>();
-        public List<Character> characters = new List<Character>();        
-        public List<Projectile> projectiles = new List<Projectile>();               
+        public List<Character> characters = new List<Character>();
+        public List<Projectile> projectiles = new List<Projectile>();
 
         // check if these keys were released prior to this tick
         bool space_released = true;
         bool fire_released = true;
         bool attack_released = true;
         bool wield_released = true;
-        bool game_over;        
+        bool game_over;
 
         // mouse position on last tick
         Point last_position = Point.Zero;
@@ -38,10 +38,10 @@ namespace Omniplatformer
         GameObject tele_obj = null;
 
         public Game1()
-        {           
-            graphics = new GraphicsDeviceManager(this);            
+        {
+            graphics = new GraphicsDeviceManager(this);
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            Content.RootDirectory = "Content";                        
+            Content.RootDirectory = "Content";
         }
 
         /// <summary>
@@ -52,16 +52,16 @@ namespace Omniplatformer
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here                                    
+            // TODO: Add your initialization logic here
             base.Initialize();
-            RenderSystem = new RenderSystem(this);                        
+            RenderSystem = new RenderSystem(this);
             InitGameObjects();
-            InitServices();                        
-        }        
+            InitServices();
+        }
 
         public void InitServices()
         {
-            GameService.Init(this);            
+            GameService.Init(this);
         }
 
         WieldedItem sword;
@@ -76,14 +76,14 @@ namespace Omniplatformer
                 // new Vector2(11, 19.2f)
             );
             RenderSystem.drawables.Add((RenderComponent)player);
-            player._onDestroy += GameOver;            
+            player._onDestroy += GameOver;
 
             var ladder = new Ladder(
                 new Vector2(0, 0),
                 new Vector2(15, 40),
                 player
             );
-            
+
             RegisterObject(ladder);
 
             sword = new WieldedItem(damage: 1);
@@ -96,13 +96,13 @@ namespace Omniplatformer
                 new Vector2(-600 - 200 * i, 100),
                 new Vector2(15, 20)
                 ));
-            }          
+            }
 
             RegisterObject(new SolidPlatform(
                 new Vector2(400, 800),
                 new Vector2(5, 100)
             ));
-             
+
             RegisterObject(new SolidPlatform(
                 new Vector2(50, 800),
                 new Vector2(400, 30)
@@ -133,17 +133,17 @@ namespace Omniplatformer
                 new Vector2(30, 400)
             ));
 
-            
+
             RegisterObject(new Ladder(
                 new Vector2(500, 650),
                 new Vector2(15, 550)
-            ));            
+            ));
 
             RegisterObject(new Liquid(
                 new Vector2(2015, 50),
                 new Vector2(515, 300)
             ));
-            
+
             RegisterObject(new MovingPlatform(new Vector2(200, 200)));
             RegisterObject(new MovingPlatform(new Vector2(600, 150)));
             RegisterObject(new MovingPlatform(new Vector2(200, 300)));
@@ -151,7 +151,7 @@ namespace Omniplatformer
             RegisterObject(new MovingPlatform(new Vector2(200, 450)));
             RegisterObject(new MovingPlatform(new Vector2(600, 550)));
 
-            RegisterObject(new Collectible(new Vector2(200, 200), new Vector2(20, 20)));            
+            RegisterObject(new Collectible(new Vector2(200, 200), new Vector2(20, 20)));
         }
 
         private void GameOver(object sender, EventArgs e)
@@ -167,9 +167,9 @@ namespace Omniplatformer
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            GraphicsService.Init(new SpriteBatch(GraphicsDevice), this);          
+            GraphicsService.Init(new SpriteBatch(GraphicsDevice), this);
             GameContent.Init(Content);
-            
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -190,9 +190,9 @@ namespace Omniplatformer
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();            
+                Exit();
             HandleControls();
-            Simulate();            
+            Simulate();
 
             base.Update(gameTime);
         }
@@ -202,12 +202,12 @@ namespace Omniplatformer
             platforms.Add(obj);
             RenderSystem.RegisterDrawable(obj);
             obj._onDestroy += GameObject_onDestroy;
-        }        
+        }
 
         private void GameObject_onDestroy(object sender, EventArgs e)
         {
             var obj = (GameObject)sender;
-            platforms.Remove(obj);                        
+            platforms.Remove(obj);
         }
 
         public void RegisterObject(Projectile projectile)
@@ -220,7 +220,7 @@ namespace Omniplatformer
         private void Projectile_onDestroy(object sender, EventArgs e)
         {
             var projectile = (Projectile)sender;
-            projectiles.Remove(projectile);            
+            projectiles.Remove(projectile);
         }
 
         public void RegisterObject(Character character)
@@ -233,12 +233,12 @@ namespace Omniplatformer
         private void Character_onDestroy(object sender, EventArgs e)
         {
             var character = (Character)sender;
-            characters.Remove(character);                    
-        }                                        
+            characters.Remove(character);
+        }
 
         public void Simulate()
         {
-            RenderSystem.Tick();            
+            RenderSystem.Tick();
             var player_collisions = new List<(Direction, GameObject)>();
             var player_pos = (PositionComponent)player;
             for (int i = platforms.Count - 1; i >= 0; i--)
@@ -247,24 +247,24 @@ namespace Omniplatformer
                 var collision_direction = player_pos.Collides(platform);
                 if (collision_direction != Direction.None)
                     player_collisions.Add((collision_direction, platform));
-                var movable = (MoveComponent)platform;                
+                var movable = (MoveComponent)platform;
                 movable?.Move();
                 platform.Tick();
             }
-            
+
             for (int i = projectiles.Count - 1; i >= 0; i--)
             {
                 var projectile_collisions = new List<(Direction, GameObject)>();
-                var projectile = projectiles[i];                                
+                var projectile = projectiles[i];
 
-                for (int j = platforms.Count - 1; j >= 0; j--)                
+                for (int j = platforms.Count - 1; j >= 0; j--)
                 {
                     var platform = platforms[j];
                     var projectile_pos = (PositionComponent)projectile;
                     var collision_direction = projectile_pos.Collides(platform);
 
                     if (collision_direction != Direction.None)
-                        projectile_collisions.Add((collision_direction, platform));                    
+                        projectile_collisions.Add((collision_direction, platform));
                 }
 
                 for (int j = characters.Count - 1; j >= 0; j--)
@@ -272,8 +272,8 @@ namespace Omniplatformer
                     var character = characters[j];
                     var projectile_pos = (PositionComponent)projectile;
                     var collision_direction = projectile_pos.Collides(character);
-                    if (collision_direction != Direction.None)                        
-                        projectile_collisions.Add((collision_direction, character));                    
+                    if (collision_direction != Direction.None)
+                        projectile_collisions.Add((collision_direction, character));
                 }
                 var movable = (MoveComponent)projectile;
                 movable.ProcessCollisionInteractions(projectile_collisions);
@@ -288,22 +288,22 @@ namespace Omniplatformer
 
                 foreach (var platform in platforms)
                 {
-                    // TODO: look into how we access components                    
+                    // TODO: look into how we access components
                     collision_direction = pos.Collides(platform);
                     if (collision_direction != Direction.None)
-                        character_collisions.Add((collision_direction, platform));                    
+                        character_collisions.Add((collision_direction, platform));
                 }
-                
+
                 foreach (var other_char in characters)
                 {
                     if (other_char == character)
                         continue;
-                    // TODO: look into how we access components                    
+                    // TODO: look into how we access components
                     collision_direction = pos.Collides(other_char);
                     if (collision_direction != Direction.None)
                         character_collisions.Add((collision_direction, other_char));
                 }
-                
+
                 collision_direction = pos.Collides(player);
                 // TODO: collision with a player should trump / complement other collisions here
                 if (collision_direction != Direction.None)
@@ -327,7 +327,7 @@ namespace Omniplatformer
         {
             var game_click_position = RenderSystem.ScreenToGame(Mouse.GetState().Position);
             foreach (var platform in platforms)
-            {                                
+            {
                 var platform_pos = (PositionComponent)platform;
                 if (platform_pos.Contains(game_click_position))
                 {
@@ -336,13 +336,13 @@ namespace Omniplatformer
             }
             return null;
         }
-        
+
         protected void HandleControls()
         {
             if (game_over)
                 return;
             // TODO: referencing a concrete implementation
-            var movable = (PlayerMoveComponent)player;                        
+            var movable = (PlayerMoveComponent)player;
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
                 movable.move_direction = Direction.Left;
             else if (Keyboard.GetState().IsKeyDown(Keys.Right))
@@ -350,11 +350,11 @@ namespace Omniplatformer
             else if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
                 if (movable.CanClimb)
-                {                    
+                {
                     movable.StartClimbing();
                 }
                 movable.move_direction = Direction.Up;
-            }                
+            }
             else if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
                 if (movable.CanClimb)
@@ -362,7 +362,7 @@ namespace Omniplatformer
                     movable.StartClimbing();
                 }
                 movable.move_direction = Direction.Down;
-            }                
+            }
             else
                 movable.move_direction = Direction.None;
 
@@ -372,32 +372,32 @@ namespace Omniplatformer
                 {
                     space_released = false;
                     movable.Jump();
-                }                
-            }                
+                }
+            }
             else
             {
                 space_released = true;
                 movable.StopJumping();
-            }            
-            
+            }
+
 
             if (Keyboard.GetState().IsKeyDown(Keys.NumPad4))
             {
                 // var pos = (PositionComponent)player;
                 var pos = (PositionComponent)sword;
-                pos.Rotate(0.1f);                
+                pos.Rotate(0.1f);
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.NumPad6))
             {
                 // var pos = (PositionComponent)player;
                 var pos = (PositionComponent)sword;
-                pos.Rotate(-0.1f);                
+                pos.Rotate(-0.1f);
             }
 
-            var mouseState = Mouse.GetState();            
+            var mouseState = Mouse.GetState();
             if (mouseState.LeftButton == ButtonState.Pressed)
-            {                
+            {
                 var obj = GetObjectAtCursor();
                 if (tele_obj == null && obj != null)
                     tele_obj = obj;
@@ -418,13 +418,13 @@ namespace Omniplatformer
                         var tele_pos = (PositionComponent)tele_obj;
                         if (tele_pos != null)
                         {
-                            tele_pos.AdjustPosition(dp);                            
+                            tele_pos.AdjustPosition(dp);
                             // tele_obj.center += dp;
-                        }                        
+                        }
                         last_position = mouseState.Position;
                     }
                 }
-                
+
                 /*
                 if (obj != null)
                     obj.color = Color.Green;
@@ -446,7 +446,7 @@ namespace Omniplatformer
                     fire_released = false;
                     // projectiles.Add(player.Fire());
                     RegisterObject(player.Fire());
-                }                                
+                }
             }
             else
             {
@@ -497,30 +497,30 @@ namespace Omniplatformer
             else if (Keyboard.GetState().IsKeyDown(Keys.OemPlus))
             {
                 RenderSystem.Camera.AdjustZoom(zoom_adjust_rate);
-            }            
-        }                  
-        
+            }
+        }
+
         public void SetCameraPosition()
         {
             // Update camera offset based on player position
             var pos = (PositionComponent)player;
-            RenderSystem.Camera.Position = pos.WorldPosition.Center;            
-        }        
+            RenderSystem.Camera.Position = pos.WorldPosition.Center;
+        }
 
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
-        {            
-            // TODO: Add your drawing code here            
+        {
+            // TODO: Add your drawing code here
             bool with_light = true, with_foreground = true;
-            
+
             SetCameraPosition();
             // Draw foreground into the secretTarget
             RenderSystem.DrawToRevealingMask();
             if (with_foreground)
-                RenderSystem.DrawToForegroundLayer();            
+                RenderSystem.DrawToForegroundLayer();
             // Draw light masks into the lightsTarget
             if (with_light)
                 RenderSystem.DrawLightMasks();
@@ -530,16 +530,16 @@ namespace Omniplatformer
             // TODO: move hud drawing into the hud layer
             RenderSystem.RenderLayers();
             base.Draw(gameTime);
-        }        
+        }
 
         public Rectangle GameToScreen(Rectangle rect)
-        {            
-            rect.Location = new Point(rect.Location.X, - rect.Location.Y - rect.Height);            
+        {
+            rect.Location = new Point(rect.Location.X, - rect.Location.Y - rect.Height);
             return rect;
         }
 
         /*
-        
+
         */
     }
 }

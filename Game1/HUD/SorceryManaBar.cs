@@ -14,8 +14,8 @@ namespace Omniplatformer.HUD
         {
         }
 
-        public override void Draw()        
-        {            
+        public override void Draw()
+        {
             var spriteBatch = GraphicsService.Instance;
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             // int bar_border_thickness = 5;

@@ -12,7 +12,7 @@ namespace Omniplatformer.HUD
     public class HUDContainer
     {
         public HUDContainer()
-        {            
+        {
             healthLightsTarget = new RenderTarget2D(
             GraphicsDevice, GameContent.Instance.healthBarLightMask.Width, GameContent.Instance.healthBarLightMask.Height);
             mana_bars = new Dictionary<ManaType, ManaBar>();
@@ -30,15 +30,15 @@ namespace Omniplatformer.HUD
         // Player Player { get; set; }
         Player Player => GameService.Player;
         GraphicsDevice GraphicsDevice { get { return GraphicsService.GraphicsDevice; } }
-        RenderTarget2D healthLightsTarget;    
+        RenderTarget2D healthLightsTarget;
 
         public void DrawHealthBarLightMask()
         {
-            var lightMask = GameContent.Instance.healthBarLightMask;                        
+            var lightMask = GameContent.Instance.healthBarLightMask;
             var spriteBatch = GraphicsService.Instance;
             GraphicsDevice.SetRenderTarget(healthLightsTarget);
-            GraphicsDevice.Clear(Color.Transparent);            
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);                        
+            GraphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
             //var size_rect = new Rectangle(0, 0, 400, bar_height * 15);
             // spriteBatch.Draw(lightMask, size_rect, Color.White);
             // spriteBatch.Draw(lightMask, Vector2.Zero, GetLightColor());
@@ -60,7 +60,7 @@ namespace Omniplatformer.HUD
         }
 
         public void Draw()
-        {            
+        {
             // TODO: maybe group some/all of this into a single spriteBatch
             var spriteBatch = GraphicsService.Instance;
             // DrawHealthBarLightMask();
@@ -74,7 +74,7 @@ namespace Omniplatformer.HUD
             foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
             {
                 DrawManaBar(type);
-            } 
+            }
             */
         }
 
@@ -107,7 +107,7 @@ namespace Omniplatformer.HUD
         {
             ContinueLoop();
             var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);            
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
             Point bar_position = new Point(150, 50);
             int bar_border_thickness = 5;
@@ -119,11 +119,11 @@ namespace Omniplatformer.HUD
 
             Rectangle outer_rect = new Rectangle(bar_position, size);
             Rectangle inner_rect = new Rectangle(bar_position + border_size, current_size);
-            
+
             // Apply the light effect
-            var lightEffect = GameContent.Instance.AdditiveEffect;            
+            var lightEffect = GameContent.Instance.AdditiveEffect;
             lightEffect.Parameters["lightMask"].SetValue(healthLightsTarget);
-            // lightEffect.CurrentTechnique.Passes[0].Apply();            
+            // lightEffect.CurrentTechnique.Passes[0].Apply();
 
             var source_rect = new Rectangle((int)(bar_loop / loop_period), 0, GameContent.Instance.testLiquid.Width / 2, GameContent.Instance.testLiquid.Height);
             spriteBatch.Draw(GameContent.Instance.whitePixel, outer_rect, Color.Gray);
@@ -133,6 +133,6 @@ namespace Omniplatformer.HUD
 
             spriteBatch.Draw(GameContent.Instance.testLiquid, inner_rect, source_rect, Color.Red);
             spriteBatch.End();
-        }                  
+        }
     }
 }

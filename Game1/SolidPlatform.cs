@@ -13,7 +13,7 @@ namespace Omniplatformer
         public SolidPlatform(Vector2 center, Vector2 halfsize)
         {
             Components.Add(new PositionComponent(this, center, halfsize));
-            Components.Add(new RenderComponent(this));            
+            Components.Add(new RenderComponent(this));
         }
     }
 }
