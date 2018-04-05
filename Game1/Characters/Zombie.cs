@@ -23,7 +23,7 @@ namespace Omniplatformer.Characters
             Components.Add(new PositionComponent(this, center, halfsize));
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
             Components.Add(new CharMoveComponent(this, movespeed: 1.4f));
-            Components.Add(new DamageHitComponent(this, damage: 3));            
+            Components.Add(new DamageHitComponent(this, damage: 3, knockback: new Vector2(5, 5)));            
         }       
 
         public void MoveTowardsPlayer()

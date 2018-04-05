@@ -80,5 +80,10 @@ namespace Omniplatformer
         {
             return obj.GetComponent<MoveComponent>();
         }
+
+        public static explicit operator HitComponent(GameObject obj)
+        {
+            return obj.GetComponent<HitComponent>();
+        }
     }
 }

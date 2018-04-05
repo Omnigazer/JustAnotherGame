@@ -27,7 +27,7 @@ namespace Omniplatformer
 
         public Player(Vector2 center, Vector2 halfsize)
         {
-            Team = Team.Friend;            
+            Team = Team.Friend;
             MaxHitPoints = max_hitpoints;
             CurrentHitPoints = MaxHitPoints;
             CurrentMana = new Dictionary<ManaType, float>();
@@ -52,9 +52,7 @@ namespace Omniplatformer
                 var drawable = GetComponent<CharacterRenderComponent>();
                 drawable._onAnimationEnd += Drawable__onAnimationEnd;
                 drawable.StartAnimation(Animation.Hit, inv_frames);
-                // TODO: test
-                Knockback(new Vector2(-20, 10));                             
-                
+
                 if (CurrentHitPoints <= 0)
                 {
                     onDestroy();
@@ -86,21 +84,11 @@ namespace Omniplatformer
 
             PositionComponent pos = GetComponent<PositionComponent>();
             var x = new TestProjectile(pos.WorldPosition.Center, new Vector2(5, 5));
-            // TODO: face_direction probably should be somewhere else
             var movable = GetComponent<CharMoveComponent>();
             var proj_movable = x.GetComponent<ProjectileMoveComponent>();
-            int dir_sign = (int)pos.WorldPosition.face_direction;            
-            proj_movable.direction = new Vector2(15 * dir_sign, 0);            
+            int dir_sign = (int)pos.WorldPosition.face_direction;
+            proj_movable.direction = new Vector2(15 * dir_sign, 0);
             return x;
-        }
-
-        // TODO: extract this somewhere
-        public void Knockback(Vector2 vector)
-        {
-            var movable = GetComponent<CharMoveComponent>();
-            var pos = GetComponent<PositionComponent>();            
-            vector.X *= (int)pos.WorldPosition.face_direction;
-            movable.CurrentMovement += vector;
         }
 
         public void Swing()
@@ -111,15 +99,19 @@ namespace Omniplatformer
                 var drawable = GetComponent<CharacterRenderComponent>();
                 drawable._onAnimationEnd += onAttackend;
                 drawable.StartAnimation(Animation.Attack, 10);
-            }            
-        }    
+            }
+        }
 
         public void MeleeHit()
-        {            
-            GameObject obj = GetMeleeTarget(range: 60);            
-            // TODO: get some weapon values here
-            var (damage, knockback) = (WieldedItem.Damage, new Vector2(3, 3));
-            // TODO: extract ApplyDamage and add relevant values to it
+        {
+            GameObject obj = GetMeleeTarget(range: 60);
+            var damager = (HitComponent)WieldedItem;
+            if (obj != null)
+                damager?.Hit(obj);
+
+
+            /*
+            var (damage, knockback) = (WieldedItem.Damage, WieldedItem.Knockback);
             if (obj != null)
             {
                 // damaging the target
@@ -128,12 +120,14 @@ namespace Omniplatformer
                 var movable = (MoveComponent)obj;
                 var pos = GetComponent<PositionComponent>();
                 movable?.AdjustSpeed(new Vector2((int)pos.WorldPosition.face_direction * knockback.X, knockback.Y));
-            }           
-        }           
+            } 
+            */
+
+        }
 
         public GameObject GetMeleeTarget(float range)
         {
-            var pos = GetComponent<PositionComponent>();            
+            var pos = GetComponent<PositionComponent>();
             return pos.GetClosestObject(new Vector2(range * (int)pos.WorldPosition.face_direction, 0));
         }
 
@@ -145,7 +139,7 @@ namespace Omniplatformer
             {
                 MeleeHit();
                 ItemLocked = false;
-            }            
+            }
         }
 
         #endregion
@@ -187,7 +181,6 @@ namespace Omniplatformer
             {
                 case Bonus.Jump:
                     {
-                        // TODO: Reference to a concrete class
                         var movable = GetComponent<PlayerMoveComponent>();
                         movable.max_jumps++;
                         break;
@@ -214,7 +207,7 @@ namespace Omniplatformer
                 WieldedItem = item;
                 var item_pos = (PositionComponent)item;
                 item_pos.SetParent(this, AnchorPoint.Hand);
-            }                        
+            }
         }
 
         public void UnwieldItem()
@@ -224,7 +217,7 @@ namespace Omniplatformer
                 var item_pos = (PositionComponent)WieldedItem;
                 item_pos.ClearParent();
                 WieldedItem = null;
-            }            
+            }
         }
 
 
