@@ -18,8 +18,6 @@ namespace Omniplatformer
         public GraphicsDeviceManager graphics => Game.graphics;
         // public Mouse
 
-        HUDContainer playerHUD;
-
         RenderTarget2D lightsTarget = null;
         RenderTarget2D mainTarget = null;
         RenderTarget2D secretTarget = null;
@@ -42,7 +40,6 @@ namespace Omniplatformer
             Game = game;
             GraphicsDevice = game.GraphicsDevice;
             Camera = new Camera();
-            playerHUD = new HUDContainer();
             SetResolution(
                 graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width,
                 graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Height
@@ -227,7 +224,7 @@ namespace Omniplatformer
             // TODO: resolve adding subscenes
             GraphicsDevice.SetRenderTarget(HUDTarget);
             GraphicsDevice.Clear(Color.Transparent);
-            playerHUD.Draw();
+            Game.HUDState.Draw();
             // DrawCursor();
         }
 

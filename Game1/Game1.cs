@@ -7,6 +7,7 @@ using Omniplatformer.Components;
 using Omniplatformer.HUD;
 using System;
 using System.Collections.Generic;
+using Omniplatformer.HUDStates;
 
 namespace Omniplatformer
 {
@@ -25,11 +26,7 @@ namespace Omniplatformer
         public List<Character> characters = new List<Character>();
         public List<Projectile> projectiles = new List<Projectile>();
 
-        // check if these keys were released prior to this tick
-        bool space_released = true;
-        bool fire_released = true;
-        bool attack_released = true;
-        bool wield_released = true;
+        public IHUDState HUDState { get; set; }
         bool game_over;
 
         // mouse position on last tick
@@ -55,8 +52,8 @@ namespace Omniplatformer
             // TODO: Add your initialization logic here
             base.Initialize();
             RenderSystem = new RenderSystem(this);
-            InitGameObjects();
             InitServices();
+            InitGameObjects();
         }
 
         public void InitServices()
@@ -68,6 +65,8 @@ namespace Omniplatformer
 
         void InitGameObjects()
         {
+            // TODO: maybe move this elsewhere, after initializing game service
+            HUDState = new DefaultHUDState();
             player = new Player(
                 new Vector2(100, 500),
                 // new Vector2(221, 385)
@@ -191,7 +190,8 @@ namespace Omniplatformer
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            HandleControls();
+            if (!game_over)
+                HUDState.HandleControls();
             Simulate();
 
             base.Update(gameTime);
@@ -328,6 +328,10 @@ namespace Omniplatformer
             var game_click_position = RenderSystem.ScreenToGame(Mouse.GetState().Position);
             foreach (var platform in platforms)
             {
+                if (!platform.Draggable)
+                {
+                    continue;
+                }
                 var platform_pos = (PositionComponent)platform;
                 if (platform_pos.Contains(game_click_position))
                 {
@@ -337,167 +341,133 @@ namespace Omniplatformer
             return null;
         }
 
+        #region Player Actions
+
+        public void WalkLeft()
+        {
+            var movable = (PlayerMoveComponent)player;
+            movable.move_direction = Direction.Left;
+        }
+
+        public void WalkRight()
+        {
+            var movable = (PlayerMoveComponent)player;
+            movable.move_direction = Direction.Right;
+        }
+
+        public void GoUp()
+        {
+            var movable = (PlayerMoveComponent)player;
+            if (movable.CanClimb)
+            {
+                movable.StartClimbing();
+            }
+            movable.move_direction = Direction.Up;
+        }
+
+        public void GoDown()
+        {
+            var movable = (PlayerMoveComponent)player;
+            if (movable.CanClimb)
+            {
+                movable.StartClimbing();
+            }
+            movable.move_direction = Direction.Down;
+        }
+
+        public void StopMoving()
+        {
+            var movable = (PlayerMoveComponent)player;
+            movable.move_direction = Direction.None;
+        }
+
+        public void Jump()
+        {
+            var movable = (PlayerMoveComponent)player;
+            movable.Jump();
+        }
+
+        public void StopJumping()
+        {
+            var movable = (PlayerMoveComponent)player;
+            movable.StopJumping();
+        }
+
+        public void DragObject()
+        {
+            var obj = GetObjectAtCursor();
+            if (tele_obj == null && obj != null)
+                tele_obj = obj;
+            if (tele_obj != null)
+            {
+                var mouseState = Mouse.GetState();
+                if (last_position == Point.Zero)
+                {
+                    last_position = mouseState.Position;
+                }
+                else
+                {
+                    // TODO: extract this funny shit
+                    // TODO: too many TODOs
+                    var dp = (mouseState.Position - last_position).ToVector2() / RenderSystem.Camera.Zoom;
+                    // Have to manually transform vector for delta between coords
+                    dp.Y = -dp.Y;
+                    // TODO: refactor this
+                    var tele_pos = (PositionComponent)tele_obj;
+                    if (tele_pos != null)
+                    {
+                        tele_pos.AdjustPosition(dp);
+                        // tele_obj.center += dp;
+                    }
+                    last_position = mouseState.Position;
+                }
+            }
+
+            /*
+            if (obj != null)
+                obj.color = Color.Green;
+            */
+        }
+
+        public void ReleaseDraggedObject()
+        {
+            last_position = Point.Zero;
+            tele_obj = null;
+        }
+
+        public void Fire()
+        {
+            RegisterObject(player.Fire());
+        }
+
+        public void Swing()
+        {
+            player.Swing();
+        }
+
+        public void ToggleItem()
+        {
+            player.ToggleItem(sword);
+        }
+
+        // fps is assumed to be 30 while we're tick-based
+        float zoom_adjust_rate = 0.2f / 30;
+
+        public void ZoomIn()
+        {
+            RenderSystem.Camera.AdjustZoom(zoom_adjust_rate);
+        }
+
+        public void ZoomOut()
+        {
+            RenderSystem.Camera.AdjustZoom(-zoom_adjust_rate);
+        }
+
+        #endregion
+
         protected void HandleControls()
         {
-            if (game_over)
-                return;
-            // TODO: referencing a concrete implementation
-            var movable = (PlayerMoveComponent)player;
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                movable.move_direction = Direction.Left;
-            else if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                movable.move_direction = Direction.Right;
-            else if (Keyboard.GetState().IsKeyDown(Keys.Up))
-            {
-                if (movable.CanClimb)
-                {
-                    movable.StartClimbing();
-                }
-                movable.move_direction = Direction.Up;
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
-            {
-                if (movable.CanClimb)
-                {
-                    movable.StartClimbing();
-                }
-                movable.move_direction = Direction.Down;
-            }
-            else
-                movable.move_direction = Direction.None;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
-            {
-                if (space_released)
-                {
-                    space_released = false;
-                    movable.Jump();
-                }
-            }
-            else
-            {
-                space_released = true;
-                movable.StopJumping();
-            }
-
-
-            if (Keyboard.GetState().IsKeyDown(Keys.NumPad4))
-            {
-                // var pos = (PositionComponent)player;
-                var pos = (PositionComponent)sword;
-                pos.Rotate(0.1f);
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.NumPad6))
-            {
-                // var pos = (PositionComponent)player;
-                var pos = (PositionComponent)sword;
-                pos.Rotate(-0.1f);
-            }
-
-            var mouseState = Mouse.GetState();
-            if (mouseState.LeftButton == ButtonState.Pressed)
-            {
-                var obj = GetObjectAtCursor();
-                if (tele_obj == null && obj != null)
-                    tele_obj = obj;
-                if (tele_obj != null)
-                {
-                    if (last_position == Point.Zero)
-                    {
-                        last_position = mouseState.Position;
-                    }
-                    else
-                    {
-                        // TODO: extract this funny shit
-                        // TODO: too many TODOs
-                        var dp = (mouseState.Position - last_position).ToVector2() / RenderSystem.Camera.Zoom;
-                        // Have to manually transform vector for delta between coords
-                        dp.Y = -dp.Y;
-                        // TODO: refactor this
-                        var tele_pos = (PositionComponent)tele_obj;
-                        if (tele_pos != null)
-                        {
-                            tele_pos.AdjustPosition(dp);
-                            // tele_obj.center += dp;
-                        }
-                        last_position = mouseState.Position;
-                    }
-                }
-
-                /*
-                if (obj != null)
-                    obj.color = Color.Green;
-                */
-            }
-            else
-            {
-                last_position = Point.Zero;
-                tele_obj = null;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Z))
-            {
-                //var p = new TestProjectile(new Vector2(200, 200), new Vector2(5,5));
-                //p.direction = new Vector2(3, 0);
-                //projectiles.Add(p);
-                if (fire_released)
-                {
-                    fire_released = false;
-                    // projectiles.Add(player.Fire());
-                    RegisterObject(player.Fire());
-                }
-            }
-            else
-            {
-                fire_released = true;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.X))
-            {
-                //var p = new TestProjectile(new Vector2(200, 200), new Vector2(5,5));
-                //p.direction = new Vector2(3, 0);
-                //projectiles.Add(p);
-                if (attack_released)
-                {
-                    attack_released = false;
-                    // projectiles.Add(player.Fire());
-                    player.Swing();
-                }
-            }
-            else
-            {
-                attack_released = true;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.C))
-            {
-                //var p = new TestProjectile(new Vector2(200, 200), new Vector2(5,5));
-                //p.direction = new Vector2(3, 0);
-                //projectiles.Add(p);
-                if (wield_released)
-                {
-                    wield_released = false;
-                    // projectiles.Add(player.Fire());
-                    player.ToggleItem(sword);
-                }
-            }
-            else
-            {
-                wield_released = true;
-            }
-
-            // fps is assumed to be 30 while we're tick-based
-            float zoom_adjust_rate = 0.2f / 30;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.OemMinus))
-            {
-                RenderSystem.Camera.AdjustZoom(-zoom_adjust_rate);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.OemPlus))
-            {
-                RenderSystem.Camera.AdjustZoom(zoom_adjust_rate);
-            }
         }
 
         public void SetCameraPosition()

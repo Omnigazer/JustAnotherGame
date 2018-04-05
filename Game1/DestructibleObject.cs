@@ -13,6 +13,7 @@ namespace Omniplatformer
     {
         public DestructibleObject(Vector2 center, Vector2 halfsize)
         {
+            Draggable = true;
             Hittable = true;
             // TODO: supply colors / textures to the component
             Components.Add(new PositionComponent(this, center, halfsize));

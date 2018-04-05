@@ -32,6 +32,7 @@ namespace Omniplatformer
         public virtual bool Climbable { get; set; }
         public virtual bool Pickupable { get; set; }
         public virtual bool Hittable { get; set; }
+        public virtual bool Draggable { get; set; }
         public Team Team { get; set; }
 
         // Graphics

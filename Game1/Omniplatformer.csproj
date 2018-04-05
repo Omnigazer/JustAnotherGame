@@ -45,6 +45,8 @@
     <Compile Include="Components\DamageHitComponent.cs" />
     <Compile Include="Components\HitComponent.cs" />
     <Compile Include="Components\RelativePositionComponent.cs" />
+    <Compile Include="HUDStates\DefaultHUDState.cs" />
+    <Compile Include="HUDStates\HUDState.cs" />
     <Compile Include="Deconstruct.cs" />
     <Compile Include="HorizontalDirection.cs" />
     <Compile Include="Graphics\MultiplyBlendState.cs" />
