@@ -16,6 +16,7 @@ namespace Omniplatformer
         public WieldedItem(int damage)
         {
             Solid = false;
+            Team = Team.Friend;
             // Damage = damage;
             var Knockback = new Vector2(3, 3);
             var halfsize = new Vector2(3, 25);
