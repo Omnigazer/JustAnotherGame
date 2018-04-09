@@ -9,6 +9,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Omniplatformer.HUD
 {
+    /// <summary>
+    /// Containing class for all the default HUD elements, such as health/mana bars
+    /// </summary>
     public class HUDContainer
     {
         public HUDContainer()
@@ -18,14 +21,16 @@ namespace Omniplatformer.HUD
             mana_bars = new Dictionary<ManaType, ManaBar>();
 
             int bar_height = 60;
-            mana_bars[ManaType.Sorcery] = new SorceryManaBar(new Point(150, 400), 400, bar_height);
             mana_bars[ManaType.Chaos] = new ChaosManaBar(new Point(150, 120), 400, bar_height);
             mana_bars[ManaType.Nature] = new NatureManaBar(new Point(150, 190), 400, bar_height);
             mana_bars[ManaType.Life] = new LifeManaBar(new Point(150, 260), 400, bar_height);
             mana_bars[ManaType.Death] = new DeathManaBar(new Point(150, 330), 400, bar_height);
+            mana_bars[ManaType.Sorcery] = new SorceryManaBar(new Point(150, 400), 400, bar_height);
+            exp_bar = new ExperienceBar(new Point(560, 50), 800, 30);
         }
 
         Dictionary<ManaType, ManaBar> mana_bars;
+        ExperienceBar exp_bar;
 
         // Player Player { get; set; }
         Player Player => GameService.Player;
@@ -70,6 +75,7 @@ namespace Omniplatformer.HUD
             {
                 bar.Value.Draw();
             }
+            exp_bar.Draw();
             /*
             foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
             {

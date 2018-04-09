@@ -22,6 +22,10 @@ namespace Omniplatformer
         public bool ItemLocked { get; set; }
         public WieldedItem WieldedItem { get; private set; }
 
+        public int CurrentExperience { get; set; }
+        public int MaxExperience { get; set; } = 1000; // first-level max-experience
+        public int Level { get; set; }
+
         public Dictionary<ManaType, float> CurrentMana { get; set; }
         public Dictionary<ManaType, float> MaxMana { get; set; }
 
@@ -41,6 +45,17 @@ namespace Omniplatformer
             Components.Add(new PositionComponent(this, center, halfsize));
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
             Components.Add(new PlayerMoveComponent(this));
+        }
+
+        public void EarnExperience(int value)
+        {
+            CurrentExperience += value;
+            while (CurrentExperience > MaxExperience)
+            {
+                Level++;
+                CurrentExperience -= MaxExperience;
+                MaxExperience += 1000 * Level;
+            }
         }
 
         public override void ApplyDamage(float damage)
