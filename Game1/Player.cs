@@ -184,10 +184,26 @@ namespace Omniplatformer
         }
 
         // should be applying this to a component instead
-        public void Pickup(Collectible item)
+        // public void Pickup(Collectible item)
+        public void Pickup(GameObject item)
         {
-            GetBonus(item.Bonus);
-            item.onDestroy();
+            if (item is Collectible)
+            {
+                var x = item as Collectible;
+                GetBonus(x.Bonus);
+                x.onDestroy();
+            }
+            else if(item is WieldedItem)
+            {
+                // TODO: move the inventory into the player class
+                // all this code should be in player's pickup
+                var x = item as WieldedItem;
+                GameService.Instance.PickUp(x);
+                x.Pickupable = false;
+                item.Hide();
+            }
+            // GetBonus(item.Bonus);
+            // item.onDestroy();
         }
 
         public void GetBonus(Bonus bonus)
@@ -219,9 +235,14 @@ namespace Omniplatformer
         {
             if (!ItemLocked)
             {
+                if (WieldedItem != null)
+                    UnwieldItem();
                 WieldedItem = item;
+
+                // draw-related
                 var item_pos = (PositionComponent)item;
                 item_pos.SetParent(this, AnchorPoint.Hand);
+                item.Reveal();
             }
         }
 
@@ -231,7 +252,10 @@ namespace Omniplatformer
             {
                 var item_pos = (PositionComponent)WieldedItem;
                 item_pos.ClearParent();
+                // TODO: should only be executed if it's actually hidden in the inventory or something
+                WieldedItem.Hide();
                 WieldedItem = null;
+
             }
         }
 

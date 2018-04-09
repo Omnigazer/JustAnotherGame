@@ -17,9 +17,9 @@ namespace Omniplatformer.HUDStates
         public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
         Dictionary<Keys, bool> release_map = new Dictionary<Keys, bool>();
 
-        public DefaultHUDState()
+        public DefaultHUDState(HUDContainer hud)
         {
-            playerHUD = new HUDContainer();
+            playerHUD = hud;
             SetupControls();
         }
 
@@ -38,6 +38,7 @@ namespace Omniplatformer.HUDStates
                 {  Keys.Down, (Game.GoDown, noop, true) },
                 {  Keys.Up, (Game.GoUp, noop, true) },
                 {  Keys.Space, (Game.Jump, Game.StopJumping, false) },
+                {  Keys.I, (Game.OpenInventory, noop, false) },
                 {  Keys.Z, (Game.Fire, noop, false) },
                 {  Keys.X, (Game.Swing, noop, false) },
                 {  Keys.C, (Game.ToggleItem, noop, false) },

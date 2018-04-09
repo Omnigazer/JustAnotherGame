@@ -49,8 +49,8 @@ namespace Omniplatformer
 
         public void SetResolution(int width, int height)
         {
-            Camera.ViewportWidth = graphics.PreferredBackBufferWidth = width;
-            Camera.ViewportHeight = graphics.PreferredBackBufferHeight = height;
+            graphics.PreferredBackBufferWidth = width;
+            graphics.PreferredBackBufferHeight = height;
             graphics.ApplyChanges();
         }
 
@@ -66,7 +66,7 @@ namespace Omniplatformer
             if (drawable != null)
             {
                 drawables.Add(drawable);
-                drawables.Sort();
+                drawables = drawables.OrderBy(x => x.ZIndex).ToList();
             }
             obj._onDestroy += RemoveFromDrawables;
         }
@@ -127,7 +127,6 @@ namespace Omniplatformer
             spriteBatch.End();
         }
 
-        // TODO: extract the specifics into the projectiles' renderables
         // public void DrawObjectsLightMasks(List<Projectile> projectiles)
         public void DrawObjectsLightMasks()
         {
@@ -204,7 +203,7 @@ namespace Omniplatformer
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Camera.TranslationMatrix);
             // spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            foreach (var drawable in drawables)
+            foreach (var drawable in drawables.Where(x => !x.Hidden))
             {
                 drawable.Draw();
             }

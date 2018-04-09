@@ -19,6 +19,7 @@ namespace Omniplatformer
             Components.Add(new PositionComponent(this, center, halfsize));
             Components.Add(new WallRenderComponent(this, Color.Yellow));
         }
+        // TODO: should be extracted to damageable component
         float hit_points = 10;
 
         public override void ApplyDamage(float damage)

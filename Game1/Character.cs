@@ -23,9 +23,12 @@ namespace Omniplatformer
             Vulnerable = true;
         }
 
-        public virtual float GetHorizontalFriction()
+
+        public override void onDestroy()
         {
-            return 0;
+            // TODO: find another approach for earning exp
+            GameService.Player.EarnExperience(300);
+            base.onDestroy();
         }
 
         public override void ApplyDamage(float damage)

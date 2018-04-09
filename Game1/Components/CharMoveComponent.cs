@@ -33,8 +33,6 @@ namespace Omniplatformer.Components
         public float Acceleration => 0.5f;
 
         // Movement counters and flags
-        // TODO: face_direction should move to renderable
-        // public Direction face_direction;
         public Direction move_direction;
 
         public GameObject CurrentPlatform { get; set; } // Platform the character is currently standing on
@@ -49,14 +47,11 @@ namespace Omniplatformer.Components
             MaxMoveSpeed = movespeed;
         }
 
-
-
         // Check what kinds of objects are we colliding here
         // TODO: problematic method & overrides, refactor
         public override void ProcessCollisionInteractions(List<(Direction, GameObject)> collisions)
         {
             // default all interactions to false
-            // CanClimb = false; // TODO: maybe move this flag where it actually does something
             IsOnGround = false;
             IsInLiquid = false;
             LiquidImmersion = 0f;
@@ -94,7 +89,7 @@ namespace Omniplatformer.Components
                 IsInLiquid = true;
                 LiquidImmersion = pos.GetImmersionShare(obj);
             }
-            else if (obj.Climbable)  // should be check for climbable in fact
+            else if (obj.Climbable)
             {
                 IsNextToRope = true;
             }
@@ -242,7 +237,6 @@ namespace Omniplatformer.Components
         {
             if (IsNextToCeiling)
             {
-                //current_jumpspeed = 0;
                 if (CurrentMovement.Y > 0)
                     CurrentMovement = new Vector2(CurrentMovement.X, 0);
             }

@@ -15,7 +15,6 @@ namespace Omniplatformer
             Solid = false;
             Liquid = true;
             Components.Add(new PositionComponent(this, center, halfsize));
-            // TODO: Add Aqua Color to this renderer
             Components.Add(new RenderComponent(this, Color.Aqua * 0.5f, Layers.Liquid));
         }
     }

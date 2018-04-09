@@ -34,11 +34,6 @@ namespace Omniplatformer
 
         public static void DrawGame(Texture2D texture, Rectangle rect, Color color, float rotation, Vector2 clamped_origin)
         {
-            if (color == Color.RoyalBlue)
-            {  }
-            // var origin = Vector2.Zero;
-            // var origin = new Vector2(110.5f, 192.5f);
-            // var origin = texture.Bounds.Center.ToVector2();
             var origin = new Vector2(texture.Bounds.Width * clamped_origin.X, texture.Bounds.Height * clamped_origin.Y);
             var screen_rect = game.GameToScreen(rect);
             if (origin.Length() > 0)

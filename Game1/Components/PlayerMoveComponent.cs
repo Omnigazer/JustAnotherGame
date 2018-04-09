@@ -138,7 +138,8 @@ namespace Omniplatformer.Components
                 // TODO: definitely extract this into a component
                 var player = (Player)GameObject;
                 // player.GetBonus()
-                player.Pickup((Collectible)obj);
+                // player.Pickup((Collectible)obj);
+                player.Pickup(obj);
             }
         }
 

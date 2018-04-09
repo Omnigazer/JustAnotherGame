@@ -33,7 +33,8 @@ namespace Omniplatformer.HUD
             // Apply the distort effect
             ApplyDistort();
 
-            spriteBatch.Draw(GameContent.Instance.testLiquid, inner_rect, source_rect, Color.LightYellow);
+            // spriteBatch.Draw(GameContent.Instance.testLiquid, inner_rect, source_rect, Color.LightYellow);
+            spriteBatch.Draw(GameContent.Instance.testLiquid, inner_rect, source_rect, Color.Azure);
             // draw caustics over the bar
             source_rect = new Rectangle(0, 0, GameContent.Instance.causticsMap.Width, GameContent.Instance.causticsMap.Height / 4);
             spriteBatch.Draw(GameContent.Instance.causticsMap, inner_rect, source_rect, Color.White);

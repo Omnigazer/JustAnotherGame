@@ -276,6 +276,7 @@ namespace Omniplatformer.Components
         {
             parent_pos = (PositionComponent)obj;
             parent_anchor = anchor;
+            SetLocalCenter(Vector2.Zero);
         }
 
         public void ClearParent()

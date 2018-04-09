@@ -19,13 +19,6 @@ namespace Omniplatformer
 
         protected List<Component> Components { get; set; }
 
-        public float Friction {
-            get
-            {
-                return 0.2f;
-            }
-        }
-
         // Candidates for component extraction
         public virtual bool Solid { get; set; }
         public virtual bool Liquid { get; set; }
@@ -33,12 +26,13 @@ namespace Omniplatformer
         public virtual bool Pickupable { get; set; }
         public virtual bool Hittable { get; set; }
         public virtual bool Draggable { get; set; }
+        // public virtual bool Hidden { get; set; }
         public Team Team { get; set; }
 
         // Graphics
         // SpriteBatch spriteBatch;
         public event EventHandler _onDestroy = delegate { };
-        public void onDestroy()
+        public virtual void onDestroy()
         {
             _onDestroy(this, new EventArgs());
         }
@@ -60,10 +54,44 @@ namespace Omniplatformer
             }
         }
 
+        public virtual float Friction => 0.2f;
+
         // TODO: move this into a damageable component
         public virtual void ApplyDamage(float damage)
         {
 
+        }
+
+        public void SetPosition(float x, float y)
+        {
+            var pos = GetComponent<PositionComponent>();
+            pos.local_position = new Position(pos.local_position) { Center = new Vector2(x, y) };
+        }
+
+        public void Hide()
+        {
+            var drawable = GetComponent<RenderComponent>();
+            if (drawable != null)
+            {
+                drawable.Hidden = true;
+            }
+            else
+            {
+                throw new Exception("Attempted to hide an object without a RenderComponent");
+            }
+        }
+
+        public void Reveal()
+        {
+            var drawable = GetComponent<RenderComponent>();
+            if (drawable != null)
+            {
+                drawable.Hidden = false;
+            }
+            else
+            {
+                throw new Exception("Attempted to hide an object without a RenderComponent");
+            }
         }
 
         // Typecasts

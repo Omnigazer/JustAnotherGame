@@ -10,6 +10,7 @@ namespace Omniplatformer.Components
 {
     public class RenderComponent : Component, IComparable<RenderComponent>
     {
+        public bool Hidden;
         public int ZIndex { get; set; } = Layers.Default;
         public Color color = Color.AliceBlue;
         public Texture2D Texture { get; set; }

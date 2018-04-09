@@ -17,6 +17,7 @@ namespace Omniplatformer
         public Texture2D cursor { get; set; }
         public Texture2D whitePixel { get; set; }
         public Texture2D greenPixel { get; set; }
+        public Texture2D bolt { get; set; }
         public Texture2D testLiquid { get; set; }
         public Texture2D causticsMap { get; set; }
         public SoundEffect startSound { get; set; }
@@ -45,6 +46,7 @@ namespace Omniplatformer
             characterLeft = Content.Load<Texture2D>("char-left");
             characterRight = Content.Load<Texture2D>("char-right");
             cursor = Content.Load<Texture2D>("cursor2");
+            bolt = Content.Load<Texture2D>("bolt");
             testLiquid = Content.Load<Texture2D>("testliquid");
             causticsMap = Content.Load<Texture2D>("caustics_atlas");
 

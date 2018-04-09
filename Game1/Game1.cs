@@ -22,11 +22,15 @@ namespace Omniplatformer
 
         // Game objects
         public Player player;
+        // possibly should put this into the player's class
+        public Inventory inventory;
         public List<GameObject> platforms = new List<GameObject>();
         public List<Character> characters = new List<Character>();
         public List<Projectile> projectiles = new List<Projectile>();
 
         public IHUDState HUDState { get; set; }
+        IHUDState defaultHUD;
+        IHUDState inventoryHUD;
         bool game_over;
 
         // mouse position on last tick
@@ -53,6 +57,10 @@ namespace Omniplatformer
             base.Initialize();
             RenderSystem = new RenderSystem(this);
             InitServices();
+            var playerHUD = new HUDContainer();
+            inventory = new Inventory();
+            defaultHUD = new DefaultHUDState(playerHUD);
+            inventoryHUD = new InventoryHUDState(playerHUD, inventory);
             InitGameObjects();
         }
 
@@ -61,12 +69,11 @@ namespace Omniplatformer
             GameService.Init(this);
         }
 
-        WieldedItem sword;
-
         void InitGameObjects()
         {
             // TODO: maybe move this elsewhere, after initializing game service
-            HUDState = new DefaultHUDState();
+            HUDState = defaultHUD;
+            // HUDState = inventoryHUD;
             player = new Player(
                 new Vector2(100, 500),
                 // new Vector2(221, 385)
@@ -85,10 +92,6 @@ namespace Omniplatformer
 
             RegisterObject(ladder);
 
-            sword = new WieldedItem(damage: 1);
-            // sword = new WieldedItem(player, new Vector2(12, 30), 0);
-            RegisterObject(sword);
-
             for (int i = 0; i < 5;i++)
             {
                 RegisterObject(new Zombie(
@@ -96,6 +99,10 @@ namespace Omniplatformer
                 new Vector2(15, 20)
                 ));
             }
+
+            var sword = new WieldedItem(1) { Pickupable = true };
+            RegisterObject(sword);
+            sword.SetPosition(200, 100);
 
             RegisterObject(new SolidPlatform(
                 new Vector2(400, 800),
@@ -188,7 +195,7 @@ namespace Omniplatformer
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftAlt) && Keyboard.GetState().IsKeyDown(Keys.Q))
                 Exit();
             if (!game_over)
                 HUDState.HandleControls();
@@ -343,6 +350,63 @@ namespace Omniplatformer
 
         #region Player Actions
 
+        public void OpenInventory()
+        {
+            if (HUDState != inventoryHUD)
+            {
+                HUDState = inventoryHUD;
+            }
+            else
+            {
+                throw new Exception("Inventory already opened");
+            }
+        }
+
+        public void CloseInventory()
+        {
+            if (HUDState == inventoryHUD)
+            {
+                HUDState = defaultHUD;
+            }
+            else
+            {
+                throw new Exception("Called while not in an inventory");
+            }
+            // HUDState
+        }
+
+        public void PickUp(WieldedItem item)
+        {
+            inventory.AddItem(item);
+        }
+
+        public void PickUpSword()
+        {
+            // inventory.AddItem(sword);
+            var item = new WieldedItem(10, GameContent.Instance.bolt);
+            RegisterObject(item);
+            inventory.AddItem(item);
+        }
+
+        public void WieldCurrentSlot()
+        {
+            // inventory.AddItem(sword);
+            if (!player.ItemLocked)
+            {
+                // inventory.AddItem(new WieldedItem(10, GameContent.Instance.bolt));
+                var item = inventory.CurrentSlot.item;
+                inventory.CurrentSlot.item = player.WieldedItem;
+                if (item != null)
+                {
+                    player.WieldItem(item);
+                }
+                else if (player.WieldedItem != null)
+                {
+                    player.UnwieldItem();
+                }
+            }
+        }
+
         public void WalkLeft()
         {
             var movable = (PlayerMoveComponent)player;
@@ -447,7 +511,7 @@ namespace Omniplatformer
 
         public void ToggleItem()
         {
-            player.ToggleItem(sword);
+            // player.ToggleItem(sword);
         }
 
         // fps is assumed to be 30 while we're tick-based

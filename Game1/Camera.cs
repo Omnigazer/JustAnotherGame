@@ -13,12 +13,15 @@ namespace Omniplatformer
         {
             Zoom = 1.1f;
         }
+
+        Game1 Game => GameService.Instance;
+
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
         public float Zoom { get; private set; }
 
-        public int ViewportWidth { get; set; }
-        public int ViewportHeight { get; set; }
+        public int ViewportWidth => Game.graphics.PreferredBackBufferWidth;
+        public int ViewportHeight => Game.graphics.PreferredBackBufferHeight;
 
         public Vector2 ViewportCenter => new Vector2(ViewportWidth * 0.5f, ViewportHeight * 0.5f);
 

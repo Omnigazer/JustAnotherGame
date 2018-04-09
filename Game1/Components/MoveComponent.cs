@@ -55,8 +55,6 @@ namespace Omniplatformer.Components
             return CurrentMovement;
         }
 
-        // TODO: extract this into the movable
-        // public virtual void Move(Dictionary<Direction, GameObject> collisions)
         public virtual void Move()
         {
             var displacement = GetMoveVector();
