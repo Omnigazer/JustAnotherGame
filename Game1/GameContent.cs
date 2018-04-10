@@ -30,8 +30,8 @@ namespace Omniplatformer
 
         public Effect MultiplyEffect { get; set; }
         public Effect AdditiveEffect { get; set; }
-        // public Effect AlphaEffect { get; set; }
         public Effect DistortEffect { get; set; }
+        public Effect BlurEffect { get; set; }
 
         public static GameContent Instance { get; private set; }
 
@@ -61,6 +61,7 @@ namespace Omniplatformer
             AdditiveEffect = Content.Load<Effect>("additiveeffect");
             // AlphaEffect = Content.Load<Effect>("alphaeffect");
             DistortEffect = Content.Load<Effect>("distorteffect");
+            BlurEffect = Content.Load<Effect>("blureffect");
 
             whitePixel = new Texture2D(GraphicsService.Instance.GraphicsDevice, 1, 1);
             whitePixel = new Texture2D(GraphicsService.Instance.GraphicsDevice, 2, 2);

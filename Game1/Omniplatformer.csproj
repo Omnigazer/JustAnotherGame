@@ -41,6 +41,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Effects.cs" />
     <Compile Include="Enums\AnchorPoint.cs" />
     <Compile Include="Components\DamageHitComponent.cs" />
     <Compile Include="Components\HitComponent.cs" />

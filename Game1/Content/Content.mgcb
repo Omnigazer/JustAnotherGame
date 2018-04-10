@@ -176,3 +176,9 @@
 /processorParam:TextureFormat=Color
 /build:bolt.png
 
+#begin blureffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:blureffect.fx
+
