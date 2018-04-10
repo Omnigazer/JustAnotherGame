@@ -23,7 +23,6 @@ namespace Omniplatformer
         // Game objects
         public Player player;
         // possibly should put this into the player's class
-        public Inventory inventory;
         public List<GameObject> platforms = new List<GameObject>();
         public List<Character> characters = new List<Character>();
         public List<Projectile> projectiles = new List<Projectile>();
@@ -58,10 +57,11 @@ namespace Omniplatformer
             RenderSystem = new RenderSystem(this);
             InitServices();
             var playerHUD = new HUDContainer();
-            inventory = new Inventory();
-            defaultHUD = new DefaultHUDState(playerHUD);
-            inventoryHUD = new InventoryHUDState(playerHUD, inventory);
             InitGameObjects();
+
+            defaultHUD = new DefaultHUDState(playerHUD);
+            inventoryHUD = new InventoryHUDState(playerHUD, player.inventory);
+            HUDState = defaultHUD;
         }
 
         public void InitServices()
@@ -71,8 +71,6 @@ namespace Omniplatformer
 
         void InitGameObjects()
         {
-            // TODO: maybe move this elsewhere, after initializing game service
-            HUDState = defaultHUD;
             // HUDState = inventoryHUD;
             player = new Player(
                 new Vector2(100, 500),
@@ -375,11 +373,7 @@ namespace Omniplatformer
             // HUDState
         }
 
-        public void PickUp(WieldedItem item)
-        {
-            inventory.AddItem(item);
-        }
-
+        /*
         public void PickUpSword()
         {
             // inventory.AddItem(sword);
@@ -387,15 +381,17 @@ namespace Omniplatformer
             RegisterObject(item);
             inventory.AddItem(item);
         }
+        */
 
+        /*
         public void WieldCurrentSlot()
         {
             // inventory.AddItem(sword);
             if (!player.ItemLocked)
             {
                 // inventory.AddItem(new WieldedItem(10, GameContent.Instance.bolt));
-                var item = inventory.CurrentSlot.item;
-                inventory.CurrentSlot.item = player.WieldedItem;
+                var item = player.inventory.CurrentSlot.item;
+                player.inventory.CurrentSlot.item = player.WieldedItem;
                 if (item != null)
                 {
                     player.WieldItem(item);
@@ -406,6 +402,7 @@ namespace Omniplatformer
                 }
             }
         }
+        */
 
         public void WalkLeft()
         {

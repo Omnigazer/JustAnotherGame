@@ -8,6 +8,7 @@ using System.Windows;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.Components;
+using Omniplatformer.Enums;
 
 namespace Omniplatformer
 {
@@ -22,15 +23,21 @@ namespace Omniplatformer
         public bool ItemLocked { get; set; }
         public WieldedItem WieldedItem { get; private set; }
 
+        public Inventory inventory;
+
+        // RPG elements
         public int CurrentExperience { get; set; }
         public int MaxExperience { get; set; } = 1000; // first-level max-experience
         public int Level { get; set; }
+        public int SkillPoints { get; set; }
 
         public Dictionary<ManaType, float> CurrentMana { get; set; }
         public Dictionary<ManaType, float> MaxMana { get; set; }
 
         public Player(Vector2 center, Vector2 halfsize)
         {
+            inventory = new Inventory();
+
             Team = Team.Friend;
             MaxHitPoints = max_hitpoints;
             CurrentHitPoints = MaxHitPoints;
@@ -52,10 +59,21 @@ namespace Omniplatformer
             CurrentExperience += value;
             while (CurrentExperience > MaxExperience)
             {
-                Level++;
-                CurrentExperience -= MaxExperience;
-                MaxExperience += 1000 * Level;
+                LevelUp();
             }
+        }
+
+        public void LevelUp()
+        {
+            Level++;
+            CurrentExperience -= MaxExperience;
+            MaxExperience += 1000 * Level;
+
+            // Increase some basic stats
+            MaxHitPoints += 2;
+
+            // Increase skill points
+            SkillPoints += 10;
         }
 
         public override void ApplyDamage(float damage)
@@ -185,6 +203,7 @@ namespace Omniplatformer
 
         // should be applying this to a component instead
         // public void Pickup(Collectible item)
+        // TODO: find a way to avoid a check for collective/item
         public void Pickup(GameObject item)
         {
             if (item is Collectible)
@@ -198,7 +217,7 @@ namespace Omniplatformer
                 // TODO: move the inventory into the player class
                 // all this code should be in player's pickup
                 var x = item as WieldedItem;
-                GameService.Instance.PickUp(x);
+                PickUp(x);
                 x.Pickupable = false;
                 item.Hide();
             }
@@ -259,6 +278,29 @@ namespace Omniplatformer
             }
         }
 
+        public void PickUp(WieldedItem item)
+        {
+            inventory.AddItem(item);
+        }
+
+        public void WieldCurrentSlot()
+        {
+            // inventory.AddItem(sword);
+            if (!ItemLocked)
+            {
+                // inventory.AddItem(new WieldedItem(10, GameContent.Instance.bolt));
+                var item = inventory.CurrentSlot.item;
+                inventory.CurrentSlot.item = WieldedItem;
+                if (item != null)
+                {
+                    WieldItem(item);
+                }
+                else if (WieldedItem != null)
+                {
+                    UnwieldItem();
+                }
+            }
+        }
 
         #endregion
     }

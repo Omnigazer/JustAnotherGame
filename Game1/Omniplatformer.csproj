@@ -48,6 +48,7 @@
     <Compile Include="Enums\Skill.cs" />
     <Compile Include="HUDStates\DefaultHUDState.cs" />
     <Compile Include="HUDStates\IHUDState.cs" />
+    <Compile Include="Inventory.cs" />
     <Compile Include="Utility\Deconstruct.cs" />
     <Compile Include="Enums\HorizontalDirection.cs" />
     <Compile Include="Graphics\MultiplyBlendState.cs" />

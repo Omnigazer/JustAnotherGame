@@ -44,8 +44,8 @@ namespace Omniplatformer.HUDStates
                 {  Keys.Up, (inv.MoveUp, noop, false) },
                 {  Keys.Right, (inv.MoveRight, noop, false) },
                 {  Keys.Down, (inv.MoveDown, noop, false) },
-                {  Keys.Z, (Game.PickUpSword, noop, false) },
-                {  Keys.X, (Game.WieldCurrentSlot, noop, false) },
+                // {  Keys.Z, (Game.PickUpSword, noop, false) },
+                {  Keys.X, (Game.player.WieldCurrentSlot, noop, false) },
                 {  Keys.Escape, (Game.CloseInventory, noop, false) }
             };
         }
