@@ -41,20 +41,21 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AnchorPoint.cs" />
+    <Compile Include="Enums\AnchorPoint.cs" />
     <Compile Include="Components\DamageHitComponent.cs" />
     <Compile Include="Components\HitComponent.cs" />
     <Compile Include="Components\RelativePositionComponent.cs" />
+    <Compile Include="Enums\Skill.cs" />
     <Compile Include="HUDStates\DefaultHUDState.cs" />
     <Compile Include="HUDStates\IHUDState.cs" />
-    <Compile Include="Deconstruct.cs" />
-    <Compile Include="HorizontalDirection.cs" />
+    <Compile Include="Utility\Deconstruct.cs" />
+    <Compile Include="Enums\HorizontalDirection.cs" />
     <Compile Include="Graphics\MultiplyBlendState.cs" />
     <Compile Include="Graphics\MinAlphaBlendState.cs" />
-    <Compile Include="Bonus.cs" />
+    <Compile Include="Enums\Bonus.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Components\AnimatedRenderComponent.cs" />
-    <Compile Include="Animation.cs" />
+    <Compile Include="Enums\Animation.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Components\GlowingRenderComponent.cs" />
     <Compile Include="Components\WallRenderComponent.cs" />
@@ -64,7 +65,7 @@
     <Compile Include="Components\ProjectileMoveComponent.cs" />
     <Compile Include="Components\CharMoveComponent.cs" />
     <Compile Include="Components\Component.cs" />
-    <Compile Include="Direction.cs" />
+    <Compile Include="Enums\Direction.cs" />
     <Compile Include="Components\ForegroundRenderComponent.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameContent.cs" />
@@ -79,30 +80,30 @@
     <Compile Include="HUD\ExperienceBar.cs" />
     <Compile Include="HUD\LifeManaBar.cs" />
     <Compile Include="HUD\ManaBar.cs" />
-    <Compile Include="Collectible.cs" />
-    <Compile Include="Ladder.cs" />
-    <Compile Include="Layers.cs" />
-    <Compile Include="Liquid.cs" />
-    <Compile Include="ManaType.cs" />
+    <Compile Include="Objects\Collectible.cs" />
+    <Compile Include="Objects\Ladder.cs" />
+    <Compile Include="Enums\Layers.cs" />
+    <Compile Include="Objects\Liquid.cs" />
+    <Compile Include="Enums\ManaType.cs" />
     <Compile Include="Components\MoveComponent.cs" />
-    <Compile Include="MoveEventHandler.cs" />
+    <Compile Include="Utility\MoveEventHandler.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Components\PositionComponent.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="DestructibleObject.cs" />
+    <Compile Include="Objects\DestructibleObject.cs" />
     <Compile Include="Components\CharacterRenderComponent.cs" />
     <Compile Include="Components\RenderComponent.cs" />
-    <Compile Include="ForegroundQuad.cs" />
+    <Compile Include="Objects\ForegroundQuad.cs" />
     <Compile Include="RenderSystem.cs" />
-    <Compile Include="SolidPlatform.cs" />
-    <Compile Include="Team.cs" />
-    <Compile Include="TestProjectile.cs" />
+    <Compile Include="Objects\SolidPlatform.cs" />
+    <Compile Include="Enums\Team.cs" />
+    <Compile Include="Objects\TestProjectile.cs" />
     <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MovingPlatform.cs" />
+    <Compile Include="Objects\MovingPlatform.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GraphicsService.cs" />
-    <Compile Include="WieldedItem.cs" />
+    <Compile Include="Objects\WieldedItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
