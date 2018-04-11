@@ -11,12 +11,9 @@ namespace Omniplatformer.Components
     {
         // protected Animation CurrentAnimation { get; set; }
         /// <summary>
-        ///
+        /// Maps animation type to the tuple (current ticks, duration)
         /// </summary>
         protected Dictionary<Animation, (int, int)> CurrentAnimations { get; set; } = new Dictionary<Animation, (int, int)>();
-
-        protected int current_animation_ticks = 0;
-        protected int current_animation_length = 10;
 
         public class AnimationEventArgs : EventArgs
         {

@@ -44,7 +44,7 @@ namespace Omniplatformer.Components
             {
                 PositionComponent pos = GetComponent<PositionComponent>();
                 // or just change the color
-                GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), Color.Red);
+                GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), Color.Red, rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin);
             }
             else if (CurrentAnimations.ContainsKey(Animation.Attack))
             {
@@ -58,8 +58,9 @@ namespace Omniplatformer.Components
         {
             if (CurrentAnimations.ContainsKey(Animation.Attack))
             {
+                var (ticks, length) = CurrentAnimations[Animation.Attack];
                 float amp = (float)Math.PI / 2;
-                float step = amp / current_animation_length;
+                float step = amp / length;
                 PositionComponent pos = GetComponent<PositionComponent>();
                 var anchor = pos.CurrentAnchors[AnchorPoint.Hand];
                 anchor = new Position(anchor) { RotationAngle = anchor.RotationAngle + step };
