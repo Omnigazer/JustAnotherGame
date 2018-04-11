@@ -23,9 +23,9 @@ namespace Omniplatformer
             // Damage = damage;
             var Knockback = new Vector2(3, 3);
             var halfsize = new Vector2(3, 25);
-            Components.Add(new PositionComponent(this, Vector2.Zero, halfsize, 0, new Vector2(0, 1)));
+            Components.Add(new PositionComponent(this, Vector2.Zero, halfsize, 0, new Vector2(0f, 0f)));
             Components.Add(new RenderComponent(this, Color.White, texture));
-            Components.Add(new DamageHitComponent(this, damage, Knockback));
+            Components.Add(new MeleeDamageHitComponent(this, damage, Knockback));
         }
     }
 }

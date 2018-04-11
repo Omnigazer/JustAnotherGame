@@ -98,6 +98,11 @@ namespace Omniplatformer
                 ));
             }
 
+            RegisterObject(new Dawg(
+                new Vector2(-200, 850),
+                new Vector2(70, 25)
+                ));
+
             var sword = new WieldedItem(1) { Pickupable = true };
             RegisterObject(sword);
             sword.SetPosition(200, 100);

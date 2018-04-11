@@ -39,7 +39,7 @@ namespace Omniplatformer.Components
             // also direct referencing of GameObject
             if (target.Team != GameObject.Team)
             {
-                target.ApplyDamage(Damage);
+                target.ApplyDamage(DetermineDamage());
                 var movable = (MoveComponent)target;
                 var pos = GetComponent<PositionComponent>();
                 var their_pos = (PositionComponent)target;
@@ -47,6 +47,11 @@ namespace Omniplatformer.Components
                 movable?.AdjustSpeed(new Vector2(Knockback.X * dir_sign, Knockback.Y));
             }
             base.Hit(target);
+        }
+
+        protected virtual int DetermineDamage()
+        {
+            return Damage;
         }
     }
 }

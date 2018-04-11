@@ -31,6 +31,11 @@ namespace Omniplatformer
         public int Level { get; set; }
         public int SkillPoints { get; set; }
 
+        public Dictionary<Skill, int> Skills = new Dictionary<Skill, int>();
+
+        // spans from 1 to 0.6 with a weight of 10
+        public float MeleeAttackRate => (float)(100 - 40 * ((float)SkillPoints / (SkillPoints + 10))) / 100f;
+
         public Dictionary<ManaType, float> CurrentMana { get; set; }
         public Dictionary<ManaType, float> MaxMana { get; set; }
 
@@ -74,6 +79,10 @@ namespace Omniplatformer
 
             // Increase skill points
             SkillPoints += 10;
+
+            if (!Skills.ContainsKey(Skill.Melee))
+                Skills.Add(Skill.Melee, 0);
+            Skills[Skill.Melee] += 3;
         }
 
         public override void ApplyDamage(float damage)
@@ -131,7 +140,7 @@ namespace Omniplatformer
                 ItemLocked = true;
                 var drawable = GetComponent<CharacterRenderComponent>();
                 drawable._onAnimationEnd += onAttackend;
-                drawable.StartAnimation(Animation.Attack, 10);
+                drawable.StartAnimation(Animation.Attack, (int)(25 * MeleeAttackRate));
             }
         }
 
