@@ -9,7 +9,9 @@ namespace Omniplatformer.Components
 {
     public struct Position
     {
-        public Vector2 Center { get; set; }
+        public Vector2 Coords { get; set; }
+        public Vector2 Center => Coords + halfsize - 2 * halfsize * Origin;
+        // public Vector2 Center => Coords;
         public Vector2 halfsize;
 
         // The rotation origin
@@ -20,50 +22,42 @@ namespace Omniplatformer.Components
         // used for from-position object initializers
         public Position(Position position)
         {
-            Center = position.Center;
+            Coords = position.Coords;
             halfsize = position.halfsize;
             Origin = position.Origin;
             RotationAngle = position.RotationAngle;
             face_direction = position.face_direction;
         }
 
-        public Position(Vector2 center, Vector2 halfsize, float angle = 0, HorizontalDirection dir = HorizontalDirection.Right)
+        public Position(Vector2 coords, Vector2 halfsize, float angle = 0, HorizontalDirection dir = HorizontalDirection.Right)
         {
-            Center = center;
+            Coords = coords;
             this.halfsize = halfsize;
             RotationAngle = angle;
             face_direction = dir;
             Origin = new Vector2(0.5f, 0.5f);
+            // Origin = new Vector2(GameService.Instance.origin, GameService.Instance.origin);
+            // Origin = Vector2.Zero;
         }
 
-        public Position(Vector2 center, Vector2 halfsize, float angle, Vector2 origin, HorizontalDirection dir = HorizontalDirection.Right)
+        public Position(Vector2 coords, Vector2 halfsize, float angle, Vector2 origin, HorizontalDirection dir = HorizontalDirection.Right)
         {
-            Center = center;
+            Coords = coords;
             this.halfsize = halfsize;
             RotationAngle = angle;
             face_direction = dir;
             Origin = origin;
         }
 
-        /*
-        public static Vector2 operator *(Position a, Position b)
-        {
-            var dir_multiplier = (b.face_direction == Direction.Left ? -1 : 1);
-            var v = new Vector2(a.Center.X * dir_multiplier, a.Center.Y);
-            return Vector2.Transform(v, Matrix.CreateRotationZ(-b.RotationAngle) * Matrix.CreateTranslation(b.Center.X, b.Center.Y, 0));
-        }
-        */
         public static Position operator *(Position a, Position b)
         {
             var dir_multiplier = (int)b.face_direction;
-            var v = new Vector2(a.Center.X * dir_multiplier, a.Center.Y);
+            var v = new Vector2(a.Coords.X * dir_multiplier, a.Coords.Y);
             return new Position(
-                    Vector2.Transform(v, Matrix.CreateRotationZ(-b.RotationAngle) * Matrix.CreateTranslation(b.Center.X, b.Center.Y, 0)),
+                    Vector2.Transform(v, Matrix.CreateRotationZ(-b.RotationAngle) * Matrix.CreateTranslation(b.Coords.X, b.Coords.Y, 0)),
                     a.halfsize,
-                    //a.RotationAngle + b.RotationAngle,
                     dir_multiplier * a.RotationAngle + b.RotationAngle,
                     a.Origin,
-                    // a.face_direction
                     (HorizontalDirection)((int)a.face_direction * (int)b.face_direction)
                 );
             //
@@ -79,37 +73,26 @@ namespace Omniplatformer.Components
         public Position local_position;
         public Position WorldPosition => parent_pos != null ? local_position * parent_pos.GetAnchor(parent_anchor) : local_position;
 
-        // public float RotationAngle { get; set; }
-        // protected Vector2 _local_center;
-        // public virtual Vector2 Center { get => _center; set => _center = value; }
-        // public virtual Vector2 Center => parent_pos != null ? _local_center * parent_pos : _local_center;
-        // public virtual Vector2 Center => parent_pos != null ? local_position * parent_pos.local_position : _local_center;
-        // public Vector2 halfsize;
-
-        public PositionComponent(GameObject obj, Vector2 center, Vector2 halfsize) : base(obj)
+        public PositionComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj)
         {
-            local_position = new Position(center, halfsize);
-            // _local_center = center;
-            // this.halfsize = halfsize;
+            local_position = new Position(coords, halfsize);
         }
 
-        public PositionComponent(GameObject obj, Vector2 center, Vector2 halfsize, float angle) : base(obj)
+        public PositionComponent(GameObject obj, Vector2 coords, Vector2 halfsize, float angle) : base(obj)
         {
-            local_position = new Position(center, halfsize, angle);
-            // _local_center = center;
-            // this.halfsize = halfsize;
+            local_position = new Position(coords, halfsize, angle);
         }
 
-        public PositionComponent(GameObject obj, Vector2 center, Vector2 halfsize, float angle, Vector2 origin) : base(obj)
+        public PositionComponent(GameObject obj, Vector2 coords, Vector2 halfsize, float angle, Vector2 origin) : base(obj)
         {
-            local_position = new Position(center, halfsize, angle, origin);
-            // _local_center = center;
-            // this.halfsize = halfsize;
+            local_position = new Position(coords, halfsize, angle, origin);
         }
+
+        Dictionary<AnchorPoint, Position> clamped_anchors;
 
         // TODO: refactor this
-        public Dictionary<AnchorPoint, Position> DefaultAnchors { get; set; } = new Dictionary<AnchorPoint, Position>() { { AnchorPoint.Default, new Position() }, { AnchorPoint.Hand, new Position(new Vector2(12, 30), Vector2.Zero) } };
-        public Dictionary<AnchorPoint, Position> CurrentAnchors { get; set; } = new Dictionary<AnchorPoint, Position>() { { AnchorPoint.Default, new Position() }, { AnchorPoint.Hand, new Position(new Vector2(12, 30), Vector2.Zero) } };
+        public Dictionary<AnchorPoint, Position> DefaultAnchors { get; set; } = new Dictionary<AnchorPoint, Position>() { { AnchorPoint.Default, new Position() }, { AnchorPoint.Hand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero) } };
+        public Dictionary<AnchorPoint, Position> CurrentAnchors { get; set; } = new Dictionary<AnchorPoint, Position>() { { AnchorPoint.Default, new Position() }, { AnchorPoint.Hand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero) } };
 
         public Position GetAnchor(AnchorPoint anchor_name)
         {
@@ -118,13 +101,14 @@ namespace Omniplatformer.Components
                 // TODO: test
                 case AnchorPoint.Hand:
                     {
-                        // Position x = new Position(new Vector2(12, 30), Vector2.Zero);
-                        var x = CurrentAnchors[AnchorPoint.Hand];
-                        return x * local_position;
+                        var clamped_position = CurrentAnchors[AnchorPoint.Hand];
+                        var real_position = new Position(clamped_position) { Coords = new Vector2(2 * clamped_position.Center.X * local_position.halfsize.X, 2 * clamped_position.Center.Y * WorldPosition.halfsize.Y) };
+                        return real_position * WorldPosition;
+                        // return real_position;
                     }
                 default:
                     {
-                        return local_position;
+                        return WorldPosition;
                     }
             }
         }
@@ -142,32 +126,18 @@ namespace Omniplatformer.Components
             CurrentAnchors[anchor_name] = DefaultAnchors[anchor_name];
         }
 
-        /*
-        public static Vector2 operator *(Vector2 vector, PositionComponent position)
-        {
-            vector.X *= (position.face_direction == Direction.Left ? -1 : 1);
-            return Vector2.Transform(vector, Matrix.CreateRotationZ(-position.RotationAngle) * Matrix.CreateTranslation(position.Center.X, position.Center.Y, 0));
-        }
-        */
-
         public void AdjustPosition(Vector2 displacement)
         {
-            local_position.Center += displacement;
+            local_position.Coords += displacement;
         }
-
-        /*
-        public void SetLocalPosition(Vector2 position)
-        {
-            _local_center = position;
-        }
-        */
 
         public Rectangle GetRectangle()
         {
             var pt = WorldPosition.halfsize.ToPoint();
             pt.X *= 2;
             pt.Y *= 2;
-            return new Rectangle((WorldPosition.Center - WorldPosition.halfsize).ToPoint(), pt);
+            var zero = WorldPosition.Center - WorldPosition.halfsize;
+            return new Rectangle((zero + new Vector2(WorldPosition.Origin.X * pt.X, WorldPosition.Origin.Y * pt.Y)).ToPoint(), pt);
         }
 
         public bool Contains(Vector2 pt)
@@ -263,20 +233,24 @@ namespace Omniplatformer.Components
         public void SetLocalFace(HorizontalDirection direction)
         {
             local_position.face_direction = direction;
-            // local_position = new Position(local_position.Center, local_position.halfsize, local_position.RotationAngle, local_position.Origin, direction);
         }
 
         public void SetLocalCenter(Vector2 center)
         {
-            local_position.Center = center;
-            // local_position = new Position(center, local_position.halfsize, local_position.RotationAngle, local_position.Origin, local_position.face_direction);
+            var diff = local_position.Center - local_position.Coords;
+            SetLocalCoords(center - diff);
+        }
+
+        public void SetLocalCoords(Vector2 coords)
+        {
+            local_position.Coords = coords;
         }
 
         public void SetParent(GameObject obj, AnchorPoint anchor = AnchorPoint.Default)
         {
             parent_pos = (PositionComponent)obj;
             parent_anchor = anchor;
-            SetLocalCenter(Vector2.Zero);
+            SetLocalCoords(Vector2.Zero);
         }
 
         public void ClearParent()

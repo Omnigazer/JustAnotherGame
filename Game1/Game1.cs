@@ -74,9 +74,9 @@ namespace Omniplatformer
             // HUDState = inventoryHUD;
             player = new Player(
                 new Vector2(100, 500),
-                // new Vector2(221, 385)
                 // new Vector2(110, 192)
-                new Vector2(15, 20)
+                // new Vector2(110, 192)
+                new Vector2(15, 27)
                 // new Vector2(11, 19.2f)
             );
             RenderSystem.drawables.Add((RenderComponent)player);
@@ -568,9 +568,12 @@ namespace Omniplatformer
             base.Draw(gameTime);
         }
 
-        public Rectangle GameToScreen(Rectangle rect)
+        public Rectangle GameToScreen(Rectangle rect, Vector2 clamped_origin)
         {
-            rect.Location = new Point(rect.Location.X, - rect.Location.Y - rect.Height);
+            rect.Location = new Point(rect.Location.X, -rect.Location.Y);
+            // rect.Location = new Point(rect.Location.X, - rect.Location.Y - rect.Height);
+            // rect.Location = new Point(rect.Location.X, -rect.Location.Y - rect.Height + (int)(2 * rect.Height * clamped_origin.Y));
+
             return rect;
         }
 

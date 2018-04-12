@@ -65,7 +65,7 @@ namespace Omniplatformer
         public void SetPosition(float x, float y)
         {
             var pos = GetComponent<PositionComponent>();
-            pos.local_position = new Position(pos.local_position) { Center = new Vector2(x, y) };
+            pos.local_position = new Position(pos.local_position) { Coords = new Vector2(x, y) };
         }
 
         public void Hide()
