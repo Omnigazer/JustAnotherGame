@@ -73,6 +73,9 @@ namespace Omniplatformer.Components
         public Position local_position;
         public Position WorldPosition => parent_pos != null ? local_position * parent_pos.GetAnchor(parent_anchor) : local_position;
 
+        public Dictionary<AnchorPoint, Position> DefaultAnchors { get; set; } = new Dictionary<AnchorPoint, Position>();
+        public Dictionary<AnchorPoint, Position> CurrentAnchors { get; set; } = new Dictionary<AnchorPoint, Position>();
+
         public PositionComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj)
         {
             local_position = new Position(coords, halfsize);
@@ -88,11 +91,11 @@ namespace Omniplatformer.Components
             local_position = new Position(coords, halfsize, angle, origin);
         }
 
-        Dictionary<AnchorPoint, Position> clamped_anchors;
-
-        // TODO: refactor this
-        public Dictionary<AnchorPoint, Position> DefaultAnchors { get; set; } = new Dictionary<AnchorPoint, Position>() { { AnchorPoint.Default, new Position() }, { AnchorPoint.Hand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero) } };
-        public Dictionary<AnchorPoint, Position> CurrentAnchors { get; set; } = new Dictionary<AnchorPoint, Position>() { { AnchorPoint.Default, new Position() }, { AnchorPoint.Hand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero) } };
+        public void AddAnchor(AnchorPoint anchor_name, Position position)
+        {
+            DefaultAnchors.Add(anchor_name, position);
+            CurrentAnchors.Add(anchor_name, position);
+        }
 
         public Position GetAnchor(AnchorPoint anchor_name)
         {

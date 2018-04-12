@@ -54,9 +54,16 @@ namespace Omniplatformer
                 CurrentMana[type] = MaxMana[type];
             }
 
-            Components.Add(new PositionComponent(this, center, halfsize));
+            InitPos(center, halfsize);
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
             Components.Add(new PlayerMoveComponent(this));
+        }
+
+        public void InitPos(Vector2 center, Vector2 halfsize)
+        {
+            var pos = new PositionComponent(this, center, halfsize);
+            pos.AddAnchor(AnchorPoint.Hand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
+            Components.Add(pos);
         }
 
         public void EarnExperience(int value)

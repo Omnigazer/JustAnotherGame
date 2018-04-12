@@ -84,8 +84,8 @@ namespace Omniplatformer.Components
         public virtual void Draw()
         {
             PositionComponent pos = GetComponent<PositionComponent>();
-            var anchor_world = pos.GetAnchor(AnchorPoint.Hand);
-            var rect = new Rectangle(anchor_world.Center.ToPoint(), new Point(4, 4));
+            // var anchor_world = pos.GetAnchor(AnchorPoint.Hand);
+            // var rect = new Rectangle(anchor_world.Center.ToPoint(), new Point(4, 4));
 
             if (GameObject is WieldedItem)
             {
@@ -93,7 +93,7 @@ namespace Omniplatformer.Components
             }
 
             GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor(), rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin);
-            GraphicsService.DrawGame(GameContent.Instance.whitePixel, rect, Color.Red, rotation: pos.WorldPosition.RotationAngle, clamped_origin: Vector2.Zero);
+            // GraphicsService.DrawGame(GameContent.Instance.whitePixel, rect, Color.Red, rotation: pos.WorldPosition.RotationAngle, clamped_origin: Vector2.Zero);
         }
 
         // TODO: move these to more specific renderable implementations
