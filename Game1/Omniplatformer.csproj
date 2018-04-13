@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Characters\Dawg.cs" />
+    <Compile Include="Characters\ToughZombie.cs" />
     <Compile Include="Components\MeleeDamageHitComponent.cs" />
     <Compile Include="Effects.cs" />
     <Compile Include="Enums\AnchorPoint.cs" />

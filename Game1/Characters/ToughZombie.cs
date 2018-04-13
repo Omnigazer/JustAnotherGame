@@ -8,22 +8,22 @@ using Omniplatformer.Components;
 
 namespace Omniplatformer.Characters
 {
-    public class Dawg : Character
+    public class ToughZombie : Character
     {
         // internal counters for "random movement"
         int ticks = 0;
         int amp = 300;
 
         public bool Aggressive { get; set; }
-        public Dawg(Vector2 center, Vector2 halfsize)
+        public ToughZombie(Vector2 center, Vector2 halfsize)
         {
             Team = Team.Enemy;
-            CurrentHitPoints = MaxHitPoints = 15;
+            CurrentHitPoints = MaxHitPoints = 50;
 
             Components.Add(new PositionComponent(this, center, halfsize));
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
-            Components.Add(new CharMoveComponent(this, movespeed: 5.4f));
-            Components.Add(new DamageHitComponent(this, damage: 2, knockback: new Vector2(2, 1)));
+            Components.Add(new CharMoveComponent(this, movespeed: 2.4f));
+            Components.Add(new DamageHitComponent(this, damage: 6, knockback: new Vector2(10, 5)));
         }
 
         public void MoveTowardsPlayer()
