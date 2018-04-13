@@ -37,14 +37,26 @@ namespace Omniplatformer.Components
             return Color.Gray;
         }
 
+        public void DrawHealth()
+        {
+            PositionComponent pos = GetComponent<PositionComponent>();
+            var rect = pos.GetRectangle();
+            Character obj = (Character)GameObject;
+            var health_rect = new Rectangle(rect.Left, rect.Bottom + 5, rect.Width, 5);
+            GraphicsService.DrawGame(GameContent.Instance.whitePixel, health_rect, Color.Gray, rotation: pos.WorldPosition.RotationAngle, clamped_origin: Vector2.Zero);
+            health_rect.Width = (int)(health_rect.Width * (obj.CurrentHitPoints / obj.MaxHitPoints));
+            GraphicsService.DrawGame(GameContent.Instance.whitePixel, health_rect, Color.Red, rotation: pos.WorldPosition.RotationAngle, clamped_origin: Vector2.Zero);
+        }
+
         public override void Draw()
         {
-
+            DrawHealth();
             if (CurrentAnimations.ContainsKey(Animation.Hit))
             {
                 PositionComponent pos = GetComponent<PositionComponent>();
                 // or just change the color
                 GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), Color.Red, rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin);
+
             }
             else if (CurrentAnimations.ContainsKey(Animation.Attack))
             {
