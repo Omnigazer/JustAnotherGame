@@ -570,8 +570,8 @@ namespace Omniplatformer
 
         public Rectangle GameToScreen(Rectangle rect, Vector2 clamped_origin)
         {
-            rect.Location = new Point(rect.Location.X, -rect.Location.Y);
-            // rect.Location = new Point(rect.Location.X, - rect.Location.Y - rect.Height);
+            // rect.Location = new Point(rect.Location.X, -rect.Location.Y);
+            rect.Location = new Point(rect.Location.X, - rect.Location.Y - rect.Height);
             // rect.Location = new Point(rect.Location.X, -rect.Location.Y - rect.Height + (int)(2 * rect.Height * clamped_origin.Y));
 
             return rect;

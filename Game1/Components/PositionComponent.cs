@@ -140,7 +140,8 @@ namespace Omniplatformer.Components
             pt.X *= 2;
             pt.Y *= 2;
             var zero = WorldPosition.Center - WorldPosition.halfsize;
-            return new Rectangle((zero + new Vector2(WorldPosition.Origin.X * pt.X, WorldPosition.Origin.Y * pt.Y)).ToPoint(), pt);
+            return new Rectangle((zero).ToPoint(), pt);
+            // return new Rectangle((zero + new Vector2(WorldPosition.Origin.X * pt.X, WorldPosition.Origin.Y * pt.Y)).ToPoint(), pt);
         }
 
         public bool Contains(Vector2 pt)

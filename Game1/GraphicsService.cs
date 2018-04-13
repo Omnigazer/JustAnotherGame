@@ -34,17 +34,27 @@ namespace Omniplatformer
             // DrawGame(texture, rect, color, rotation, new Vector2(1, 1));
         }
 
-        public static void DrawGame(Texture2D texture, Rectangle rect, Color color, float rotation, Vector2 clamped_origin)
+        public static void DrawGame(Texture2D texture, Rectangle rect, Color color, float rotation, Vector2 clamped_origin, bool tiled = false)
         {
             clamped_origin = new Vector2(clamped_origin.X, 1 - clamped_origin.Y);
-            var origin = new Vector2(texture.Bounds.Width * clamped_origin.X, texture.Bounds.Height * clamped_origin.Y);
-            var screen_rect = game.GameToScreen(rect, clamped_origin);
-            // if (origin.Length() > 0)
-                 // screen_rect.Offset(rect.Size.X * clamped_origin.X, rect.Size.Y * clamped_origin.Y);
-            // if (clamped_origin.Length() > 0) { if (origin.Length() > 0) { } }
+            var bounds = texture.Bounds;
+            if (tiled)
+            {
+                bounds.Size = rect.Size;
+                // bounds.Inflate(0 * bounds.Width, 0 * bounds.Height);
+            }
 
+
+            // var origin = new Vector2(texture.Bounds.Width * clamped_origin.X, texture.Bounds.Height * clamped_origin.Y);
+            var origin = new Vector2(bounds.Width * clamped_origin.X, bounds.Height * clamped_origin.Y);
+            var screen_rect = game.GameToScreen(rect, clamped_origin);
+            if (origin.Length() > 0)
+                screen_rect.Offset(rect.Size.X * clamped_origin.X, rect.Size.Y * clamped_origin.Y);
+            // if (clamped_origin.Length() > 0) { if (origin.Length() > 0) { } }
+            // var bounds = texture.Bounds;
+            // bounds.Inflate((x_tiles - 1) * bounds.Width,  (y_tiles - 1) * bounds.Height);
             Instance.Draw(texture: texture, destinationRectangle: screen_rect, color: color, rotation: rotation, origin: origin,
-                effects: SpriteEffects.None, layerDepth: 0, sourceRectangle: null); // default parameters
+                effects: SpriteEffects.None, layerDepth: 0, sourceRectangle: bounds); // default parameters
         }
     }
 }

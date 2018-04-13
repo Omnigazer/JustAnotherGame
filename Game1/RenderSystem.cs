@@ -200,7 +200,7 @@ namespace Omniplatformer
             // Main layer
             GraphicsDevice.SetRenderTarget(mainTarget);
             GraphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Camera.TranslationMatrix);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
             // spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
             foreach (var drawable in drawables.Where(x => !x.Hidden))

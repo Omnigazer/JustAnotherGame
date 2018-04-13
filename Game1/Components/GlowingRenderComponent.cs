@@ -30,7 +30,7 @@ namespace Omniplatformer.Components
             //var projectile = projectiles[i];
             var pos = GetComponent<PositionComponent>();
             var mask_halfsize = new Vector2(100, 100);
-            var rect = new Rectangle((pos.WorldPosition.Center).ToPoint(), (mask_halfsize * 2).ToPoint());
+            var rect = new Rectangle((pos.WorldPosition.Center - mask_halfsize).ToPoint(), (mask_halfsize * 2).ToPoint());
             // spriteBatch.Draw(lightMask, GameToScreen(rect), GetLightColor());
             var lightMask = GameContent.Instance.lightMask;
             // TODO: find a better way to apply glow to stuff
