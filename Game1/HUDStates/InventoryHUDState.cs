@@ -32,7 +32,7 @@ namespace Omniplatformer.HUDStates
         public void Draw()
         {
             InventoryView.Draw();
-            // playerHUD.Draw();
+            playerHUD.Draw();
         }
 
         public void SetupControls()
@@ -70,6 +70,23 @@ namespace Omniplatformer.HUDStates
                 {
                     release_map[key] = true;
                     released_action?.Invoke();
+                }
+            }
+
+            HandleMouse();
+        }
+
+        public void HandleMouse()
+        {
+            var mouse = Mouse.GetState();
+            var slot = InventoryView.GetSlotAtPosition(mouse.Position);
+            if (slot != null)
+            {
+                InventoryView.HoverSlot(slot);
+
+                if (mouse.LeftButton == ButtonState.Pressed)
+                {
+                    InventoryView.SelectSlot(slot);
                 }
             }
         }

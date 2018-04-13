@@ -72,6 +72,8 @@ namespace Omniplatformer
 
 
         public bool IsCurrent { get; set; }
+        public bool IsHovered { get; set; }
+        public bool IsHighlighted => IsCurrent || IsHovered;
 
         public InventorySlot(int row, int column)
         {

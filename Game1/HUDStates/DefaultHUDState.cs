@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Omniplatformer.Components;
 using Omniplatformer.HUD;
 using System;
@@ -26,6 +28,22 @@ namespace Omniplatformer.HUDStates
         public void Draw()
         {
             playerHUD.Draw();
+
+            // TODO: TEST
+            var spriteBatch = GraphicsService.Instance;
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            int log_width = 500, log_margin = 50;
+            Point log_position = new Point(Game.GraphicsDevice.PresentationParameters.BackBufferWidth - log_width - log_margin, 300);
+            Point log_size = new Point(log_width, 700);
+            var rect = new Rectangle(log_position, log_size);
+            // Draw directly via the SpriteBatch instance bypassing y-axis flip
+            GraphicsService.Instance.Draw(GameContent.Instance.whitePixel, rect, Color.Gray * 0.8f);
+            foreach (var (message, i) in Game.Logs.Select((x, i) => (x, i)))
+            {
+                // GraphicsService.Instance.Draw(GameContent.Instance.whitePixel, rect, Color.Gray);
+                spriteBatch.DrawString(GameContent.Instance.defaultFont, message, (log_position + new Point(20, 20 + 20 * i)).ToVector2(), Color.White);
+            }
+            spriteBatch.End();
         }
 
         public void SetupControls()
