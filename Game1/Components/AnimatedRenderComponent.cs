@@ -40,15 +40,6 @@ namespace Omniplatformer.Components
         /// <param name="length" description="length in ticks"></param>
         public void StartAnimation(Animation animation, int length, bool interrupt = false)
         {
-            /*
-            if (CurrentAnimation != animation || interrupt)
-            {
-                current_animation_ticks = 0;
-                current_animation_length = length;
-                CurrentAnimation = animation;
-            }
-            */
-
             // TODO: implement interruption logic here
             if (CurrentAnimations.ContainsKey(animation))
             {
