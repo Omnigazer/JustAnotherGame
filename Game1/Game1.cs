@@ -402,37 +402,6 @@ namespace Omniplatformer
             // HUDState
         }
 
-        /*
-        public void PickUpSword()
-        {
-            // inventory.AddItem(sword);
-            var item = new WieldedItem(10, GameContent.Instance.bolt);
-            RegisterObject(item);
-            inventory.AddItem(item);
-        }
-        */
-
-        /*
-        public void WieldCurrentSlot()
-        {
-            // inventory.AddItem(sword);
-            if (!player.ItemLocked)
-            {
-                // inventory.AddItem(new WieldedItem(10, GameContent.Instance.bolt));
-                var item = player.inventory.CurrentSlot.item;
-                player.inventory.CurrentSlot.item = player.WieldedItem;
-                if (item != null)
-                {
-                    player.WieldItem(item);
-                }
-                else if (player.WieldedItem != null)
-                {
-                    player.UnwieldItem();
-                }
-            }
-        }
-        */
-
         public void WalkLeft()
         {
             var movable = (PlayerMoveComponent)player;
