@@ -17,8 +17,8 @@ namespace Omniplatformer
         // Character constants
         const float max_hitpoints = 10;
         const float max_mana = 10;
-        const float mana_regen_rate = 0.01f;
-        const int inv_frames = 40;
+        const float mana_regen_rate = 0.05f / 30;
+        const int inv_frames = 100;
 
         public bool ItemLocked { get; set; }
         public WieldedItem WieldedItem { get; private set; }
@@ -33,8 +33,8 @@ namespace Omniplatformer
 
         public Dictionary<Skill, int> Skills = new Dictionary<Skill, int>();
 
-        // spans from 1 to 0.6 with a weight of 10
-        public float MeleeAttackRate => (float)(100 - 40 * ((float)SkillPoints / (SkillPoints + 10))) / 100f;
+        // spans from 0.6 to 0.2 with a weight of 20
+        public float MeleeAttackRate => (float)(60 - 40 * ((float)SkillPoints / (SkillPoints + 20))) / 100f;
 
         public Dictionary<ManaType, float> CurrentMana { get; set; }
         public Dictionary<ManaType, float> MaxMana { get; set; }
@@ -82,7 +82,8 @@ namespace Omniplatformer
             MaxExperience += 1000 * Level;
 
             // Increase some basic stats
-            MaxHitPoints += 2;
+            MaxHitPoints += 5;
+            CurrentHitPoints += 5;
 
             // Increase skill points
             SkillPoints += 10;
@@ -147,7 +148,7 @@ namespace Omniplatformer
                 ItemLocked = true;
                 var drawable = GetComponent<CharacterRenderComponent>();
                 drawable._onAnimationEnd += onAttackend;
-                drawable.StartAnimation(Animation.Attack, (int)(25 * MeleeAttackRate));
+                drawable.StartAnimation(Animation.Attack, (int)(30 * MeleeAttackRate));
             }
         }
 
