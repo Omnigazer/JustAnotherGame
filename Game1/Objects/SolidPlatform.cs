@@ -10,9 +10,14 @@ namespace Omniplatformer
 {
     class SolidPlatform : GameObject
     {
-        public SolidPlatform(Vector2 center, Vector2 halfsize)
+        public SolidPlatform(Vector2 center, Vector2 halfsize) : this(center, halfsize, Position.DefaultOrigin)
         {
-            Components.Add(new PositionComponent(this, center, halfsize));
+
+        }
+
+        public SolidPlatform(Vector2 center, Vector2 halfsize, Vector2 origin)
+        {
+            Components.Add(new PositionComponent(this, center, halfsize, 0, origin));
             Components.Add(new RenderComponent(this));
         }
     }

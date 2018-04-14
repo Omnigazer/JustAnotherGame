@@ -9,6 +9,7 @@ namespace Omniplatformer.Components
 {
     public struct Position
     {
+        public static Vector2 DefaultOrigin => new Vector2(0.5f, 0.5f);
         public Vector2 Coords { get; set; }
         public Vector2 Center => Coords + halfsize - 2 * halfsize * Origin;
         // public Vector2 Center => Coords;
@@ -35,7 +36,7 @@ namespace Omniplatformer.Components
             this.halfsize = halfsize;
             RotationAngle = angle;
             face_direction = dir;
-            Origin = new Vector2(0.5f, 0.5f);
+            Origin = Position.DefaultOrigin;
             // Origin = new Vector2(GameService.Instance.origin, GameService.Instance.origin);
             // Origin = Vector2.Zero;
         }
