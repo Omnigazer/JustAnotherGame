@@ -1,0 +1,110 @@
+{
+	objects: [
+		{
+			type: "SolidPlatform",
+			coords: {
+				x: 0,
+				y: 0
+			},
+			halfsize: {
+				x: 10000,
+				y: 20
+			}
+		},
+		
+		{
+			type: "SolidPlatform",
+			coords: {
+				x: 400,
+				y: 800				                
+			},
+			halfsize: {
+				x: 5,
+				y: 100
+			}
+		},
+		
+		{
+			type: "SolidPlatform",
+			coords: {
+				x: 50,
+				y: 800				                
+			},
+			halfsize: {
+				x: 400,
+				y: 30
+			}
+		},
+		
+		{
+			type: "ForegroundQuad",
+			coords: {
+				x: 50,
+				y: 860				                
+			},
+			halfsize: {
+				x: 400,
+				y: 30
+			}
+		},
+		
+		{
+			type: "SolidPlatform",
+			coords: {
+				x: 500,
+				y: 50				                
+			},
+			halfsize: {
+				x: 1000,
+				y: 30
+			}
+		},
+		
+		{
+			type: "SolidPlatform",
+			coords: {
+				x: 2500,
+				y: 20				                
+			},
+			halfsize: {
+				x: 100,
+				y: 300
+			},
+			origin: {
+				x: 0,
+				y: 0
+			}
+		},
+		
+		{
+			type: "SolidPlatform",
+			coords: {
+				x: 2500,
+				y: 820				                
+			},
+			halfsize: {
+				x: 100,
+				y: 300
+			},
+			origin: {
+				x: 0,
+				y: 0
+			}
+		},
+		
+		{
+			type: "ToughZombie",
+			coords: {
+				x: 2800,
+				y: 120				                
+			},
+			halfsize: {
+				x: 35,
+				y: 50
+			}
+		},
+		
+	]
+}	
+			
+			

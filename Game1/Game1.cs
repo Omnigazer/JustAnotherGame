@@ -8,6 +8,7 @@ using Omniplatformer.HUD;
 using System;
 using System.Collections.Generic;
 using Omniplatformer.HUDStates;
+using Microsoft.Xna.Framework.Media;
 
 namespace Omniplatformer
 {
@@ -82,14 +83,6 @@ namespace Omniplatformer
             RenderSystem.drawables.Add((RenderComponent)player);
             player._onDestroy += GameOver;
 
-            var ladder = new Ladder(
-                new Vector2(0, 0),
-                new Vector2(15, 40),
-                player
-            );
-
-            RegisterObject(ladder);
-
             for (int i = 0; i < 5;i++)
             {
                 RegisterObject(new Zombie(
@@ -127,10 +120,22 @@ namespace Omniplatformer
                 new Vector2(1000, 30)
             ));
 
+            GameContent.Instance.LoadLevel();
+            foreach(var obj in GameContent.Instance.level.objects)
+            {
+                RegisterObject(obj);
+            }
+            foreach (var character in GameContent.Instance.level.characters)
+            {
+                RegisterObject(character);
+            }
+
+            /*
             RegisterObject(new SolidPlatform(
                 new Vector2(0, 0),
                 new Vector2(10000, 20)
             ));
+            */
 
             RegisterObject(new DestructibleObject(
                 new Vector2(1000, 480),
@@ -145,12 +150,14 @@ namespace Omniplatformer
 
             RegisterObject(new Ladder(
                 new Vector2(500, 650),
-                new Vector2(15, 550)
+                new Vector2(43, 550)
             ));
 
+
             RegisterObject(new Liquid(
-                new Vector2(2015, 50),
-                new Vector2(515, 300)
+                new Vector2(1500, 20),
+                new Vector2(500, 300),
+                origin: new Vector2(0, 0)
             ));
 
             RegisterObject(new MovingPlatform(new Vector2(200, 200)));
@@ -161,12 +168,22 @@ namespace Omniplatformer
             RegisterObject(new MovingPlatform(new Vector2(600, 550)));
 
             RegisterObject(new Collectible(new Vector2(200, 200), new Vector2(20, 20)));
+
+
+
         }
 
         private void GameOver(object sender, EventArgs e)
         {
             game_over = true;
             RenderSystem.drawables.Remove((RenderComponent)player);
+        }
+
+
+        public List<string> Logs { get; set; } = new List<string>() { "test" };
+        public void Log(string message)
+        {
+            Logs.Add(message);
         }
 
         /// <summary>
@@ -203,6 +220,13 @@ namespace Omniplatformer
             if (!game_over)
                 HUDState.HandleControls();
             Simulate();
+            var song = GameContent.Instance.defaultSong;
+            if (MediaPlayer.State != MediaState.Playing && false)
+            {
+                MediaPlayer.Volume = 0.1f;
+                MediaPlayer.Play(song);
+            }
+
 
             base.Update(gameTime);
         }
