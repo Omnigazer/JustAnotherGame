@@ -18,6 +18,7 @@ namespace Omniplatformer
         }
 
         protected List<Component> Components { get; set; }
+        protected Dictionary<string, int> Cooldowns { get; set; }
         public Game1 Game => GameService.Instance;
 
         // Candidates for component extraction
@@ -41,6 +42,7 @@ namespace Omniplatformer
         public GameObject()
         {
             Components = new List<Component>();
+            Cooldowns = new Dictionary<string, int>();
             // TODO: move solid implementation to derived classes
             Solid = true;
             Team = Team.Neutral;
@@ -52,6 +54,10 @@ namespace Omniplatformer
             foreach (var c in Components)
             {
                 c.Tick();
+            }
+            foreach (var (key, ticks) in Cooldowns.ToList())
+            {
+                Cooldowns[key] = Math.Max(ticks - 1, 0);
             }
         }
 

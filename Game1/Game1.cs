@@ -221,7 +221,7 @@ namespace Omniplatformer
                 HUDState.HandleControls();
             Simulate();
             var song = GameContent.Instance.defaultSong;
-            if (MediaPlayer.State != MediaState.Playing && false)
+            if (MediaPlayer.State != MediaState.Playing)
             {
                 MediaPlayer.Volume = 0.1f;
                 MediaPlayer.Play(song);

@@ -144,13 +144,19 @@ namespace Omniplatformer
 
         public void Swing()
         {
-            if (WieldedItem != null)
+            if (WieldedItem != null && HasNoCooldown("Melee"))
             {
+                Cooldowns["Melee"] = (int)(30 * MeleeAttackRate);
                 ItemLocked = true;
                 var drawable = GetComponent<CharacterRenderComponent>();
                 drawable._onAnimationEnd += onAttackend;
-                drawable.StartAnimation(Animation.Attack, (int)(30 * MeleeAttackRate));
+                drawable.StartAnimation(Animation.Attack, 10);
             }
+        }
+
+        public bool HasNoCooldown(string key)
+        {
+            return !Cooldowns.ContainsKey(key) || Cooldowns[key] <= 0;
         }
 
         public void MeleeHit()
