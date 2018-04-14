@@ -15,7 +15,7 @@ namespace Omniplatformer
             Solid = false; Climbable = true;
             Components.Add(new PositionComponent(this, center, halfsize));
             // TODO: Add Purple Color to this renderer
-            Components.Add(new RenderComponent(this, Color.Purple));
+            Components.Add(new RenderComponent(this, Color.Purple, GameContent.Instance.ladder));
         }
 
         public Ladder(Vector2 center, Vector2 halfsize, GameObject parent)
@@ -23,7 +23,7 @@ namespace Omniplatformer
             Solid = false; Climbable = true;
             Components.Add(new PositionComponent(this, center, halfsize) { parent_pos = (PositionComponent)parent });
             // TODO: Add Purple Color to this renderer
-            Components.Add(new RenderComponent(this, Color.Purple));
+            Components.Add(new RenderComponent(this, Color.Purple, GameContent.Instance.ladder));
         }
     }
 }

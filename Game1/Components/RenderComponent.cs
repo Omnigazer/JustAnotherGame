@@ -14,27 +14,28 @@ namespace Omniplatformer.Components
         public int ZIndex { get; set; } = Layers.Default;
         public Color color = Color.AliceBlue;
         public Texture2D Texture { get; set; }
+        public bool Tiled { get; set; }
         public RenderComponent(GameObject obj) : base(obj)
         {
 
         }
 
-        public RenderComponent(GameObject obj, Color color) : base(obj)
+        public RenderComponent(GameObject obj, Color color) : this(obj, color, 0)
         {
-            this.color = color;
+
         }
 
-        public RenderComponent(GameObject obj, Color color, int z_index = 0) : base(obj)
+        public RenderComponent(GameObject obj, Color color, int z_index = 0) : this(obj, color, null, z_index)
         {
-            this.color = color;
-            this.ZIndex = z_index;
+
         }
 
-        public RenderComponent(GameObject obj, Color color, Texture2D texture, int z_index = 0) : base(obj)
+        public RenderComponent(GameObject obj, Color color, Texture2D texture, int z_index = 0, bool tiled = false) : base(obj)
         {
             this.color = color;
             Texture = texture;
             this.ZIndex = z_index;
+            Tiled = tiled;
         }
 
         public int CompareTo(RenderComponent obj)
@@ -84,15 +85,7 @@ namespace Omniplatformer.Components
         public virtual void Draw()
         {
             PositionComponent pos = GetComponent<PositionComponent>();
-            // var anchor_world = pos.GetAnchor(AnchorPoint.Hand);
-            // var rect = new Rectangle(anchor_world.Center.ToPoint(), new Point(4, 4));
-
-            if (GameObject is WieldedItem)
-            {
-
-            }
-
-            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor(), rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin);
+            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor(), rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin, tiled: Tiled);
             // GraphicsService.DrawGame(GameContent.Instance.whitePixel, rect, Color.Red, rotation: pos.WorldPosition.RotationAngle, clamped_origin: Vector2.Zero);
         }
 
