@@ -496,7 +496,7 @@ namespace Omniplatformer
 
         public void Fire()
         {
-            RegisterObject(player.Fire());
+            player.Fire();
         }
 
         public void Swing()

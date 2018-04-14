@@ -18,6 +18,7 @@ namespace Omniplatformer
         }
 
         protected List<Component> Components { get; set; }
+        public Game1 Game => GameService.Instance;
 
         // Candidates for component extraction
         public virtual bool Solid { get; set; }

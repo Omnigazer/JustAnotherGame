@@ -128,17 +128,18 @@ namespace Omniplatformer
         }
 
         #region Actions
-        public Projectile Fire()
+        public void Fire()
         {
-            SpendMana(ManaType.Chaos, 1);
-
-            PositionComponent pos = GetComponent<PositionComponent>();
-            var x = new TestProjectile(pos.WorldPosition.Center, new Vector2(5, 5));
-            var movable = GetComponent<CharMoveComponent>();
-            var proj_movable = x.GetComponent<ProjectileMoveComponent>();
-            int dir_sign = (int)pos.WorldPosition.face_direction;
-            proj_movable.direction = new Vector2(15 * dir_sign, 0);
-            return x;
+            if(SpendMana(ManaType.Chaos, 1))
+            {
+                PositionComponent pos = GetComponent<PositionComponent>();
+                var projectile = new TestProjectile(pos.WorldPosition.Center, new Vector2(5, 5));
+                var movable = GetComponent<CharMoveComponent>();
+                var proj_movable = projectile.GetComponent<ProjectileMoveComponent>();
+                int dir_sign = (int)pos.WorldPosition.face_direction;
+                proj_movable.direction = new Vector2(15 * dir_sign, 0);
+                Game.RegisterObject(projectile);
+            }
         }
 
         public void Swing()
@@ -202,10 +203,15 @@ namespace Omniplatformer
             CurrentMana[type] = Math.Min(CurrentMana[type], MaxMana[type]);
         }
 
-        public void SpendMana(ManaType type, float amount)
+        public bool SpendMana(ManaType type, float amount)
         {
-            CurrentMana[type] -= amount;
-            CurrentMana[type] = Math.Max(CurrentMana[type], 0);
+            if (CurrentMana[type] >= amount)
+            {
+                CurrentMana[type] -= amount;
+                return true;
+            }
+            else
+                return false;
         }
 
         public void RegenerateMana()
