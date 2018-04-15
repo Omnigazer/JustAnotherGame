@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Omniplatformer.HUD;
 using System;
 using System.Collections.Generic;
@@ -8,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace Omniplatformer.HUDStates
 {
-    public class InventoryHUDState : IHUDState
+    public class InventoryHUDState : HUDState
     {
         HUDContainer playerHUD;
-        InventoryView InventoryView { get; set; }
+        InventoryView PlayerInventoryView { get; set; }
+        InventoryView TargetInventoryView { get; set; }
         Game1 Game => GameService.Instance;
 
         public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
-        Dictionary<Keys, bool> release_map = new Dictionary<Keys, bool>();
 
         // TODO: TEMPORARY
         Inventory inv;
@@ -23,15 +24,38 @@ namespace Omniplatformer.HUDStates
         public InventoryHUDState(HUDContainer hud, Inventory inv)
         {
             playerHUD = hud;
-            InventoryView = new InventoryView(inv);
+            PlayerInventoryView = new InventoryView(inv, false);
             // TODO: remove this reference
             this.inv = inv;
             SetupControls();
+            Game.onTargetInventoryOpen += onTargetInventoryOpen;
+            Game.onTargetInventoryClosed += onTargetInventoryClosed; ;
         }
 
-        public void Draw()
+        private void onTargetInventoryOpen(object sender, InventoryEventArgs e)
         {
-            InventoryView.Draw();
+            SetTargetInventory(e.Inventory);
+        }
+
+        private void onTargetInventoryClosed(object sender, EventArgs e)
+        {
+            ClearTargetInventory();
+        }
+
+        public void SetTargetInventory(Inventory inv)
+        {
+            TargetInventoryView = new InventoryView(inv, true);
+        }
+
+        public void ClearTargetInventory()
+        {
+            TargetInventoryView = null;
+        }
+
+        public override void Draw()
+        {
+            PlayerInventoryView.Draw();
+            TargetInventoryView?.Draw();
             playerHUD.Draw();
         }
 
@@ -44,15 +68,39 @@ namespace Omniplatformer.HUDStates
                 {  Keys.Up, (inv.MoveUp, noop, false) },
                 {  Keys.Right, (inv.MoveRight, noop, false) },
                 {  Keys.Down, (inv.MoveDown, noop, false) },
-                // {  Keys.Z, (Game.PickUpSword, noop, false) },
                 {  Keys.X, (Game.player.WieldCurrentSlot, noop, false) },
+                {  Keys.C, (Game.CloseChest, noop, false) },
                 {  Keys.Escape, (Game.CloseInventory, noop, false) }
             };
         }
 
+        InventorySlot dragged_slot;
+        bool lmb_is_pressed;
 
+        InventorySlot GetSlotAtPosition(Point position)
+        {
+            InventorySlot slot = null;
+            // we're assuming only one of these will match
+            slot = PlayerInventoryView.GetSlotAtPosition(position) ?? TargetInventoryView?.GetSlotAtPosition(position);
+            return slot;
+        }
 
-        public void HandleControls()
+        void DragItem(InventorySlot slot)
+        {
+            dragged_slot = slot;
+        }
+
+        void DropDraggedSlot(InventorySlot target)
+        {
+            if (target != null)
+            {
+                var item = target.item;
+                target.item = dragged_slot.item;
+                dragged_slot.item = item;
+            }
+        }
+
+        public override void HandleControls()
         {
             Game.StopMoving();
             var keyboard_state = Keyboard.GetState();
@@ -79,14 +127,31 @@ namespace Omniplatformer.HUDStates
         public void HandleMouse()
         {
             var mouse = Mouse.GetState();
-            var slot = InventoryView.GetSlotAtPosition(mouse.Position);
+            // var slot = PlayerInventoryView.GetSlotAtPosition(mouse.Position);
+            var slot = GetSlotAtPosition(mouse.Position);
+            // well, now making assumptions gets silly
+            PlayerInventoryView.HoverSlot(slot);
+            TargetInventoryView?.HoverSlot(slot);
             if (slot != null)
             {
-                InventoryView.HoverSlot(slot);
-
                 if (mouse.LeftButton == ButtonState.Pressed)
                 {
-                    InventoryView.SelectSlot(slot);
+                    // TODO: figure out how to get rid of these twin calls
+                    PlayerInventoryView.SelectSlot(slot);
+                    TargetInventoryView.SelectSlot(slot);
+                    if (!lmb_is_pressed)
+                    {
+                        DragItem(slot);
+                    }
+                    lmb_is_pressed = true;
+                }
+                else
+                {
+                    if (lmb_is_pressed)
+                    {
+                        DropDraggedSlot(slot);
+                    }
+                    lmb_is_pressed = false;
                 }
             }
         }

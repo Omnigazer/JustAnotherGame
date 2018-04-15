@@ -11,10 +11,12 @@ namespace Omniplatformer.HUD
     public class InventoryView
     {
         Inventory Inventory { get; set; }
+        bool IsTarget { get; set; }
 
-        public InventoryView(Inventory inventory)
+        public InventoryView(Inventory inventory, bool target)
         {
             Inventory = inventory;
+            IsTarget = target;
         }
 
         public void Draw()
@@ -35,7 +37,7 @@ namespace Omniplatformer.HUD
         }
 
         // slots starting position
-        Point position = new Point(700, 150);
+        private Point position => IsTarget ? new Point(1200, 150) : new Point(700, 150);
         const int slot_width = 70, slot_height = 70;
         const int slot_margin = 15;
 
@@ -80,12 +82,15 @@ namespace Omniplatformer.HUD
 
         public void SelectSlot(InventorySlot slot)
         {
+            Inventory.SetCurrentSlot(slot);
+            /*
             foreach (var i_slot in Inventory.slots)
             {
                 if (i_slot == slot)
                 {
                     // TODO: extract this into the inventory logic
                     i_slot.IsCurrent = true;
+                    Inventory.CurrentSlot = i_slot;
                     Inventory.col = i_slot.Column;
                     Inventory.row = i_slot.Row;
                 }
@@ -94,6 +99,7 @@ namespace Omniplatformer.HUD
                     i_slot.IsCurrent = false;
                 }
             }
+            */
         }
     }
 }

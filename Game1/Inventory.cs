@@ -11,9 +11,9 @@ namespace Omniplatformer
         public int Rows => 4;
         public int Cols => 4;
         public List<InventorySlot> slots = new List<InventorySlot>();
-        public InventorySlot CurrentSlot => slots[row * Cols + col];
+        public InventorySlot CurrentSlot;
 
-        public int row, col;
+        // public int row, col;
 
         public Inventory()
         {
@@ -23,7 +23,7 @@ namespace Omniplatformer
                     slots.Add(new InventorySlot(i, j));
                 }
             // TODO: make the component ask the inventory about it instead
-            CurrentSlot.IsCurrent = true;
+            CurrentSlot = slots[0];
         }
 
         public void AddItem(WieldedItem item)
@@ -31,32 +31,44 @@ namespace Omniplatformer
             slots.Find(slot => slot.item == null).item = item;
         }
 
-        public void MoveLeft()
+        public void SetCurrentSlot(InventorySlot slot)
         {
             CurrentSlot.IsCurrent = false;
-            col = (((col - 1) % Cols) + Cols) % Cols;
-            CurrentSlot.IsCurrent = true;
+            CurrentSlot = slot;
+            slot.IsCurrent = true;
+        }
+
+        public InventorySlot GetSlot(int row, int col)
+        {
+            return slots[row * Cols + col];
+        }
+
+        public void MoveLeft()
+        {
+            int row = CurrentSlot.Row, col = CurrentSlot.Column;
+            col = (col - 1 + Cols) % Cols;
+            SetCurrentSlot(GetSlot(row, col));
         }
 
         public void MoveUp()
         {
-            CurrentSlot.IsCurrent = false;
-            row = (((row - 1) % Rows) + Rows) % Rows;
-            CurrentSlot.IsCurrent = true;
+            int row = CurrentSlot.Row, col = CurrentSlot.Column;
+            row = (row - 1 + Rows) % Rows;
+            SetCurrentSlot(GetSlot(row, col));
         }
 
         public void MoveRight()
         {
-            CurrentSlot.IsCurrent = false;
-            col = (((col + 1) % Cols) + Cols) % Cols;
-            CurrentSlot.IsCurrent = true;
+            int row = CurrentSlot.Row, col = CurrentSlot.Column;
+            col = (col + 1 + Cols) % Cols;
+            SetCurrentSlot(GetSlot(row, col));
         }
 
         public void MoveDown()
         {
-            CurrentSlot.IsCurrent = false;
-            row = (((row + 1) % Rows) + Rows) % Rows;
-            CurrentSlot.IsCurrent = true;
+            int row = CurrentSlot.Row, col = CurrentSlot.Column;
+            row = (row + 1 + Rows) % Rows;
+            SetCurrentSlot(GetSlot(row, col));
         }
     }
 
