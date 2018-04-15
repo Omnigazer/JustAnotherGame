@@ -40,7 +40,8 @@ namespace Omniplatformer
         public Effect DistortEffect { get; set; }
         public Effect BlurEffect { get; set; }
 
-        public Song defaultSong { get; set; }
+        // public Song vampireKiller { get; set; }
+        public List<Song> Songs { get; set; } = new List<Song>();
 
         public Level level;
 
@@ -56,27 +57,25 @@ namespace Omniplatformer
         {
             this.Content = Content;
             //load images
-            characterLeft = Content.Load<Texture2D>("char-left");
-            characterRight = Content.Load<Texture2D>("char-right");
-            cursor = Content.Load<Texture2D>("cursor2");
-            bolt = Content.Load<Texture2D>("bolt");
-            testLiquid = Content.Load<Texture2D>("testliquid");
-            causticsMap = Content.Load<Texture2D>("caustics_atlas");
-            ladder = Content.Load<Texture2D>("ladder");
-
-            defaultSong = Content.Load<Song>("castlevania");
-
+            characterLeft = Content.Load<Texture2D>("Textures/char-left");
+            characterRight = Content.Load<Texture2D>("Textures/char-right");
+            cursor = Content.Load<Texture2D>("Textures/cursor2");
+            bolt = Content.Load<Texture2D>("Textures/bolt");
+            testLiquid = Content.Load<Texture2D>("Textures/testliquid");
+            causticsMap = Content.Load<Texture2D>("Textures/caustics_atlas");
+            ladder = Content.Load<Texture2D>("Textures/ladder");
+            alphaMask = Content.Load<Texture2D>("Textures/alphaMask");
+            lightMask = Content.Load<Texture2D>("Textures/lightMask");
+            healthBarLightMask = Content.Load<Texture2D>("Textures/healthBarlightMask");
+            distortMask = Content.Load<Texture2D>("Textures/distortmask");
             // TEST ZONE
-            alphaMask = Content.Load<Texture2D>("alphaMask");
-            lightMask = Content.Load<Texture2D>("lightMask");
-            healthBarLightMask = Content.Load<Texture2D>("healthBarlightMask");
-            distortMask = Content.Load<Texture2D>("distortmask");
 
-            MultiplyEffect = Content.Load<Effect>("lighteffect");
-            AdditiveEffect = Content.Load<Effect>("additiveeffect");
+
+            MultiplyEffect = Content.Load<Effect>("Effects/lighteffect");
+            AdditiveEffect = Content.Load<Effect>("Effects/additiveeffect");
             // AlphaEffect = Content.Load<Effect>("alphaeffect");
-            DistortEffect = Content.Load<Effect>("distorteffect");
-            BlurEffect = Content.Load<Effect>("blureffect");
+            DistortEffect = Content.Load<Effect>("Effects/distorteffect");
+            BlurEffect = Content.Load<Effect>("Effects/blureffect");
 
             whitePixel = new Texture2D(GraphicsService.Instance.GraphicsDevice, 1, 1);
             whitePixel = new Texture2D(GraphicsService.Instance.GraphicsDevice, 2, 2);
@@ -97,12 +96,12 @@ namespace Omniplatformer
             // startSound = Content.Load<SoundEffect>("StartSound");
 
             //load fonts
-            defaultFont = Content.Load<SpriteFont>("DefaultFont");
+            defaultFont = Content.Load<SpriteFont>("Fonts/DefaultFont");
         }
 
         public void LoadLevel()
         {
-            level = LoadJson(Path.Combine(Content.RootDirectory, @"json.txt"));
+            level = LoadJson(Path.Combine(Content.RootDirectory, "Data", @"json.txt"));
         }
 
         public class Level

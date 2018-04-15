@@ -208,6 +208,8 @@ namespace Omniplatformer
             // TODO: Unload any non ContentManager content here
         }
 
+        int song_index;
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -220,11 +222,12 @@ namespace Omniplatformer
             if (!game_over)
                 HUDState.HandleControls();
             Simulate();
-            var song = GameContent.Instance.defaultSong;
+            // var song = GameContent.Instance.vampireKiller;
             if (MediaPlayer.State != MediaState.Playing)
             {
                 MediaPlayer.Volume = 0.1f;
-                MediaPlayer.Play(song);
+                MediaPlayer.Play(GameContent.Instance.Songs[song_index]);
+                song_index = (song_index + 1) % GameContent.Instance.Songs.Count;
             }
 
 
