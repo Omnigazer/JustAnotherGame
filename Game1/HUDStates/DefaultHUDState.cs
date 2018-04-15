@@ -11,13 +11,12 @@ using System.Threading.Tasks;
 
 namespace Omniplatformer.HUDStates
 {
-    public class DefaultHUDState : IHUDState
+    public class DefaultHUDState : HUDState
     {
         HUDContainer playerHUD;
         Game1 Game => GameService.Instance;
 
         public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
-        Dictionary<Keys, bool> release_map = new Dictionary<Keys, bool>();
 
         public DefaultHUDState(HUDContainer hud)
         {
@@ -25,7 +24,7 @@ namespace Omniplatformer.HUDStates
             SetupControls();
         }
 
-        public void Draw()
+        public override void Draw()
         {
             playerHUD.Draw();
 
@@ -59,18 +58,13 @@ namespace Omniplatformer.HUDStates
                 {  Keys.I, (Game.OpenInventory, noop, false) },
                 {  Keys.Z, (Game.Fire, noop, false) },
                 {  Keys.X, (Game.Swing, noop, false) },
-                {  Keys.C, (Game.ToggleItem, noop, false) },
+                {  Keys.C, (Game.OpenChest, noop, false) },
                 {  Keys.OemMinus, (Game.ZoomOut, noop, true) },
                 {  Keys.OemPlus, (Game.ZoomIn, noop, true) },
             };
         }
 
-        // check if these keys were released prior to this tick
-        bool space_released = true;
-        bool fire_released = true;
-        bool attack_released = true;
-        bool wield_released = true;
-        public void HandleControls()
+        public override void HandleControls()
         {
             // TODO: possibly refactor this
             // reset the player's "intention to move" (move_direction) by default as a workaround

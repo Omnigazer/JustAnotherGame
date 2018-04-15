@@ -28,11 +28,13 @@ namespace Omniplatformer
         public List<Character> characters = new List<Character>();
         public List<Projectile> projectiles = new List<Projectile>();
 
-        public IHUDState HUDState { get; set; }
-        IHUDState defaultHUD;
-        IHUDState inventoryHUD;
+        public HUDState HUDState { get; set; }
+        HUDState defaultHUD;
+        HUDState inventoryHUD;
         bool game_over;
 
+        public event EventHandler<InventoryEventArgs> onTargetInventoryOpen = delegate { };
+        public event EventHandler onTargetInventoryClosed = delegate { };
         // mouse position on last tick
         Point last_position = Point.Zero;
         // object currently being mouse-dragged
@@ -95,10 +97,6 @@ namespace Omniplatformer
                 new Vector2(-200, 850),
                 new Vector2(70, 25)
                 ));
-
-            var sword = new WieldedItem(1) { Pickupable = true };
-            RegisterObject(sword);
-            sword.SetPosition(200, 100);
 
             RegisterObject(new SolidPlatform(
                 new Vector2(400, 800),
@@ -167,10 +165,15 @@ namespace Omniplatformer
             RegisterObject(new MovingPlatform(new Vector2(200, 450)));
             RegisterObject(new MovingPlatform(new Vector2(600, 550)));
 
+            // bonus jump
             RegisterObject(new Collectible(new Vector2(200, 200), new Vector2(20, 20)));
 
+            var sword = new WieldedItem(1);
+            RegisterObject(sword);
+            sword.Hide();
+            // sword.SetPosition(200, 100);
 
-
+            RegisterObject(new Chest(new Vector2(200, 100), new Vector2(40, 20), sword));
         }
 
         private void GameOver(object sender, EventArgs e)
@@ -396,13 +399,47 @@ namespace Omniplatformer
         {
             if (HUDState == inventoryHUD)
             {
+                CloseTargetInventory();
                 HUDState = defaultHUD;
             }
             else
             {
                 throw new Exception("Called while not in an inventory");
             }
-            // HUDState
+        }
+
+        public void OpenTargetInventory(Inventory inv)
+        {
+            onTargetInventoryOpen(this, new InventoryEventArgs(inv));
+        }
+
+        public void CloseTargetInventory()
+        {
+            onTargetInventoryClosed(this, new EventArgs());
+        }
+
+        // TODO: refactor this
+        public void OpenChest()
+        {
+            var player_pos = (PositionComponent)player;
+
+            foreach(var obj in platforms)
+            {
+                if (obj is Chest)
+                {
+                    if (player_pos.Overlaps(obj))
+                    {
+                        HUDState = inventoryHUD;
+                        OpenTargetInventory(((Chest)obj).Inventory);
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void CloseChest()
+        {
+            CloseTargetInventory();
         }
 
         public void WalkLeft()
@@ -507,10 +544,6 @@ namespace Omniplatformer
             player.Swing();
         }
 
-        public void ToggleItem()
-        {
-            // player.ToggleItem(sword);
-        }
 
         // fps is assumed to be 30 while we're tick-based
         float zoom_adjust_rate = 0.2f / 30;
