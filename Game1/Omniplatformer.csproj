@@ -50,10 +50,12 @@
     <Compile Include="Components\HitComponent.cs" />
     <Compile Include="Components\RelativePositionComponent.cs" />
     <Compile Include="Enums\Skill.cs" />
+    <Compile Include="HUDStates\EditorHUDState.cs" />
     <Compile Include="HUDStates\DefaultHUDState.cs" />
     <Compile Include="HUDStates\HUDState.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="InventoryEventArgs.cs" />
+    <Compile Include="Level.cs" />
     <Compile Include="Objects\Chest.cs" />
     <Compile Include="Utility\Deconstruct.cs" />
     <Compile Include="Enums\HorizontalDirection.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="GameObject.cs" />
     <Compile Include="GraphicsService.cs" />
     <Compile Include="Objects\WieldedItem.cs" />
+    <Compile Include="Utility\PositionJson.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

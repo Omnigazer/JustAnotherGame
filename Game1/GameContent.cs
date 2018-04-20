@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Omniplatformer.Characters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,7 +42,7 @@ namespace Omniplatformer
         // public Song vampireKiller { get; set; }
         public List<Song> Songs { get; set; } = new List<Song>();
 
-        public Level level;
+        public Level level = new Level();
 
         public static GameContent Instance { get; private set; }
         ContentManager Content { get; set; }
@@ -110,58 +109,7 @@ namespace Omniplatformer
 
         public void LoadLevel()
         {
-            level = LoadJson(Path.Combine(Content.RootDirectory, "Data", @"json.txt"));
-        }
-
-        public class Level
-        {
-            public List<GameObject> objects = new List<GameObject>();
-            public List<Character> characters = new List<Character>();
-            public Level(Newtonsoft.Json.Linq.JObject data)
-            {
-                foreach(var obj_data in data["objects"])
-                {
-                    switch ((string)obj_data["type"])
-                    {
-                        case "SolidPlatform":
-                            {
-                                SolidPlatform platform;
-                                var coords = new Vector2(float.Parse((string)obj_data["coords"]["x"]), float.Parse((string)obj_data["coords"]["y"]));
-                                var halfsize = new Vector2(float.Parse((string)obj_data["halfsize"]["x"]), float.Parse((string)obj_data["halfsize"]["y"]));
-
-
-                                if (obj_data["origin"]?.Type == JTokenType.Object)
-                                {
-                                    Vector2 origin = new Vector2(float.Parse((string)obj_data["origin"]["x"]), float.Parse((string)obj_data["origin"]["y"]));
-                                    platform = new SolidPlatform(coords, halfsize, origin);
-                                }
-                                else
-                                {
-                                    platform = new SolidPlatform(coords, halfsize);
-                                }
-                                objects.Add(platform);
-                                break;
-                            }
-                    }
-                }
-
-                foreach (var obj_data in data["objects"])
-                {
-                    switch ((string)obj_data["type"])
-                    {
-                        case "ToughZombie":
-                            {
-                                ToughZombie zombie;
-                                var coords = new Vector2(float.Parse((string)obj_data["coords"]["x"]), float.Parse((string)obj_data["coords"]["y"]));
-                                var halfsize = new Vector2(float.Parse((string)obj_data["halfsize"]["x"]), float.Parse((string)obj_data["halfsize"]["y"]));
-                                zombie = new ToughZombie(coords, halfsize);
-
-                                characters.Add(zombie);
-                                break;
-                            }
-                    }
-                }
-            }
+            // level = LoadJson(Path.Combine(Content.RootDirectory, "Data", @"json.txt"));
         }
 
         public Level LoadJson(string json_path)
@@ -175,8 +123,6 @@ namespace Omniplatformer
 
                 return new Level((JObject)serializer.Deserialize(reader));
             }
-
-
         }
     }
 }

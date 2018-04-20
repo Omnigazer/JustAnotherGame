@@ -17,6 +17,11 @@ namespace Omniplatformer
             return Components.Find(x => x is T) as T;
         }
 
+        public virtual object AsJson()
+        {
+            return new { };
+        }
+
         protected List<Component> Components { get; set; }
         protected Dictionary<string, int> Cooldowns { get; set; }
         public Game1 Game => GameService.Instance;
@@ -69,11 +74,13 @@ namespace Omniplatformer
 
         }
 
+        /*
         public void SetPosition(float x, float y)
         {
             var pos = GetComponent<PositionComponent>();
             pos.local_position = new Position(pos.local_position) { Coords = new Vector2(x, y) };
         }
+        */
 
         public void Hide()
         {
@@ -120,6 +127,16 @@ namespace Omniplatformer
         public static explicit operator HitComponent(GameObject obj)
         {
             return obj.GetComponent<HitComponent>();
+        }
+
+        public override string ToString()
+        {
+            var pos = GetComponent<PositionComponent>();
+            if (pos != null)
+            {
+                return $"{GetType().Name} {pos.ToString()}";
+            }
+            else return base.ToString();
         }
     }
 }

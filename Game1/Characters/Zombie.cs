@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
 using Omniplatformer.Components;
+using Omniplatformer.Utility;
 
 namespace Omniplatformer.Characters
 {
@@ -15,12 +17,12 @@ namespace Omniplatformer.Characters
         int amp = 300;
 
         public bool Aggressive { get; set; }
-        public Zombie(Vector2 center, Vector2 halfsize)
+        public Zombie(Vector2 coords)
         {
             Team = Team.Enemy;
             CurrentHitPoints = MaxHitPoints = 8;
-
-            Components.Add(new PositionComponent(this, center, halfsize));
+            var halfsize = new Vector2(15, 20);
+            Components.Add(new PositionComponent(this, coords, halfsize));
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
             Components.Add(new CharMoveComponent(this, movespeed: 1.4f));
             Components.Add(new DamageHitComponent(this, damage: 3, knockback: new Vector2(5, 5)));
@@ -66,6 +68,17 @@ namespace Omniplatformer.Characters
             {
                 WalkAbout();
             }
+        }
+
+        public override object AsJson()
+        {
+            return PositionJson.ToJson(this);
+        }
+
+        public static GameObject FromJson(JObject data)
+        {
+            var (coords, halfsize, origin) = PositionJson.FromJson(data);
+            return new Zombie(coords);
         }
     }
 }

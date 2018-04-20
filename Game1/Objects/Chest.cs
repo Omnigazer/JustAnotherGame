@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
 using Omniplatformer.Components;
+using Omniplatformer.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +37,17 @@ namespace Omniplatformer
         public Chest(Vector2 coords, Vector2 halfsize, params WieldedItem[] items) : this(coords, halfsize, (IEnumerable<WieldedItem>)items)
         {
 
+        }
+
+        public override object AsJson()
+        {
+            return PositionJson.ToJson(this);
+        }
+
+        public static GameObject FromJson(JObject data)
+        {
+            var (coords, halfsize, origin) = PositionJson.FromJson(data);
+            return new Chest(coords, halfsize);
         }
     }
 }

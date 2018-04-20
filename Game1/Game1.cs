@@ -23,6 +23,7 @@ namespace Omniplatformer
 
         // Game objects
         public Player player;
+        public Level CurrentLevel { get; set; }
         // possibly should put this into the player's class
         public List<GameObject> platforms = new List<GameObject>();
         public List<Character> characters = new List<Character>();
@@ -35,6 +36,7 @@ namespace Omniplatformer
 
         public event EventHandler<InventoryEventArgs> onTargetInventoryOpen = delegate { };
         public event EventHandler onTargetInventoryClosed = delegate { };
+
         // mouse position on last tick
         Point last_position = Point.Zero;
         // object currently being mouse-dragged
@@ -65,6 +67,7 @@ namespace Omniplatformer
             defaultHUD = new DefaultHUDState(playerHUD);
             inventoryHUD = new InventoryHUDState(playerHUD, player.inventory);
             HUDState = defaultHUD;
+            HUDState = new EditorHUDState(playerHUD);
         }
 
         public void InitServices()
@@ -74,7 +77,10 @@ namespace Omniplatformer
 
         void InitGameObjects()
         {
-            // HUDState = inventoryHUD;
+            CurrentLevel = GameContent.Instance.level;
+            CurrentLevel.TestLoad();
+
+            // Register player
             player = new Player(
                 new Vector2(100, 500),
                 // new Vector2(110, 192)
@@ -85,6 +91,9 @@ namespace Omniplatformer
             RenderSystem.drawables.Add((RenderComponent)player);
             player._onDestroy += GameOver;
 
+            // Register characters
+
+            /*
             for (int i = 0; i < 5;i++)
             {
                 RegisterObject(new Zombie(
@@ -98,28 +107,18 @@ namespace Omniplatformer
                 new Vector2(70, 25)
                 ));
 
-            RegisterObject(new SolidPlatform(
-                new Vector2(400, 800),
-                new Vector2(5, 100)
-            ));
+            /*
+            var sword = new WieldedItem(1);
+            RegisterObject(sword);
+            sword.Hide();
+            // sword.SetPosition(200, 100);
 
-            RegisterObject(new SolidPlatform(
-                new Vector2(50, 800),
-                new Vector2(400, 30)
-            ));
+            RegisterObject(new Chest(new Vector2(200, 100), new Vector2(40, 20), sword));
+            */
+            // GameContent.Instance.level.Save("");
 
-            RegisterObject(new ForegroundQuad(
-                new Vector2(50, 860),
-                new Vector2(400, 30)
-            ));
 
-            RegisterObject(new SolidPlatform(
-                new Vector2(500, 50),
-                new Vector2(1000, 30)
-            ));
-
-            GameContent.Instance.LoadLevel();
-            foreach(var obj in GameContent.Instance.level.objects)
+            foreach (var obj in GameContent.Instance.level.objects)
             {
                 RegisterObject(obj);
             }
@@ -127,53 +126,15 @@ namespace Omniplatformer
             {
                 RegisterObject(character);
             }
-
             /*
-            RegisterObject(new SolidPlatform(
-                new Vector2(0, 0),
-                new Vector2(10000, 20)
-            ));
+            CurrentLevel.objects.Clear();
+            foreach (var obj in platforms)
+            {
+                CurrentLevel.objects.Add(obj);
+            }
+
+            CurrentLevel.Save("");
             */
-
-            RegisterObject(new DestructibleObject(
-                new Vector2(1000, 480),
-                new Vector2(30, 400)
-            ));
-
-            RegisterObject(new SolidPlatform(
-                new Vector2(800, 550),
-                new Vector2(30, 400)
-            ));
-
-
-            RegisterObject(new Ladder(
-                new Vector2(500, 650),
-                new Vector2(43, 550)
-            ));
-
-
-            RegisterObject(new Liquid(
-                new Vector2(1500, 20),
-                new Vector2(500, 300),
-                origin: new Vector2(0, 0)
-            ));
-
-            RegisterObject(new MovingPlatform(new Vector2(200, 200)));
-            RegisterObject(new MovingPlatform(new Vector2(600, 150)));
-            RegisterObject(new MovingPlatform(new Vector2(200, 300)));
-            RegisterObject(new MovingPlatform(new Vector2(600, 350)));
-            RegisterObject(new MovingPlatform(new Vector2(200, 450)));
-            RegisterObject(new MovingPlatform(new Vector2(600, 550)));
-
-            // bonus jump
-            RegisterObject(new Collectible(new Vector2(200, 200), new Vector2(20, 20)));
-
-            var sword = new WieldedItem(1);
-            RegisterObject(sword);
-            sword.Hide();
-            // sword.SetPosition(200, 100);
-
-            RegisterObject(new Chest(new Vector2(200, 100), new Vector2(40, 20), sword));
         }
 
         private void GameOver(object sender, EventArgs e)
@@ -226,7 +187,7 @@ namespace Omniplatformer
                 HUDState.HandleControls();
             Simulate();
             // var song = GameContent.Instance.vampireKiller;
-            if (MediaPlayer.State != MediaState.Playing)
+            if (MediaPlayer.State != MediaState.Playing && false)
             {
                 MediaPlayer.Volume = 0.1f;
                 MediaPlayer.Play(GameContent.Instance.Songs[song_index]);
@@ -287,9 +248,9 @@ namespace Omniplatformer
                 var collision_direction = player_pos.Collides(platform);
                 if (collision_direction != Direction.None)
                     player_collisions.Add((collision_direction, platform));
-                var movable = (MoveComponent)platform;
-                movable?.Move();
-                platform.Tick();
+                // var movable = (MoveComponent)platform;
+                // movable?.Move();
+                // platform.Tick();
             }
 
             for (int i = projectiles.Count - 1; i >= 0; i--)
@@ -315,9 +276,9 @@ namespace Omniplatformer
                     if (collision_direction != Direction.None)
                         projectile_collisions.Add((collision_direction, character));
                 }
-                var movable = (MoveComponent)projectile;
-                movable.ProcessCollisionInteractions(projectile_collisions);
-                projectile.Tick();
+                // var movable = (MoveComponent)projectile;
+                // movable.ProcessCollisionInteractions(projectile_collisions);
+                // projectile.Tick();
             }
             for (int j = characters.Count - 1; j >= 0; j--)
             {
@@ -351,10 +312,10 @@ namespace Omniplatformer
 
                 // TODO: move this into the tick
                 var char_movable = (MoveComponent)character;
-                char_movable.ProcessCollisionInteractions(character_collisions);
-                char_movable.Move();
+                // char_movable.ProcessCollisionInteractions(character_collisions);
+                // char_movable.Move();
 
-                character.Tick();
+                // character.Tick();
             }
 
             var player_movable = (MoveComponent)player;
@@ -363,15 +324,15 @@ namespace Omniplatformer
             player.Tick();
         }
 
-        public GameObject GetObjectAtCursor()
+        public GameObject GetObjectAtCoords(Point pt)
         {
-            var game_click_position = RenderSystem.ScreenToGame(Mouse.GetState().Position);
+            var game_click_position = RenderSystem.ScreenToGame(pt);
             foreach (var platform in platforms)
             {
-                if (!platform.Draggable)
-                {
-                    continue;
-                }
+                // if (!platform.Draggable)
+                // {
+                //     continue;
+                // }
                 var platform_pos = (PositionComponent)platform;
                 if (platform_pos.Contains(game_click_position))
                 {
@@ -379,6 +340,11 @@ namespace Omniplatformer
                 }
             }
             return null;
+        }
+
+        public GameObject GetObjectAtCursor()
+        {
+            return GetObjectAtCoords(Mouse.GetState().Position);
         }
 
         #region Player Actions
@@ -543,7 +509,6 @@ namespace Omniplatformer
         {
             player.Swing();
         }
-
 
         // fps is assumed to be 30 while we're tick-based
         float zoom_adjust_rate = 0.2f / 30;
