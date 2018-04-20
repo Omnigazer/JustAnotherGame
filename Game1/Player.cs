@@ -56,7 +56,7 @@ namespace Omniplatformer
 
             InitPos(center, halfsize);
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
-            Components.Add(new PlayerMoveComponent(this));
+            Components.Add(new PlayerMoveComponent(this) { MaxMoveSpeed = 15, Acceleration = 1.5f });
         }
 
         public void InitPos(Vector2 center, Vector2 halfsize)
@@ -144,7 +144,7 @@ namespace Omniplatformer
 
         public void Swing()
         {
-            if (WieldedItem != null && HasNoCooldown("Melee"))
+            if (WieldedItem != null && IsNotOnCooldown("Melee"))
             {
                 Cooldowns["Melee"] = (int)(30 * MeleeAttackRate);
                 ItemLocked = true;
@@ -154,7 +154,7 @@ namespace Omniplatformer
             }
         }
 
-        public bool HasNoCooldown(string key)
+        public bool IsNotOnCooldown(string key)
         {
             return !Cooldowns.ContainsKey(key) || Cooldowns[key] <= 0;
         }

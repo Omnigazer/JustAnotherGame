@@ -30,7 +30,7 @@ namespace Omniplatformer.Components
         // Movement dynamic caps
         public float MaxMoveSpeed { get; set; }
         public float ClimbSpeed => 3;
-        public float Acceleration => 0.5f;
+        public float Acceleration { get; set; } = 0.5f;
 
         // Movement counters and flags
         public Direction move_direction;
