@@ -63,6 +63,11 @@ namespace Omniplatformer.Components
                 );
             //
         }
+
+        public override string ToString()
+        {
+            return $"x:{Coords.X} y:{Coords.Y} halfsize:{halfsize.X} {halfsize.Y}";
+        }
     }
 
     public class PositionComponent : Component
@@ -137,12 +142,23 @@ namespace Omniplatformer.Components
 
         public Rectangle GetRectangle()
         {
-            var pt = WorldPosition.halfsize.ToPoint();
-            pt.X *= 2;
-            pt.Y *= 2;
+            var halfsize = WorldPosition.halfsize;
+            halfsize.X *= 2;
+            halfsize.Y *= 2;
             var zero = WorldPosition.Center - WorldPosition.halfsize;
-            return new Rectangle((zero).ToPoint(), pt);
+            // zero = new Vector2((int)Math.Round(zero.X, 0, MidpointRounding.ToEven), (int)Math.Round(zero.Y, 0, MidpointRounding.ToEven));
+            return new Rectangle((zero).ToPoint(), halfsize.ToPoint());
             // return new Rectangle((zero + new Vector2(WorldPosition.Origin.X * pt.X, WorldPosition.Origin.Y * pt.Y)).ToPoint(), pt);
+        }
+
+        public IEnumerable<Vector2> GetRectPoints()
+        {
+            return new List<Vector2>() {
+                WorldPosition.Center - WorldPosition.halfsize,
+                WorldPosition.Center + WorldPosition.halfsize,
+                WorldPosition.Center - new Vector2(WorldPosition.halfsize.X, -WorldPosition.halfsize.Y),
+                WorldPosition.Center + new Vector2(WorldPosition.halfsize.X, -WorldPosition.halfsize.Y)
+            };
         }
 
         public bool Contains(Vector2 pt)
@@ -251,6 +267,11 @@ namespace Omniplatformer.Components
             local_position.Coords = coords;
         }
 
+        public void SetLocalHalfsize(Vector2 halfsize)
+        {
+            local_position.halfsize = halfsize;
+        }
+
         public void SetParent(GameObject obj, AnchorPoint anchor = AnchorPoint.Default)
         {
             parent_pos = (PositionComponent)obj;
@@ -261,6 +282,11 @@ namespace Omniplatformer.Components
         public void ClearParent()
         {
             parent_pos = null;
+        }
+
+        public override string ToString()
+        {
+            return WorldPosition.ToString();
         }
     }
 }

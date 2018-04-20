@@ -4,17 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
 using Omniplatformer.Components;
+using Omniplatformer.Utility;
 
 namespace Omniplatformer
 {
     class ForegroundQuad : GameObject
     {
-        public ForegroundQuad(Vector2 center, Vector2 halfsize)
+        public ForegroundQuad(Vector2 center, Vector2 halfsize, Vector2 origin)
         {
             Solid = false;
-            Components.Add(new PositionComponent(this, center, halfsize));
+            Components.Add(new PositionComponent(this, center, halfsize, 0, origin));
             Components.Add(new ForegroundRenderComponent(this, Color.Green));
+        }
+
+        public override object AsJson()
+        {
+            return PositionJson.ToJson(this);
+        }
+
+        public static GameObject FromJson(JObject data)
+        {
+            var (coords, halfsize, origin) = PositionJson.FromJson(data);
+            return new ForegroundQuad(coords, halfsize, origin);
         }
     }
 }

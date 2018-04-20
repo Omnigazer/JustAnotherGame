@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.Components;
+using Omniplatformer.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,11 @@ namespace Omniplatformer
             Components.Add(new GlowingRenderComponent(this));
             Components.Add(new ProjectileMoveComponent(this));
             Components.Add(new DamageHitComponent(this, damage: 1));
+        }
+
+        public override object AsJson()
+        {
+            return PositionJson.ToJson(this);
         }
     }
 }
