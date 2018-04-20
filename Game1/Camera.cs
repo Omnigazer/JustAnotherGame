@@ -11,7 +11,7 @@ namespace Omniplatformer
     {
         public Camera()
         {
-            Zoom = 1.1f;
+            Zoom = 1.0f;
         }
 
         Game1 Game => GameService.Instance;
