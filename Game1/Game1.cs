@@ -32,6 +32,7 @@ namespace Omniplatformer
         public HUDState HUDState { get; set; }
         HUDState defaultHUD;
         HUDState inventoryHUD;
+        HUDState editorHUD;
         bool game_over;
 
         public event EventHandler<InventoryEventArgs> onTargetInventoryOpen = delegate { };
@@ -66,8 +67,8 @@ namespace Omniplatformer
 
             defaultHUD = new DefaultHUDState(playerHUD);
             inventoryHUD = new InventoryHUDState(playerHUD, player.inventory);
+            editorHUD = new EditorHUDState(playerHUD);
             HUDState = defaultHUD;
-            HUDState = new EditorHUDState(playerHUD);
         }
 
         public void InitServices()
@@ -372,6 +373,16 @@ namespace Omniplatformer
             {
                 throw new Exception("Called while not in an inventory");
             }
+        }
+
+        public void OpenEditor()
+        {
+            HUDState = editorHUD;
+        }
+
+        public void CloseEditor()
+        {
+            HUDState = defaultHUD;
         }
 
         public void OpenTargetInventory(Inventory inv)

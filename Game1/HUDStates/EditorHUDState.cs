@@ -109,6 +109,7 @@ namespace Omniplatformer.HUDStates
                 {  Keys.End, (DecreaseHeight, noop, true) },
                 {  Keys.PageUp, (IncreaseWidth, noop, true) },
                 {  Keys.Insert, (DecreaseWidth, noop, true) },
+                {  Keys.Back, (Game.CloseEditor, noop, true) },
             };
         }
 
