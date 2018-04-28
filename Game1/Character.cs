@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json.Linq;
 using Omniplatformer.Components;
+using Omniplatformer.Utility;
 
 namespace Omniplatformer
 {
@@ -40,6 +42,11 @@ namespace Omniplatformer
             {
                 onDestroy();
             }
+        }
+
+        public override object AsJson()
+        {
+            return new { Id, type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
         }
     }
 }

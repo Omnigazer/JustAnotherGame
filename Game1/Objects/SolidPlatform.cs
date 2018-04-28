@@ -25,13 +25,34 @@ namespace Omniplatformer
 
         public override object AsJson()
         {
-            return PositionJson.ToJson(this);
+            return new {
+                Id,
+                type = GetType().AssemblyQualifiedName,
+                Position = PositionJson.ToJson(this)
+            };
         }
 
+        /*
         public static GameObject FromJson(JObject data)
         {
-            var (coords, halfsize, origin) = PositionJson.FromJson(data);
-            return new SolidPlatform(coords, halfsize, origin);
+            Guid id = Guid.Parse(data["Id"].ToString());
+            SolidPlatform platform = (SolidPlatform)SerializeService.Instance.LocateObject(id);
+            if (platform == null)
+            {
+                var (coords, halfsize, origin) = PositionJson.FromJson(data);
+                platform = new SolidPlatform(coords, halfsize, origin);
+                SerializeService.Instance.RegisterObject(platform);
+            }
+            return platform;
+        }
+        */
+
+        public static GameObject FromJson(Deserializer deserializer)
+        {
+            var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
+            var platform = new SolidPlatform(coords, halfsize, origin);
+            // SerializeService.Instance.RegisterObject(platform);
+            return platform;
         }
     }
 }

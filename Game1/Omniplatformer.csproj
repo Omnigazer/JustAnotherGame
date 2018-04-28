@@ -95,6 +95,7 @@
     <Compile Include="Objects\Liquid.cs" />
     <Compile Include="Enums\ManaType.cs" />
     <Compile Include="Components\MoveComponent.cs" />
+    <Compile Include="Utility\Deserializer.cs" />
     <Compile Include="Utility\MoveEventHandler.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Components\PositionComponent.cs" />
