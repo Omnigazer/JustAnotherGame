@@ -34,6 +34,7 @@ namespace Omniplatformer.HUDStates
         public override void Draw()
         {
             playerHUD.Draw();
+            DrawCurrentBlock();
             DrawLogger();
         }
 
@@ -45,6 +46,7 @@ namespace Omniplatformer.HUDStates
                 { "Liquid", (coords, halfsize, origin) => { return new Liquid(coords, halfsize, origin); } },
                 { "ForegroundQuad", (coords, halfsize, origin) => { return new ForegroundQuad(coords, halfsize, origin); } },
                 { "Zombie", (coords, halfsize, origin) => { return new Zombie(coords); } },
+                { "Chest", (coords, halfsize, origin) => { return new Chest(coords, halfsize, new WieldedItem(5)); } },
             };
             CurrentConstructor = PositionalConstructors.Keys.First();
         }
@@ -68,6 +70,22 @@ namespace Omniplatformer.HUDStates
             spriteBatch.End();
         }
 
+        public void DrawCurrentBlock()
+        {
+            var spriteBatch = GraphicsService.Instance;
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            var rect = new Rectangle(Mouse.GetState().Position, new Point((int)(current_block_width * Game.RenderSystem.Camera.Zoom), (int)(current_block_height * Game.RenderSystem.Camera.Zoom)));
+            // rect = Game.GameToScreen(rect, new Vector2(0, 1));
+            GraphicsService.Instance.Draw(GameContent.Instance.whitePixel, rect, Color.Gray);
+            spriteBatch.End();
+        }
+
+        int increment = 4;
+        public void IncreaseWidth() => current_block_width += increment;
+        public void DecreaseWidth() => current_block_width -= increment;
+        public void IncreaseHeight() => current_block_height += increment;
+        public void DecreaseHeight() => current_block_height -= increment;
+
         public void SetupControls()
         {
             Action noop = delegate { };
@@ -87,6 +105,10 @@ namespace Omniplatformer.HUDStates
                 {  Keys.E, (SetNextConstructor, noop, false) },
                 {  Keys.OemMinus, (Game.ZoomOut, noop, true) },
                 {  Keys.OemPlus, (Game.ZoomIn, noop, true) },
+                {  Keys.Home, (IncreaseHeight, noop, true) },
+                {  Keys.End, (DecreaseHeight, noop, true) },
+                {  Keys.PageUp, (IncreaseWidth, noop, true) },
+                {  Keys.Insert, (DecreaseWidth, noop, true) },
             };
         }
 
@@ -144,6 +166,9 @@ namespace Omniplatformer.HUDStates
             }
         }
 
+        float current_block_width = 8;
+        float current_block_height = 8;
+
         public override void HandleControls()
         {
             // TODO: possibly refactor this
@@ -184,14 +209,16 @@ namespace Omniplatformer.HUDStates
                     var pos = Mouse.GetState().Position;
                     // var (coords, halfsize, origin) = (Game.RenderSystem.ScreenToGame(click_pos), (pos - click_pos).ToVector2() / (2 * Game.RenderSystem.Camera.Zoom), new Vector2(0, 1));
                     var click_coords = GetInGameCoords(click_pos);
-                    var end_coords = GetInGameCoords(pos);
+                    // var end_coords = GetInGameCoords(pos);
 
-                    var halfsize = (end_coords - click_coords) / 2;//.ToVector2() / (2 * Game.RenderSystem.Camera.Zoom);
+                    // var halfsize = (end_coords - click_coords) / 2;//.ToVector2() / (2 * Game.RenderSystem.Camera.Zoom);
+                    var halfsize = new Vector2(current_block_width / 2, current_block_height / 2);
                     if (halfsize.Length() > 0)
                     {
                         halfsize = new Vector2(Math.Abs(halfsize.X), Math.Abs(halfsize.Y));
-                        var (or_x, or_y) = (pos.X > click_pos.X ? 0 : 1, pos.Y > click_pos.Y ? 1 : 0);
-                        var origin = new Vector2(or_x, or_y);
+                        // var (or_x, or_y) = (pos.X > click_pos.X ? 0 : 1, pos.Y > click_pos.Y ? 1 : 0);
+                        // var origin = new Vector2(or_x, or_y);
+                        var origin = new Vector2(0, 1);
                         // var obj = new SolidPlatform(coords, halfsize, origin);
                         var obj = PositionalConstructors[CurrentConstructor](click_coords, halfsize, origin);
                         Game.RegisterObject(obj);

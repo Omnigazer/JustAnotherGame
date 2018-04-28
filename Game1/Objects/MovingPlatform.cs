@@ -22,7 +22,7 @@ namespace Omniplatformer
 
         public override object AsJson()
         {
-            return PositionJson.ToJson(this);
+            return new { type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
         }
 
         public static GameObject FromJson(JObject data)

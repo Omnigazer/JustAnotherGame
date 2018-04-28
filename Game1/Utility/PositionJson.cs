@@ -16,7 +16,6 @@ namespace Omniplatformer.Utility
             var pos = obj.GetComponent<PositionComponent>();
             return new
             {
-                type = obj.GetType().AssemblyQualifiedName,
                 coords = new
                 {
                     x = pos.WorldPosition.Coords.X,
@@ -35,18 +34,37 @@ namespace Omniplatformer.Utility
             };
         }
 
-        public static (Vector2 coords, Vector2 halfsize, Vector2 origin) FromJson(JObject data)
+        public static (Vector2 coords, Vector2 halfsize, Vector2 origin) FromJson(JObject input)
         {
-            var coords = new Vector2(float.Parse((string)data["coords"]["x"]), float.Parse((string)data["coords"]["y"]));
-            var halfsize = new Vector2(float.Parse((string)data["halfsize"]["x"]), float.Parse((string)data["halfsize"]["y"]));
+            JObject pos_data = (JObject)input["Position"];
+            var coords = new Vector2(float.Parse((string)pos_data["coords"]["x"]), float.Parse((string)pos_data["coords"]["y"]));
+            var halfsize = new Vector2(float.Parse((string)pos_data["halfsize"]["x"]), float.Parse((string)pos_data["halfsize"]["y"]));
 
             Vector2 origin = Position.DefaultOrigin;
-            if (data["origin"]?.Type == JTokenType.Object)
+            if (pos_data["origin"]?.Type == JTokenType.Object)
             {
-                origin = new Vector2(float.Parse((string)data["origin"]["x"]), float.Parse((string)data["origin"]["y"]));
+                origin = new Vector2(float.Parse((string)pos_data["origin"]["x"]), float.Parse((string)pos_data["origin"]["y"]));
                 // return new SolidPlatform(coords, halfsize, origin);
             }
             return (coords, halfsize, origin);
         }
+
+        /*
+        public static (Vector2 coords, Vector2 halfsize, Vector2 origin) FromJson(Deserializer deserializer)
+        {
+            // JObject pos_data = (JObject)input["Position"];
+            // deserializer.decodeObject()
+            var coords = new Vector2(float.Parse((string)pos_data["coords"]["x"]), float.Parse((string)pos_data["coords"]["y"]));
+            var halfsize = new Vector2(float.Parse((string)pos_data["halfsize"]["x"]), float.Parse((string)pos_data["halfsize"]["y"]));
+
+            Vector2 origin = Position.DefaultOrigin;
+            if (pos_data["origin"]?.Type == JTokenType.Object)
+            {
+                origin = new Vector2(float.Parse((string)pos_data["origin"]["x"]), float.Parse((string)pos_data["origin"]["y"]));
+                // return new SolidPlatform(coords, halfsize, origin);
+            }
+            return (coords, halfsize, origin);
+        }
+        */
     }
 }

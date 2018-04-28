@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Omniplatformer.Utility;
+using Newtonsoft.Json.Linq;
 
 namespace Omniplatformer
 {
@@ -26,6 +28,25 @@ namespace Omniplatformer
             Components.Add(new PositionComponent(this, Vector2.Zero, halfsize, 0, new Vector2(0.5f, 0.1f)));
             Components.Add(new RenderComponent(this, Color.White, texture));
             Components.Add(new MeleeDamageHitComponent(this, damage, Knockback));
+        }
+
+        public override object AsJson()
+        {
+            return new
+            {
+                Id,
+                type = GetType().AssemblyQualifiedName,
+                damage = GetComponent<MeleeDamageHitComponent>().Damage
+            };
+        }
+
+        public static GameObject FromJson(Deserializer deserializer)
+        {
+            // var item = new WieldedItem((int)data["damage"]) { Id = id };
+            var data = deserializer.getData();
+            var item = new WieldedItem((int)data["damage"]);
+            // SerializeService.Instance.RegisterObject(item);
+            return item;
         }
     }
 }

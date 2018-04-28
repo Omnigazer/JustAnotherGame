@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Omniplatformer.Characters;
+using Omniplatformer.Utility;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 
@@ -104,13 +106,18 @@ namespace Omniplatformer
 
                 JObject data = (JObject)serializer.Deserialize(reader);
 
+                var storage = new Dictionary<Guid, GameObject>();
+
                 foreach (var obj_data in data["objects"])
                 {
+                    var deserializer = new Deserializer((JObject)obj_data, storage);
                     string type_name = obj_data["type"].ToString();
-                    var type = Type.GetType(type_name);
-                    var obj = (GameObject)type.GetMethod("FromJson").Invoke(null, new object[] { (JObject)obj_data });
-                    objects.Add(obj);
+                    // var type = Type.GetType(type_name);
+                    // var obj = (GameObject)type.GetMethod("FromJson").Invoke(null, new object[] { (JObject)obj_data });
+                    var obj = (GameObject)deserializer.decodeObject((JObject)obj_data);
                 }
+                // objects = SerializeService.Instance.GetObjects();
+                objects = storage.Values.ToList();
 
                 //return new Level((JObject)serializer.Deserialize(reader));
             }

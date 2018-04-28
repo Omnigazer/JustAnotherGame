@@ -70,15 +70,12 @@ namespace Omniplatformer.Characters
             }
         }
 
-        public override object AsJson()
+        public static GameObject FromJson(Deserializer deserializer)
         {
-            return PositionJson.ToJson(this);
-        }
-
-        public static GameObject FromJson(JObject data)
-        {
-            var (coords, halfsize, origin) = PositionJson.FromJson(data);
-            return new Zombie(coords);
+            var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
+            var zombie = new Zombie(coords);
+            // SerializeService.Instance.RegisterObject(zombie);
+            return zombie;
         }
     }
 }

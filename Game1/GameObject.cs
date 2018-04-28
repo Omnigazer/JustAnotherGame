@@ -12,6 +12,8 @@ namespace Omniplatformer
 {
     public abstract class GameObject
     {
+        public Guid Id { get; set; }
+
         public T GetComponent<T>() where T : Component
         {
             return Components.Find(x => x is T) as T;
@@ -46,6 +48,8 @@ namespace Omniplatformer
 
         public GameObject()
         {
+            Id = Id == Guid.Empty ? Guid.NewGuid() : Id;
+            // Id = Id ?? new Guid();
             Components = new List<Component>();
             Cooldowns = new Dictionary<string, int>();
             // TODO: move solid implementation to derived classes
