@@ -50,10 +50,10 @@ namespace Omniplatformer.HUDStates
             Action noop = delegate { };
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
-                {  Keys.Left, (Game.WalkLeft, noop, true) },
-                {  Keys.Right, (Game.WalkRight, noop, true) },
-                {  Keys.Down, (Game.GoDown, noop, true) },
-                {  Keys.Up, (Game.GoUp, noop, true) },
+                {  Keys.A, (Game.WalkLeft, noop, true) },
+                {  Keys.D, (Game.WalkRight, noop, true) },
+                {  Keys.S, (Game.GoDown, noop, true) },
+                {  Keys.W, (Game.GoUp, noop, true) },
                 {  Keys.Space, (Game.Jump, Game.StopJumping, false) },
                 {  Keys.I, (Game.OpenInventory, noop, false) },
                 {  Keys.Z, (Game.Fire, noop, false) },
@@ -61,6 +61,7 @@ namespace Omniplatformer.HUDStates
                 {  Keys.C, (Game.OpenChest, noop, false) },
                 {  Keys.OemMinus, (Game.ZoomOut, noop, true) },
                 {  Keys.OemPlus, (Game.ZoomIn, noop, true) },
+                {  Keys.F11, (Game.OpenEditor, noop, true) }
             };
         }
 
