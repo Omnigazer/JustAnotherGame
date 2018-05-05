@@ -240,7 +240,8 @@ namespace Omniplatformer.Components
             Rectangle rect = new Rectangle(WorldPosition.Center.ToPoint(), new Vector2(Math.Abs(direction.X), Math.Abs(direction.Y)).ToPoint());
             rect.Offset(Math.Min(direction.X, 0), Math.Min(direction.Y, 0));
 
-            IEnumerable<GameObject> list = GameService.Characters.Union(GameService.Platforms).Where(x => x.Hittable && rect.Intersects(((PositionComponent)x).GetRectangle()));
+            // IEnumerable<GameObject> list = GameService.Characters.Union(GameService.Objects).Where(x => x.Hittable && rect.Intersects(((PositionComponent)x).GetRectangle()));
+            IEnumerable<GameObject> list = GameService.Objects.Where(x => x.Hittable && rect.Intersects(((PositionComponent)x).GetRectangle()));
             if (predicate != null)
                 list = list.Where(predicate);
             return list.FirstOrDefault();
