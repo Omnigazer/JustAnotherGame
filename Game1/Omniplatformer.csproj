@@ -53,6 +53,8 @@
     <Compile Include="HUDStates\EditorHUDState.cs" />
     <Compile Include="HUDStates\DefaultHUDState.cs" />
     <Compile Include="HUDStates\HUDState.cs" />
+    <Compile Include="HUDStates\CharHUDState.cs" />
+    <Compile Include="HUD\CharView.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="InventoryEventArgs.cs" />
     <Compile Include="Level.cs" />

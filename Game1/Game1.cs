@@ -33,6 +33,7 @@ namespace Omniplatformer
         HUDState defaultHUD;
         HUDState inventoryHUD;
         HUDState editorHUD;
+        HUDState charHUD;
         bool game_over;
 
         public event EventHandler<InventoryEventArgs> onTargetInventoryOpen = delegate { };
@@ -67,6 +68,7 @@ namespace Omniplatformer
 
             defaultHUD = new DefaultHUDState(playerHUD);
             inventoryHUD = new InventoryHUDState(playerHUD, player.inventory);
+            charHUD = new CharHUDState(playerHUD);
             editorHUD = new EditorHUDState(playerHUD);
             HUDState = defaultHUD;
         }
@@ -378,11 +380,26 @@ namespace Omniplatformer
         public void OpenEditor()
         {
             HUDState = editorHUD;
+            Log("Editor mode");
         }
 
         public void CloseEditor()
         {
             HUDState = defaultHUD;
+            Log("Default mode");
+        }
+
+        public void OpenChar()
+        {
+            HUDState = charHUD;
+            Log("Char mode");
+        }
+
+        // TODO: maybe all of these should be "CloseMenu()"
+        public void CloseChar()
+        {
+            HUDState = defaultHUD;
+            Log("Default mode");
         }
 
         public void OpenTargetInventory(Inventory inv)
