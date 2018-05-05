@@ -25,8 +25,8 @@ namespace Omniplatformer
         public Player player;
         public Level CurrentLevel { get; set; }
         // possibly should put this into the player's class
-        public List<GameObject> platforms = new List<GameObject>();
-        public List<Character> characters = new List<Character>();
+        public List<GameObject> objects = new List<GameObject>();
+        // public List<Character> characters = new List<Character>();
         public List<Projectile> projectiles = new List<Projectile>();
 
         public HUDState HUDState { get; set; }
@@ -203,7 +203,7 @@ namespace Omniplatformer
 
         public void RegisterObject(GameObject obj)
         {
-            platforms.Add(obj);
+            objects.Add(obj);
             RenderSystem.RegisterDrawable(obj);
             obj._onDestroy += GameObject_onDestroy;
         }
@@ -211,7 +211,7 @@ namespace Omniplatformer
         private void GameObject_onDestroy(object sender, EventArgs e)
         {
             var obj = (GameObject)sender;
-            platforms.Remove(obj);
+            objects.Remove(obj);
         }
 
         public void RegisterObject(Projectile projectile)
@@ -227,6 +227,7 @@ namespace Omniplatformer
             projectiles.Remove(projectile);
         }
 
+        /*
         public void RegisterObject(Character character)
         {
             characters.Add(character);
@@ -239,21 +240,47 @@ namespace Omniplatformer
             var character = (Character)sender;
             characters.Remove(character);
         }
+        */
 
         public void Simulate()
         {
             RenderSystem.Tick();
             var player_collisions = new List<(Direction, GameObject)>();
             var player_pos = (PositionComponent)player;
-            for (int i = platforms.Count - 1; i >= 0; i--)
+            for (int i = objects.Count - 1; i >= 0; i--)
             {
-                var platform = platforms[i];
-                var collision_direction = player_pos.Collides(platform);
+                var obj = objects[i];
+                var collision_direction = player_pos.Collides(obj);
                 if (collision_direction != Direction.None)
-                    player_collisions.Add((collision_direction, platform));
-                // var movable = (MoveComponent)platform;
-                // movable?.Move();
-                // platform.Tick();
+                    player_collisions.Add((collision_direction, obj));
+            }
+            // for (int j = characters.Count - 1; j >= 0; j--)
+            for (int j = objects.Count - 1; j >= 0; j--)
+            {
+                var collisions = new List<(Direction, GameObject)>();
+                var obj = objects[j];
+                var pos = (PositionComponent)obj;
+                Direction collision_direction;
+
+                foreach (var other_obj in objects)
+                {
+                    // TODO: look into how we access components
+                    collision_direction = pos.Collides(other_obj);
+                    if (collision_direction != Direction.None)
+                        collisions.Add((collision_direction, other_obj));
+                }
+
+                collision_direction = pos.Collides(player);
+                // TODO: collision with a player should trump / complement other collisions here
+                if (collision_direction != Direction.None)
+                    collisions.Add((collision_direction, player));
+
+                // TODO: move this into the tick
+                var obj_movable = (MoveComponent)obj;
+                obj_movable?.ProcessCollisionInteractions(collisions);
+                obj_movable?.Move();
+
+                obj.Tick();
             }
 
             for (int i = projectiles.Count - 1; i >= 0; i--)
@@ -261,9 +288,9 @@ namespace Omniplatformer
                 var projectile_collisions = new List<(Direction, GameObject)>();
                 var projectile = projectiles[i];
 
-                for (int j = platforms.Count - 1; j >= 0; j--)
+                for (int j = objects.Count - 1; j >= 0; j--)
                 {
-                    var platform = platforms[j];
+                    var platform = objects[j];
                     var projectile_pos = (PositionComponent)projectile;
                     var collision_direction = projectile_pos.Collides(platform);
 
@@ -271,54 +298,9 @@ namespace Omniplatformer
                         projectile_collisions.Add((collision_direction, platform));
                 }
 
-                for (int j = characters.Count - 1; j >= 0; j--)
-                {
-                    var character = characters[j];
-                    var projectile_pos = (PositionComponent)projectile;
-                    var collision_direction = projectile_pos.Collides(character);
-                    if (collision_direction != Direction.None)
-                        projectile_collisions.Add((collision_direction, character));
-                }
-                // var movable = (MoveComponent)projectile;
-                // movable.ProcessCollisionInteractions(projectile_collisions);
-                // projectile.Tick();
-            }
-            for (int j = characters.Count - 1; j >= 0; j--)
-            {
-                var character_collisions = new List<(Direction, GameObject)>();
-                var character = characters[j];
-                var pos = (PositionComponent)character;
-                Direction collision_direction;
-
-                foreach (var platform in platforms)
-                {
-                    // TODO: look into how we access components
-                    collision_direction = pos.Collides(platform);
-                    if (collision_direction != Direction.None)
-                        character_collisions.Add((collision_direction, platform));
-                }
-
-                foreach (var other_char in characters)
-                {
-                    if (other_char == character)
-                        continue;
-                    // TODO: look into how we access components
-                    collision_direction = pos.Collides(other_char);
-                    if (collision_direction != Direction.None)
-                        character_collisions.Add((collision_direction, other_char));
-                }
-
-                collision_direction = pos.Collides(player);
-                // TODO: collision with a player should trump / complement other collisions here
-                if (collision_direction != Direction.None)
-                    character_collisions.Add((collision_direction, player));
-
-                // TODO: move this into the tick
-                var char_movable = (MoveComponent)character;
-                // char_movable.ProcessCollisionInteractions(character_collisions);
-                // char_movable.Move();
-
-                // character.Tick();
+                var movable = (MoveComponent)projectile;
+                movable.ProcessCollisionInteractions(projectile_collisions);
+                projectile.Tick();
             }
 
             var player_movable = (MoveComponent)player;
@@ -330,7 +312,7 @@ namespace Omniplatformer
         public GameObject GetObjectAtCoords(Point pt)
         {
             var game_click_position = RenderSystem.ScreenToGame(pt);
-            foreach (var platform in platforms)
+            foreach (var platform in objects)
             {
                 // if (!platform.Draggable)
                 // {
@@ -417,7 +399,7 @@ namespace Omniplatformer
         {
             var player_pos = (PositionComponent)player;
 
-            foreach(var obj in platforms)
+            foreach(var obj in objects)
             {
                 if (obj is Chest)
                 {
