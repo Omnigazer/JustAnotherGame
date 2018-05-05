@@ -91,6 +91,18 @@ namespace Omniplatformer
             if (!Skills.ContainsKey(Skill.Melee))
                 Skills.Add(Skill.Melee, 0);
             Skills[Skill.Melee] += 3;
+        public void UpgradeSkill(Skill skill)
+        {
+            if (!Skills.ContainsKey(skill))
+            {
+                Skills.Add(skill, 0);
+            }
+
+            if (SkillPoints >= Skills[skill] + 1)
+            {
+                SkillPoints -= Skills[skill] + 1;
+                Skills[skill]++;
+            }
         }
 
         public override void ApplyDamage(float damage)
