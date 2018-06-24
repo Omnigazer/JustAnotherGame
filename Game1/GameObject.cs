@@ -37,6 +37,7 @@ namespace Omniplatformer
         public virtual bool Draggable { get; set; }
         // public virtual bool Hidden { get; set; }
         public Team Team { get; set; }
+        public virtual GameObject Source => this;
 
         // Graphics
         // SpriteBatch spriteBatch;
