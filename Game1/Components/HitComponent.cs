@@ -12,7 +12,17 @@ namespace Omniplatformer.Components
         {
         }
 
+        public abstract bool EligibleTarget(GameObject target);
+
         public virtual void Hit(GameObject target)
+        {
+            if (EligibleTarget(target))
+            {
+                ApplyEffect(target);
+            }
+        }
+
+        public virtual void ApplyEffect(GameObject target)
         {
 
         }
