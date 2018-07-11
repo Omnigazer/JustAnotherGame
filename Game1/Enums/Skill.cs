@@ -8,6 +8,11 @@ namespace Omniplatformer.Enums
 {
     public enum Skill
     {
-        Melee
+        Melee,
+        Life,
+        Death,
+        Nature,
+        Sorcery,
+        Chaos
     }
 }
