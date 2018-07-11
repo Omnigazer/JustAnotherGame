@@ -138,7 +138,7 @@ namespace Omniplatformer.HUDStates
                 {
                     // TODO: figure out how to get rid of these twin calls
                     PlayerInventoryView.SelectSlot(slot);
-                    TargetInventoryView.SelectSlot(slot);
+                    TargetInventoryView?.SelectSlot(slot);
                     if (!lmb_is_pressed)
                     {
                         DragItem(slot);
