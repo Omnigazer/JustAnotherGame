@@ -61,6 +61,7 @@ namespace Omniplatformer
             MaxHitPoints = max_hitpoints;
             CurrentHitPoints = MaxHitPoints;
             CurrentMana = new Dictionary<ManaType, float>();
+            SkillPoints = 10;
             //MaxMana = new Dictionary<ManaType, float>();
             foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
             {
@@ -102,9 +103,13 @@ namespace Omniplatformer
             // Increase skill points
             SkillPoints += 10;
 
+            /*
             if (!Skills.ContainsKey(Skill.Melee))
                 Skills.Add(Skill.Melee, 0);
             Skills[Skill.Melee] += 3;
+            */
+        }
+
         public void UpgradeSkill(Skill skill)
         {
             if (!Skills.ContainsKey(skill))
