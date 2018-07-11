@@ -10,6 +10,7 @@ namespace Omniplatformer.Components
 {
     public class GlowingRenderComponent : RenderComponent
     {
+        public Color GlowColor { get; set; } = Color.Orange;
         public GlowingRenderComponent(GameObject obj) : base(obj)
         {
 
@@ -29,12 +30,13 @@ namespace Omniplatformer.Components
         {
             //var projectile = projectiles[i];
             var pos = GetComponent<PositionComponent>();
-            var mask_halfsize = new Vector2(100, 100);
+            // var mask_halfsize = new Vector2(100, 100);
+            var mask_halfsize = pos.WorldPosition.halfsize + new Vector2(100, 100);
             var rect = new Rectangle((pos.WorldPosition.Center - mask_halfsize).ToPoint(), (mask_halfsize * 2).ToPoint());
             // spriteBatch.Draw(lightMask, GameToScreen(rect), GetLightColor());
             var lightMask = GameContent.Instance.lightMask;
             // TODO: find a better way to apply glow to stuff
-            GraphicsService.DrawGameCentered(lightMask, rect, GraphicsService.RenderSystem.GetLightColor(Color.Orange));
+            GraphicsService.DrawGameCentered(lightMask, rect, GraphicsService.RenderSystem.GetLightColor(GlowColor));
         }
     }
 }
