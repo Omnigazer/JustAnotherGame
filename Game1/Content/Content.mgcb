@@ -275,3 +275,6 @@
 /processorParam:TextureFormat=Color
 /build:Textures/testliquid.png
 
+#begin ConsoleFont.xnb
+/copy:ConsoleFont.xnb
+

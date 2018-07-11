@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using Omniplatformer.HUDStates;
 using Microsoft.Xna.Framework.Media;
+using MonoGameConsole;
 
 namespace Omniplatformer
 {
@@ -35,6 +36,8 @@ namespace Omniplatformer
         HUDState editorHUD;
         HUDState charHUD;
         bool game_over;
+
+        public GameConsole console;
 
         public event EventHandler<InventoryEventArgs> onTargetInventoryOpen = delegate { };
         public event EventHandler onTargetInventoryClosed = delegate { };
@@ -160,10 +163,44 @@ namespace Omniplatformer
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            GraphicsService.Init(new SpriteBatch(GraphicsDevice), this);
+            var spriteBatch = new SpriteBatch(GraphicsDevice);
+            GraphicsService.Init(spriteBatch, this);
             GameContent.Init(Content);
 
             // TODO: use this.Content to load your game content here
+
+            LoadConsole(spriteBatch);
+            // Window.Handle
+        }
+
+        void LoadConsole(SpriteBatch spriteBatch)
+        {
+            System.Windows.Forms.Form winGameWindow = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(Window.Handle);
+            winGameWindow.Show();
+            winGameWindow.Hide();
+            var x = System.Windows.Forms.Application.OpenForms;
+            //System.Windows.Forms.Application.
+            // System.Windows.Forms.Form form;
+            // form.
+            Services.AddService(typeof(SpriteBatch), spriteBatch);
+            console = new GameConsole(this, spriteBatch, new GameConsoleOptions
+            {
+                ToggleKey = 192,
+                Font = Content.Load<SpriteFont>("ConsoleFont"),
+                FontColor = Color.LawnGreen,
+                Prompt = "~>",
+                PromptColor = Color.Crimson,
+                CursorColor = Color.OrangeRed,
+                BackgroundColor = new Color(Color.Black, 150),
+                PastCommandOutputColor = Color.Aqua,
+                BufferColor = Color.Gold
+            });
+
+            console.AddCommand("ping", a =>
+            {
+                // TODO your logic
+                return String.Format("pong");
+            });
         }
 
         /// <summary>
