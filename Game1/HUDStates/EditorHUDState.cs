@@ -110,7 +110,77 @@ namespace Omniplatformer.HUDStates
                 {  Keys.PageUp, (IncreaseWidth, noop, true) },
                 {  Keys.Insert, (DecreaseWidth, noop, true) },
                 {  Keys.Back, (Game.CloseEditor, noop, true) },
+
+                {  Keys.NumPad7, (PrevGroup, noop, false) },
+                {  Keys.NumPad9, (NextGroup, noop, false) },
+
+                {  Keys.NumPad4, (MoveGroupLeft, noop, true) },
+                {  Keys.NumPad6, (MoveGroupRight, noop, true) },
+                {  Keys.NumPad8, (MoveGroupUp, noop, true) },
+                {  Keys.NumPad2, (MoveGroupDown, noop, true) },
             };
+        }
+
+        public int CurrentGroupIndex { get; set; }
+        List<List<GameObject>> Groups { get; set; } = new List<List<GameObject>>() { new List<GameObject>() };
+        public List<GameObject> CurrentGroup => CurrentGroupIndex < Groups.Count ? Groups[CurrentGroupIndex] : null;
+
+        public void NextGroup()
+        {
+            CurrentGroupIndex++;
+            Game.Log($"Current Group: {CurrentGroupIndex}");
+            if (CurrentGroup == null)
+            {
+                Groups.Add(new List<GameObject>());
+                // Maybe should switch to dictionary
+                // Groups[CurrentGroupIndex] = ;
+            }
+        }
+
+        public void PrevGroup()
+        {
+            CurrentGroupIndex = Math.Max(0, CurrentGroupIndex - 1);
+            Game.Log($"Current Group: {CurrentGroupIndex}");
+            /*
+            if (CurrentGroup == null)
+            {
+                Groups[CurrentGroupIndex] = new List<GameObject>();
+            }
+            */
+        }
+
+        public void MoveGroup(Vector2 d)
+        {
+            if (CurrentGroup != null)
+            {
+                foreach (var obj in CurrentGroup)
+                {
+                    var pos = (PositionComponent)obj;
+                    pos.AdjustPosition(d);
+                }
+            }
+        }
+
+        int group_move_speed = 3;
+
+        public void MoveGroupLeft()
+        {
+            MoveGroup(new Vector2(-group_move_speed, 0));
+        }
+
+        public void MoveGroupRight()
+        {
+            MoveGroup(new Vector2(group_move_speed, 0));
+        }
+
+        public void MoveGroupUp()
+        {
+            MoveGroup(new Vector2(0, group_move_speed));
+        }
+
+        public void MoveGroupDown()
+        {
+            MoveGroup(new Vector2(0, -group_move_speed));
         }
 
         public void SetPrevConstructor()
@@ -222,6 +292,7 @@ namespace Omniplatformer.HUDStates
                         var origin = new Vector2(0, 1);
                         // var obj = new SolidPlatform(coords, halfsize, origin);
                         var obj = PositionalConstructors[CurrentConstructor](click_coords, halfsize, origin);
+                        CurrentGroup.Add(obj);
                         Game.RegisterObject(obj);
                         Game.CurrentLevel.objects.Add(obj);
                     }
