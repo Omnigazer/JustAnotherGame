@@ -57,7 +57,7 @@ namespace Omniplatformer
         public void Tick()
         {
             light_loop = (light_loop + 1) % light_loop_length;
-            day_loop = (day_loop + 1) % day_loop_length;
+            // day_loop = (day_loop + 1) % day_loop_length;
         }
 
         public void RegisterDrawable(GameObject obj)
@@ -93,10 +93,12 @@ namespace Omniplatformer
             {
                 drawable.DrawToForeground();
             }
+            /*
             var location = ScreenToView(new Point(200, 200)).ToPoint();
             var size = new Point(400, 400);
             var green_rect = new Rectangle(location, size);
             spriteBatch.Draw(GameContent.Instance.greenPixel, green_rect, Color.White);
+            */
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Immediate, new MinAlphaBlendState());
