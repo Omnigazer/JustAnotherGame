@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Characters\Dawg.cs" />
     <Compile Include="Characters\ToughZombie.cs" />
+    <Compile Include="Components\LifeDrainHitComponent.cs" />
     <Compile Include="Components\MeleeDamageHitComponent.cs" />
     <Compile Include="Effects.cs" />
     <Compile Include="Enums\AnchorPoint.cs" />
@@ -60,6 +61,9 @@
     <Compile Include="InventoryEventArgs.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Objects\Chest.cs" />
+    <Compile Include="Objects\LifeDrainProjectile.cs" />
+    <Compile Include="Spells\LifeDrain.cs" />
+    <Compile Include="Spells\FireBolt.cs" />
     <Compile Include="Utility\Deconstruct.cs" />
     <Compile Include="Enums\HorizontalDirection.cs" />
     <Compile Include="Graphics\MultiplyBlendState.cs" />
@@ -110,7 +114,7 @@
     <Compile Include="RenderSystem.cs" />
     <Compile Include="Objects\SolidPlatform.cs" />
     <Compile Include="Enums\Team.cs" />
-    <Compile Include="Objects\TestProjectile.cs" />
+    <Compile Include="Objects\FireBoltProjectile.cs" />
     <Compile Include="Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Objects\MovingPlatform.cs" />

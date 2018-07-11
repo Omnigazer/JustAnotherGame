@@ -37,7 +37,16 @@ namespace Omniplatformer
         public float MeleeAttackRate => (float)(60 - 40 * ((float)SkillPoints / (SkillPoints + 20))) / 100f;
 
         public Dictionary<ManaType, float> CurrentMana { get; set; }
-        public Dictionary<ManaType, float> MaxMana { get; set; }
+        // public Dictionary<ManaType, float> MaxMana { get; set; }
+
+        public float MaxMana(ManaType manaType)
+        {
+            var x = (Skill)Enum.Parse(typeof(Skill), manaType.ToString());
+            // var x = typeof(Enum.Parse(Skill, manaType.ToString()));
+            if (Skills.ContainsKey(x))
+                return Skills[x];
+            return 0;
+        }
 
         public Player(Vector2 center, Vector2 halfsize)
         {
@@ -47,11 +56,11 @@ namespace Omniplatformer
             MaxHitPoints = max_hitpoints;
             CurrentHitPoints = MaxHitPoints;
             CurrentMana = new Dictionary<ManaType, float>();
-            MaxMana = new Dictionary<ManaType, float>();
+            //MaxMana = new Dictionary<ManaType, float>();
             foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
             {
-                MaxMana[type] = max_mana;
-                CurrentMana[type] = MaxMana[type];
+                //MaxMana[type] = max_mana;
+                CurrentMana[type] = MaxMana(type);
             }
 
             InitPos(center, halfsize);
@@ -142,16 +151,8 @@ namespace Omniplatformer
         #region Actions
         public void Fire()
         {
-            if(SpendMana(ManaType.Chaos, 1))
-            {
-                PositionComponent pos = GetComponent<PositionComponent>();
-                var projectile = new TestProjectile(pos.WorldPosition.Center, new Vector2(5, 5));
-                var movable = GetComponent<CharMoveComponent>();
-                var proj_movable = projectile.GetComponent<ProjectileMoveComponent>();
-                int dir_sign = (int)pos.WorldPosition.face_direction;
-                proj_movable.direction = new Vector2(15 * dir_sign, 0);
-                Game.RegisterObject(projectile);
-            }
+            // Spells.FireBolt.Cast(this);
+            Spells.LifeDrain.Cast(this);
         }
 
         public void Swing()
@@ -218,7 +219,7 @@ namespace Omniplatformer
         public void ReplenishMana(ManaType type, float amount)
         {
             CurrentMana[type] += amount;
-            CurrentMana[type] = Math.Min(CurrentMana[type], MaxMana[type]);
+            CurrentMana[type] = Math.Min(CurrentMana[type], MaxMana(type));
         }
 
         public bool SpendMana(ManaType type, float amount)
@@ -237,7 +238,7 @@ namespace Omniplatformer
             foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
             {
                 CurrentMana[type] += mana_regen_rate;
-                CurrentMana[type] = Math.Min(CurrentMana[type], MaxMana[type]);
+                CurrentMana[type] = Math.Min(CurrentMana[type], MaxMana(type));
             }
 
         }

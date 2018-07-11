@@ -10,20 +10,22 @@ using System.Threading.Tasks;
 
 namespace Omniplatformer
 {
-    public class TestProjectile : Projectile
+    public class LifeDrainProjectile : Projectile
     {
-        public TestProjectile(Vector2 center, Vector2 halfsize): base(center, halfsize)
+        public LifeDrainProjectile(Vector2 center, Vector2 halfsize, GameObject source = null): base(center, halfsize, source)
         {
             Team = Team.Friend;
             Components.Add(new PositionComponent(this, center, halfsize));
-            Components.Add(new GlowingRenderComponent(this));
+            var c = new GlowingRenderComponent(this) { GlowColor = Color.Purple };
+            Components.Add(c);
+            // Components.Add(new GlowingRenderComponent(this));
             Components.Add(new ProjectileMoveComponent(this));
-            Components.Add(new DamageHitComponent(this, damage: 1));
+            Components.Add(new LifeDrainHitComponent(this, damage: 3));
         }
 
         public override object AsJson()
         {
-            return PositionJson.ToJson(this);
+            return new { type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
         }
     }
 }
