@@ -51,6 +51,11 @@ namespace Omniplatformer
         public Player(Vector2 center, Vector2 halfsize)
         {
             inventory = new Inventory();
+            // TODO: test
+            var item = new WieldedItem(damage: 1);
+            Game.RegisterObject(item);
+            item.Hide();
+            inventory.AddItem(item);
 
             Team = Team.Friend;
             MaxHitPoints = max_hitpoints;
