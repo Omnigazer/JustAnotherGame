@@ -17,6 +17,7 @@ namespace Omniplatformer.Components
         /// </summary>
         public int Damage { get; set; }
         public Vector2 Knockback { get; set; }
+        public override bool EligibleTarget(GameObject target) => target.Team != GameObject.Team;
 
         public DamageHitComponent(GameObject obj, int damage) : base(obj)
         {
@@ -29,24 +30,19 @@ namespace Omniplatformer.Components
             Knockback = knockback;
         }
 
-        /// <summary>
-        /// Represents the damaging hit action
-        /// </summary>
-        /// <param name="target"></param>
-        public override void Hit(GameObject target)
+        public override void ApplyEffect(GameObject target)
         {
-            // TODO: implement more accurate determining of eligible teams
-            // also direct referencing of GameObject
-            if (target.Team != GameObject.Team)
-            {
-                target.ApplyDamage(DetermineDamage());
-                var movable = (MoveComponent)target;
-                var pos = GetComponent<PositionComponent>();
-                var their_pos = (PositionComponent)target;
-                var dir_sign = Math.Sign(their_pos.WorldPosition.Center.X - pos.WorldPosition.Center.X);
-                movable?.AdjustSpeed(new Vector2(Knockback.X * dir_sign, Knockback.Y));
-            }
-            base.Hit(target);
+            target.ApplyDamage(DetermineDamage());
+            ApplyKnockback(target);
+        }
+
+        public void ApplyKnockback(GameObject target)
+        {
+            var movable = (MoveComponent)target;
+            var pos = GetComponent<PositionComponent>();
+            var their_pos = (PositionComponent)target;
+            var dir_sign = Math.Sign(their_pos.WorldPosition.Center.X - pos.WorldPosition.Center.X);
+            movable?.AdjustSpeed(new Vector2(Knockback.X * dir_sign, Knockback.Y));
         }
 
         protected virtual int DetermineDamage()
