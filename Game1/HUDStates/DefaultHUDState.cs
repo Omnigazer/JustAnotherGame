@@ -71,8 +71,6 @@ namespace Omniplatformer.HUDStates
             // TODO: possibly refactor this
             // reset the player's "intention to move" (move_direction) by default as a workaround
             Game.StopMoving();
-            if (Game.console.Opened)
-                return;
             var keyboard_state = Keyboard.GetState();
             foreach (var (key, (pressed_action, released_action, continuous)) in Controls)
             {

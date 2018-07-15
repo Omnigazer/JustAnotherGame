@@ -223,7 +223,8 @@ namespace Omniplatformer
         {
             if (Keyboard.GetState().IsKeyDown(Keys.LeftAlt) && Keyboard.GetState().IsKeyDown(Keys.Q))
                 Exit();
-            if (!game_over)
+            StopMoving();
+            if (!game_over && !console.Opened)
                 HUDState.HandleControls();
             Simulate();
             // var song = GameContent.Instance.vampireKiller;
