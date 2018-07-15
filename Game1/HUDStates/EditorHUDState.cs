@@ -96,7 +96,6 @@ namespace Omniplatformer.HUDStates
                 {  Keys.S, (Game.GoDown, noop, true) },
                 {  Keys.W, (Game.GoUp, noop, true) },
                 {  Keys.Space, (Game.Jump, Game.StopJumping, false) },
-                {  Keys.O, (Save, noop, false) },
                 {  Keys.I, (Game.OpenInventory, noop, false) },
                 {  Keys.Z, (Game.Fire, noop, false) },
                 {  Keys.X, (Game.Swing, noop, false) },
@@ -122,7 +121,7 @@ namespace Omniplatformer.HUDStates
         }
 
         public int CurrentGroupIndex { get; set; }
-        List<List<GameObject>> Groups { get; set; } = new List<List<GameObject>>() { new List<GameObject>() };
+        List<List<GameObject>> Groups => Game.Groups;
         public List<GameObject> CurrentGroup => CurrentGroupIndex < Groups.Count ? Groups[CurrentGroupIndex] : null;
 
         public void NextGroup()
@@ -199,12 +198,6 @@ namespace Omniplatformer.HUDStates
             CurrentConstructor = keys[i];
             Game.Log($"Current constructor: {CurrentConstructor}");
             // CurrentConstructor = PositionalConstructors.
-        }
-
-        public void Save()
-        {
-            Game.Log("Saving level");
-            Game.CurrentLevel.Save("");
         }
 
         public Vector2 GetInGameCoords(Point click_position)

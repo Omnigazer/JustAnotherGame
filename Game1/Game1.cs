@@ -30,6 +30,9 @@ namespace Omniplatformer
         // public List<Character> characters = new List<Character>();
         public List<Projectile> projectiles = new List<Projectile>();
 
+        // Editor groups
+        public List<List<GameObject>> Groups { get; set; } = new List<List<GameObject>>() { new List<GameObject>() };
+
         public HUDState HUDState { get; set; }
         HUDState defaultHUD;
         HUDState inventoryHUD;
@@ -84,7 +87,7 @@ namespace Omniplatformer
         void InitGameObjects()
         {
             CurrentLevel = GameContent.Instance.level;
-            CurrentLevel.TestLoad();
+            CurrentLevel.Load("blank");
 
             // Register player
             player = new Player(
@@ -201,6 +204,106 @@ namespace Omniplatformer
                 // TODO your logic
                 return String.Format("pong");
             });
+
+            console.AddCommand("merge", a =>
+            {
+                if (a.Length == 2 && int.TryParse(a[0], out int first) && int.TryParse(a[1], out int second))
+                {
+                    if (Groups.Count > Math.Max(first, second))
+                    {
+                        foreach(var obj in Groups[second])
+                        {
+                            Groups[first].Add(obj);
+                        }
+                        return String.Format("Merged group {0} into {1}", second, first);
+                    }
+                    else
+                    {
+                        return "Index out of bounds";
+                    }
+                }
+                return String.Format("invalid args");
+            });
+
+            console.AddCommand("savelevel", a =>
+            {
+                if (a.Length == 1)
+                {
+                    var name = a[0];
+                    SaveLevel(name);
+                    return ("Level saved.");
+                }
+                else
+                    return String.Format("invalid args");
+            });
+
+            console.AddCommand("clearlevel", a =>
+            {
+                ClearCurrentLevel();
+                return "Level cleared.";
+            });
+
+            console.AddCommand("savegroup", a =>
+            {
+                if (a.Length == 2 && int.TryParse(a[0], out int index))
+                {
+                    string name = a[1];
+                    SaveGroup(index, name);
+                    return "Group saved.";
+                }
+                else
+                    return String.Format("invalid args");
+            });
+
+            console.AddCommand("loadgroup", a =>
+            {
+                if (a.Length == 1)
+                {
+                    LoadGroup(a[0]);
+                    return "Loaded.";
+                }
+                else
+                    return String.Format("invalid args");
+            });
+        }
+
+        public void SaveLevel(string name)
+        {
+            Log("Saving level");
+            string path = String.Format("{0}.json", name);
+            CurrentLevel.Save(path);
+        }
+
+        public void ClearCurrentLevel()
+        {
+            // Clear everything
+            objects.Clear();
+            RenderSystem.drawables.Clear();
+            CurrentLevel.objects.Clear();
+
+            // Register the player back
+            RenderSystem.drawables.Add((RenderComponent)player);
+        }
+
+        public void LoadGroup(string name)
+        {
+            Log(String.Format("Loading group '{0}'", name));
+            string path = String.Format("{0}.json", name);
+
+            var group = GameContent.Instance.level.LoadGroup(path, ((PositionComponent)player).WorldPosition.Coords);
+            foreach (var obj in group)
+            {
+                RegisterObject(obj);
+                CurrentLevel.objects.Add(obj);
+            }
+            Groups.Add(group);
+        }
+
+        public void SaveGroup(int index, string name)
+        {
+            Log("Saving current group");
+            string path = String.Format("{0}.json", name);
+            CurrentLevel.SaveGroup(Groups[index], path);
         }
 
         /// <summary>
