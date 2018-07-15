@@ -25,7 +25,14 @@ namespace Omniplatformer.Components
         {
             // TODO: be ready to access the component's ultimate source and get the skill from there (if any)
             // also could extract this into Skills.GetBonusDamage(Skill.Melee) or something
-            GameService.Player.Skills.TryGetValue(Skill.Melee, out int skill_value);
+            // GameService.Player.Skills.TryGetValue(Skill.Melee, out int skill_value);
+            int skill_value = 0;
+            // TODO: possibly extract skill to characters
+            var source = this.GameObject.Source as Player;
+            if (source != null)
+            {
+                skill_value = source.Skills.ContainsKey(Skill.Melee) ? source.Skills[Skill.Melee] : 0;
+            }
             return base.DetermineDamage() + skill_value;
         }
     }

@@ -309,6 +309,7 @@ namespace Omniplatformer
                 if (WieldedItem != null)
                     UnwieldItem();
                 WieldedItem = item;
+                item.SetWielder(this);
 
                 // draw-related
                 var item_pos = (PositionComponent)item;
@@ -325,8 +326,8 @@ namespace Omniplatformer
                 item_pos.ClearParent();
                 // TODO: should only be executed if it's actually hidden in the inventory or something
                 WieldedItem.Hide();
+                WieldedItem.SetWielder(null);
                 WieldedItem = null;
-
             }
         }
 
