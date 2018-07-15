@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,12 @@ namespace Omniplatformer
         {
             key = tuple.Key;
             value = tuple.Value;
+        }
+
+        public static void Deconstruct(this Vector2 tuple, out float key, out float value)
+        {
+            key = tuple.X;
+            value = tuple.Y;
         }
     }
 }
