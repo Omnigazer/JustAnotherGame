@@ -16,6 +16,7 @@ namespace Omniplatformer
         public float CurrentHitPoints { get; set; }
         public float MaxHitPoints { get; set; }
         public bool Vulnerable { get; set; }
+        public virtual int ExpReward => 300;
 
         public Character()
         {
@@ -29,7 +30,7 @@ namespace Omniplatformer
         public override void onDestroy()
         {
             // TODO: find another approach for earning exp
-            GameService.Player.EarnExperience(300);
+            GameService.Player.EarnExperience(ExpReward);
             base.onDestroy();
         }
 
