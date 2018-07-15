@@ -15,6 +15,8 @@ namespace Omniplatformer
     {
         // public int Damage { get; set; }
         // public Vector2 Knockback { get; set; }
+        public override GameObject Source => _source?.Source ?? this;
+        private GameObject _source;
 
         public WieldedItem(int damage, Texture2D texture = null)
         {
@@ -47,6 +49,11 @@ namespace Omniplatformer
             var item = new WieldedItem((int)data["damage"]);
             // SerializeService.Instance.RegisterObject(item);
             return item;
+        }
+
+        public void SetWielder(GameObject source)
+        {
+            _source = source;
         }
     }
 }
