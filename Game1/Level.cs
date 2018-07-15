@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using Omniplatformer.Components;
 
 namespace Omniplatformer
 {
@@ -19,6 +20,7 @@ namespace Omniplatformer
 
         }
 
+        /*
         public Level(JObject data)
         {
             foreach (var obj_data in data["objects"])
@@ -64,10 +66,11 @@ namespace Omniplatformer
                 }
             }
         }
+        */
 
         public void Save(string json_path)
         {
-            json_path = @"E:\test_json.json";
+            // json_path = @"E:\test_json.json";
             JsonSerializer serializer = new JsonSerializer();
             // using (StreamReader sr = new StreamReader(json_path))
             using (StreamWriter sw = new StreamWriter(json_path))
@@ -88,9 +91,93 @@ namespace Omniplatformer
             }
         }
 
-        public void TestLoad()
+        public void SaveGroup(List<GameObject> group, string json_path)
         {
-            string json_path = @"E:\test_json.json";
+            JsonSerializer serializer = new JsonSerializer();
+            // using (StreamReader sr = new StreamReader(json_path))
+            using (StreamWriter sw = new StreamWriter(json_path))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            //using (JsonReader reader = new JsonTextReader(sr))
+            {
+                writer.Formatting = Formatting.Indented;
+                //serializer.Serialize(writer, product);
+                List<object> list = new List<object>();
+
+                // var (minx, miny) =
+                var origin = getMinCoords(group);
+
+                foreach (var obj in group)
+                {
+                    var pos = (PositionComponent)obj;
+                    pos.local_position.Coords -= origin;
+                    list.Add(obj.AsJson());
+                    pos.local_position.Coords += origin;
+                }
+                // serializer.Serialize(writer, obj.AsJson());
+                serializer.Serialize(writer, new { objects = list });
+
+                //return new Level((JObject)serializer.Deserialize(reader));
+            }
+        }
+
+        public List<GameObject> LoadGroup(string json_path, Vector2 origin)
+        {
+            // string json_path = @"E:\test_json.json";
+            JsonSerializer serializer = new JsonSerializer();
+
+            // using (StreamWriter sw = new StreamWriter(json_path))
+            // using (JsonWriter writer = new JsonTextWriter(sw))
+
+            using (StreamReader sr = new StreamReader(json_path))
+            using (JsonReader reader = new JsonTextReader(sr))
+            {
+                //foreach (var obj in objects)
+                //{
+                //    serializer.Deserialize(reader);
+                //}
+
+                JObject data = (JObject)serializer.Deserialize(reader);
+
+                var storage = new Dictionary<Guid, GameObject>();
+
+                foreach (var obj_data in data["objects"])
+                {
+                    var deserializer = new Deserializer((JObject)obj_data, storage);
+                    string type_name = obj_data["type"].ToString();
+                    // var type = Type.GetType(type_name);
+                    // var obj = (GameObject)type.GetMethod("FromJson").Invoke(null, new object[] { (JObject)obj_data });
+                    var obj = (GameObject)deserializer.decodeObject((JObject)obj_data);
+                    var pos = (PositionComponent)obj;
+                    pos.local_position.Coords += origin;
+                }
+                // objects = SerializeService.Instance.GetObjects();
+                return storage.Values.ToList();
+
+                //return new Level((JObject)serializer.Deserialize(reader));
+            }
+        }
+
+        Vector2 getMinCoords(List<GameObject> list)
+        {
+            var pos_list = list.Select((obj) =>
+            {
+                return (PositionComponent)obj;
+            }).Where((pos) => pos != null);
+            var minx = pos_list.Min((pos) =>
+            {
+                return pos.WorldPosition.Coords.X;
+            });
+            var miny = pos_list.Min((pos) =>
+            {
+                return pos.WorldPosition.Coords.Y;
+            });
+            return new Vector2(minx, miny);
+        }
+
+        // TODO: should be moved to level initializer
+        public void Load(string name)
+        {
+            string json_path = String.Format("{0}.json", name);
             JsonSerializer serializer = new JsonSerializer();
 
             // using (StreamWriter sw = new StreamWriter(json_path))
