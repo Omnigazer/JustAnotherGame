@@ -50,6 +50,10 @@ namespace Omniplatformer
 
         public Player(Vector2 center, Vector2 halfsize)
         {
+            foreach (Skill skill in Enum.GetValues(typeof(Skill)))
+            {
+                Skills.Add(skill, 0);
+            }
             inventory = new Inventory();
             // TODO: test
             var item = new WieldedItem(damage: 1);
