@@ -14,7 +14,7 @@ namespace Omniplatformer
     {
         public FireBoltProjectile(Vector2 center, Vector2 halfsize, GameObject source = null): base(center, halfsize, source)
         {
-            Team = Team.Friend;
+            Team = source.Team;
             Components.Add(new PositionComponent(this, center, halfsize));
             Components.Add(new GlowingRenderComponent(this));
             Components.Add(new ProjectileMoveComponent(this));

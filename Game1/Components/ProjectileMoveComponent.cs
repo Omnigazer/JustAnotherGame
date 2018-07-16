@@ -26,7 +26,7 @@ namespace Omniplatformer.Components
         protected override void ProcessCollision(Direction direction, GameObject obj)
         {
             base.ProcessCollision(direction, obj);
-            if (direction != Direction.None && (obj.Solid || obj.Hittable))
+            if (direction != Direction.None && obj != GameObject.Source && (obj.Solid || obj.Hittable))
             {
                 var hittable = GetComponent<HitComponent>();
                 hittable?.Hit(obj);

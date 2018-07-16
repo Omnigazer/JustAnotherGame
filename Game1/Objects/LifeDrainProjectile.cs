@@ -14,7 +14,7 @@ namespace Omniplatformer
     {
         public LifeDrainProjectile(Vector2 center, Vector2 halfsize, GameObject source = null): base(center, halfsize, source)
         {
-            Team = Team.Friend;
+            Team = source?.Team ?? Team.Friend;
             Components.Add(new PositionComponent(this, center, halfsize));
             var c = new GlowingRenderComponent(this) { GlowColor = Color.Purple };
             Components.Add(c);

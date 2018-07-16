@@ -397,13 +397,16 @@ namespace Omniplatformer
             {
                 var projectile_collisions = new List<(Direction, GameObject)>();
                 var projectile = projectiles[i];
+                var projectile_pos = (PositionComponent)projectile;
+
+                var collision_direction = projectile_pos.Collides(player);
+                if (collision_direction != Direction.None)
+                    projectile_collisions.Add((collision_direction, player));
 
                 for (int j = objects.Count - 1; j >= 0; j--)
                 {
                     var platform = objects[j];
-                    var projectile_pos = (PositionComponent)projectile;
-                    var collision_direction = projectile_pos.Collides(platform);
-
+                    collision_direction = projectile_pos.Collides(platform);
                     if (collision_direction != Direction.None)
                         projectile_collisions.Add((collision_direction, platform));
                 }
