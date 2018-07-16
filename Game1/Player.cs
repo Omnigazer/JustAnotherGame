@@ -132,7 +132,8 @@ namespace Omniplatformer
         {
             if (Vulnerable || damage <= 0)
             {
-                Vulnerable = false;
+                if (damage >= 0)
+                    Vulnerable = false;
                 CurrentHitPoints -= damage;
                 var drawable = GetComponent<CharacterRenderComponent>();
                 drawable._onAnimationEnd += Drawable__onAnimationEnd;
