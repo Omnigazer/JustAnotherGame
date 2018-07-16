@@ -88,6 +88,7 @@ namespace Omniplatformer
         {
             CurrentLevel = GameContent.Instance.level;
             CurrentLevel.Load("blank");
+            LoadGroup("village", new Vector2(1300, 0));
 
             // Register player
             player = new Player(
@@ -100,33 +101,6 @@ namespace Omniplatformer
             RenderSystem.drawables.Add((RenderComponent)player);
             player._onDestroy += GameOver;
 
-            // Register characters
-
-            /*
-            for (int i = 0; i < 5;i++)
-            {
-                RegisterObject(new Zombie(
-                new Vector2(-600 - 200 * i, 100),
-                new Vector2(15, 20)
-                ));
-            }
-
-            RegisterObject(new Dawg(
-                new Vector2(-200, 850),
-                new Vector2(70, 25)
-                ));
-
-            /*
-            var sword = new WieldedItem(1);
-            RegisterObject(sword);
-            sword.Hide();
-            // sword.SetPosition(200, 100);
-
-            RegisterObject(new Chest(new Vector2(200, 100), new Vector2(40, 20), sword));
-            */
-            // GameContent.Instance.level.Save("");
-
-
             foreach (var obj in GameContent.Instance.level.objects)
             {
                 RegisterObject(obj);
@@ -135,15 +109,6 @@ namespace Omniplatformer
             {
                 RegisterObject(character);
             }
-            /*
-            CurrentLevel.objects.Clear();
-            foreach (var obj in platforms)
-            {
-                CurrentLevel.objects.Add(obj);
-            }
-
-            CurrentLevel.Save("");
-            */
         }
 
         private void GameOver(object sender, EventArgs e)
@@ -285,12 +250,16 @@ namespace Omniplatformer
             RenderSystem.drawables.Add((RenderComponent)player);
         }
 
-        public void LoadGroup(string name)
+        /// <summary>
+        /// Load group of objects, or "location"
+        /// </summary>
+        /// <param name="name"></param>
+        public void LoadGroup(string name, Vector2? origin = null)
         {
             Log(String.Format("Loading group '{0}'", name));
             string path = String.Format("{0}.json", name);
 
-            var group = GameContent.Instance.level.LoadGroup(path, ((PositionComponent)player).WorldPosition.Coords);
+            var group = GameContent.Instance.level.LoadGroup(path, origin ?? ((PositionComponent)player).WorldPosition.Coords);
             foreach (var obj in group)
             {
                 RegisterObject(obj);
@@ -301,7 +270,7 @@ namespace Omniplatformer
 
         public void SaveGroup(int index, string name)
         {
-            Log("Saving current group");
+            Log(String.Format("Saving current group {0}", index));
             string path = String.Format("{0}.json", name);
             CurrentLevel.SaveGroup(Groups[index], path);
         }
