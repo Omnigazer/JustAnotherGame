@@ -65,6 +65,12 @@ namespace Omniplatformer.Components
             _onAnimationEnd(this, new AnimationEventArgs(animation));
         }
 
+        public event EventHandler<AnimationEventArgs> _onAnimationHit = delegate { };
+        public void onAnimationHit(Animation animation)
+        {
+            _onAnimationHit(this, new AnimationEventArgs(animation));
+        }
+
         public override void Tick()
         {
             foreach (var (animation, (ticks, length)) in CurrentAnimations.ToList())

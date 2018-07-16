@@ -175,8 +175,9 @@ namespace Omniplatformer
             {
                 ItemLocked = true;
                 var drawable = GetComponent<CharacterRenderComponent>();
-                drawable._onAnimationEnd += onAttackend;
-                drawable.StartAnimation(Animation.Attack, 10);
+                drawable._onAnimationHit += onAttackend;
+                drawable.StartAnimation(Animation.Attack, Cooldowns["Melee"]);
+                // drawable.StartAnimation(Animation.Attack, 10);
             }
         }
 
@@ -213,7 +214,7 @@ namespace Omniplatformer
         private void onAttackend(object sender, AnimatedRenderComponent.AnimationEventArgs e)
         {
             var drawable = GetComponent<CharacterRenderComponent>();
-            drawable._onAnimationEnd -= onAttackend;
+            drawable._onAnimationHit -= onAttackend;
             if (e.animation == Animation.Attack)
             {
                 MeleeHit();
