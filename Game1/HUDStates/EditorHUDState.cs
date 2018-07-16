@@ -80,7 +80,7 @@ namespace Omniplatformer.HUDStates
             spriteBatch.End();
         }
 
-        int increment = 4;
+        int increment = 8;
         public void IncreaseWidth() => current_block_width += increment;
         public void DecreaseWidth() => current_block_width -= increment;
         public void IncreaseHeight() => current_block_height += increment;
@@ -88,6 +88,7 @@ namespace Omniplatformer.HUDStates
 
         public void SetupControls()
         {
+            bool continuous_size = true;
             Action noop = delegate { };
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
@@ -104,10 +105,10 @@ namespace Omniplatformer.HUDStates
                 {  Keys.E, (SetNextConstructor, noop, false) },
                 {  Keys.OemMinus, (Game.ZoomOut, noop, true) },
                 {  Keys.OemPlus, (Game.ZoomIn, noop, true) },
-                {  Keys.Home, (IncreaseHeight, noop, true) },
-                {  Keys.End, (DecreaseHeight, noop, true) },
-                {  Keys.PageUp, (IncreaseWidth, noop, true) },
-                {  Keys.Insert, (DecreaseWidth, noop, true) },
+                {  Keys.Home, (IncreaseHeight, noop, continuous_size) },
+                {  Keys.End, (DecreaseHeight, noop, continuous_size) },
+                {  Keys.PageUp, (IncreaseWidth, noop, continuous_size) },
+                {  Keys.Insert, (DecreaseWidth, noop, continuous_size) },
                 {  Keys.Back, (Game.CloseEditor, noop, true) },
 
                 {  Keys.NumPad7, (PrevGroup, noop, false) },
