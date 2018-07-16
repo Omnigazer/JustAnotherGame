@@ -11,12 +11,14 @@ namespace Omniplatformer.Components
     class CharacterRenderComponent : AnimatedRenderComponent
     {
         protected Texture2D left_texture, right_texture;
+        Color defaultColor = Color.Gray;
 
-        public CharacterRenderComponent(GameObject obj, Texture2D left_texture, Texture2D right_texture) : base(obj)
+        public CharacterRenderComponent(GameObject obj, Texture2D left_texture, Texture2D right_texture, Color? color = null) : base(obj)
         {
             ZIndex = Layers.Character;
             this.left_texture = left_texture;
             this.right_texture = right_texture;
+            defaultColor = color ?? Color.Gray;
         }
 
         public override Color GetColor()
@@ -34,7 +36,7 @@ namespace Omniplatformer.Components
                     return Color.Red;
                 }
             }
-            return Color.Gray;
+            return defaultColor;
         }
 
         public void DrawHealth()

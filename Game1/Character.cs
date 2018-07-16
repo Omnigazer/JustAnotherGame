@@ -27,6 +27,8 @@ namespace Omniplatformer
             Vulnerable = true;
         }
 
+        // Generic characters currently have no need for mana
+        public virtual bool SpendMana(ManaType type, float amount) => true;
 
         public override void onDestroy()
         {
