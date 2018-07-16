@@ -299,6 +299,11 @@ namespace Omniplatformer.HUDStates
                 {
                     var obj = Game.GetObjectAtCursor();
                     Game.CurrentLevel.objects.Remove(obj);
+                    Game.objects.Remove(obj);
+                    foreach (var group in Groups)
+                    {
+                        group.Remove(obj);
+                    }
                     obj?.onDestroy();
                     rmb_pressed = true;
                 }
