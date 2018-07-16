@@ -77,6 +77,10 @@ namespace Omniplatformer.Components
                 float step = amp / length;
                 PositionComponent pos = GetComponent<PositionComponent>();
                 var anchor = pos.CurrentAnchors[AnchorPoint.Hand];
+                if (ticks == (int)(0.25f * length))
+                {
+                    onAnimationHit(Animation.Attack);
+                }
                 if (ticks <= 0.25f * length)
                     anchor = new Position(anchor) { RotationAngle = anchor.RotationAngle + forward_step };
                 else
