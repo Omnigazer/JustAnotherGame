@@ -32,12 +32,17 @@ namespace Omniplatformer
 
         public override object AsJson()
         {
-            return new { type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
+            return new
+            {
+                Id,
+                type = GetType().AssemblyQualifiedName,
+                Position = PositionJson.ToJson(this)
+            };
         }
 
-        public static GameObject FromJson(JObject data)
+        public static GameObject FromJson(Deserializer deserializer)
         {
-            var (coords, halfsize, origin) = PositionJson.FromJson(data);
+            var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
             return new Ladder(coords, halfsize);
         }
     }
