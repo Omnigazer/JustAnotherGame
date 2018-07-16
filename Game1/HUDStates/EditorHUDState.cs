@@ -22,6 +22,11 @@ namespace Omniplatformer.HUDStates
         public string CurrentConstructor { get; set; }
         public bool PinMode { get; set; }
 
+        Dictionary<string, (Texture2D, Vector2, bool)> textures = new Dictionary<string, (Texture2D, Vector2, bool)>()
+        {
+            { "Ladder", (GameContent.Instance.ladder, new Vector2(0.5f, 0.5f), true) }
+        };
+
         public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
 
         public EditorHUDState(HUDContainer hud)
@@ -45,6 +50,7 @@ namespace Omniplatformer.HUDStates
                 { "SolidPlatform", (coords, halfsize, origin) => { return new SolidPlatform(coords, halfsize, origin); } },
                 { "Liquid", (coords, halfsize, origin) => { return new Liquid(coords, halfsize, origin); } },
                 { "ForegroundQuad", (coords, halfsize, origin) => { return new ForegroundQuad(coords, halfsize, origin); } },
+                { "Ladder", (coords, halfsize, origin) => { return new Ladder(coords, halfsize); } },
                 { "Zombie", (coords, halfsize, origin) => { return new Zombie(coords); } },
                 { "Chest", (coords, halfsize, origin) => { return new Chest(coords, halfsize, new WieldedItem(5)); } },
             };
@@ -73,10 +79,20 @@ namespace Omniplatformer.HUDStates
         public void DrawCurrentBlock()
         {
             var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            var rect = new Rectangle(Mouse.GetState().Position, new Point((int)(current_block_width * Game.RenderSystem.Camera.Zoom), (int)(current_block_height * Game.RenderSystem.Camera.Zoom)));
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null);
+            var mouse_pos = Mouse.GetState().Position;
+            mouse_pos = new Point(mouse_pos.X, -mouse_pos.Y);
+            // var rect = new Rectangle(Mouse.GetState().Position, new Point((int)(current_block_width * Game.RenderSystem.Camera.Zoom), (int)(current_block_height * Game.RenderSystem.Camera.Zoom)));
+            var rect = new Rectangle(Mouse.GetState().Position, new Point((int)(current_block_width), (int)(current_block_height)));
             // rect = Game.GameToScreen(rect, new Vector2(0, 1));
-            GraphicsService.Instance.Draw(GameContent.Instance.whitePixel, rect, Color.Gray);
+
+            textures.TryGetValue(CurrentConstructor, out (Texture2D tex, Vector2 origin, bool tiled) t);
+            var tex = t.tex ?? GameContent.Instance.whitePixel;
+            var origin = t.origin;
+            var tiled = t.tiled;
+
+            GraphicsService.DrawScreen(tex, rect, Color.Gray, 0, origin, scale: Game.RenderSystem.Camera.Zoom, tiled: tiled);
+            // GraphicsService.DrawScreen(tex, rect, Color.Gray, 0, new Vector2(0.5f, 0.5f), scale: 1, tiled: tiled);
             spriteBatch.End();
         }
 
