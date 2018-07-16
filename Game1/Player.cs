@@ -126,7 +126,7 @@ namespace Omniplatformer
 
         public override void ApplyDamage(float damage)
         {
-            if (Vulnerable)
+            if (Vulnerable || damage <= 0)
             {
                 Vulnerable = false;
                 CurrentHitPoints -= damage;
