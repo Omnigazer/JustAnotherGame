@@ -16,8 +16,8 @@ namespace Omniplatformer.Components
 
         // Movement dynamic caps
         public int max_jumps = 2;
-        public int max_jump_ticks = 25; // Max jump time
-        const int wall_jump_pin_ticks = 8; // Time required to be spent against the wall to walljump
+        public int max_jump_ticks = 15; // Max jump time
+        const int wall_jump_pin_ticks = 1; // Time required to be spent against the wall to walljump
 
         // Movement counters
         public int remaining_jumps;
@@ -81,7 +81,13 @@ namespace Omniplatformer.Components
             {
                 IsJumping = true;
                 if (IsPinnedToWall())
+                {
+                    if (IsNextToLeftWall)
+                        CurrentMovement += new Vector2(6, 40);
+                    else if (IsNextToRightWall)
+                        CurrentMovement += new Vector2(-6, 40);
                     ResetJumps();
+                }
                 ResetPin();
                 current_jump_ticks = max_jump_ticks;
                 // ClearCurrentPlatform();
