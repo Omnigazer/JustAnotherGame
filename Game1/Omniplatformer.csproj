@@ -43,7 +43,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Characters\Dawg.cs" />
+    <Compile Include="Characters\GoblinShaman.cs" />
     <Compile Include="Characters\ToughZombie.cs" />
+    <Compile Include="Characters\Goblin.cs" />
     <Compile Include="Components\LifeDrainHitComponent.cs" />
     <Compile Include="Components\MeleeDamageHitComponent.cs" />
     <Compile Include="Effects.cs" />
@@ -123,6 +125,7 @@
     <Compile Include="GraphicsService.cs" />
     <Compile Include="Objects\WieldedItem.cs" />
     <Compile Include="Utility\PositionJson.cs" />
+    <Compile Include="Utility\RandomGen.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

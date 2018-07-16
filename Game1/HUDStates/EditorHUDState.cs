@@ -52,6 +52,8 @@ namespace Omniplatformer.HUDStates
                 { "ForegroundQuad", (coords, halfsize, origin) => { return new ForegroundQuad(coords, halfsize, origin); } },
                 { "Ladder", (coords, halfsize, origin) => { return new Ladder(coords, halfsize); } },
                 { "Zombie", (coords, halfsize, origin) => { return new Zombie(coords); } },
+                { "Goblin", (coords, halfsize, origin) => { return new Goblin(coords); } },
+                { "GoblinShaman", (coords, halfsize, origin) => { return new GoblinShaman(coords); } },
                 { "Chest", (coords, halfsize, origin) => { return new Chest(coords, halfsize, new WieldedItem(5)); } },
             };
             CurrentConstructor = PositionalConstructors.Keys.First();

@@ -183,7 +183,6 @@ namespace Omniplatformer
             }
         }
 
-
         public void MeleeHit()
         {
             GameObject obj = GetMeleeTarget(range: 60);
@@ -234,7 +233,7 @@ namespace Omniplatformer
             CurrentMana[type] = Math.Min(CurrentMana[type], MaxMana(type));
         }
 
-        public bool SpendMana(ManaType type, float amount)
+        public override bool SpendMana(ManaType type, float amount)
         {
             if (CurrentMana[type] >= amount)
             {
