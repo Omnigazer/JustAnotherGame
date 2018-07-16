@@ -13,7 +13,8 @@ namespace Omniplatformer
 {
     public abstract class Character : GameObject
     {
-        public float CurrentHitPoints { get; set; }
+        float _currentHitPoints;
+        public float CurrentHitPoints { get => _currentHitPoints; set => _currentHitPoints = value.LimitToRange(0, MaxHitPoints); }
         public float MaxHitPoints { get; set; }
         public bool Vulnerable { get; set; }
         public virtual int ExpReward => 300;
