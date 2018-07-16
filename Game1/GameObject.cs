@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.Components;
+using Omniplatformer.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,6 +112,16 @@ namespace Omniplatformer
             {
                 throw new Exception("Attempted to hide an object without a RenderComponent");
             }
+        }
+
+        public bool TryCooldown(string key, int value)
+        {
+            if (!Cooldowns.ContainsKey(key) || Cooldowns[key] <= 0)
+            {
+                Cooldowns.SetOrAdd(key, value);
+                return true;
+            }
+            return false;
         }
 
         // Typecasts
