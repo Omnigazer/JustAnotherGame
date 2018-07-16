@@ -72,10 +72,15 @@ namespace Omniplatformer.Components
             {
                 var (ticks, length) = CurrentAnimations[Animation.Attack];
                 float amp = (float)Math.PI / 2;
+                float forward_step =  amp / (0.25f * length);
+                float back_step = amp / (0.75f * length);
                 float step = amp / length;
                 PositionComponent pos = GetComponent<PositionComponent>();
                 var anchor = pos.CurrentAnchors[AnchorPoint.Hand];
-                anchor = new Position(anchor) { RotationAngle = anchor.RotationAngle + step };
+                if (ticks <= 0.25f * length)
+                    anchor = new Position(anchor) { RotationAngle = anchor.RotationAngle + forward_step };
+                else
+                    anchor = new Position(anchor) { RotationAngle = anchor.RotationAngle - back_step };
                 pos.CurrentAnchors[AnchorPoint.Hand] = anchor;
             }
             base.Tick();
