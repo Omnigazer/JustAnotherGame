@@ -241,6 +241,16 @@ namespace Omniplatformer.Components
                     CurrentMovement = new Vector2(CurrentMovement.X, 0);
             }
 
+            if (IsNextToLeftWall)
+            {
+                HorizontalSpeed = Math.Max(0, HorizontalSpeed);
+            }
+
+            if (IsNextToRightWall)
+            {
+                HorizontalSpeed = Math.Min(0, HorizontalSpeed);
+            }
+
             if (IsOnGround)
             {
                 if (CurrentMovement.Y < 0)
