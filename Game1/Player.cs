@@ -34,7 +34,7 @@ namespace Omniplatformer
         public Dictionary<Skill, int> Skills = new Dictionary<Skill, int>();
 
         // spans from 0.6 to 0.2 with a weight of 20
-        public float MeleeAttackRate => (float)(60 - 40 * ((float)SkillPoints / (SkillPoints + 20))) / 100f;
+        public float MeleeAttackRate => (float)(60 - 40 * ((float)Skills[Melee] / (Skills[Melee] + 20))) / 100f;
 
         public Dictionary<ManaType, float> CurrentMana { get; set; }
         // public Dictionary<ManaType, float> MaxMana { get; set; }
