@@ -9,13 +9,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.Components;
 using Omniplatformer.Enums;
+using static Omniplatformer.Enums.Skill;
 
 namespace Omniplatformer
 {
     public class Player : Character
     {
         // Character constants
-        const float max_hitpoints = 10;
+        const float max_hitpoints = 5;
         const float max_mana = 10;
         const float mana_regen_rate = 0.05f / 30;
         const int inv_frames = 100;
@@ -75,7 +76,7 @@ namespace Omniplatformer
 
             InitPos(center, halfsize);
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
-            Components.Add(new PlayerMoveComponent(this) { MaxMoveSpeed = 15, Acceleration = 1.5f });
+            Components.Add(new PlayerMoveComponent(this) { MaxMoveSpeed = 9, Acceleration = 0.5f });
         }
 
         public void InitPos(Vector2 center, Vector2 halfsize)
@@ -101,11 +102,11 @@ namespace Omniplatformer
             MaxExperience += 1000 * Level;
 
             // Increase some basic stats
-            MaxHitPoints += 5;
-            CurrentHitPoints += 5;
+            MaxHitPoints += 2;
+            CurrentHitPoints += 2;
 
             // Increase skill points
-            SkillPoints += 10;
+            SkillPoints += 5;
 
             /*
             if (!Skills.ContainsKey(Skill.Melee))

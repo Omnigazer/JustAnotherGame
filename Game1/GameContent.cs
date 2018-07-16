@@ -111,18 +111,5 @@ namespace Omniplatformer
         {
             // level = LoadJson(Path.Combine(Content.RootDirectory, "Data", @"json.txt"));
         }
-
-        public Level LoadJson(string json_path)
-        {
-            JsonSerializer serializer = new JsonSerializer();
-            using (StreamReader sr = new StreamReader(json_path))
-            // using (JsonWriter writer = new JsonTextWriter(sw))
-            using (JsonReader reader = new JsonTextReader(sr))
-            {
-                // serializer.Serialize(writer, product);
-
-                return new Level((JObject)serializer.Deserialize(reader));
-            }
-        }
     }
 }

@@ -37,7 +37,7 @@ namespace Omniplatformer
         public void AdjustZoom(float value)
         {
             Zoom += value;
-            Zoom = Math.Max(0.25f, Zoom);
+            Zoom = Math.Max(0.125f, Zoom);
             Zoom = Math.Min(2f, Zoom);
         }
     }
