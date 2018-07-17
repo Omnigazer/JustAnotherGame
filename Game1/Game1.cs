@@ -33,6 +33,7 @@ namespace Omniplatformer
         // Editor groups
         public List<List<GameObject>> Groups { get; set; } = new List<List<GameObject>>() { new List<GameObject>() };
 
+        // HUD states & controls
         public HUDState HUDState { get; set; }
         HUDState defaultHUD;
         HUDState inventoryHUD;
@@ -42,6 +43,9 @@ namespace Omniplatformer
 
         public GameConsole console;
 
+        public List<string> Logs { get; set; } = new List<string>() { "test" };
+
+        // Events
         public event EventHandler<InventoryEventArgs> onTargetInventoryOpen = delegate { };
         public event EventHandler onTargetInventoryClosed = delegate { };
 
@@ -49,6 +53,8 @@ namespace Omniplatformer
         Point last_position = Point.Zero;
         // object currently being mouse-dragged
         GameObject tele_obj = null;
+
+        int CurrentSongIndex { get; set; }
 
         public Game1()
         {
@@ -88,7 +94,6 @@ namespace Omniplatformer
         {
             CurrentLevel = GameContent.Instance.level;
             CurrentLevel.Load("blank");
-            LoadGroup("village", new Vector2(1300, 0));
 
             // Register player
             player = new Player(
@@ -109,6 +114,8 @@ namespace Omniplatformer
             {
                 RegisterObject(character);
             }
+
+            LoadGroup("village", new Vector2(1300, 0));
         }
 
         private void GameOver(object sender, EventArgs e)
@@ -117,8 +124,6 @@ namespace Omniplatformer
             RenderSystem.drawables.Remove((RenderComponent)player);
         }
 
-
-        public List<string> Logs { get; set; } = new List<string>() { "test" };
         public void Log(string message)
         {
             Logs.Add(message);
@@ -284,8 +289,6 @@ namespace Omniplatformer
             // TODO: Unload any non ContentManager content here
         }
 
-        int song_index;
-
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -303,8 +306,8 @@ namespace Omniplatformer
             if (MediaPlayer.State != MediaState.Playing && false)
             {
                 MediaPlayer.Volume = 0.1f;
-                MediaPlayer.Play(GameContent.Instance.Songs[song_index]);
-                song_index = (song_index + 1) % GameContent.Instance.Songs.Count;
+                MediaPlayer.Play(GameContent.Instance.Songs[CurrentSongIndex]);
+                CurrentSongIndex = (CurrentSongIndex + 1) % GameContent.Instance.Songs.Count;
             }
 
 
@@ -647,11 +650,6 @@ namespace Omniplatformer
         }
 
         #endregion
-
-        protected void HandleControls()
-        {
-
-        }
 
         public void SetCameraPosition()
         {
