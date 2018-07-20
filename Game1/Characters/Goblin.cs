@@ -50,7 +50,6 @@ namespace Omniplatformer.Characters
         }
         IEnumerator Behavior { get; set; }
 
-        public bool Aggressive { get; set; }
         public Goblin(Vector2 coords)
         {
             Behavior = behaviorGen();

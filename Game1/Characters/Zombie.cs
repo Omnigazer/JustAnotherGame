@@ -16,7 +16,6 @@ namespace Omniplatformer.Characters
         int ticks = 0;
         int amp = 300;
 
-        public bool Aggressive { get; set; }
         public Zombie(Vector2 coords)
         {
             Team = Team.Enemy;

@@ -17,6 +17,7 @@ namespace Omniplatformer
         public float CurrentHitPoints { get => _currentHitPoints; set => _currentHitPoints = value.LimitToRange(0, MaxHitPoints); }
         public float MaxHitPoints { get; set; }
         public bool Vulnerable { get; set; }
+        public bool Aggressive { get; set; }
         public virtual int ExpReward => 300;
 
         public Character()
