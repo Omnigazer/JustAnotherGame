@@ -87,6 +87,17 @@ namespace Omniplatformer.Characters
         public override void ApplyDamage(float damage)
         {
             Aggressive = true;
+            var pos = GetComponent<PositionComponent>();
+
+            // Aggravate everyone in the 1000 radius
+            foreach (var obj in Game.GetObjectsAroundPosition(pos.WorldPosition, 1000))
+            {
+                if (obj is Character)
+                {
+                    var character = obj as Character;
+                    character.Aggressive = true;
+                }
+            }
             base.ApplyDamage(damage);
         }
 

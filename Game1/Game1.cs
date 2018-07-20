@@ -443,6 +443,19 @@ namespace Omniplatformer
             return null;
         }
 
+        public IEnumerable<GameObject> GetObjectsAroundPosition(Position position, int radius)
+        {
+            foreach (var obj in objects)
+            {
+                var pos = (PositionComponent)obj;
+                var vector = pos.WorldPosition.Center - position.Center;
+                if (vector.Length() < radius)
+                {
+                    yield return obj;
+                }
+            }
+        }
+
         public GameObject GetObjectAtCursor()
         {
             return GetObjectAtCoords(Mouse.GetState().Position);
