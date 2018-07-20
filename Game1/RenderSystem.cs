@@ -54,6 +54,11 @@ namespace Omniplatformer
             graphics.ApplyChanges();
         }
 
+        public (int, int) GetResolution()
+        {
+            return (graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+        }
+
         public void Tick()
         {
             light_loop = (light_loop + 1) % light_loop_length;
