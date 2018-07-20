@@ -9,7 +9,7 @@ namespace Omniplatformer
     public class Inventory
     {
         public int Rows => 4;
-        public int Cols => 4;
+        public int Cols => 8;
         public List<InventorySlot> slots = new List<InventorySlot>();
         public InventorySlot CurrentSlot;
 
@@ -17,8 +17,8 @@ namespace Omniplatformer
 
         public Inventory()
         {
-            for (int i = 0; i < 4; i++)
-                for (int j = 0; j < 4; j++)
+            for (int i = 0; i < Rows; i++)
+                for (int j = 0; j < Cols; j++)
                 {
                     slots.Add(new InventorySlot(i, j));
                 }
