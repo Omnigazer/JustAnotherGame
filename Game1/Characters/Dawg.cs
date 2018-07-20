@@ -14,7 +14,6 @@ namespace Omniplatformer.Characters
         int ticks = 0;
         int amp = 300;
 
-        public bool Aggressive { get; set; }
         public Dawg(Vector2 center, Vector2 halfsize)
         {
             Team = Team.Enemy;
