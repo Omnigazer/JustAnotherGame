@@ -177,7 +177,7 @@ namespace Omniplatformer
         // TODO: should be moved to level initializer
         public void Load(string name)
         {
-            string json_path = String.Format("{0}.json", name);
+            string json_path = String.Format("Content/Data/{0}.json", name);
             JsonSerializer serializer = new JsonSerializer();
 
             // using (StreamWriter sw = new StreamWriter(json_path))

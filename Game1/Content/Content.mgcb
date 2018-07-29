@@ -248,3 +248,9 @@
 #begin ConsoleFont.xnb
 /copy:ConsoleFont.xnb
 
+#begin Data/blank.json
+/copy:Data/blank.json
+
+#begin Data/village.json
+/copy:Data/village.json
+

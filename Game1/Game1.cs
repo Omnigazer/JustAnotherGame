@@ -262,7 +262,7 @@ namespace Omniplatformer
         public void LoadGroup(string name, Vector2? origin = null)
         {
             Log(String.Format("Loading group '{0}'", name));
-            string path = String.Format("{0}.json", name);
+            string path = String.Format("Content/Data/{0}.json", name);
 
             var group = GameContent.Instance.level.LoadGroup(path, origin ?? ((PositionComponent)player).WorldPosition.Coords);
             foreach (var obj in group)

@@ -1,0 +1,58 @@
+{
+  "objects": [
+    {
+      "Id": "19352d57-416f-4715-9c03-f04dfad98e05",
+      "type": "Omniplatformer.SolidPlatform, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Position": {
+        "coords": {
+          "x": -668.130249,
+          "y": 352.5119
+        },
+        "halfsize": {
+          "x": 292.0,
+          "y": 18.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": 1.0
+        }
+      }
+    },
+    {
+      "Id": "dae08bcc-6a4a-4d2b-a028-d4a3e57bb54d",
+      "type": "Omniplatformer.SolidPlatform, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Position": {
+        "coords": {
+          "x": -84.3975143,
+          "y": 352.5119
+        },
+        "halfsize": {
+          "x": 292.0,
+          "y": 18.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": 1.0
+        }
+      }
+    },
+    {
+      "Id": "946edccd-5531-45ca-b427-9d8c69c194d4",
+      "type": "Omniplatformer.SolidPlatform, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Position": {
+        "coords": {
+          "x": 499.335083,
+          "y": 352.5119
+        },
+        "halfsize": {
+          "x": 292.0,
+          "y": 18.0
+        },
+        "origin": {
+          "x": 0.0,
+          "y": 1.0
+        }
+      }
+    }
+  ]
+}
