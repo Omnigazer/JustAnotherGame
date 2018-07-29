@@ -94,6 +94,18 @@ namespace Omniplatformer.Characters
             base.ApplyDamage(damage);
         }
 
+        public override void onDestroy()
+        {
+            // TODO: extract this into a drop component
+            WieldedItem drop = new WieldedItem(50);
+            var pos = (PositionComponent)drop;
+            pos.SetLocalCoords(GetComponent<PositionComponent>().WorldPosition.Coords);
+            drop.Pickupable = true;
+            Game.RegisterObject(drop);
+
+            base.onDestroy();
+        }
+
         public override void Tick()
         {
             base.Tick();

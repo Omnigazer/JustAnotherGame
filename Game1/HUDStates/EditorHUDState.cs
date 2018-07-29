@@ -22,9 +22,10 @@ namespace Omniplatformer.HUDStates
         public string CurrentConstructor { get; set; }
         public bool PinMode { get; set; }
 
-        Dictionary<string, (Texture2D, Vector2, bool)> textures = new Dictionary<string, (Texture2D, Vector2, bool)>()
+        Dictionary<string, (Texture2D, Vector2, bool, Color?)> textures = new Dictionary<string, (Texture2D, Vector2, bool, Color?)>()
         {
-            { "Ladder", (GameContent.Instance.ladder, new Vector2(0.5f, 0.5f), true) }
+            { "Ladder", (GameContent.Instance.ladder, new Vector2(0.5f, 0.5f), true, Color.White) },
+            { "Chest", (null, new Vector2(0.5f, 0.5f), false, Color.Firebrick) }
         };
 
         public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
@@ -54,7 +55,7 @@ namespace Omniplatformer.HUDStates
                 { "Zombie", (coords, halfsize, origin) => { return new Zombie(coords); } },
                 { "Goblin", (coords, halfsize, origin) => { return new Goblin(coords); } },
                 { "GoblinShaman", (coords, halfsize, origin) => { return new GoblinShaman(coords); } },
-                { "Chest", (coords, halfsize, origin) => { return new Chest(coords, halfsize, new WieldedItem(5)); } },
+                { "Chest", (coords, halfsize, origin) => { return new Chest(coords, halfsize); } },
             };
             CurrentConstructor = PositionalConstructors.Keys.First();
         }
@@ -88,12 +89,13 @@ namespace Omniplatformer.HUDStates
             var rect = new Rectangle(Mouse.GetState().Position, new Point((int)(current_block_width), (int)(current_block_height)));
             // rect = Game.GameToScreen(rect, new Vector2(0, 1));
 
-            textures.TryGetValue(CurrentConstructor, out (Texture2D tex, Vector2 origin, bool tiled) t);
+            textures.TryGetValue(CurrentConstructor, out (Texture2D tex, Vector2 origin, bool tiled, Color? color) t);
             var tex = t.tex ?? GameContent.Instance.whitePixel;
             var origin = t.origin;
             var tiled = t.tiled;
+            var color = t.color ?? Color.White;
 
-            GraphicsService.DrawScreen(tex, rect, Color.Gray, 0, origin, scale: Game.RenderSystem.Camera.Zoom, tiled: tiled);
+            GraphicsService.DrawScreen(tex, rect, color, 0, origin, scale: Game.RenderSystem.Camera.Zoom, tiled: tiled);
             // GraphicsService.DrawScreen(tex, rect, Color.Gray, 0, new Vector2(0.5f, 0.5f), scale: 1, tiled: tiled);
             spriteBatch.End();
         }

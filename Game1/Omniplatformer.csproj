@@ -54,13 +54,17 @@
     <Compile Include="Components\HitComponent.cs" />
     <Compile Include="Components\RelativePositionComponent.cs" />
     <Compile Include="Enums\Skill.cs" />
+    <Compile Include="EquipSlotCollection.cs" />
     <Compile Include="HUDStates\EditorHUDState.cs" />
     <Compile Include="HUDStates\DefaultHUDState.cs" />
     <Compile Include="HUDStates\HUDState.cs" />
     <Compile Include="HUDStates\CharHUDState.cs" />
     <Compile Include="HUD\CharView.cs" />
+    <Compile Include="HUD\EquipView.cs" />
+    <Compile Include="HUD\ViewControl.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="InventoryEventArgs.cs" />
+    <Compile Include="Items\ChaosOrb.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Objects\Chest.cs" />
     <Compile Include="Objects\LifeDrainProjectile.cs" />
@@ -123,7 +127,7 @@
     <Compile Include="Objects\MovingPlatform.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GraphicsService.cs" />
-    <Compile Include="Objects\WieldedItem.cs" />
+    <Compile Include="Items\WieldedItem.cs" />
     <Compile Include="Utility\PositionJson.cs" />
     <Compile Include="Utility\RandomGen.cs" />
   </ItemGroup>

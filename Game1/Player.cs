@@ -24,7 +24,12 @@ namespace Omniplatformer
         public bool ItemLocked { get; set; }
         public WieldedItem WieldedItem { get; private set; }
 
+        // Equipment and inventory
         public Inventory inventory;
+        public EquipSlotCollection equip_slots;
+
+
+        //
 
         // RPG elements
         public int CurrentExperience { get; set; }
@@ -55,6 +60,7 @@ namespace Omniplatformer
             {
                 Skills.Add(skill, 0);
             }
+            equip_slots = new EquipSlotCollection();
             inventory = new Inventory();
             // TODO: test
             var item = new WieldedItem(damage: 1);

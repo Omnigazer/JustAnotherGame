@@ -14,6 +14,7 @@ namespace Omniplatformer.HUDStates
         HUDContainer playerHUD;
         InventoryView PlayerInventoryView { get; set; }
         InventoryView TargetInventoryView { get; set; }
+        EquipView EquipView { get; set; }
         Game1 Game => GameService.Instance;
 
         public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
@@ -25,6 +26,7 @@ namespace Omniplatformer.HUDStates
         {
             playerHUD = hud;
             PlayerInventoryView = new InventoryView(inv, false);
+            EquipView = new EquipView(Game.player);
             // TODO: remove this reference
             this.inv = inv;
             SetupControls();
@@ -54,8 +56,21 @@ namespace Omniplatformer.HUDStates
 
         public override void Draw()
         {
+            int margin = 50;
+            var (screen_width, screen_height) = Game.RenderSystem.GetResolution();
+            PlayerInventoryView.Position = new Point(
+                screen_width - PlayerInventoryView.Width - margin,
+                margin
+                );
             PlayerInventoryView.Draw();
+            Point target_inv_position = PlayerInventoryView.Position + new Point(0, PlayerInventoryView.Height) + new Point(0, margin);
+            if (TargetInventoryView != null)
+                TargetInventoryView.Position = target_inv_position;
             TargetInventoryView?.Draw();
+
+            Point equip_position = new Point(600, 2 * margin);
+            EquipView.Position = equip_position;
+            EquipView.Draw();
             playerHUD.Draw();
         }
 
