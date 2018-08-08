@@ -10,6 +10,16 @@ using System.Collections.Generic;
 using Omniplatformer.HUDStates;
 using Microsoft.Xna.Framework.Media;
 using MonoGameConsole;
+using EmptyKeys.UserInterface;
+using EmptyKeys.UserInterface.Debug;
+using EmptyKeys.UserInterface.Generated;
+using EmptyKeys.UserInterface.Input;
+using EmptyKeys.UserInterface.Media;
+using EmptyKeys.UserInterface.Media.Effects;
+using EmptyKeys.UserInterface.Media.Imaging;
+using GameUILibrary;
+using EmptyKeys.UserInterface.Renderers;
+// using GameUILibrary;
 
 namespace Omniplatformer
 {
@@ -42,6 +52,10 @@ namespace Omniplatformer
         bool game_over;
 
         public GameConsole console;
+
+        private MainWindow basicUI;
+        private DebugViewModel debug;
+        private BasicUIViewModel viewModel;
 
         public List<string> Logs { get; set; } = new List<string>() { "test" };
 
@@ -139,6 +153,13 @@ namespace Omniplatformer
             var spriteBatch = new SpriteBatch(GraphicsDevice);
             GraphicsService.Init(spriteBatch, this);
             GameContent.Init(Content);
+
+            // basicUI = new MainWindow(viewport.Width, viewport.Height);
+            basicUI = new MainWindow();
+            viewModel = new BasicUIViewModel();
+            // viewModel.Tetris = new TetrisController(basicUI.TetrisContainer, basicUI.TetrisNextContainer);
+            basicUI.DataContext = viewModel;
+            // debug = new DebugViewModel(basicUI);
 
             // TODO: use this.Content to load your game content here
 
@@ -296,7 +317,7 @@ namespace Omniplatformer
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.LeftAlt) && Keyboard.GetState().IsKeyDown(Keys.Q))
+            if (Microsoft.Xna.Framework.Input.Keyboard.GetState().IsKeyDown(Keys.LeftAlt) && Microsoft.Xna.Framework.Input.Keyboard.GetState().IsKeyDown(Keys.Q))
                 Exit();
             StopMoving();
             if (!game_over && !console.Opened && IsActive)
@@ -310,6 +331,7 @@ namespace Omniplatformer
                 CurrentSongIndex = (CurrentSongIndex + 1) % GameContent.Instance.Songs.Count;
             }
 
+            basicUI.Draw(null, gameTime.ElapsedGameTime.Milliseconds, 1);
 
             base.Update(gameTime);
         }
@@ -458,7 +480,7 @@ namespace Omniplatformer
 
         public GameObject GetObjectAtCursor()
         {
-            return GetObjectAtCoords(Mouse.GetState().Position);
+            return GetObjectAtCoords(Microsoft.Xna.Framework.Input.Mouse.GetState().Position);
         }
 
         #region Player Actions
@@ -604,7 +626,7 @@ namespace Omniplatformer
                 tele_obj = obj;
             if (tele_obj != null)
             {
-                var mouseState = Mouse.GetState();
+                var mouseState = Microsoft.Xna.Framework.Input.Mouse.GetState();
                 if (last_position == Point.Zero)
                 {
                     last_position = mouseState.Position;

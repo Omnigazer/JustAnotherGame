@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="TestOmniGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestOmniGUI"
+        mc:Ignorable="d"
+        Height="222.101" Width="233.206">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="34*"/>
+            <ColumnDefinition Width="191*"/>
+        </Grid.ColumnDefinitions>
+        <RadioButton x:Name="radioButton" Content="One" IsChecked="True" HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+        <RadioButton x:Name="radioButton1" Content="Two" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" IsChecked="True" Grid.ColumnSpan="2"/>
+        <ProgressBar HorizontalAlignment="Left" Height="10" Margin="10,46,0,0" Value="{Binding ItemCount}" VerticalAlignment="Top" Width="100" Grid.ColumnSpan="2"/>
+    </Grid>
+</UserControl>

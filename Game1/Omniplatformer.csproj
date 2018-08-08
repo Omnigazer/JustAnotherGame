@@ -42,6 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GameUILibrary\BasicUIViewModel.cs" />
     <Compile Include="Characters\Dawg.cs" />
     <Compile Include="Characters\GoblinShaman.cs" />
     <Compile Include="Characters\ToughZombie.cs" />
@@ -55,6 +56,8 @@
     <Compile Include="Components\RelativePositionComponent.cs" />
     <Compile Include="Enums\Skill.cs" />
     <Compile Include="EquipSlotCollection.cs" />
+    <Compile Include="GameData\TestDataGridModel.cs" />
+    <Compile Include="GameData\TestTreeDataItem.cs" />
     <Compile Include="HUDStates\EditorHUDState.cs" />
     <Compile Include="HUDStates\DefaultHUDState.cs" />
     <Compile Include="HUDStates\HUDState.cs" />
@@ -66,6 +69,7 @@
     <Compile Include="InventoryEventArgs.cs" />
     <Compile Include="Items\ChaosOrb.cs" />
     <Compile Include="Level.cs" />
+    <Compile Include="GameUILibrary\MainWindow.xaml.cs" />
     <Compile Include="Objects\Chest.cs" />
     <Compile Include="Objects\LifeDrainProjectile.cs" />
     <Compile Include="Spells\LifeDrain.cs" />
@@ -132,6 +136,21 @@
     <Compile Include="Utility\RandomGen.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="EmptyKeys.UserInterface, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EmptyKeysUI_MonoGame.3.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Common\AnyCPU\EmptyKeys.UserInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="EmptyKeys.UserInterface.Core, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EmptyKeysUI_MonoGame.3.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Common\AnyCPU\EmptyKeys.UserInterface.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="EmptyKeys.UserInterface.Debug, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EmptyKeysUI_MonoGame.3.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Common\AnyCPU\EmptyKeys.UserInterface.Debug.dll</HintPath>
+    </Reference>
+    <Reference Include="EmptyKeys.UserInterface.Designer, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EmptyKeysUI_Generator.3.0.0\lib\net45\EmptyKeys.UserInterface.Designer.dll</HintPath>
+    </Reference>
+    <Reference Include="EmptyKeys.UserInterface.MonoGame, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EmptyKeysUI_MonoGame.3.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\MonoGame\AnyCPU\EmptyKeys.UserInterface.MonoGame.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
@@ -149,8 +168,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BehaviorsLicense.txt" />
     <Content Include="Content\hyu.png" />
     <Content Include="Icon.ico" />
+    <Content Include="license.txt" />
+    <Content Include="shaders\DirectionalBlurShader.fx" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
@@ -161,6 +183,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
