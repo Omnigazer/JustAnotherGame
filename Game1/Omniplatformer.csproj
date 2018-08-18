@@ -61,6 +61,7 @@
     <Compile Include="HUDStates\CharHUDState.cs" />
     <Compile Include="HUD\CharView.cs" />
     <Compile Include="HUD\EquipView.cs" />
+    <Compile Include="HUD\InventorySlotView.cs" />
     <Compile Include="HUD\ViewControl.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="InventoryEventArgs.cs" />

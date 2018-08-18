@@ -11,22 +11,27 @@ namespace Omniplatformer.HUD
     public class InventoryView : ViewControl
     {
         Inventory Inventory { get; set; }
-        bool IsTarget { get; set; }
-
-        // slots starting position
         const int slot_width = 70, slot_height = 70;
         const int slot_margin = 15;
 
         public InventoryView(Inventory inventory, bool target)
         {
             Inventory = inventory;
-            IsTarget = target;
+            int slot_width = 70, slot_height = 70;
+            foreach (var slot in Inventory.slots)
+            {
+                Content.Add(new InventorySlotView(
+                        new Point((slot_width + slot_margin) * slot.Column,
+                        (slot_height + slot_margin) * slot.Row)
+                    )
+                { Width = slot_width, Height = slot_height });
+            }
+            Width = slot_width * Inventory.Cols + slot_margin * (Inventory.Cols - 1);
+            Height = slot_height * Inventory.Rows + slot_margin * (Inventory.Rows - 1);
         }
 
-        public override int Width => slot_width * Inventory.Cols + slot_margin * (Inventory.Cols - 1);
-        public override int Height => slot_height * Inventory.Rows + slot_margin * (Inventory.Rows - 1);
-
-        public override void Draw()
+        /*
+        public override void Draw(Point position)
         {
             var spriteBatch = GraphicsService.Instance;
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
@@ -37,11 +42,13 @@ namespace Omniplatformer.HUD
             spriteBatch.End();
         }
 
+
         public Rectangle GetRect(InventorySlot slot)
         {
             var slot_offset = new Point((slot_width + slot_margin) * slot.Column, (slot_height + slot_margin) * slot.Row);
             return new Rectangle(Position + slot_offset, new Point(slot_width, slot_height));
         }
+
 
         public void DrawSlot(InventorySlot slot)
         {
@@ -85,23 +92,7 @@ namespace Omniplatformer.HUD
         public void SelectSlot(InventorySlot slot)
         {
             Inventory.SetCurrentSlot(slot);
-            /*
-            foreach (var i_slot in Inventory.slots)
-            {
-                if (i_slot == slot)
-                {
-                    // TODO: extract this into the inventory logic
-                    i_slot.IsCurrent = true;
-                    Inventory.CurrentSlot = i_slot;
-                    Inventory.col = i_slot.Column;
-                    Inventory.row = i_slot.Row;
-                }
-                else
-                {
-                    i_slot.IsCurrent = false;
-                }
-            }
-            */
         }
+        */
     }
 }

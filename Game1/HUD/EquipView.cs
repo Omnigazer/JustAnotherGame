@@ -16,20 +16,17 @@ namespace Omniplatformer.HUD
         const int slot_width = 70, slot_height = 70;
         const int slot_margin = 15;
 
-        public override int Width => 0;
-        public override int Height => 0;
-
         public EquipView(Player player)
         {
             Player = player;
         }
 
-        public override void Draw()
+        public override void Draw(Point position)
         {
             var spriteBatch = GraphicsService.Instance;
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            DrawContainer();
-            DrawMisc();
+            DrawContainer(position);
+
             /*
             foreach (var slot in Inventory.slots)
             {
@@ -37,6 +34,7 @@ namespace Omniplatformer.HUD
             }
             */
             spriteBatch.End();
+            base.Draw(position);
         }
 
         /*
@@ -47,42 +45,12 @@ namespace Omniplatformer.HUD
         }
         */
 
-        public void DrawContainer()
+        public void DrawContainer(Point position)
         {
             var spriteBatch = GraphicsService.Instance;
-            var rect = new Rectangle(Position, new Point(1000, 800));
+            var rect = new Rectangle(Position + position, new Point(1000, 800));
             float alpha = 0.9f;
             spriteBatch.Draw(GameContent.Instance.whitePixel, rect, Color.DarkGray * alpha);
-        }
-
-        public void DrawMisc()
-        {
-            var spriteBatch = GraphicsService.Instance;
-            int margin = 15;
-            Point slot_position = Position + new Point(margin, margin);
-            Point size = new Point(slot_width, slot_height);
-            float alpha = true ? 1 : 0.6f;
-            foreach (var slot in Player.equip_slots)
-            {
-                Rectangle rect = new Rectangle(slot_position, size);
-                spriteBatch.Draw(GameContent.Instance.whitePixel, rect, Color.Gray * alpha);
-                slot_position += new Point(0, slot_height + margin);
-            }
-
-
-
-
-            // Rectangle inner_rect = new Rectangle(bar_position + border_size, size);
-
-
-
-            /*
-            if (slot.item != null)
-            {
-                var renderable = (RenderComponent)slot.item;
-                spriteBatch.Draw(renderable.Texture, outer_rect, Color.White);
-            }
-            */
         }
 
         public void DrawSlot(InventorySlot slot)

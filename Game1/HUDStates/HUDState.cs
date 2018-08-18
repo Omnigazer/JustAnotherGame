@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Omniplatformer.HUD;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,14 @@ namespace Omniplatformer.HUDStates
         public static Point click_pos;
         public virtual void Draw() { }
         public virtual void HandleControls() { }
+
+        public List<ViewControl> Controls { get; set; }
+
+        public void HandleMouse()
+        {
+            var mouse = Mouse.GetState();
+
+        }
 
     }
 }

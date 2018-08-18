@@ -62,15 +62,15 @@ namespace Omniplatformer.HUDStates
                 screen_width - PlayerInventoryView.Width - margin,
                 margin
                 );
-            PlayerInventoryView.Draw();
+            PlayerInventoryView.Draw(new Point());
             Point target_inv_position = PlayerInventoryView.Position + new Point(0, PlayerInventoryView.Height) + new Point(0, margin);
             if (TargetInventoryView != null)
                 TargetInventoryView.Position = target_inv_position;
-            TargetInventoryView?.Draw();
+            TargetInventoryView?.Draw(new Point());
 
             Point equip_position = new Point(600, 2 * margin);
             EquipView.Position = equip_position;
-            EquipView.Draw();
+            EquipView.Draw(new Point());
             playerHUD.Draw();
         }
 
@@ -92,6 +92,7 @@ namespace Omniplatformer.HUDStates
         InventorySlot dragged_slot;
         bool lmb_is_pressed;
 
+        /*
         InventorySlot GetSlotAtPosition(Point position)
         {
             InventorySlot slot = null;
@@ -99,6 +100,7 @@ namespace Omniplatformer.HUDStates
             slot = PlayerInventoryView.GetSlotAtPosition(position) ?? TargetInventoryView?.GetSlotAtPosition(position);
             return slot;
         }
+        */
 
         void DragItem(InventorySlot slot)
         {
@@ -141,6 +143,7 @@ namespace Omniplatformer.HUDStates
 
         public void HandleMouse()
         {
+            /*
             var mouse = Mouse.GetState();
             // var slot = PlayerInventoryView.GetSlotAtPosition(mouse.Position);
             var slot = GetSlotAtPosition(mouse.Position);
@@ -169,6 +172,7 @@ namespace Omniplatformer.HUDStates
                     lmb_is_pressed = false;
                 }
             }
+            */
         }
     }
 }
