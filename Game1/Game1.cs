@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using Omniplatformer.HUDStates;
 using Microsoft.Xna.Framework.Media;
-using MonoGameConsole;
+// using MonoGameConsole;
 using EmptyKeys.UserInterface;
 using EmptyKeys.UserInterface.Debug;
 using EmptyKeys.UserInterface.Generated;
@@ -19,7 +19,7 @@ using EmptyKeys.UserInterface.Media.Effects;
 using EmptyKeys.UserInterface.Media.Imaging;
 using GameUILibrary;
 using EmptyKeys.UserInterface.Renderers;
-// using GameUILibrary;
+using EmptyKeys.UserInterface.Controls;
 
 namespace Omniplatformer
 {
@@ -51,9 +51,11 @@ namespace Omniplatformer
         HUDState charHUD;
         bool game_over;
 
-        public GameConsole console;
+        // public GameConsole console;
 
         private MainWindow basicUI;
+        // private Root root;
+        public MainWindow root;
         private DebugViewModel debug;
         private BasicUIViewModel viewModel;
 
@@ -67,14 +69,23 @@ namespace Omniplatformer
         Point last_position = Point.Zero;
         // object currently being mouse-dragged
         GameObject tele_obj = null;
+        Engine engine;
 
         int CurrentSongIndex { get; set; }
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 2560;
+            graphics.PreferredBackBufferHeight = 1440;
+            graphics.DeviceCreated += onDeviceCreated;
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Content.RootDirectory = "Content";
+        }
+
+        private void onDeviceCreated(object sender, EventArgs e)
+        {
+            engine = new MonoGameEngine(GraphicsDevice, 2560, 1440);
         }
 
         /// <summary>
@@ -88,6 +99,7 @@ namespace Omniplatformer
             // TODO: Add your initialization logic here
             base.Initialize();
             RenderSystem = new RenderSystem(this);
+            // FontManager.Instance.LoadFonts(Content);
             InitServices();
             var playerHUD = new HUDContainer();
             InitGameObjects();
@@ -143,30 +155,57 @@ namespace Omniplatformer
             Logs.Add(message);
         }
 
+        public void ToggleTestUI()
+        {
+            if (root.Visibility == Visibility.Visible)
+                root.Visibility = Visibility.Hidden;
+            else
+                root.Visibility = Visibility.Visible;
+        }
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
         /// </summary>
         protected override void LoadContent()
         {
+            IsMouseVisible = true;
             // Create a new SpriteBatch, which can be used to draw textures.
             var spriteBatch = new SpriteBatch(GraphicsDevice);
             GraphicsService.Init(spriteBatch, this);
             GameContent.Init(Content);
+            FontManager.DefaultFont = engine.Renderer.CreateFont(GameContent.Instance.defaultFont);
 
+            Viewport viewport = GraphicsDevice.Viewport;
+            // var y = InputManager.Current;
+            // UIRoot x = new UIRoot(viewport.Width, viewport.Height);
             // basicUI = new MainWindow(viewport.Width, viewport.Height);
-            basicUI = new MainWindow();
+            // root = new Root();
+            root = new MainWindow();
+            FontManager.Instance.LoadFonts(Content);
+            ImageManager.Instance.LoadImages(Content);
+            SoundManager.Instance.LoadSounds(Content);
+            EffectManager.Instance.LoadEffects(Content, "Effects");
+            // var x = EffectManager.Instance.GetEffect("distorteffect");
+            // var y = x.GetNativeEffect();
+            // basicUI = new MainWindow();
             viewModel = new BasicUIViewModel();
+            viewModel.ItemCount = 60;
+            root.DataContext = viewModel;
+
             // viewModel.Tetris = new TetrisController(basicUI.TetrisContainer, basicUI.TetrisNextContainer);
-            basicUI.DataContext = viewModel;
+            // basicUI.DataContext = viewModel;
+
+
             // debug = new DebugViewModel(basicUI);
 
             // TODO: use this.Content to load your game content here
 
-            LoadConsole(spriteBatch);
+            // LoadConsole(spriteBatch);
             // Window.Handle
         }
 
+        /*
         void LoadConsole(SpriteBatch spriteBatch)
         {
             System.Windows.Forms.Form winGameWindow = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(Window.Handle);
@@ -257,6 +296,7 @@ namespace Omniplatformer
                     return String.Format("invalid args");
             });
         }
+        */
 
         public void SaveLevel(string name)
         {
@@ -318,9 +358,9 @@ namespace Omniplatformer
         protected override void Update(GameTime gameTime)
         {
             if (Microsoft.Xna.Framework.Input.Keyboard.GetState().IsKeyDown(Keys.LeftAlt) && Microsoft.Xna.Framework.Input.Keyboard.GetState().IsKeyDown(Keys.Q))
-                Exit();
+                // Exit();
             StopMoving();
-            if (!game_over && !console.Opened && IsActive)
+            if (!game_over && IsActive)
                 HUDState.HandleControls();
             Simulate();
             // var song = GameContent.Instance.vampireKiller;
@@ -331,7 +371,10 @@ namespace Omniplatformer
                 CurrentSongIndex = (CurrentSongIndex + 1) % GameContent.Instance.Songs.Count;
             }
 
-            basicUI.Draw(null, gameTime.ElapsedGameTime.Milliseconds, 1);
+            // basicUI.Draw(gameTime.ElapsedGameTime.Milliseconds);
+            root.UpdateInput(gameTime.ElapsedGameTime.TotalMilliseconds);
+            viewModel.Update(gameTime.ElapsedGameTime.TotalMilliseconds);
+            root.UpdateLayout(gameTime.ElapsedGameTime.TotalMilliseconds);
 
             base.Update(gameTime);
         }
@@ -700,6 +743,7 @@ namespace Omniplatformer
         protected override void Draw(GameTime gameTime)
         {
             // TODO: Add your drawing code here
+
             bool with_light = true, with_foreground = true;
 
             SetCameraPosition();
@@ -715,6 +759,10 @@ namespace Omniplatformer
             RenderSystem.DrawToHUD();
             // TODO: move hud drawing into the hud layer
             RenderSystem.RenderLayers();
+
+            root.VisualPosition = new PointF(300, 300);
+            root.Draw(gameTime.ElapsedGameTime.TotalMilliseconds);
+
             base.Draw(gameTime);
         }
     }

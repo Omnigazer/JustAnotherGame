@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmptyKeys.UserInterface.Designer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,11 +19,11 @@ namespace TestOmniGUI
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : UserControl
+    public partial class MainWindow : UIRoot
     {
         public MainWindow()
         {
-            InitializeComponent();
+
         }
     }
 }

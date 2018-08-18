@@ -13,10 +13,11 @@
     <AssemblyName>Game1</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -56,8 +57,7 @@
     <Compile Include="Components\RelativePositionComponent.cs" />
     <Compile Include="Enums\Skill.cs" />
     <Compile Include="EquipSlotCollection.cs" />
-    <Compile Include="GameData\TestDataGridModel.cs" />
-    <Compile Include="GameData\TestTreeDataItem.cs" />
+    <Compile Include="GameUILibrary\Root.xaml.cs" />
     <Compile Include="HUDStates\EditorHUDState.cs" />
     <Compile Include="HUDStates\DefaultHUDState.cs" />
     <Compile Include="HUDStates\HUDState.cs" />
@@ -69,7 +69,6 @@
     <Compile Include="InventoryEventArgs.cs" />
     <Compile Include="Items\ChaosOrb.cs" />
     <Compile Include="Level.cs" />
-    <Compile Include="GameUILibrary\MainWindow.xaml.cs" />
     <Compile Include="Objects\Chest.cs" />
     <Compile Include="Objects\LifeDrainProjectile.cs" />
     <Compile Include="Spells\LifeDrain.cs" />
@@ -151,11 +150,9 @@
     <Reference Include="EmptyKeys.UserInterface.MonoGame, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EmptyKeysUI_MonoGame.3.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\MonoGame\AnyCPU\EmptyKeys.UserInterface.MonoGame.dll</HintPath>
     </Reference>
-    <Reference Include="MonoGame.Framework">
-      <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoGameConsole, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Console.WindowsDX.3.5.0.2\lib\net451\MonoGameConsole.dll</HintPath>
+    <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -170,6 +167,7 @@
   <ItemGroup>
     <Content Include="BehaviorsLicense.txt" />
     <Content Include="Content\hyu.png" />
+    <Content Include="DirectionalBlurShader.fx" />
     <Content Include="Icon.ico" />
     <Content Include="license.txt" />
     <Content Include="shaders\DirectionalBlurShader.fx" />
@@ -178,12 +176,20 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.config" />
     <None Include="app.manifest" />
-    <None Include="Content\ConsoleFont.xnb" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\GameData\GameData.csproj">
+      <Project>{229e5a19-2800-45fe-8416-3702fda5f2b0}</Project>
+      <Name>GameData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameUILibrary\GameUILibrary.csproj">
+      <Project>{04318ea6-2cbb-4013-a6cb-29e93217ee7c}</Project>
+      <Name>GameUILibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -254,3 +254,9 @@
 #begin Data/village.json
 /copy:Data/village.json
 
+#begin Effects/DirectionalBlurShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/DirectionalBlurShader.fx
+
