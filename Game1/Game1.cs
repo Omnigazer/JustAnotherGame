@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Omniplatformer.HUDStates;
 using Microsoft.Xna.Framework.Media;
 using MonoGameConsole;
+using ImGuiNET;
 
 namespace Omniplatformer
 {
@@ -29,6 +30,8 @@ namespace Omniplatformer
         public List<GameObject> objects = new List<GameObject>();
         // public List<Character> characters = new List<Character>();
         public List<Projectile> projectiles = new List<Projectile>();
+
+        private ImGuiMg _imgui;
 
         // Editor groups
         public List<List<GameObject>> Groups { get; set; } = new List<List<GameObject>>() { new List<GameObject>() };
@@ -61,6 +64,7 @@ namespace Omniplatformer
             graphics = new GraphicsDeviceManager(this);
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Content.RootDirectory = "Content";
+
         }
 
         /// <summary>
@@ -83,6 +87,7 @@ namespace Omniplatformer
             charHUD = new CharHUDState(playerHUD);
             editorHUD = new EditorHUDState(playerHUD);
             HUDState = defaultHUD;
+            _imgui = new ImGuiMg(Window, GraphicsDevice);
         }
 
         public void InitServices()
@@ -310,8 +315,46 @@ namespace Omniplatformer
                 CurrentSongIndex = (CurrentSongIndex + 1) % GameContent.Instance.Songs.Count;
             }
 
-
+            _imgui.Update(gameTime);
+            SubmitImGuiStuff();
             base.Update(gameTime);
+        }
+
+        public void SubmitImGuiStuff()
+        {
+            ImGui.BeginWindow("Title");
+            // ImGui.SetWindowSize(new System.Numerics.Vector2(300, 300));
+
+            ImGui.Columns(2, null, true);
+            ImGui.SetColumnWidth(0, 500);
+            ImGui.SetColumnWidth(1, 500);
+            // ImGui.SetColumnWidth(0, 150);
+
+            //ImGui.NextColumn();
+            ImGui.Text(ImGui.GetColumnsCount().ToString());
+            ImGui.NextColumn();
+
+            ImGui.GetStyle().ItemSpacing = new System.Numerics.Vector2(20, 20);
+
+            //ImGui.TreePop();
+
+            // ImGui.SetColumnOffset(2, 150);
+            ImGui.Text("ASD");
+            if(ImGui.Button("Button"))
+            {
+
+                ClearCurrentLevel();
+            }
+
+            ImGui.IsItemHovered(HoveredFlags.Default);
+
+            ImGui.SameLine();
+            ImGui.Text("TEST");
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.SameLine();
+            ImGui.Text("DSA");
+            ImGui.EndWindow();
         }
 
         public void RegisterObject(GameObject obj)
@@ -693,6 +736,7 @@ namespace Omniplatformer
             RenderSystem.DrawToHUD();
             // TODO: move hud drawing into the hud layer
             RenderSystem.RenderLayers();
+            _imgui.Draw();
             base.Draw(gameTime);
         }
     }
