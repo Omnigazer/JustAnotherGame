@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.Components;
 using Omniplatformer.Enums;
+using Omniplatformer.Items;
 using static Omniplatformer.Enums.Skill;
 
 namespace Omniplatformer
@@ -22,11 +23,11 @@ namespace Omniplatformer
         const int inv_frames = 100;
 
         public bool ItemLocked { get; set; }
-        public WieldedItem WieldedItem { get; private set; }
+        public WieldedItem WieldedItem { get => (WieldedItem)EquipSlots.HandSlot.Item; private set => WieldItem(value); }
 
         // Equipment and inventory
         public Inventory inventory;
-        public EquipSlotCollection equip_slots;
+        public EquipSlotCollection EquipSlots;
 
 
         //
@@ -60,7 +61,7 @@ namespace Omniplatformer
             {
                 Skills.Add(skill, 0);
             }
-            equip_slots = new EquipSlotCollection();
+            EquipSlots = new EquipSlotCollection();
             inventory = new Inventory();
             // TODO: test
             var item = new WieldedItem(damage: 1);
@@ -271,11 +272,11 @@ namespace Omniplatformer
                 GetBonus(x.Bonus);
                 x.onDestroy();
             }
-            else if(item is WieldedItem)
+            else if(item is Item)
             {
                 // TODO: move the inventory into the player class
                 // all this code should be in player's pickup
-                var x = item as WieldedItem;
+                var x = item as Item;
                 PickUp(x);
                 x.Pickupable = false;
                 item.Hide();
@@ -315,13 +316,9 @@ namespace Omniplatformer
             {
                 if (WieldedItem != null)
                     UnwieldItem();
-                WieldedItem = item;
-                item.SetWielder(this);
-
-                // draw-related
-                var item_pos = (PositionComponent)item;
-                item_pos.SetParent(this, AnchorPoint.Hand);
-                item.Reveal();
+                EquipSlots.HandSlot.Item = item;
+                // WieldedItem = item;
+                item.OnEquip(this);
             }
         }
 
@@ -329,16 +326,13 @@ namespace Omniplatformer
         {
             if (!ItemLocked)
             {
-                var item_pos = (PositionComponent)WieldedItem;
-                item_pos.ClearParent();
                 // TODO: should only be executed if it's actually hidden in the inventory or something
-                WieldedItem.Hide();
-                WieldedItem.SetWielder(null);
-                WieldedItem = null;
+                EquipSlots.HandSlot.Item = null;
+                // WieldedItem = null;
             }
         }
 
-        public void PickUp(WieldedItem item)
+        public void PickUp(Item item)
         {
             inventory.AddItem(item);
         }
@@ -349,11 +343,11 @@ namespace Omniplatformer
             if (!ItemLocked)
             {
                 // inventory.AddItem(new WieldedItem(10, GameContent.Instance.bolt));
-                var item = inventory.CurrentSlot.item;
-                inventory.CurrentSlot.item = WieldedItem;
+                var item = inventory.CurrentSlot.Item;
+                inventory.CurrentSlot.Item = WieldedItem;
                 if (item != null)
                 {
-                    WieldItem(item);
+                    WieldItem((WieldedItem)item);
                 }
                 else if (WieldedItem != null)
                 {

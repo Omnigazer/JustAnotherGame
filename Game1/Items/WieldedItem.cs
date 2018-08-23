@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.Utility;
+using Omniplatformer.Items;
 using Newtonsoft.Json.Linq;
 
 namespace Omniplatformer
 {
-    public class WieldedItem : GameObject
+    public class WieldedItem : Item
     {
         // public int Damage { get; set; }
         // public Vector2 Knockback { get; set; }
@@ -30,6 +31,23 @@ namespace Omniplatformer
             Components.Add(new PositionComponent(this, Vector2.Zero, halfsize, 0, new Vector2(0.5f, 0.1f)));
             Components.Add(new RenderComponent(this, Color.White, texture));
             Components.Add(new MeleeDamageHitComponent(this, damage, Knockback));
+        }
+
+        public override void OnEquip(Character character)
+        {
+            SetWielder(character);
+            // draw-related
+            var item_pos = (PositionComponent)this;
+            item_pos.SetParent(character, AnchorPoint.Hand);
+            Reveal();
+        }
+
+        public override void OnUnequip()
+        {
+            Hide();
+            SetWielder(null);
+            var item_pos = (PositionComponent)this;
+            item_pos.ClearParent();
         }
 
         public override object AsJson()

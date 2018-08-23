@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Omniplatformer.HUD;
 using System;
@@ -6,16 +7,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omniplatformer.Items;
+using Omniplatformer.Components;
 
 namespace Omniplatformer.HUDStates
 {
-    public class InventoryHUDState : HUDState
+    public interface IInventoryController
+    {
+        void OnSlotClick(Slot slot);
+    }
+
+    public class InventoryHUDState : HUDState, IInventoryController
     {
         HUDContainer playerHUD;
         InventoryView PlayerInventoryView { get; set; }
         InventoryView TargetInventoryView { get; set; }
         EquipView EquipView { get; set; }
         Game1 Game => GameService.Instance;
+
+        Item MouseStorage { get; set; }
 
         public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
 
@@ -25,18 +35,23 @@ namespace Omniplatformer.HUDStates
         public InventoryHUDState(HUDContainer hud, Inventory inv)
         {
             playerHUD = hud;
-            PlayerInventoryView = new InventoryView(inv, false);
-            EquipView = new EquipView(Game.player);
+            PlayerInventoryView = new InventoryView(this, inv);
+            TargetInventoryView = new InventoryView(this, inv) { Visible = false };
+            EquipView = new EquipView(this, Game.player);
+            Root.RegisterChild(PlayerInventoryView);
+            Root.RegisterChild(TargetInventoryView);
+            Root.RegisterChild(EquipView);
             // TODO: remove this reference
             this.inv = inv;
             SetupControls();
             Game.onTargetInventoryOpen += onTargetInventoryOpen;
-            Game.onTargetInventoryClosed += onTargetInventoryClosed; ;
+            Game.onTargetInventoryClosed += onTargetInventoryClosed;
         }
 
         private void onTargetInventoryOpen(object sender, InventoryEventArgs e)
         {
             SetTargetInventory(e.Inventory);
+            TargetInventoryView.Visible = true;
         }
 
         private void onTargetInventoryClosed(object sender, EventArgs e)
@@ -46,15 +61,43 @@ namespace Omniplatformer.HUDStates
 
         public void SetTargetInventory(Inventory inv)
         {
-            TargetInventoryView = new InventoryView(inv, true);
+            TargetInventoryView.SetInventory(inv);
         }
 
         public void ClearTargetInventory()
         {
-            TargetInventoryView = null;
+            TargetInventoryView.Visible = false;
+            TargetInventoryView.SetInventory(null);
         }
 
-        public override void Draw()
+        public void OnSlotClick(Slot slot)
+        {
+            if (MouseStorage == null)
+            {
+                MouseStorage = slot.Item;
+                slot.Item = null;
+                slot.OnItemRemove(MouseStorage);
+            }
+            else
+            {
+                if (slot.Item == null)
+                {
+                    slot.Item = MouseStorage;
+                    slot.OnItemAdd(slot.Item);
+                    MouseStorage = null;
+                }
+                else
+                {
+                    var tmp = MouseStorage;
+                    MouseStorage = slot.Item;
+                    slot.Item = tmp;
+                    slot.OnItemRemove(MouseStorage);
+                    slot.OnItemAdd(tmp);
+                }
+            }
+        }
+
+        public void ProcessLayout()
         {
             int margin = 50;
             var (screen_width, screen_height) = Game.RenderSystem.GetResolution();
@@ -62,16 +105,33 @@ namespace Omniplatformer.HUDStates
                 screen_width - PlayerInventoryView.Width - margin,
                 margin
                 );
-            PlayerInventoryView.Draw(new Point());
             Point target_inv_position = PlayerInventoryView.Position + new Point(0, PlayerInventoryView.Height) + new Point(0, margin);
             if (TargetInventoryView != null)
                 TargetInventoryView.Position = target_inv_position;
-            TargetInventoryView?.Draw(new Point());
 
             Point equip_position = new Point(600, 2 * margin);
             EquipView.Position = equip_position;
-            EquipView.Draw(new Point());
+        }
+
+        public override void Draw()
+        {
+            // EquipView.Draw(new Point());
+            ProcessLayout();
+            base.Draw();
+            DrawStorage();
             playerHUD.Draw();
+        }
+
+        public virtual void DrawStorage()
+        {
+            var spriteBatch = GraphicsService.Instance;
+            spriteBatch.Begin();
+            if (MouseStorage != null)
+            {
+                var mouse_pos = Mouse.GetState().Position;
+                GraphicsService.DrawScreen(((RenderComponent)MouseStorage).Texture, new Rectangle(mouse_pos, new Point(60, 60)), Color.White, 0, Vector2.Zero);
+            }
+            spriteBatch.End();
         }
 
         public void SetupControls()
@@ -90,17 +150,6 @@ namespace Omniplatformer.HUDStates
         }
 
         InventorySlot dragged_slot;
-        bool lmb_is_pressed;
-
-        /*
-        InventorySlot GetSlotAtPosition(Point position)
-        {
-            InventorySlot slot = null;
-            // we're assuming only one of these will match
-            slot = PlayerInventoryView.GetSlotAtPosition(position) ?? TargetInventoryView?.GetSlotAtPosition(position);
-            return slot;
-        }
-        */
 
         void DragItem(InventorySlot slot)
         {
@@ -111,9 +160,9 @@ namespace Omniplatformer.HUDStates
         {
             if (target != null)
             {
-                var item = target.item;
-                target.item = dragged_slot.item;
-                dragged_slot.item = item;
+                var item = target.Item;
+                target.Item = dragged_slot.Item;
+                dragged_slot.Item = item;
             }
         }
 
@@ -137,42 +186,6 @@ namespace Omniplatformer.HUDStates
                     released_action?.Invoke();
                 }
             }
-
-            HandleMouse();
-        }
-
-        public void HandleMouse()
-        {
-            /*
-            var mouse = Mouse.GetState();
-            // var slot = PlayerInventoryView.GetSlotAtPosition(mouse.Position);
-            var slot = GetSlotAtPosition(mouse.Position);
-            // well, now making assumptions gets silly
-            PlayerInventoryView.HoverSlot(slot);
-            TargetInventoryView?.HoverSlot(slot);
-            if (slot != null)
-            {
-                if (mouse.LeftButton == ButtonState.Pressed)
-                {
-                    // TODO: figure out how to get rid of these twin calls
-                    PlayerInventoryView.SelectSlot(slot);
-                    TargetInventoryView?.SelectSlot(slot);
-                    if (!lmb_is_pressed)
-                    {
-                        DragItem(slot);
-                    }
-                    lmb_is_pressed = true;
-                }
-                else
-                {
-                    if (lmb_is_pressed)
-                    {
-                        DropDraggedSlot(slot);
-                    }
-                    lmb_is_pressed = false;
-                }
-            }
-            */
         }
     }
 }

@@ -11,24 +11,29 @@ namespace Omniplatformer.HUD
 {
     public class InventorySlotView : ViewControl
     {
-        public Texture2D Image { get; set; }
+        public Slot Slot { get; set; }
+        protected override GameObject DragObject { get => Slot.Item; set => Slot.Item = (WieldedItem)value; }
 
-        public InventorySlotView(Point position)
+        public InventorySlotView(Slot slot, Point position)
         {
+            Slot = slot;
             Position = position;
+            IsDragSource = true;
+            IsDropTarget = true;
         }
 
-        public override void Draw(Point position)
+        private void InventorySlotView_Drag(object sender, EventArgs e)
         {
-            // var slot = new InventorySlot(0, 0);
-            var spriteBatch = GraphicsService.Instance;
-            // Point slot_position = new Point(Position.X + (Width + Margin) * slot.Column, Position.Y + (Height + Margin) * slot.Row);
-            Point size = new Point(Width, Height);
-            Rectangle outer_rect = new Rectangle(Position + position, size);
 
-            // Rectangle inner_rect = new Rectangle(bar_position + border_size, size);
-            // float alpha = slot.IsHighlighted ? 1 : 0.6f;
-            float alpha = 1;
+        }
+
+        public override void Draw()
+        {
+            var spriteBatch = GraphicsService.Instance;
+            Point size = new Point(Width, Height);
+            Rectangle outer_rect = new Rectangle(GlobalPosition, size);
+            float alpha = Hover || Slot.IsCurrent ? 1 : 0.6f;
+            // float alpha = 1;
             spriteBatch.Draw(GameContent.Instance.whitePixel, outer_rect, Color.Gray * alpha);
             outer_rect.Inflate(-5, -5);
             /*
@@ -38,9 +43,10 @@ namespace Omniplatformer.HUD
                 spriteBatch.Draw(renderable.Texture, outer_rect, Color.White);
             }
             */
-            if (Image != null)
+            if (Slot.Item != null)
             {
-                spriteBatch.Draw(Image, outer_rect, Color.White);
+                var texture = ((RenderComponent)Slot.Item).Texture;
+                spriteBatch.Draw(texture, outer_rect, Color.White);
             }
         }
     }

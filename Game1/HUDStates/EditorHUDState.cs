@@ -42,6 +42,7 @@ namespace Omniplatformer.HUDStates
             playerHUD.Draw();
             DrawCurrentBlock();
             DrawLogger();
+            base.Draw();
         }
 
         public void InitObjectConstructors()

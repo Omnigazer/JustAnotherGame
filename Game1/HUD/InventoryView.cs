@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Omniplatformer.Components;
+using Omniplatformer.HUDStates;
 using System.Collections.Generic;
 
 namespace Omniplatformer.HUD
@@ -10,89 +12,74 @@ namespace Omniplatformer.HUD
     /// </summary>
     public class InventoryView : ViewControl
     {
-        Inventory Inventory { get; set; }
+        public Inventory Inventory { get; set; }
+        public WieldedItem CursorItem { get; set; }
+        public IInventoryController controller;
         const int slot_width = 70, slot_height = 70;
         const int slot_margin = 15;
 
-        public InventoryView(Inventory inventory, bool target)
+        public InventoryView(IInventoryController controller, Inventory inventory)
         {
+            this.controller = controller;
             Inventory = inventory;
-            int slot_width = 70, slot_height = 70;
+            MouseEnter += InventoryView_MouseEnter;
+            MouseLeave += InventoryView_MouseLeave;
+            InitSlots();
+        }
+
+        public void SetInventory(Inventory inv)
+        {
+            Inventory = inv;
+            if (Inventory != null)
+            {
+                InitSlots();
+            }
+        }
+
+        public void InitSlots()
+        {
+            Children.Clear();
             foreach (var slot in Inventory.slots)
             {
-                Content.Add(new InventorySlotView(
+                var view = new InventorySlotView(slot,
                         new Point((slot_width + slot_margin) * slot.Column,
                         (slot_height + slot_margin) * slot.Row)
-                    )
-                { Width = slot_width, Height = slot_height });
+                        )
+                { Width = slot_width, Height = slot_height };
+                RegisterChild(view);
+                view.MouseUp += View_MouseUp;
             }
             Width = slot_width * Inventory.Cols + slot_margin * (Inventory.Cols - 1);
             Height = slot_height * Inventory.Rows + slot_margin * (Inventory.Rows - 1);
         }
 
-        /*
-        public override void Draw(Point position)
+        private void View_MouseUp(object sender, System.EventArgs e)
         {
-            var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            foreach (var slot in Inventory.slots)
+            var view = (InventorySlotView)sender;
+            controller.OnSlotClick(view.Slot);
+        }
+
+        // TODO: find a better place to extract this
+        public override void Draw()
+        {
+            /*
+            if (CursorItem != null)
             {
-                DrawSlot(slot);
+                var mouse_pos = Mouse.GetState().Position;
+                GraphicsService.DrawScreen(((RenderComponent)CursorItem).Texture, new Rectangle(mouse_pos, new Point(60, 60)), Color.White, 0, Vector2.Zero);
             }
-            spriteBatch.End();
+            */
+            base.Draw();
         }
 
-
-        public Rectangle GetRect(InventorySlot slot)
+        private void InventoryView_MouseLeave(object sender, System.EventArgs e)
         {
-            var slot_offset = new Point((slot_width + slot_margin) * slot.Column, (slot_height + slot_margin) * slot.Row);
-            return new Rectangle(Position + slot_offset, new Point(slot_width, slot_height));
+            GameService.Instance.Log("InventoryView MouseLeave");
         }
 
-
-        public void DrawSlot(InventorySlot slot)
+        private void InventoryView_MouseEnter(object sender, System.EventArgs e)
         {
-            var spriteBatch = GraphicsService.Instance;
-            Point slot_position = new Point(Position.X + (slot_width + slot_margin) * slot.Column, Position.Y + (slot_height + slot_margin) * slot.Row);
-            Point size = new Point(slot_width, slot_height);
-            Rectangle outer_rect = new Rectangle(slot_position, size);
-
-            // Rectangle inner_rect = new Rectangle(bar_position + border_size, size);
-            float alpha = slot.IsHighlighted ? 1 : 0.6f;
-            spriteBatch.Draw(GameContent.Instance.whitePixel, outer_rect, Color.Gray * alpha);
-            outer_rect.Inflate(-5, -5);
-            if (slot.item != null)
-            {
-                var renderable = (RenderComponent)slot.item;
-                spriteBatch.Draw(renderable.Texture, outer_rect, Color.White);
-            }
+            GameService.Instance.Log("InventoryView MouseEnter");
         }
-
-        public InventorySlot GetSlotAtPosition(Point pos)
-        {
-            foreach (var slot in Inventory.slots)
-            {
-                var rect = GetRect(slot);
-                if (rect.Contains(pos))
-                {
-                    return slot;
-                }
-            }
-            return null;
-        }
-
-        public void HoverSlot(InventorySlot slot)
-        {
-            foreach (var i_slot in Inventory.slots)
-            {
-                i_slot.IsHovered = (i_slot == slot);
-            }
-        }
-
-        public void SelectSlot(InventorySlot slot)
-        {
-            Inventory.SetCurrentSlot(slot);
-        }
-        */
     }
 }

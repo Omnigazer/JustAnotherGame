@@ -300,7 +300,11 @@ namespace Omniplatformer
                 Exit();
             StopMoving();
             if (!game_over && !console.Opened && IsActive)
+            {
                 HUDState.HandleControls();
+                HUDState.HandleMouseEvents();
+            }
+
             Simulate();
             // var song = GameContent.Instance.vampireKiller;
             if (MediaPlayer.State != MediaState.Playing && false)

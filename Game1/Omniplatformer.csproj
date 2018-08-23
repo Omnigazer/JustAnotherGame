@@ -63,9 +63,11 @@
     <Compile Include="HUD\EquipView.cs" />
     <Compile Include="HUD\InventorySlotView.cs" />
     <Compile Include="HUD\ViewControl.cs" />
+    <Compile Include="HUD\Window.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="InventoryEventArgs.cs" />
     <Compile Include="Items\ChaosOrb.cs" />
+    <Compile Include="Items\Item.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Objects\Chest.cs" />
     <Compile Include="Objects\LifeDrainProjectile.cs" />

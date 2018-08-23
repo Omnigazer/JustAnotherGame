@@ -4,20 +4,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omniplatformer.Items;
 
 namespace Omniplatformer
 {
-    public class EquipSlotCollection : IEnumerable<EquipSlot>
+    public class EquipSlotCollection // : IEnumerable<EquipSlot>
     {
-        public List<EquipSlot> miscSlots;
+        public EquipSlot HandSlot { get; set; }
+        public List<EquipSlot> MiscSlots { get; set; }
 
         public EquipSlotCollection()
         {
-            miscSlots = new List<EquipSlot>();
-            miscSlots.Add(new EquipSlot());
-            miscSlots.Add(new EquipSlot());
+            MiscSlots = new List<EquipSlot>();
+            for(int i =0;i<6;i++)
+            {
+                MiscSlots.Add(new EquipSlot());
+            }
+            HandSlot = new EquipSlot();
         }
 
+        /*
         public IEnumerator<EquipSlot> GetEnumerator()
         {
             return miscSlots.GetEnumerator();
@@ -28,11 +34,20 @@ namespace Omniplatformer
         {
             return miscSlots.GetEnumerator();
         }
+        */
 
     }
 
-    public class EquipSlot
+    public class EquipSlot : Slot
     {
-        public GameObject Item { get; set; }
+        public override void OnItemAdd(Item item)
+        {
+            item.OnEquip(GameService.Player);
+        }
+
+        public override void OnItemRemove(Item item)
+        {
+            item.OnUnequip();
+        }
     }
 }

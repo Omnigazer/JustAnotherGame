@@ -52,24 +52,11 @@ namespace Omniplatformer.HUD
             GraphicsDevice.SetRenderTarget(null);
         }
 
-        void DrawCursor()
-        {
-            var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            Point cursor_position = Mouse.GetState().Position;
-            Point cursor_size = new Point(24, 48);
-            var rect = new Rectangle(cursor_position, cursor_size);
-            // Draw directly via the SpriteBatch instance bypassing y-axis flip
-            GraphicsService.Instance.Draw(GameContent.Instance.cursor, rect, Color.White);
-            spriteBatch.End();
-        }
-
         public void Draw()
         {
             // TODO: maybe group some/all of this into a single spriteBatch
             var spriteBatch = GraphicsService.Instance;
             // DrawHealthBarLightMask();
-            DrawCursor();
             DrawHealthBar();
             foreach (var bar in mana_bars)
             {

@@ -26,7 +26,7 @@ namespace Omniplatformer
                 throw new Exception("Items supplied to inventory exceed its capacity");
             for(int i = 0; i < items.Count(); i++)
             {
-                Inventory.slots[i].item = items.ElementAt(i);
+                Inventory.slots[i].Item = items.ElementAt(i);
             }
             Pickupable = false;
             Solid = false;
@@ -47,7 +47,7 @@ namespace Omniplatformer
                 Position = PositionJson.ToJson(this),
                 Items = new List<object>()
                 {
-                    Inventory.slots[0].item.AsJson()
+                    Inventory.slots[0].Item.AsJson()
                 }
             };
         }

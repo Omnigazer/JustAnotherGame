@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omniplatformer.Items;
 
 namespace Omniplatformer
 {
@@ -26,9 +27,9 @@ namespace Omniplatformer
             CurrentSlot = slots[0];
         }
 
-        public void AddItem(WieldedItem item)
+        public void AddItem(Item item)
         {
-            slots.Find(slot => slot.item == null).item = item;
+            slots.Find(slot => slot.Item == null).Item = item;
         }
 
         public void SetCurrentSlot(InventorySlot slot)
@@ -72,7 +73,15 @@ namespace Omniplatformer
         }
     }
 
-    public class InventorySlot
+    public abstract class Slot
+    {
+        public Item Item { get; set; }
+        public bool IsCurrent { get; set; }
+        public virtual void OnItemAdd(Item item) { }
+        public virtual void OnItemRemove(Item item) { }
+    }
+
+    public class InventorySlot : Slot
     {
         /// <summary>
         /// Zero-based slot index
@@ -80,10 +89,6 @@ namespace Omniplatformer
         public int Column { get; set; }
         public int Row { get; set; }
 
-        public WieldedItem item;
-
-
-        public bool IsCurrent { get; set; }
         public bool IsHovered { get; set; }
         public bool IsHighlighted => IsCurrent || IsHovered;
 
