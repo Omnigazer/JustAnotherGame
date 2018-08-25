@@ -70,7 +70,7 @@ namespace Omniplatformer.Characters
             movable.move_direction = pos.WorldPosition.Center.X < player_pos.WorldPosition.Center.X ? Direction.Right : Direction.Left;
             if (TryCooldown("Cast", 120))
             {
-                Spells.FireBolt.Cast(this);
+                Spells.FireBolt.Cast(this, player_pos.WorldPosition);
             }
         }
 

@@ -20,7 +20,7 @@ namespace Omniplatformer.Spells
                 var movable = (CharMoveComponent)player;
                 var proj_movable = projectile.GetComponent<ProjectileMoveComponent>();
                 int dir_sign = (int)pos.WorldPosition.face_direction;
-                proj_movable.direction = new Vector2(5 * dir_sign, 0);
+                proj_movable.Direction = new Vector2(5 * dir_sign, 0);
                 GameService.Instance.RegisterObject(projectile);
             }
         }

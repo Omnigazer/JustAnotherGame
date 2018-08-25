@@ -27,16 +27,21 @@ namespace Omniplatformer.Spells
         }
         */
 
-        public static void Cast(Character character)
+        public static void Cast(Character caster, Position target)
         {
-            if (character.SpendMana(ManaType.Chaos, 1))
+            if (caster.SpendMana(ManaType.Chaos, 1))
             {
-                PositionComponent pos = (PositionComponent)character;
-                var projectile = new FireBoltProjectile(pos.WorldPosition.Center, new Vector2(5, 5), character);
-                var movable = (CharMoveComponent)character;
+                PositionComponent pos = (PositionComponent)caster;
+                var projectile = new FireBoltProjectile(pos.WorldPosition.Center, new Vector2(5, 5), caster);
+                // var movable = (CharMoveComponent)caster;
                 var proj_movable = projectile.GetComponent<ProjectileMoveComponent>();
-                int dir_sign = (int)pos.WorldPosition.face_direction;
-                proj_movable.direction = new Vector2(15 * dir_sign, 0);
+                // int dir_sign = (int)pos.WorldPosition.face_direction;
+                // Vector2 direction = new Vector2()
+                float speed = 15;
+                Vector2 direction = target.Coords - pos.WorldPosition.Coords;
+                direction.Normalize();
+                // proj_movable.direction = new Vector2(15 * dir_sign, 0);
+                proj_movable.Direction = speed * direction;
                 GameService.Instance.RegisterObject(projectile);
             }
         }

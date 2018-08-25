@@ -10,7 +10,7 @@ namespace Omniplatformer.Components
 
     public class ProjectileMoveComponent : MoveComponent
     {
-        public Vector2 direction;
+        public Vector2 Direction { get; set; }
 
         public ProjectileMoveComponent(GameObject obj) : base(obj)
         {
@@ -26,7 +26,7 @@ namespace Omniplatformer.Components
         protected override void ProcessCollision(Direction direction, GameObject obj)
         {
             base.ProcessCollision(direction, obj);
-            if (direction != Direction.None && obj != GameObject.Source && (obj.Solid || obj.Hittable))
+            if (direction != Omniplatformer.Direction.None && obj != GameObject.Source && (obj.Solid || obj.Hittable) && obj.Team != GameObject.Team)
             {
                 var hittable = GetComponent<HitComponent>();
                 hittable?.Hit(obj);
@@ -38,7 +38,7 @@ namespace Omniplatformer.Components
 
         public override Vector2 GetMoveVector()
         {
-            CurrentMovement = direction;
+            CurrentMovement = Direction;
             return CurrentMovement;
         }
     }
