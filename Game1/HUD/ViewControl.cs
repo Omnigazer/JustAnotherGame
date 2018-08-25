@@ -20,7 +20,6 @@ namespace Omniplatformer.HUD
         public ViewControl Root => Parent?.Root ?? this;
         public List<ViewControl> Children { get; set; } = new List<ViewControl>();
         public IEnumerable<ViewControl> VisibleChildren => Children?.Where(x => x.Visible);
-        public static EventManager EventManager { get; } = new EventManager();
         public bool Hover { get; private set; }
         public bool Visible { get; set; } = true;
         public bool IsDragSource { get; set; } = false;
