@@ -98,4 +98,22 @@ namespace Omniplatformer
             Column = column;
         }
     }
+
+    public class EquipSlot : Slot
+    {
+        protected override IEnumerable<Descriptor> AcceptedDescriptors()
+        {
+            return new[] { Descriptor.HandSlot };
+        }
+
+        public override void OnItemAdd(Item item)
+        {
+            item.OnEquip(GameService.Player);
+        }
+
+        public override void OnItemRemove(Item item)
+        {
+            item.OnUnequip();
+        }
+    }
 }

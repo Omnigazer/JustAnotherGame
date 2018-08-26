@@ -35,19 +35,5 @@ namespace Omniplatformer
             return miscSlots.GetEnumerator();
         }
         */
-
-    }
-
-    public class EquipSlot : Slot
-    {
-        public override void OnItemAdd(Item item)
-        {
-            item.OnEquip(GameService.Player);
-        }
-
-        public override void OnItemRemove(Item item)
-        {
-            item.OnUnequip();
-        }
     }
 }
