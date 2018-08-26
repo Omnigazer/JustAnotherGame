@@ -42,7 +42,7 @@ namespace Omniplatformer
 
         public GameConsole console;
 
-        public List<string> Logs { get; set; } = new List<string>() { "test" };
+        public Queue<string> Logs { get; set; } = new Queue<string>();
 
         // Events
         public event EventHandler<InventoryEventArgs> onTargetInventoryOpen = delegate { };
@@ -125,7 +125,11 @@ namespace Omniplatformer
 
         public void Log(string message)
         {
-            Logs.Add(message);
+            Logs.Enqueue(message);
+            if (Logs.Count > 10)
+            {
+                Logs.Dequeue();
+            }
         }
 
         /// <summary>
