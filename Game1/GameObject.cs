@@ -20,6 +20,11 @@ namespace Omniplatformer
             return Components.Find(x => x is T) as T;
         }
 
+        public bool HasDescriptor(Descriptor descriptor)
+        {
+            return Descriptors.Exists(x => x == descriptor);
+        }
+
         public virtual object AsJson()
         {
             return new { };
@@ -39,6 +44,7 @@ namespace Omniplatformer
         // public virtual bool Hidden { get; set; }
         public Team Team { get; set; }
         public virtual GameObject Source => this;
+        public List<Descriptor> Descriptors { get; set; } = new List<Descriptor>();
 
         // Graphics
         // SpriteBatch spriteBatch;

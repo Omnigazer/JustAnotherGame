@@ -48,6 +48,7 @@
     <Compile Include="Characters\Goblin.cs" />
     <Compile Include="Components\LifeDrainHitComponent.cs" />
     <Compile Include="Components\MeleeDamageHitComponent.cs" />
+    <Compile Include="Descriptor.cs" />
     <Compile Include="Effects.cs" />
     <Compile Include="Enums\AnchorPoint.cs" />
     <Compile Include="Components\DamageHitComponent.cs" />

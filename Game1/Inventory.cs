@@ -77,6 +77,8 @@ namespace Omniplatformer
     {
         public Item Item { get; set; }
         public bool IsCurrent { get; set; }
+        protected virtual IEnumerable<Descriptor> AcceptedDescriptors() { return Enumerable.Empty<Descriptor>(); }
+        public bool AcceptsItem(Item item) { return AcceptedDescriptors().Intersect(item.Descriptors).Any(); }
         public virtual void OnItemAdd(Item item) { }
         public virtual void OnItemRemove(Item item) { }
     }
@@ -91,6 +93,10 @@ namespace Omniplatformer
 
         public bool IsHovered { get; set; }
         public bool IsHighlighted => IsCurrent || IsHovered;
+        protected override IEnumerable<Descriptor> AcceptedDescriptors()
+        {
+            return new[] { Descriptor.Item };
+        }
 
         public InventorySlot(int row, int column)
         {

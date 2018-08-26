@@ -80,19 +80,22 @@ namespace Omniplatformer.HUDStates
             }
             else
             {
-                if (slot.Item == null)
+                if (slot.AcceptsItem(MouseStorage))
                 {
-                    slot.Item = MouseStorage;
-                    slot.OnItemAdd(slot.Item);
-                    MouseStorage = null;
-                }
-                else
-                {
-                    var tmp = MouseStorage;
-                    MouseStorage = slot.Item;
-                    slot.Item = tmp;
-                    slot.OnItemRemove(MouseStorage);
-                    slot.OnItemAdd(tmp);
+                    if (slot.Item == null)
+                    {
+                        slot.Item = MouseStorage;
+                        slot.OnItemAdd(slot.Item);
+                        MouseStorage = null;
+                    }
+                    else
+                    {
+                        var tmp = MouseStorage;
+                        MouseStorage = slot.Item;
+                        slot.Item = tmp;
+                        slot.OnItemRemove(MouseStorage);
+                        slot.OnItemAdd(tmp);
+                    }
                 }
             }
         }
