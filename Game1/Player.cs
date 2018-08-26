@@ -216,7 +216,7 @@ namespace Omniplatformer
         public GameObject GetMeleeTarget(float range)
         {
             var pos = GetComponent<PositionComponent>();
-            return pos.GetClosestObject(new Vector2(range * (int)pos.WorldPosition.face_direction, 0));
+            return pos.GetClosestObject(new Vector2(range * (int)pos.WorldPosition.face_direction, 0), x => x.Hittable && x.Team != Team.Friend);
         }
 
         private void onAttackend(object sender, AnimatedRenderComponent.AnimationEventArgs e)
