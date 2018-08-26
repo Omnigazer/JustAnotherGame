@@ -26,8 +26,6 @@ namespace Omniplatformer
         public Player player;
         public Level CurrentLevel { get; set; }
         public List<GameObject> objects = new List<GameObject>();
-        // public List<Character> characters = new List<Character>();
-        public List<Projectile> projectiles = new List<Projectile>();
 
         // Editor groups
         public List<List<GameObject>> Groups { get; set; } = new List<List<GameObject>>() { new List<GameObject>() };
@@ -102,16 +100,17 @@ namespace Omniplatformer
                 new Vector2(15, 27)
                 // new Vector2(11, 19.2f)
             );
-            RenderSystem.drawables.Add((RenderComponent)player);
+            AddToMainScene(player);
             player._onDestroy += GameOver;
+            // RenderSystem.drawables.Add((RenderComponent)player);
 
             foreach (var obj in GameContent.Instance.level.objects)
             {
-                RegisterObject(obj);
+                AddToMainScene(obj);
             }
             foreach (var character in GameContent.Instance.level.characters)
             {
-                RegisterObject(character);
+                AddToMainScene(character);
             }
 
             LoadGroup("village", new Vector2(1300, 0));
@@ -120,16 +119,6 @@ namespace Omniplatformer
         private void GameOver(object sender, EventArgs e)
         {
             game_over = true;
-            RenderSystem.drawables.Remove((RenderComponent)player);
-        }
-
-        public void Log(string message)
-        {
-            Logs.Enqueue(message);
-            if (Logs.Count > 10)
-            {
-                Logs.Dequeue();
-            }
         }
 
         /// <summary>
@@ -156,141 +145,6 @@ namespace Omniplatformer
         {
             // TODO: Unload any non ContentManager content here
         }
-
-        #region Console
-        void LoadConsole(SpriteBatch spriteBatch)
-        {
-            System.Windows.Forms.Form winGameWindow = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(Window.Handle);
-            winGameWindow.Show();
-            winGameWindow.Hide();
-            var x = System.Windows.Forms.Application.OpenForms;
-            Services.AddService(typeof(SpriteBatch), spriteBatch);
-            console = new GameConsole(this, spriteBatch, new GameConsoleOptions
-            {
-                ToggleKey = 192,
-                Font = Content.Load<SpriteFont>("ConsoleFont"),
-                FontColor = Color.LawnGreen,
-                Prompt = "~>",
-                PromptColor = Color.Crimson,
-                CursorColor = Color.OrangeRed,
-                BackgroundColor = new Color(Color.Black, 150),
-                PastCommandOutputColor = Color.Aqua,
-                BufferColor = Color.Gold
-            });
-
-            console.AddCommand("ping", a =>
-            {
-                // TODO your logic
-                return String.Format("pong");
-            });
-
-            console.AddCommand("merge", a =>
-            {
-                if (a.Length == 2 && int.TryParse(a[0], out int first) && int.TryParse(a[1], out int second))
-                {
-                    if (Groups.Count > Math.Max(first, second))
-                    {
-                        foreach(var obj in Groups[second])
-                        {
-                            Groups[first].Add(obj);
-                        }
-                        return String.Format("Merged group {0} into {1}", second, first);
-                    }
-                    else
-                    {
-                        return "Index out of bounds";
-                    }
-                }
-                return String.Format("invalid args");
-            });
-
-            console.AddCommand("savelevel", a =>
-            {
-                if (a.Length == 1)
-                {
-                    var name = a[0];
-                    SaveLevel(name);
-                    return ("Level saved.");
-                }
-                else
-                    return String.Format("invalid args");
-            });
-
-            console.AddCommand("clearlevel", a =>
-            {
-                ClearCurrentLevel();
-                return "Level cleared.";
-            });
-
-            console.AddCommand("savegroup", a =>
-            {
-                if (a.Length == 2 && int.TryParse(a[0], out int index))
-                {
-                    string name = a[1];
-                    SaveGroup(index, name);
-                    return "Group saved.";
-                }
-                else
-                    return String.Format("invalid args");
-            });
-
-            console.AddCommand("loadgroup", a =>
-            {
-                if (a.Length == 1)
-                {
-                    LoadGroup(a[0]);
-                    return "Loaded.";
-                }
-                else
-                    return String.Format("invalid args");
-            });
-        }
-        #endregion
-
-        #region Level code
-        public void SaveLevel(string name)
-        {
-            Log("Saving level");
-            string path = String.Format("{0}.json", name);
-            CurrentLevel.Save(path);
-        }
-
-        public void ClearCurrentLevel()
-        {
-            // Clear everything
-            objects.Clear();
-            RenderSystem.drawables.Clear();
-            CurrentLevel.objects.Clear();
-
-            // Register the player back
-            RenderSystem.drawables.Add((RenderComponent)player);
-        }
-
-        /// <summary>
-        /// Load group of objects, or "location"
-        /// </summary>
-        /// <param name="name"></param>
-        public void LoadGroup(string name, Vector2? origin = null)
-        {
-            Log(String.Format("Loading group '{0}'", name));
-            string path = String.Format("Content/Data/{0}.json", name);
-
-            var group = GameContent.Instance.level.LoadGroup(path, origin ?? ((PositionComponent)player).WorldPosition.Coords);
-            foreach (var obj in group)
-            {
-                RegisterObject(obj);
-                CurrentLevel.objects.Add(obj);
-            }
-            Groups.Add(group);
-        }
-
-        public void SaveGroup(int index, string name)
-        {
-            Log(String.Format("Saving current group {0}", index));
-            string path = String.Format("{0}.json", name);
-            CurrentLevel.SaveGroup(Groups[index], path);
-        }
-        #endregion
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -321,51 +175,72 @@ namespace Omniplatformer
             base.Update(gameTime);
         }
 
-        public void RegisterObject(GameObject obj)
+        /// <summary>
+        /// This is called when the game should draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Draw(GameTime gameTime)
+        {
+            // TODO: Add your drawing code here
+            bool with_light = true, with_foreground = true;
+            // Draw foreground into the secretTarget
+            RenderSystem.DrawToRevealingMask();
+            if (with_foreground)
+                RenderSystem.DrawToForegroundLayer();
+            // Draw light masks into the lightsTarget
+            if (with_light)
+                RenderSystem.DrawLightMasks();
+            // Draw everything into the mainTarget
+            RenderSystem.DrawToMainLayer();
+            RenderSystem.DrawToHUD();
+            // TODO: move hud drawing into the hud layer
+            RenderSystem.RenderLayers();
+            base.Draw(gameTime);
+        }
+
+        public void Log(string message)
+        {
+            Logs.Enqueue(message);
+            if (Logs.Count > 10)
+            {
+                Logs.Dequeue();
+            }
+        }
+
+        public void AddToMainScene(GameObject obj)
         {
             objects.Add(obj);
-            RenderSystem.RegisterDrawable(obj);
+            var drawable = (RenderComponent)obj;
+            if (drawable != null)
+                RenderSystem.RegisterDrawable(drawable);
             obj._onDestroy += GameObject_onDestroy;
+        }
+
+        public void RemoveFromMainScene(GameObject obj)
+        {
+            objects.Remove(obj);
+            RenderSystem.RemoveFromDrawables((RenderComponent)obj);
+            obj._onDestroy -= GameObject_onDestroy;
         }
 
         private void GameObject_onDestroy(object sender, EventArgs e)
         {
             var obj = (GameObject)sender;
-            objects.Remove(obj);
-        }
-
-        public void RegisterObject(Projectile projectile)
-        {
-            projectiles.Add(projectile);
-            RenderSystem.RegisterDrawable(projectile);
-            projectile._onDestroy += Projectile_onDestroy;
-        }
-
-        private void Projectile_onDestroy(object sender, EventArgs e)
-        {
-            var projectile = (Projectile)sender;
-            projectiles.Remove(projectile);
+            RemoveFromMainScene(obj);
         }
 
         #region Simulate
         public void Simulate()
         {
+            // Update camera offset based on player position
+            var pos = (PositionComponent)player;
+            RenderSystem.SetCameraPosition(pos.WorldPosition.Center);
             RenderSystem.Tick();
-            var player_collisions = new List<(Direction, GameObject)>();
-            var player_pos = (PositionComponent)player;
-            for (int i = objects.Count - 1; i >= 0; i--)
-            {
-                var obj = objects[i];
-                var collision_direction = player_pos.Collides(obj);
-                if (collision_direction != Direction.None)
-                    player_collisions.Add((collision_direction, obj));
-            }
-            // for (int j = characters.Count - 1; j >= 0; j--)
             for (int j = objects.Count - 1; j >= 0; j--)
             {
                 var collisions = new List<(Direction, GameObject)>();
                 var obj = objects[j];
-                var pos = (PositionComponent)obj;
+                pos = (PositionComponent)obj;
                 Direction collision_direction;
 
                 foreach (var other_obj in objects)
@@ -376,49 +251,14 @@ namespace Omniplatformer
                         collisions.Add((collision_direction, other_obj));
                 }
 
-                collision_direction = pos.Collides(player);
-                // TODO: collision with a player should trump / complement other collisions here
-                if (collision_direction != Direction.None)
-                    collisions.Add((collision_direction, player));
-
-                // TODO: move this into the tick
                 var obj_movable = (MoveComponent)obj;
                 obj_movable?.ProcessCollisionInteractions(collisions);
-                obj_movable?.Move();
-
                 obj.Tick();
             }
-
-            for (int i = projectiles.Count - 1; i >= 0; i--)
-            {
-                var projectile_collisions = new List<(Direction, GameObject)>();
-                var projectile = projectiles[i];
-                var projectile_pos = (PositionComponent)projectile;
-
-                var collision_direction = projectile_pos.Collides(player);
-                if (collision_direction != Direction.None)
-                    projectile_collisions.Add((collision_direction, player));
-
-                for (int j = objects.Count - 1; j >= 0; j--)
-                {
-                    var platform = objects[j];
-                    collision_direction = projectile_pos.Collides(platform);
-                    if (collision_direction != Direction.None)
-                        projectile_collisions.Add((collision_direction, platform));
-                }
-
-                var movable = (MoveComponent)projectile;
-                movable.ProcessCollisionInteractions(projectile_collisions);
-                projectile.Tick();
-            }
-
-            var player_movable = (MoveComponent)player;
-            player_movable.ProcessCollisionInteractions(player_collisions);
-            player_movable.Move();
-            player.Tick();
         }
         #endregion
 
+        #region Position logic
         public GameObject GetObjectAtCoords(Point pt)
         {
             var game_click_position = RenderSystem.ScreenToGame(pt);
@@ -454,6 +294,7 @@ namespace Omniplatformer
         {
             return GetObjectAtCoords(Mouse.GetState().Position);
         }
+        #endregion
 
         #region Player Actions
 
@@ -658,36 +499,139 @@ namespace Omniplatformer
 
         #endregion
 
-        public void SetCameraPosition()
+        #region Console
+        void LoadConsole(SpriteBatch spriteBatch)
         {
-            // Update camera offset based on player position
-            var pos = (PositionComponent)player;
-            RenderSystem.Camera.Position = pos.WorldPosition.Center;
+            System.Windows.Forms.Form winGameWindow = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(Window.Handle);
+            winGameWindow.Show();
+            winGameWindow.Hide();
+            var x = System.Windows.Forms.Application.OpenForms;
+            Services.AddService(typeof(SpriteBatch), spriteBatch);
+            console = new GameConsole(this, spriteBatch, new GameConsoleOptions
+            {
+                ToggleKey = 192,
+                Font = Content.Load<SpriteFont>("ConsoleFont"),
+                FontColor = Color.LawnGreen,
+                Prompt = "~>",
+                PromptColor = Color.Crimson,
+                CursorColor = Color.OrangeRed,
+                BackgroundColor = new Color(Color.Black, 150),
+                PastCommandOutputColor = Color.Aqua,
+                BufferColor = Color.Gold
+            });
+
+            console.AddCommand("ping", a =>
+            {
+                // TODO your logic
+                return String.Format("pong");
+            });
+
+            console.AddCommand("merge", a =>
+            {
+                if (a.Length == 2 && int.TryParse(a[0], out int first) && int.TryParse(a[1], out int second))
+                {
+                    if (Groups.Count > Math.Max(first, second))
+                    {
+                        foreach (var obj in Groups[second])
+                        {
+                            Groups[first].Add(obj);
+                        }
+                        return String.Format("Merged group {0} into {1}", second, first);
+                    }
+                    else
+                    {
+                        return "Index out of bounds";
+                    }
+                }
+                return String.Format("invalid args");
+            });
+
+            console.AddCommand("savelevel", a =>
+            {
+                if (a.Length == 1)
+                {
+                    var name = a[0];
+                    SaveLevel(name);
+                    return ("Level saved.");
+                }
+                else
+                    return String.Format("invalid args");
+            });
+
+            console.AddCommand("clearlevel", a =>
+            {
+                ClearCurrentLevel();
+                return "Level cleared.";
+            });
+
+            console.AddCommand("savegroup", a =>
+            {
+                if (a.Length == 2 && int.TryParse(a[0], out int index))
+                {
+                    string name = a[1];
+                    SaveGroup(index, name);
+                    return "Group saved.";
+                }
+                else
+                    return String.Format("invalid args");
+            });
+
+            console.AddCommand("loadgroup", a =>
+            {
+                if (a.Length == 1)
+                {
+                    LoadGroup(a[0]);
+                    return "Loaded.";
+                }
+                else
+                    return String.Format("invalid args");
+            });
+        }
+        #endregion
+
+        #region Level code
+        public void SaveLevel(string name)
+        {
+            Log("Saving level");
+            string path = String.Format("{0}.json", name);
+            CurrentLevel.Save(path);
+        }
+
+        public void ClearCurrentLevel()
+        {
+            // Clear everything
+            objects.Clear();
+            RenderSystem.drawables.Clear();
+            CurrentLevel.objects.Clear();
+
+            // Register the player back
+            AddToMainScene(player);
         }
 
         /// <summary>
-        /// This is called when the game should draw itself.
+        /// Load group of objects, or "location"
         /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
+        /// <param name="name"></param>
+        public void LoadGroup(string name, Vector2? origin = null)
         {
-            // TODO: Add your drawing code here
-            bool with_light = true, with_foreground = true;
+            Log(String.Format("Loading group '{0}'", name));
+            string path = String.Format("Content/Data/{0}.json", name);
 
-            SetCameraPosition();
-            // Draw foreground into the secretTarget
-            RenderSystem.DrawToRevealingMask();
-            if (with_foreground)
-                RenderSystem.DrawToForegroundLayer();
-            // Draw light masks into the lightsTarget
-            if (with_light)
-                RenderSystem.DrawLightMasks();
-            // Draw everything into the mainTarget
-            RenderSystem.DrawToMainLayer();
-            RenderSystem.DrawToHUD();
-            // TODO: move hud drawing into the hud layer
-            RenderSystem.RenderLayers();
-            base.Draw(gameTime);
+            var group = GameContent.Instance.level.LoadGroup(path, origin ?? ((PositionComponent)player).WorldPosition.Coords);
+            foreach (var obj in group)
+            {
+                AddToMainScene(obj);
+                CurrentLevel.objects.Add(obj);
+            }
+            Groups.Add(group);
         }
+
+        public void SaveGroup(int index, string name)
+        {
+            Log(String.Format("Saving current group {0}", index));
+            string path = String.Format("{0}.json", name);
+            CurrentLevel.SaveGroup(Groups[index], path);
+        }
+        #endregion
     }
 }

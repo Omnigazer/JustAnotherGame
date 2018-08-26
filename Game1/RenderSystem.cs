@@ -47,6 +47,11 @@ namespace Omniplatformer
             InitRenderTargets();
         }
 
+        public void SetCameraPosition(Vector2 coords)
+        {
+            Camera.Position = coords;
+        }
+
         public void SetResolution(int width, int height)
         {
             graphics.PreferredBackBufferWidth = width;
@@ -65,22 +70,15 @@ namespace Omniplatformer
             // day_loop = (day_loop + 1) % day_loop_length;
         }
 
-        public void RegisterDrawable(GameObject obj)
+        public void RegisterDrawable(RenderComponent drawable)
         {
-            var drawable = (RenderComponent)obj;
-            if (drawable != null)
-            {
-                drawables.Add(drawable);
-                drawables = drawables.OrderBy(x => x.ZIndex).ToList();
-            }
-            obj._onDestroy += RemoveFromDrawables;
+            drawables.Add(drawable);
+            drawables = drawables.OrderBy(x => x.ZIndex).ToList();
         }
 
-        public void RemoveFromDrawables(object sender, EventArgs e)
+        public void RemoveFromDrawables(RenderComponent drawable)
         {
-            GameObject obj = (GameObject)sender;
-            // TODO: make sure it's the same drawable as registered
-            drawables.Remove((RenderComponent)obj);
+            drawables.Remove(drawable);
         }
 
         public void DrawToForegroundLayer()

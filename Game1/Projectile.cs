@@ -15,6 +15,7 @@ namespace Omniplatformer
         {
             TTL = default_ttl;
             _source = source;
+            Solid = false;
         }
 
         private GameObject _source;

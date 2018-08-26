@@ -21,7 +21,7 @@ namespace Omniplatformer.Spells
                 var proj_movable = projectile.GetComponent<ProjectileMoveComponent>();
                 int dir_sign = (int)pos.WorldPosition.face_direction;
                 proj_movable.Direction = new Vector2(5 * dir_sign, 0);
-                GameService.Instance.RegisterObject(projectile);
+                GameService.Instance.AddToMainScene(projectile);
             }
         }
     }

@@ -308,7 +308,7 @@ namespace Omniplatformer.HUDStates
                         // var obj = new SolidPlatform(coords, halfsize, origin);
                         var obj = PositionalConstructors[CurrentConstructor](click_coords, halfsize, origin);
                         CurrentGroup.Add(obj);
-                        Game.RegisterObject(obj);
+                        Game.AddToMainScene(obj);
                         Game.CurrentLevel.objects.Add(obj);
                     }
                 }
@@ -321,7 +321,6 @@ namespace Omniplatformer.HUDStates
                 {
                     var obj = Game.GetObjectAtCursor();
                     Game.CurrentLevel.objects.Remove(obj);
-                    Game.objects.Remove(obj);
                     foreach (var group in Groups)
                     {
                         group.Remove(obj);

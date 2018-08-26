@@ -42,7 +42,7 @@ namespace Omniplatformer.Spells
                 direction.Normalize();
                 // proj_movable.direction = new Vector2(15 * dir_sign, 0);
                 proj_movable.Direction = speed * direction;
-                GameService.Instance.RegisterObject(projectile);
+                GameService.Instance.AddToMainScene(projectile);
             }
         }
     }

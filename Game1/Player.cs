@@ -65,7 +65,7 @@ namespace Omniplatformer
             inventory = new Inventory();
             // TODO: test
             var item = new WieldedItem(damage: 1);
-            Game.RegisterObject(item);
+            Game.AddToMainScene(item);
             item.Hide();
             inventory.AddItem(item);
 

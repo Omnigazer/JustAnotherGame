@@ -86,5 +86,11 @@ namespace Omniplatformer.Components
                 HorizontalSpeed = 0;
             }
         }
+
+        public override void Tick()
+        {
+            Move();
+            base.Tick();
+        }
     }
 }

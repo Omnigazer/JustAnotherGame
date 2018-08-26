@@ -101,7 +101,7 @@ namespace Omniplatformer.Characters
             var pos = (PositionComponent)drop;
             pos.SetLocalCoords(GetComponent<PositionComponent>().WorldPosition.Coords);
             drop.Pickupable = true;
-            Game.RegisterObject(drop);
+            Game.AddToMainScene(drop);
 
             base.onDestroy();
         }
