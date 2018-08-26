@@ -25,7 +25,6 @@ namespace Omniplatformer
         // Game objects
         public Player player;
         public Level CurrentLevel { get; set; }
-        // possibly should put this into the player's class
         public List<GameObject> objects = new List<GameObject>();
         // public List<Character> characters = new List<Character>();
         public List<Projectile> projectiles = new List<Projectile>();
@@ -143,18 +142,24 @@ namespace Omniplatformer
             // TODO: use this.Content to load your game content here
 
             LoadConsole(spriteBatch);
-            // Window.Handle
         }
 
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// game-specific content.
+        /// </summary>
+        protected override void UnloadContent()
+        {
+            // TODO: Unload any non ContentManager content here
+        }
+
+        #region Console
         void LoadConsole(SpriteBatch spriteBatch)
         {
             System.Windows.Forms.Form winGameWindow = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(Window.Handle);
             winGameWindow.Show();
             winGameWindow.Hide();
             var x = System.Windows.Forms.Application.OpenForms;
-            //System.Windows.Forms.Application.
-            // System.Windows.Forms.Form form;
-            // form.
             Services.AddService(typeof(SpriteBatch), spriteBatch);
             console = new GameConsole(this, spriteBatch, new GameConsoleOptions
             {
@@ -236,7 +241,9 @@ namespace Omniplatformer
                     return String.Format("invalid args");
             });
         }
+        #endregion
 
+        #region Level code
         public void SaveLevel(string name)
         {
             Log("Saving level");
@@ -279,15 +286,7 @@ namespace Omniplatformer
             string path = String.Format("{0}.json", name);
             CurrentLevel.SaveGroup(Groups[index], path);
         }
-
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
-        protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
-        }
+        #endregion
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -344,21 +343,7 @@ namespace Omniplatformer
             projectiles.Remove(projectile);
         }
 
-        /*
-        public void RegisterObject(Character character)
-        {
-            characters.Add(character);
-            RenderSystem.RegisterDrawable(character);
-            character._onDestroy += Character_onDestroy;
-        }
-
-        private void Character_onDestroy(object sender, EventArgs e)
-        {
-            var character = (Character)sender;
-            characters.Remove(character);
-        }
-        */
-
+        #region Simulate
         public void Simulate()
         {
             RenderSystem.Tick();
@@ -428,6 +413,7 @@ namespace Omniplatformer
             player_movable.Move();
             player.Tick();
         }
+        #endregion
 
         public GameObject GetObjectAtCoords(Point pt)
         {
