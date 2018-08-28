@@ -42,9 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Characters\Dawg.cs" />
     <Compile Include="Characters\GoblinShaman.cs" />
-    <Compile Include="Characters\ToughZombie.cs" />
     <Compile Include="Characters\Goblin.cs" />
     <Compile Include="Components\LifeDrainHitComponent.cs" />
     <Compile Include="Components\MeleeDamageHitComponent.cs" />
