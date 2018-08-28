@@ -21,6 +21,7 @@ namespace Omniplatformer
         // Graphics objects
         public GraphicsDeviceManager graphics;
         public RenderSystem RenderSystem { get; set; }
+        public PhysicsSystem PhysicsSystem { get; set; }
 
         // Game objects
         public Player player;
@@ -71,6 +72,7 @@ namespace Omniplatformer
             // TODO: Add your initialization logic here
             base.Initialize();
             RenderSystem = new RenderSystem(this);
+            PhysicsSystem = new PhysicsSystem();
             InitServices();
             var playerHUD = new HUDContainer();
             InitGameObjects();
@@ -201,6 +203,7 @@ namespace Omniplatformer
         public void AddToMainScene(GameObject obj)
         {
             objects.Add(obj);
+            PhysicsSystem.objects.Add(obj);
             var drawable = (RenderComponent)obj;
             if (drawable != null)
                 RenderSystem.RegisterDrawable(drawable);
@@ -210,6 +213,7 @@ namespace Omniplatformer
         public void RemoveFromMainScene(GameObject obj)
         {
             objects.Remove(obj);
+            PhysicsSystem.objects.Remove(obj);
             RenderSystem.RemoveFromDrawables((RenderComponent)obj);
             obj._onDestroy -= GameObject_onDestroy;
         }
@@ -224,23 +228,10 @@ namespace Omniplatformer
         public void Simulate(GameTime gameTime)
         {
             float time_scale = (float)gameTime.ElapsedGameTime.Milliseconds * 60 / 1000;
+            PhysicsSystem.Tick(time_scale);
             for (int j = objects.Count - 1; j >= 0; j--)
             {
-                var collisions = new List<(Direction, GameObject)>();
                 var obj = objects[j];
-                var pos = (PositionComponent)obj;
-                Direction collision_direction;
-
-                foreach (var other_obj in objects)
-                {
-                    // TODO: look into how we access components
-                    collision_direction = pos.Collides(other_obj);
-                    if (collision_direction != Direction.None)
-                        collisions.Add((collision_direction, other_obj));
-                }
-
-                var obj_movable = (MoveComponent)obj;
-                obj_movable?.ProcessCollisionInteractions(collisions);
                 obj.Tick(time_scale);
             }
         }

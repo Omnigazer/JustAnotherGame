@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace Omniplatformer.Components
 {
-
     public class ProjectileMoveComponent : MoveComponent
     {
         public Vector2 Direction { get; set; }

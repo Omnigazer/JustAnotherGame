@@ -55,7 +55,7 @@ namespace Omniplatformer.Components
             return CurrentMovement;
         }
 
-        public virtual void Move(float time_scale)
+        public virtual void ProcessMovement(float time_scale)
         {
             var displacement = GetMoveVector() * time_scale;
             Move(displacement);
@@ -85,12 +85,6 @@ namespace Omniplatformer.Components
             {
                 HorizontalSpeed = 0;
             }
-        }
-
-        public override void Tick(float time_scale)
-        {
-            Move(time_scale);
-            base.Tick(time_scale);
         }
     }
 }

@@ -72,7 +72,6 @@ namespace Omniplatformer.Components
         {
             // TODO: make the component acquisition less costly
             var pos = GetComponent<PositionComponent>();
-            var movable = GetComponent<MoveComponent>();
             if (obj.Solid)
             {
                 var new_direction = pos.Collides(obj);
@@ -106,7 +105,6 @@ namespace Omniplatformer.Components
 
         public override Vector2 GetMoveVector()
         {
-            var movable = GetComponent<MoveComponent>();
             ProcessWalking();
             ApplyGravity();
 
@@ -115,11 +113,11 @@ namespace Omniplatformer.Components
                 ProcessLiquid();
             }
 
-            movable.TrimSpeed();
+            TrimSpeed();
             RestrictMovement();
             CapMovement();
 
-            return movable.CurrentMovement;
+            return CurrentMovement;
         }
 
         public void ProcessWalking()
@@ -215,22 +213,18 @@ namespace Omniplatformer.Components
             Move(e.displacement);
         }
 
-        // TODO: maybe extract this into another component
         public virtual void ProcessLiquid()
         {
-            var movable = GetComponent<MoveComponent>();
             // Apply "Archimedes"
-            movable.VerticalSpeed += 0.7f * gravity * LiquidImmersion;
+            VerticalSpeed += 0.7f * gravity * LiquidImmersion;
 
             // Apply water friction
-            movable.CurrentMovement += new Vector2(-movable.CurrentMovement.X * water_friction, -movable.CurrentMovement.Y * water_friction);
+            CurrentMovement += new Vector2(CurrentMovement.X * water_friction, CurrentMovement.Y * water_friction);
         }
 
-        // TODO: maybe extract this into another component
         public virtual void ApplyGravity()
         {
-            var movable = GetComponent<MoveComponent>();
-            movable.CurrentMovement += new Vector2(0, -gravity);
+            CurrentMovement += new Vector2(0, -gravity);
         }
 
         public virtual void RestrictMovement()
@@ -260,10 +254,8 @@ namespace Omniplatformer.Components
 
         public virtual void CapMovement()
         {
-            var movable = GetComponent<MoveComponent>();
-
             float fall_cap = GetDownSpeedCap();
-            float capped_y = Math.Max(movable.CurrentMovement.Y, fall_cap);
+            float capped_y = Math.Max(CurrentMovement.Y, fall_cap);
             capped_y = Math.Min(capped_y, GetUpSpeedCap());
             if (Math.Abs(HorizontalSpeed) > GetHorizontalSpeedCap())
             {

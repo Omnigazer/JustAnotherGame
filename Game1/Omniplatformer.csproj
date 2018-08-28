@@ -70,6 +70,7 @@
     <Compile Include="Level.cs" />
     <Compile Include="Objects\Chest.cs" />
     <Compile Include="Objects\LifeDrainProjectile.cs" />
+    <Compile Include="PhysicsSystem.cs" />
     <Compile Include="Spells\LifeDrain.cs" />
     <Compile Include="Spells\FireBolt.cs" />
     <Compile Include="Utility\Deconstruct.cs" />

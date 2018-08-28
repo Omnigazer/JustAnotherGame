@@ -25,7 +25,7 @@ namespace Omniplatformer
         public override void Tick(float time_scale)
         {
             var movable = GetComponent<MoveComponent>();
-            movable.Move(time_scale);
+            movable.ProcessMovement(time_scale);
             TTL -= time_scale;
             if (TTL <= 0)
             {
