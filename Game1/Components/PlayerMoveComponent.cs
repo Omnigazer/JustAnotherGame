@@ -21,8 +21,8 @@ namespace Omniplatformer.Components
 
         // Movement counters
         public int remaining_jumps;
-        public int current_jump_ticks;
-        public int current_pin_ticks; // represents time spent against a wall or a climbable object, such as a rope
+        public float current_jump_time;
+        public float current_pin_time; // represents time spent against a wall or a climbable object, such as a rope
 
         public bool CanClimb { get; set; }
         public bool IsClimbing { get; set; }
@@ -32,32 +32,47 @@ namespace Omniplatformer.Components
         {
         }
 
-        public override void Tick()
+        public override void Tick(float time_scale)
         {
-            if (IsJumping && --current_jump_ticks <= 0)
+            current_jump_time -= time_scale;
+            if (IsJumping && current_jump_time <= 0)
             {
                 StopJumping();
             }
-            base.Tick();
+
+            if (IsInLiquid && !IsJumping)
+            {
+                ResetJumps();
+            }
+            if (IsNextToWall || IsNextToRope)
+            {
+                IncreasePinTime(time_scale);
+            }
+            else
+            {
+                ResetPin();
+            }
+
+            base.Tick(time_scale);
         }
 
-        public void IncreasePinTicks()
+        public void IncreasePinTime(float time_scale)
         {
-            current_pin_ticks++;
-            if (current_pin_ticks >= wall_jump_pin_ticks)
+            current_pin_time += time_scale;
+            if (current_pin_time >= wall_jump_pin_ticks)
                 CanClimb = true;
         }
 
         // Signifies sufficient time spent against a wall (or a rope)
         public bool IsPinnedToWall()
         {
-            return current_pin_ticks >= wall_jump_pin_ticks;
+            return current_pin_time >= wall_jump_pin_ticks;
         }
 
         // Stop treating the character as pinned/adjacent to the wall
         public void ResetPin()
         {
-            current_pin_ticks = 0;
+            current_pin_time = 0;
             CanClimb = false;
             StopClimbing();
         }
@@ -89,7 +104,7 @@ namespace Omniplatformer.Components
                     ResetJumps();
                 }
                 ResetPin();
-                current_jump_ticks = max_jump_ticks;
+                current_jump_time = max_jump_ticks;
                 // ClearCurrentPlatform();
                 remaining_jumps--;
             }
@@ -122,6 +137,7 @@ namespace Omniplatformer.Components
         {
             CanClimb = false;
             base.ProcessCollisionInteractions(collisions);
+            /*
             if (IsInLiquid && !IsJumping)
             {
                 ResetJumps();
@@ -134,6 +150,7 @@ namespace Omniplatformer.Components
             {
                 ResetPin();
             }
+            */
         }
 
         protected override void ProcessCollision(Direction direction, GameObject obj)

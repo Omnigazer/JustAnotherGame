@@ -162,7 +162,7 @@ namespace Omniplatformer
                 HUDState.HandleMouseEvents();
             }
 
-            Simulate();
+            Simulate(gameTime);
             // var song = GameContent.Instance.vampireKiller;
             if (MediaPlayer.State != MediaState.Playing && false)
             {
@@ -181,6 +181,9 @@ namespace Omniplatformer
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            // Update camera offset based on player position
+            var pos = (PositionComponent)player;
+            RenderSystem.SetCameraPosition(pos.WorldPosition.Center);
             // TODO: Add your drawing code here
             bool with_light = true, with_foreground = true;
             // Draw foreground into the secretTarget
@@ -230,17 +233,14 @@ namespace Omniplatformer
         }
 
         #region Simulate
-        public void Simulate()
+        public void Simulate(GameTime gameTime)
         {
-            // Update camera offset based on player position
-            var pos = (PositionComponent)player;
-            RenderSystem.SetCameraPosition(pos.WorldPosition.Center);
-            RenderSystem.Tick();
+            float time_scale = (float)gameTime.ElapsedGameTime.Milliseconds * 60 / 1000;
             for (int j = objects.Count - 1; j >= 0; j--)
             {
                 var collisions = new List<(Direction, GameObject)>();
                 var obj = objects[j];
-                pos = (PositionComponent)obj;
+                var pos = (PositionComponent)obj;
                 Direction collision_direction;
 
                 foreach (var other_obj in objects)
@@ -253,7 +253,7 @@ namespace Omniplatformer
 
                 var obj_movable = (MoveComponent)obj;
                 obj_movable?.ProcessCollisionInteractions(collisions);
-                obj.Tick();
+                obj.Tick(time_scale);
             }
         }
         #endregion

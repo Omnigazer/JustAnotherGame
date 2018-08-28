@@ -13,7 +13,7 @@ namespace Omniplatformer.Components
         /// <summary>
         /// Maps animation type to the tuple (current ticks, duration)
         /// </summary>
-        protected Dictionary<Animation, (int, int)> CurrentAnimations { get; set; } = new Dictionary<Animation, (int, int)>();
+        protected Dictionary<Animation, (float, float)> CurrentAnimations { get; set; } = new Dictionary<Animation, (float, float)>();
 
         public class AnimationEventArgs : EventArgs
         {
@@ -38,7 +38,7 @@ namespace Omniplatformer.Components
         /// </summary>
         /// <param name="animation"></param>
         /// <param name="length" description="length in ticks"></param>
-        public void StartAnimation(Animation animation, int length, bool interrupt = false)
+        public void StartAnimation(Animation animation, float length, bool interrupt = false)
         {
             // TODO: implement interruption logic here
             if (CurrentAnimations.ContainsKey(animation))
@@ -71,12 +71,12 @@ namespace Omniplatformer.Components
             _onAnimationHit(this, new AnimationEventArgs(animation));
         }
 
-        public override void Tick()
+        public override void Tick(float time_scale)
         {
             foreach (var (animation, (ticks, length)) in CurrentAnimations.ToList())
             {
-                CurrentAnimations[animation] = (ticks + 1, length);
-                if (ticks + 1 >= length)
+                CurrentAnimations[animation] = (ticks + time_scale, length);
+                if (ticks + time_scale >= length)
                 {
                     EndAnimation(animation);
                 }

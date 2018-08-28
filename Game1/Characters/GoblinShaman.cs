@@ -106,9 +106,9 @@ namespace Omniplatformer.Characters
             base.onDestroy();
         }
 
-        public override void Tick()
+        public override void Tick(float time_scale)
         {
-            base.Tick();
+            base.Tick(time_scale);
             if (Aggressive)
             {
                 MoveTowardsPlayer();

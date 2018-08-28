@@ -68,8 +68,9 @@ namespace Omniplatformer.Components
                 base.Draw();
         }
 
-        public override void Tick()
+        public override void Tick(float time_scale)
         {
+            // TODO: FIX THIS SHIT!!!
             if (CurrentAnimations.ContainsKey(Animation.Attack))
             {
                 var (ticks, length) = CurrentAnimations[Animation.Attack];
@@ -81,7 +82,7 @@ namespace Omniplatformer.Components
                 float step = amp / length;
                 PositionComponent pos = GetComponent<PositionComponent>();
                 var anchor = pos.CurrentAnchors[AnchorPoint.Hand];
-                if (ticks == (int)(forward_part * length))
+                if (ticks == forward_part * length)
                 {
                     onAnimationHit(Animation.Attack);
                 }
@@ -91,7 +92,7 @@ namespace Omniplatformer.Components
                     anchor = new Position(anchor) { RotationAngle = anchor.RotationAngle - back_step };
                 pos.CurrentAnchors[AnchorPoint.Hand] = anchor;
             }
-            base.Tick();
+            base.Tick(time_scale);
         }
 
         protected override Texture2D getCurrentSprite()

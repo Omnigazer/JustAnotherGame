@@ -55,9 +55,9 @@ namespace Omniplatformer.Components
             return CurrentMovement;
         }
 
-        public virtual void Move()
+        public virtual void Move(float time_scale)
         {
-            var displacement = GetMoveVector();
+            var displacement = GetMoveVector() * time_scale;
             Move(displacement);
         }
 
@@ -87,10 +87,10 @@ namespace Omniplatformer.Components
             }
         }
 
-        public override void Tick()
+        public override void Tick(float time_scale)
         {
-            Move();
-            base.Tick();
+            Move(time_scale);
+            base.Tick(time_scale);
         }
     }
 }

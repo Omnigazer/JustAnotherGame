@@ -14,35 +14,36 @@ namespace Omniplatformer.Characters
     public class Goblin : Character
     {
         // internal counters for "random movement"
-        int ticks = 0;
+        float ticks = 0;
         int amp = 300;
 
+        float current_time_scale;
         IEnumerator behaviorGen()
         {
             var movable = GetComponent<CharMoveComponent>();
             while (true)
             {
-                int walk_time = RandomGen.Next(150, 600);
+                float walk_time = RandomGen.NextFloat(150, 600);
                 movable.move_direction = Direction.Right;
-                for (int i = 0; i < walk_time; i++)
+                for (float t = 0; t < walk_time; t += current_time_scale)
                 {
                     yield return null;
                 }
 
                 movable.move_direction = Direction.None;
-                for (int i = 0; i < RandomGen.Next(700, 2000); i++)
+                for (float t = 0; t < RandomGen.NextFloat(700, 2000); t += current_time_scale)
                 {
                     yield return null;
                 }
 
                 movable.move_direction = Direction.Left;
-                for (int i = 0; i < walk_time; i++)
+                for (float t = 0; t < walk_time; t += current_time_scale)
                 {
                     yield return null;
                 }
 
                 movable.move_direction = Direction.None;
-                for (int i = 0; i < RandomGen.Next(700, 2000); i++)
+                for (float t = 0; t < RandomGen.NextFloat(700, 2000); t += current_time_scale)
                 {
                     yield return null;
                 }
@@ -70,6 +71,7 @@ namespace Omniplatformer.Characters
             movable.move_direction = pos.WorldPosition.Center.X < player_pos.WorldPosition.Center.X ? Direction.Right : Direction.Left;
         }
 
+        /*
         public void WalkAbout()
         {
             var movable = GetComponent<CharMoveComponent>();
@@ -83,6 +85,7 @@ namespace Omniplatformer.Characters
             }
             ticks = (ticks + 1) % amp;
         }
+        */
 
         public override void ApplyDamage(float damage)
         {
@@ -101,9 +104,9 @@ namespace Omniplatformer.Characters
             base.ApplyDamage(damage);
         }
 
-        public override void Tick()
+        public override void Tick(float time_scale)
         {
-            base.Tick();
+            base.Tick(time_scale);
             if (Aggressive)
             {
                 MoveTowardsPlayer();
@@ -111,6 +114,7 @@ namespace Omniplatformer.Characters
             else
             {
                 // WalkAbout();
+                current_time_scale = time_scale;
                 Behavior.MoveNext();
             }
         }

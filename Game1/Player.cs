@@ -165,10 +165,10 @@ namespace Omniplatformer
         }
 
         // Fit all per-frame instructions in here for now
-        public override void Tick()
+        public override void Tick(float time_scale)
         {
-            RegenerateMana();
-            base.Tick();
+            RegenerateMana(time_scale);
+            base.Tick(time_scale);
         }
 
         #region Actions
@@ -251,11 +251,11 @@ namespace Omniplatformer
                 return false;
         }
 
-        public void RegenerateMana()
+        public void RegenerateMana(float time_scale)
         {
             foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
             {
-                CurrentMana[type] += mana_regen_rate;
+                CurrentMana[type] += mana_regen_rate * time_scale;
                 CurrentMana[type] = Math.Min(CurrentMana[type], MaxMana(type));
             }
 

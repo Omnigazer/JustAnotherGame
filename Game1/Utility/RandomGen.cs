@@ -13,5 +13,10 @@ namespace Omniplatformer.Utility
         {
             return rnd.Next(min, max);
         }
+
+        public static float NextFloat(float min, float max)
+        {
+            return (float)(rnd.NextDouble() * (max - min) + min);
+        }
     }
 }

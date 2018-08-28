@@ -20,13 +20,14 @@ namespace Omniplatformer
 
         private GameObject _source;
 
-        public int TTL { get; set; }
+        public float TTL { get; set; }
         public override GameObject Source => _source?.Source ?? this;
-        public override void Tick()
+        public override void Tick(float time_scale)
         {
             var movable = GetComponent<MoveComponent>();
-            movable.Move();
-            if (--TTL <= 0)
+            movable.Move(time_scale);
+            TTL -= time_scale;
+            if (TTL <= 0)
             {
                 onDestroy();
             }

@@ -31,7 +31,7 @@ namespace Omniplatformer
         }
 
         protected List<Component> Components { get; set; }
-        protected Dictionary<string, int> Cooldowns { get; set; }
+        protected Dictionary<string, float> Cooldowns { get; set; }
         public Game1 Game => GameService.Instance;
 
         // Candidates for component extraction
@@ -59,22 +59,22 @@ namespace Omniplatformer
             Id = Id == Guid.Empty ? Guid.NewGuid() : Id;
             // Id = Id ?? new Guid();
             Components = new List<Component>();
-            Cooldowns = new Dictionary<string, int>();
+            Cooldowns = new Dictionary<string, float>();
             // TODO: move solid implementation to derived classes
             Solid = true;
             Team = Team.Neutral;
         }
 
         // Process a single game frame
-        public virtual void Tick()
+        public virtual void Tick(float time_scale)
         {
             foreach (var c in Components)
             {
-                c.Tick();
+                c.Tick(time_scale);
             }
             foreach (var (key, ticks) in Cooldowns.ToList())
             {
-                Cooldowns[key] = Math.Max(ticks - 1, 0);
+                Cooldowns[key] = Math.Max(ticks - time_scale, 0);
             }
         }
 
