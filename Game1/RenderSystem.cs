@@ -64,10 +64,27 @@ namespace Omniplatformer
             return (graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
-        public void Tick()
+        public void Tick(float time_scale)
         {
-            light_loop = (light_loop + 1) % light_loop_length;
+            light_loop = (light_loop + time_scale) % light_loop_length;
             // day_loop = (day_loop + 1) % day_loop_length;
+        }
+
+        public void Draw()
+        {
+            bool with_light = true, with_foreground = true;
+            // Draw foreground into the secretTarget
+            DrawToRevealingMask();
+            if (with_foreground)
+                DrawToForegroundLayer();
+            // Draw light masks into the lightsTarget
+            if (with_light)
+                DrawLightMasks();
+            // Draw everything into the mainTarget
+            DrawToMainLayer();
+            DrawToHUD();
+            // TODO: move hud drawing into the hud layer
+            RenderLayers();
         }
 
         public void RegisterDrawable(RenderComponent drawable)

@@ -185,19 +185,7 @@ namespace Omniplatformer
             var pos = (PositionComponent)player;
             RenderSystem.SetCameraPosition(pos.WorldPosition.Center);
             // TODO: Add your drawing code here
-            bool with_light = true, with_foreground = true;
-            // Draw foreground into the secretTarget
-            RenderSystem.DrawToRevealingMask();
-            if (with_foreground)
-                RenderSystem.DrawToForegroundLayer();
-            // Draw light masks into the lightsTarget
-            if (with_light)
-                RenderSystem.DrawLightMasks();
-            // Draw everything into the mainTarget
-            RenderSystem.DrawToMainLayer();
-            RenderSystem.DrawToHUD();
-            // TODO: move hud drawing into the hud layer
-            RenderSystem.RenderLayers();
+            RenderSystem.Draw();
             base.Draw(gameTime);
         }
 
