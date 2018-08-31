@@ -16,7 +16,7 @@ namespace Omniplatformer.Components
 
         // Movement dynamic caps
         public int max_jumps = 2;
-        public int max_jump_ticks = 15; // Max jump time
+        public int max_jump_time = 15; // Max jump time
         const int wall_jump_pin_ticks = 1; // Time required to be spent against the wall to walljump
 
         // Movement counters
@@ -24,17 +24,19 @@ namespace Omniplatformer.Components
         public float current_jump_time;
         public float current_pin_time; // represents time spent against a wall or a climbable object, such as a rope
 
-        public bool CanClimb { get; set; }
+        // public bool CanClimb { get; set; }
         public bool IsClimbing { get; set; }
         public bool IsJumping { get; set; }
 
-        public PlayerMoveComponent(GameObject obj) : base(obj)
+        public PlayerMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj, coords, halfsize)
         {
+            MaxMoveSpeed = 5;
         }
 
         public override void Tick(float time_scale)
         {
             current_jump_time -= time_scale;
+
             if (IsJumping && current_jump_time <= 0)
             {
                 StopJumping();
@@ -44,6 +46,8 @@ namespace Omniplatformer.Components
             {
                 ResetJumps();
             }
+
+
             if (IsNextToWall || IsNextToRope)
             {
                 IncreasePinTime(time_scale);
@@ -104,7 +108,7 @@ namespace Omniplatformer.Components
                     ResetJumps();
                 }
                 ResetPin();
-                current_jump_time = max_jump_ticks;
+                current_jump_time = max_jump_time;
                 // ClearCurrentPlatform();
                 remaining_jumps--;
             }
@@ -125,59 +129,34 @@ namespace Omniplatformer.Components
             remaining_jumps = max_jumps;
         }
 
-        public override void ApplyGravity()
-        {
-            var movable = GetComponent<MoveComponent>();
-            if (!IsJumping)
-                movable.CurrentMovement += new Vector2(0, -gravity);
-        }
-
         // TODO: problematic method & overrides, refactor
-        public override void ProcessCollisionInteractions(List<(Direction, GameObject)> collisions)
+        public override void ResetCollisionFlags()
         {
             CanClimb = false;
-            base.ProcessCollisionInteractions(collisions);
-            /*
-            if (IsInLiquid && !IsJumping)
-            {
-                ResetJumps();
-            }
-            if (IsNextToWall || IsNextToRope)
-            {
-                IncreasePinTicks();
-            }
-            else
-            {
-                ResetPin();
-            }
-            */
+            base.ResetCollisionFlags();
         }
 
-        protected override void ProcessCollision(Direction direction, GameObject obj)
+        public override void ProcessCollision(Direction direction, PhysicsComponent obj)
         {
             base.ProcessCollision(direction, obj);
+            if (direction == Direction.Up)
+            {
+                StopJumping();
+            }
+            if (direction == Direction.Down)
+            {
+                if (!IsJumping)
+                    ResetJumps();
+            }
+
             if (obj.Pickupable)
             {
                 // TODO: definitely extract this into a component
                 var player = (Player)GameObject;
                 // player.GetBonus()
                 // player.Pickup((Collectible)obj);
-                player.Pickup(obj);
-            }
-        }
-
-        public override void RestrictMovement()
-        {
-            base.RestrictMovement();
-            if (IsNextToCeiling)
-            {
-                StopJumping();
-            }
-
-            if (IsOnGround)
-            {
-                if (!IsJumping)
-                    ResetJumps();
+                player.Pickup(obj.GameObject);
+                obj.Pickupable = false;
             }
         }
 
@@ -195,56 +174,44 @@ namespace Omniplatformer.Components
 
         public void ProcessClimbing()
         {
-            var movable = GetComponent<MoveComponent>();
             switch (move_direction)
             {
                 case Direction.Up:
                     {
-                        movable.CurrentMovement = new Vector2(0, ClimbSpeed);
+                        CurrentMovement = new Vector2(0, ClimbSpeed);
                         break;
                     }
                 case Direction.Down:
                     {
-                        movable.CurrentMovement = new Vector2(0, -ClimbSpeed);
+                        CurrentMovement = new Vector2(0, -ClimbSpeed);
                         break;
                     }
                 default:
                     {
-                        movable.CurrentMovement = Vector2.Zero;
+                        CurrentMovement = Vector2.Zero;
                         break;
                     }
             }
         }
 
         // TODO: refactor this
-        public override Vector2 GetMoveVector()
+        public override void ProcessMovement()
         {
             if (IsClimbing)
             {
                 ProcessClimbing();
-                RestrictMovement();
-                return CurrentMovement;
             }
             else
             {
                 ProcessWalking();
-                ApplyGravity();
 
                 if (IsJumping)
                 {
                     CurrentMovement += new Vector2(0, jump_accel);
                 }
 
-                if (IsInLiquid)
-                {
-                    ProcessLiquid();
-                }
-
                 TrimSpeed();
-                RestrictMovement();
                 CapMovement();
-
-                return CurrentMovement;
             }
         }
     }

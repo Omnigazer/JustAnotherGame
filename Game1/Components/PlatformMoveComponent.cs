@@ -20,7 +20,7 @@ namespace Omniplatformer.Components
         int speed = 5;
         int horizontal_amp = 250;
 
-        public override Vector2 GetMoveVector()
+        public override void ProcessMovement()
         {
             CurrentMovement = new Vector2(speed * direction, 0);
             position += speed * direction;
@@ -28,7 +28,6 @@ namespace Omniplatformer.Components
             {
                 direction *= -1;
             }
-            return CurrentMovement;
         }
     }
 }

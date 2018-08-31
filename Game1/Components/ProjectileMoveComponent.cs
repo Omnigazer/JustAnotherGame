@@ -7,38 +7,30 @@ using System.Threading.Tasks;
 
 namespace Omniplatformer.Components
 {
-    public class ProjectileMoveComponent : MoveComponent
+    public class ProjectileMoveComponent : DynamicPhysicsComponent
     {
         public Vector2 Direction { get; set; }
 
-        public ProjectileMoveComponent(GameObject obj) : base(obj)
+        public ProjectileMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj, coords, halfsize)
         {
         }
 
-        // Check what kinds of objects are we colliding here
-        // TODO: problematic method & overrides, refactor
-        public override void ProcessCollisionInteractions(List<(Direction, GameObject)> collisions)
-        {
-            base.ProcessCollisionInteractions(collisions);
-        }
-
-        protected override void ProcessCollision(Direction direction, GameObject obj)
+        public override void ProcessCollision(Direction direction, PhysicsComponent obj)
         {
             base.ProcessCollision(direction, obj);
-            if (direction != Omniplatformer.Direction.None && obj != GameObject.Source && (obj.Solid || obj.Hittable) && obj.Team != GameObject.Team)
+            if (direction != Omniplatformer.Direction.None && obj.GameObject != GameObject.Source && (Solid || obj.Hittable) && obj.GameObject.Team != GameObject.Team)
             {
                 var hittable = GetComponent<HitComponent>();
-                hittable?.Hit(obj);
+                hittable?.Hit(obj.GameObject);
                 // TODO: might have to extract this
                 GameObject.onDestroy();
                 // Hit(obj);
             }
         }
 
-        public override Vector2 GetMoveVector()
+        public override void ProcessMovement()
         {
             CurrentMovement = Direction;
-            return CurrentMovement;
         }
     }
 }

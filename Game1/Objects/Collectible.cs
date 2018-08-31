@@ -15,9 +15,7 @@ namespace Omniplatformer
     {
         public Collectible(Vector2 center, Vector2 halfsize)
         {
-            Pickupable = true;
-            Solid = false;
-            Components.Add(new PositionComponent(this, center, halfsize));
+            Components.Add(new PhysicsComponent(this, center, halfsize) { Pickupable = true });
             // TODO: Add Aqua Color to this renderer
             Components.Add(new RenderComponent(this, Color.Green));
         }

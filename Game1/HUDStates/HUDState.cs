@@ -11,13 +11,41 @@ using System.Threading.Tasks;
 
 namespace Omniplatformer.HUDStates
 {
+    public enum MouseButton
+    {
+        None,
+        Left,
+        Right
+    }
+
+    public class MouseEventArgs : EventArgs
+    {
+        public MouseEventArgs()
+        {
+            Button = MouseButton.None;
+        }
+
+        public MouseEventArgs(MouseButton button)
+        {
+            Button = button;
+        }
+        public MouseButton Button { get; set; }
+    }
+
     public abstract class HUDState
     {
         // tracks key press/release
         public static Dictionary<Keys, bool> release_map = new Dictionary<Keys, bool>();
-        public static bool lmb_pressed;
-        public static bool rmb_pressed;
+        bool lmb_pressed;
+        bool rmb_pressed;
         public static Point click_pos;
+        // Events
+        protected event EventHandler<MouseEventArgs> MouseMove = delegate { };
+        protected event EventHandler<MouseEventArgs> MouseUp = delegate { };
+        protected event EventHandler<MouseEventArgs> MouseDown = delegate { };
+        // Keyboard controls
+        public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
+
         // public static GameObject MouseStorage { get; set; }
         Point mouse_pos;
         public virtual void Draw()
@@ -50,7 +78,11 @@ namespace Omniplatformer.HUDStates
         }
         */
 
-        public virtual void HandleControls() { }
+        public virtual void HandleControls()
+        {
+            HandleKeyBoard();
+            HandleMouseEvents();
+        }
 
         // public List<ViewControl> Children { get; } = new List<ViewControl>();
         public Root Root { get; set; }
@@ -60,6 +92,27 @@ namespace Omniplatformer.HUDStates
             Root = new Root();
         }
 
+        public void HandleKeyBoard()
+        {
+            var keyboard_state = Keyboard.GetState();
+            foreach (var (key, (pressed_action, released_action, continuous)) in Controls)
+            {
+                if (keyboard_state.IsKeyDown(key))
+                {
+                    if (continuous || !release_map.ContainsKey(key) || release_map[key])
+                    {
+                        release_map[key] = false;
+                        pressed_action();
+                    }
+                }
+                else
+                {
+                    release_map[key] = true;
+                    released_action?.Invoke();
+                }
+            }
+        }
+
         public void HandleMouseEvents()
         {
             var mouse = Mouse.GetState();
@@ -67,33 +120,35 @@ namespace Omniplatformer.HUDStates
             {
                 Root.MouseMove(mouse.Position);
                 mouse_pos = mouse.Position;
+                MouseMove(this, new MouseEventArgs());
             }
+
+            // Left mouse button
             if (mouse.LeftButton == ButtonState.Pressed && !lmb_pressed)
             {
                 lmb_pressed = true;
                 Root.onMouseDown(mouse.Position);
+                MouseDown(this, new MouseEventArgs(MouseButton.Left));
             }
             if (mouse.LeftButton == ButtonState.Released && lmb_pressed)
             {
                 lmb_pressed = false;
                 Root.onMouseUp(mouse.Position);
-                /*
-                if (MouseStorage == null)
-                {
-                    var res = Root.onDrag(mouse.Position);
-                    if (res != null)
-                    {
-                        MouseStorage = res;
-                    }
-                }
-                else
-                {
-                    if (Root.onDrop(mouse.Position, MouseStorage))
-                    {
-                        MouseStorage = null;
-                    }
-                }
-                */
+                MouseUp(this, new MouseEventArgs(MouseButton.Left));
+            }
+
+            // Right mouse button
+            if (mouse.RightButton == ButtonState.Pressed && !rmb_pressed)
+            {
+                rmb_pressed = true;
+                Root.onMouseDown(mouse.Position);
+                MouseDown(this, new MouseEventArgs(MouseButton.Right));
+            }
+            if (mouse.RightButton == ButtonState.Released && rmb_pressed)
+            {
+                rmb_pressed = false;
+                Root.onMouseUp(mouse.Position);
+                MouseUp(this, new MouseEventArgs(MouseButton.Right));
             }
         }
 

@@ -17,8 +17,6 @@ namespace Omniplatformer.HUDStates
         // InventoryView TargetInventoryView { get; set; }
         Game1 Game => GameService.Instance;
 
-        public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
-
         // TODO: TEMPORARY
         // Inventory inv;
 
@@ -30,12 +28,27 @@ namespace Omniplatformer.HUDStates
             // TODO: remove this reference
             // this.inv = inv;
             SetupControls();
+            MouseUp += OnMouseUp;
+        }
+
+        private void OnMouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButton.Left)
+            {
+                var mouse = Mouse.GetState();
+                var slot = view.GetSlotAtPosition(mouse.Position);
+                if (slot != null)
+                {
+                    Game.player.UpgradeSkill(slot.Skill);
+                }
+            }
         }
 
         public override void Draw()
         {
             view.Draw();
             playerHUD.Draw();
+            base.Draw();
         }
 
         public void SetupControls()
@@ -54,51 +67,7 @@ namespace Omniplatformer.HUDStates
         public override void HandleControls()
         {
             Game.StopMoving();
-            var keyboard_state = Keyboard.GetState();
-            foreach (var (key, (pressed_action, released_action, continuous)) in Controls)
-            {
-                if (keyboard_state.IsKeyDown(key))
-                {
-                    if (continuous || !release_map.ContainsKey(key) || release_map[key])
-                    {
-                        release_map[key] = false;
-                        pressed_action();
-                    }
-                }
-                else
-                {
-                    release_map[key] = true;
-                    released_action?.Invoke();
-                }
-            }
-
-            HandleMouse();
-        }
-
-        public void HandleMouse()
-        {
-            var mouse = Mouse.GetState();
-            var slot = view.GetSlotAtPosition(mouse.Position);
-            if (slot != null)
-            {
-                var skill = slot.Skill;
-                if (mouse.LeftButton == ButtonState.Pressed)
-                {
-                    if (!lmb_is_pressed)
-                    {
-                        Game.player.UpgradeSkill(skill);
-                    }
-                    lmb_is_pressed = true;
-                }
-                else
-                {
-                    if (lmb_is_pressed)
-                    {
-
-                    }
-                    lmb_is_pressed = false;
-                }
-            }
+            base.HandleControls();
         }
     }
 }

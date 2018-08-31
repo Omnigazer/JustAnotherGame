@@ -14,8 +14,7 @@ namespace Omniplatformer
     {
         public ForegroundQuad(Vector2 center, Vector2 halfsize, Vector2 origin)
         {
-            Solid = false;
-            Components.Add(new PositionComponent(this, center, halfsize, 0, origin));
+            Components.Add(new PhysicsComponent(this, center, halfsize, origin));
             Components.Add(new ForegroundRenderComponent(this, Color.Green));
         }
 

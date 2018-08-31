@@ -20,10 +20,8 @@ namespace Omniplatformer
 
         public Liquid(Vector2 coords, Vector2 halfsize, Vector2 origin)
         {
-            Solid = false;
-            Liquid = true;
             Components.Add(new RenderComponent(this, Color.Aqua * 0.5f, Layers.Liquid));
-            Components.Add(new PositionComponent(this, coords, halfsize, 0, origin));
+            Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Liquid = true });
         }
 
         public override object AsJson()

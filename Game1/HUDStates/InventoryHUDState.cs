@@ -27,8 +27,6 @@ namespace Omniplatformer.HUDStates
 
         Item MouseStorage { get; set; }
 
-        public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
-
         // TODO: TEMPORARY
         Inventory inv;
 
@@ -172,23 +170,7 @@ namespace Omniplatformer.HUDStates
         public override void HandleControls()
         {
             Game.StopMoving();
-            var keyboard_state = Keyboard.GetState();
-            foreach (var (key, (pressed_action, released_action, continuous)) in Controls)
-            {
-                if (keyboard_state.IsKeyDown(key))
-                {
-                    if (continuous || !release_map.ContainsKey(key) || release_map[key])
-                    {
-                        release_map[key] = false;
-                        pressed_action();
-                    }
-                }
-                else
-                {
-                    release_map[key] = true;
-                    released_action?.Invoke();
-                }
-            }
+            base.HandleControls();
         }
     }
 }

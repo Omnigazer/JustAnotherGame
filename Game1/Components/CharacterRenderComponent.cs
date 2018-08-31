@@ -73,8 +73,8 @@ namespace Omniplatformer.Components
             // TODO: FIX THIS SHIT!!!
             if (CurrentAnimations.ContainsKey(Animation.Attack))
             {
-                var (ticks, length) = CurrentAnimations[Animation.Attack];
-                float forward_part = 0.125f;
+                var (ticks, length, current_step) = CurrentAnimations[Animation.Attack];
+                float forward_part = 0.1f;
                 float backward_part = 1 - forward_part;
                 float amp = (float)Math.PI / 2;
                 float forward_step =  amp / (forward_part * length);
@@ -82,7 +82,7 @@ namespace Omniplatformer.Components
                 float step = amp / length;
                 PositionComponent pos = GetComponent<PositionComponent>();
                 var anchor = pos.CurrentAnchors[AnchorPoint.Hand];
-                if (ticks == forward_part * length)
+                if (ticks >= forward_part * length && current_step++ == 0)
                 {
                     onAnimationHit(Animation.Attack);
                 }

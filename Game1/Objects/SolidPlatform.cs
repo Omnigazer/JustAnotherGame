@@ -19,7 +19,7 @@ namespace Omniplatformer
 
         public SolidPlatform(Vector2 coords, Vector2 halfsize, Vector2 origin)
         {
-            Components.Add(new PositionComponent(this, coords, halfsize, 0, origin));
+            Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Solid = true, Friction = 0.1f });
             Components.Add(new RenderComponent(this));
         }
 
@@ -50,6 +50,8 @@ namespace Omniplatformer
         public static GameObject FromJson(Deserializer deserializer)
         {
             var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
+            coords.X = (float)Math.Round(coords.X);
+            coords.Y = (float)Math.Round(coords.Y);
             var platform = new SolidPlatform(coords, halfsize, origin);
             // SerializeService.Instance.RegisterObject(platform);
             return platform;

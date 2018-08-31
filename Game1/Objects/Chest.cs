@@ -28,9 +28,7 @@ namespace Omniplatformer
             {
                 Inventory.slots[i].Item = items.ElementAt(i);
             }
-            Pickupable = false;
-            Solid = false;
-            Components.Add(new PositionComponent(this, coords, halfsize));
+            Components.Add(new PhysicsComponent(this, coords, halfsize));
             Components.Add(new RenderComponent(this, Color.Firebrick));
         }
 
@@ -84,7 +82,6 @@ namespace Omniplatformer
             if (item_data != null)
             {
                 WieldedItem item = (WieldedItem)deserializer.decodeObject(item_data);
-                item.Hide();
                 chest = new Chest(coords, halfsize, item);
             }
             else

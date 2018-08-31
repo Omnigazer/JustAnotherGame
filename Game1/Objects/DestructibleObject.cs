@@ -15,10 +15,8 @@ namespace Omniplatformer
     {
         public DestructibleObject(Vector2 center, Vector2 halfsize)
         {
-            Draggable = true;
-            Hittable = true;
             // TODO: supply colors / textures to the component
-            Components.Add(new PositionComponent(this, center, halfsize));
+            Components.Add(new PhysicsComponent(this, center, halfsize) { Solid = true, Hittable = true });
             Components.Add(new WallRenderComponent(this, Color.Yellow));
         }
         // TODO: should be extracted to damageable component

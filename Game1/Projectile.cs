@@ -15,7 +15,6 @@ namespace Omniplatformer
         {
             TTL = default_ttl;
             _source = source;
-            Solid = false;
         }
 
         private GameObject _source;
@@ -25,7 +24,6 @@ namespace Omniplatformer
         public override void Tick(float time_scale)
         {
             var movable = GetComponent<MoveComponent>();
-            movable.ProcessMovement(time_scale);
             TTL -= time_scale;
             if (TTL <= 0)
             {

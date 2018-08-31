@@ -38,11 +38,14 @@ namespace Omniplatformer.Components
 
         public void ApplyKnockback(GameObject target)
         {
-            var movable = (MoveComponent)target;
-            var pos = GetComponent<PositionComponent>();
-            var their_pos = (PositionComponent)target;
-            var dir_sign = Math.Sign(their_pos.WorldPosition.Center.X - pos.WorldPosition.Center.X);
-            movable?.AdjustSpeed(new Vector2(Knockback.X * dir_sign, Knockback.Y));
+            var movable = (DynamicPhysicsComponent)target;
+            if (movable != null)
+            {
+                var pos = GetComponent<PositionComponent>();
+                var their_pos = (PositionComponent)target;
+                var dir_sign = Math.Sign(their_pos.WorldPosition.Center.X - pos.WorldPosition.Center.X);
+                movable.CurrentMovement += new Vector2(Knockback.X * dir_sign, Knockback.Y);
+            }
         }
 
         protected virtual int DetermineDamage()

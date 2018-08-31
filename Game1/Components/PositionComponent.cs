@@ -70,7 +70,7 @@ namespace Omniplatformer.Components
         }
     }
 
-    public class PositionComponent : Component
+    public abstract class PositionComponent : Component
     {
         // TODO: TEST
         public PositionComponent parent_pos;
@@ -168,9 +168,9 @@ namespace Omniplatformer.Components
             return false;
         }
 
-        public bool Overlaps(GameObject obj)
+        public bool Overlaps(PositionComponent pos)
         {
-            PositionComponent pos = (PositionComponent)obj;
+            // PositionComponent pos = (PositionComponent)pos;
             if (pos == null)
                 return false;
 
@@ -179,7 +179,7 @@ namespace Omniplatformer.Components
             return true;
         }
 
-        public Direction Collides(GameObject other)
+        public Direction Collides(PositionComponent other)
         {
             PositionComponent their_pos = (PositionComponent)other;
             if (their_pos == null)
@@ -231,7 +231,7 @@ namespace Omniplatformer.Components
         }
 
         // TODO: properly implement this
-        public GameObject GetClosestObject(Vector2 direction, Func<GameObject, bool> predicate = null)
+        public GameObject GetClosestObject(Vector2 direction, Func<PhysicsComponent, bool> predicate = null)
         {
             // TODO: count the range from the anchor
             // TODO: this doesn't work properly with angled directions, should be raycast or something
@@ -241,10 +241,11 @@ namespace Omniplatformer.Components
             rect.Offset(Math.Min(direction.X, 0), Math.Min(direction.Y, 0));
 
             // IEnumerable<GameObject> list = GameService.Characters.Union(GameService.Objects).Where(x => x.Hittable && rect.Intersects(((PositionComponent)x).GetRectangle()));
-            IEnumerable<GameObject> list = GameService.Objects.Where(x => x.Hittable && rect.Intersects(((PositionComponent)x).GetRectangle()));
+
+            IEnumerable<PhysicsComponent> list = GameService.Instance.PhysicsSystem.objects.Where(x => x.Hittable && rect.Intersects(x.GetRectangle()));
             if (predicate != null)
                 list = list.Where(predicate);
-            return list.FirstOrDefault();
+            return list.FirstOrDefault()?.GameObject;
         }
 
         public void Rotate(float angle)

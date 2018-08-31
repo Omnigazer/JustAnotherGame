@@ -22,25 +22,61 @@ namespace Omniplatformer.HUDStates
         public string CurrentConstructor { get; set; }
         public bool PinMode { get; set; }
 
+        // mouse position on last tick
+        Point last_position = Point.Zero;
+        // object currently being mouse-dragged
+        GameObject tele_obj = null;
+
         Dictionary<string, (Texture2D, Vector2, bool, Color?)> textures = new Dictionary<string, (Texture2D, Vector2, bool, Color?)>()
         {
             { "Ladder", (GameContent.Instance.ladder, new Vector2(0.5f, 0.5f), true, Color.White) },
             { "Chest", (null, new Vector2(0.5f, 0.5f), false, Color.Firebrick) }
         };
 
-        public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
-
         public EditorHUDState(HUDContainer hud)
         {
             playerHUD = hud;
             SetupControls();
             InitObjectConstructors();
+            RegisterHandlers();
+        }
+
+        public void RegisterHandlers()
+        {
+            MouseDown += OnMouseDown;
+            MouseMove += OnMouseMove;
+            MouseUp += OnMouseUp;
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            DragObject();
+        }
+
+        private void OnMouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButton.Left)
+            {
+                if (CurrentConstructor != null)
+                    ApplyConstructor();
+                else
+                    StartDragging();
+            }
+        }
+
+        private void OnMouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButton.Left)
+                StopDragging();
+            else
+                DeleteObject();
         }
 
         public override void Draw()
         {
             playerHUD.Draw();
-            DrawCurrentBlock();
+            if (CurrentConstructor != null)
+                DrawCurrentBlock();
             DrawLogger();
             base.Draw();
         }
@@ -58,7 +94,7 @@ namespace Omniplatformer.HUDStates
                 { "GoblinShaman", (coords, halfsize, origin) => { return new GoblinShaman(coords); } },
                 { "Chest", (coords, halfsize, origin) => { return new Chest(coords, halfsize); } },
             };
-            CurrentConstructor = PositionalConstructors.Keys.First();
+            // CurrentConstructor = PositionalConstructors.Keys.First();
         }
 
         public void DrawLogger()
@@ -124,6 +160,7 @@ namespace Omniplatformer.HUDStates
                 {  Keys.C, (Game.OpenChest, noop, false) },
                 {  Keys.Q, (SetPrevConstructor, noop, false) },
                 {  Keys.E, (SetNextConstructor, noop, false) },
+                {  Keys.R, (ClearConstructor, noop, false) },
                 {  Keys.OemMinus, (Game.ZoomOut, noop, true) },
                 {  Keys.OemPlus, (Game.ZoomIn, noop, true) },
                 {  Keys.Home, (IncreaseHeight, noop, continuous_size) },
@@ -222,6 +259,11 @@ namespace Omniplatformer.HUDStates
             // CurrentConstructor = PositionalConstructors.
         }
 
+        public void ClearConstructor()
+        {
+            CurrentConstructor = null;
+        }
+
         public Vector2 GetInGameCoords(Point click_position)
         {
             var ingame_pos = Game.RenderSystem.ScreenToGame(click_position);
@@ -252,87 +294,123 @@ namespace Omniplatformer.HUDStates
             }
         }
 
+        Point initial_position;
+        public void StartDragging()
+        {
+            var mouseState = Mouse.GetState();
+            var obj = Game.GetObjectAtCursor();
+            if (tele_obj == null && obj != null)
+            {
+                tele_obj = obj;
+                initial_position = mouseState.Position;
+            }
+        }
+
+        public void DragObject()
+        {
+            var mouseState = Mouse.GetState();
+            if (tele_obj != null)
+            {
+                if (last_position == Point.Zero)
+                {
+                    last_position = mouseState.Position;
+                }
+                else
+                {
+                    // TODO: extract this funny shit
+                    // TODO: too many TODOs
+                    var total_dp = (mouseState.Position - initial_position).ToVector2() / Game.RenderSystem.Camera.Zoom;
+                    var dp = (mouseState.Position - last_position).ToVector2() / Game.RenderSystem.Camera.Zoom;
+                    // Have to manually transform vector for delta between coords
+                    dp.Y = -dp.Y;
+                    dp.X = (float)Math.Round(dp.X);
+                    dp.Y = (float)Math.Round(dp.Y);
+                    if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+                    {
+                        if (Math.Abs(total_dp.X) >= Math.Abs(total_dp.Y))
+                        {
+                            dp.Y = 0;
+                        }
+                        else if (Math.Abs(total_dp.X) < Math.Abs(total_dp.Y))
+                        {
+                            dp.X = 0;
+                        }
+                    }
+
+                    // TODO: refactor this
+                    var tele_pos = (PositionComponent)tele_obj;
+                    if (tele_pos != null)
+                    {
+                        tele_pos.AdjustPosition(dp);
+                        // tele_obj.center += dp;
+                    }
+                    last_position = mouseState.Position;
+                }
+            }
+        }
+
+        public void StopDragging()
+        {
+            last_position = Point.Zero;
+            tele_obj = null;
+        }
+
         float current_block_width = 8;
         float current_block_height = 8;
+
+        public void HandleDragMode()
+        {
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                DragObject();
+            }
+            else
+            {
+                StopDragging();
+            }
+        }
+
+        public void ApplyConstructor()
+        {
+            var pos = Mouse.GetState().Position;
+            // var (coords, halfsize, origin) = (Game.RenderSystem.ScreenToGame(click_pos), (pos - click_pos).ToVector2() / (2 * Game.RenderSystem.Camera.Zoom), new Vector2(0, 1));
+            var click_coords = GetInGameCoords(pos);
+            // var end_coords = GetInGameCoords(pos);
+
+            // var halfsize = (end_coords - click_coords) / 2;//.ToVector2() / (2 * Game.RenderSystem.Camera.Zoom);
+            var halfsize = new Vector2(current_block_width / 2, current_block_height / 2);
+            if (halfsize.Length() > 0)
+            {
+                halfsize = new Vector2(Math.Abs(halfsize.X), Math.Abs(halfsize.Y));
+                // var (or_x, or_y) = (pos.X > click_pos.X ? 0 : 1, pos.Y > click_pos.Y ? 1 : 0);
+                // var origin = new Vector2(or_x, or_y);
+                var origin = new Vector2(0, 1);
+                // var obj = new SolidPlatform(coords, halfsize, origin);
+                var obj = PositionalConstructors[CurrentConstructor](click_coords, halfsize, origin);
+                CurrentGroup.Add(obj);
+                Game.AddToMainScene(obj);
+                Game.CurrentLevel.objects.Add(obj);
+            }
+        }
+
+        public void DeleteObject()
+        {
+            var obj = Game.GetObjectAtCursor();
+            Game.CurrentLevel.objects.Remove(obj);
+            foreach (var group in Groups)
+            {
+                group.Remove(obj);
+            }
+            obj?.onDestroy();
+        }
 
         public override void HandleControls()
         {
             // TODO: possibly refactor this
             // reset the player's "intention to move" (move_direction) by default as a workaround
             Game.StopMoving();
-            var keyboard_state = Keyboard.GetState();
-            foreach (var (key, (pressed_action, released_action, continuous)) in Controls)
-            {
-                if (keyboard_state.IsKeyDown(key))
-                {
-                    if(continuous || !release_map.ContainsKey(key) || release_map[key])
-                    {
-                        release_map[key] = false;
-                        pressed_action();
-                    }
-                }
-                else
-                {
-                    release_map[key] = true;
-                    released_action?.Invoke();
-                }
-            }
-
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-            {
-                if (!lmb_pressed)
-                {
-                    var pos = Mouse.GetState().Position;
-                    lmb_pressed = true;
-                    click_pos = pos;
-                }
-                //    Game.DragObject();
-            }
-            else
-            {
-                if (lmb_pressed)
-                {
-                    var pos = Mouse.GetState().Position;
-                    // var (coords, halfsize, origin) = (Game.RenderSystem.ScreenToGame(click_pos), (pos - click_pos).ToVector2() / (2 * Game.RenderSystem.Camera.Zoom), new Vector2(0, 1));
-                    var click_coords = GetInGameCoords(click_pos);
-                    // var end_coords = GetInGameCoords(pos);
-
-                    // var halfsize = (end_coords - click_coords) / 2;//.ToVector2() / (2 * Game.RenderSystem.Camera.Zoom);
-                    var halfsize = new Vector2(current_block_width / 2, current_block_height / 2);
-                    if (halfsize.Length() > 0)
-                    {
-                        halfsize = new Vector2(Math.Abs(halfsize.X), Math.Abs(halfsize.Y));
-                        // var (or_x, or_y) = (pos.X > click_pos.X ? 0 : 1, pos.Y > click_pos.Y ? 1 : 0);
-                        // var origin = new Vector2(or_x, or_y);
-                        var origin = new Vector2(0, 1);
-                        // var obj = new SolidPlatform(coords, halfsize, origin);
-                        var obj = PositionalConstructors[CurrentConstructor](click_coords, halfsize, origin);
-                        CurrentGroup.Add(obj);
-                        Game.AddToMainScene(obj);
-                        Game.CurrentLevel.objects.Add(obj);
-                    }
-                }
-                lmb_pressed = false;
-            }
-
-            if (Mouse.GetState().RightButton == ButtonState.Pressed)
-            {
-                if (!rmb_pressed)
-                {
-                    var obj = Game.GetObjectAtCursor();
-                    Game.CurrentLevel.objects.Remove(obj);
-                    foreach (var group in Groups)
-                    {
-                        group.Remove(obj);
-                    }
-                    obj?.onDestroy();
-                    rmb_pressed = true;
-                }
-            }
-            else
-            {
-                rmb_pressed = false;
-            }
+            base.HandleControls();
         }
+
     }
 }

@@ -23,13 +23,12 @@ namespace Omniplatformer
         {
             if (texture == null)
                 texture = GameContent.Instance.cursor;
-            Solid = false;
             Team = Team.Friend;
             // Damage = damage;
             var Knockback = new Vector2(4, 4);
             var halfsize = new Vector2(3, 25);
             Descriptors.Add(Descriptor.HandSlot);
-            Components.Add(new PositionComponent(this, Vector2.Zero, halfsize, 0, new Vector2(0.5f, 0.1f)));
+            Components.Add(new PhysicsComponent(this, Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)));
             Components.Add(new RenderComponent(this, Color.White, texture));
             Components.Add(new MeleeDamageHitComponent(this, damage, Knockback));
         }
@@ -40,15 +39,15 @@ namespace Omniplatformer
             // draw-related
             var item_pos = (PositionComponent)this;
             item_pos.SetParent(character, AnchorPoint.Hand);
-            Reveal();
+            Game.AddToMainScene(this);
         }
 
         public override void OnUnequip()
         {
-            Hide();
             SetWielder(null);
             var item_pos = (PositionComponent)this;
             item_pos.ClearParent();
+            Game.RemoveFromMainScene(this);
         }
 
         public override object AsJson()

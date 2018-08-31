@@ -8,7 +8,7 @@ namespace Omniplatformer.Components
 {
     public abstract class Component
     {
-        protected GameObject GameObject { get; set; }
+        public GameObject GameObject { get; set; }
         public string Tag { get; set; }
         public Component(GameObject obj)
         {

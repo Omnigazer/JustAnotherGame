@@ -15,7 +15,7 @@ namespace Omniplatformer
     {
         public MovingPlatform(Vector2 position)
         {
-            Components.Add(new PositionComponent(this, position, new Vector2(100, 10)));
+            Components.Add(new PhysicsComponent(this, position, new Vector2(100, 10)));
             Components.Add(new RenderComponent(this));
             Components.Add(new PlatformMoveComponent(this));
         }

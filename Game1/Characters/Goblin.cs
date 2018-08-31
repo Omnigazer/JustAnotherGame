@@ -14,13 +14,15 @@ namespace Omniplatformer.Characters
     public class Goblin : Character
     {
         // internal counters for "random movement"
+        /*
         float ticks = 0;
         int amp = 300;
+        */
 
         float current_time_scale;
         IEnumerator behaviorGen()
         {
-            var movable = GetComponent<CharMoveComponent>();
+            var movable = GetComponent<DynamicPhysicsComponent>();
             while (true)
             {
                 float walk_time = RandomGen.NextFloat(150, 600);
@@ -57,9 +59,9 @@ namespace Omniplatformer.Characters
             Team = Team.Enemy;
             CurrentHitPoints = MaxHitPoints = 8;
             var halfsize = new Vector2(15, 20);
-            Components.Add(new PositionComponent(this, coords, halfsize));
+            // Components.Add(new PositionComponent(this, coords, halfsize));
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight, Color.Green));
-            Components.Add(new CharMoveComponent(this, movespeed: 1.4f));
+            Components.Add(new CharMoveComponent(this, coords, halfsize, movespeed: 1.4f));
             Components.Add(new DamageHitComponent(this, damage: 3, knockback: new Vector2(5, 5)));
         }
 

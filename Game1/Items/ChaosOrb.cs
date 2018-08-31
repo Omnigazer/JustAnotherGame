@@ -18,17 +18,18 @@ namespace Omniplatformer
         // public override GameObject Source => _source?.Source ?? this;
         // private GameObject _source;
 
+            /*
         public ChaosOrb(Texture2D texture = null)
         {
             if (texture == null)
                 texture = GameContent.Instance.cursor;
-            Solid = false;
             Team = Team.Friend;
             // Damage = damage;
             var halfsize = new Vector2(3, 25);
-            Components.Add(new PositionComponent(this, Vector2.Zero, halfsize, 0, new Vector2(0.5f, 0.1f)));
+            Components.Add(new DynamicPhysicsComponent(this, Vector2.Zero, halfsize, 0, new Vector2(0.5f, 0.1f)));
             Components.Add(new RenderComponent(this, Color.White, texture));
         }
+        */
 
         public override object AsJson()
         {

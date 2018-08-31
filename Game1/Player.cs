@@ -65,10 +65,7 @@ namespace Omniplatformer
             inventory = new Inventory();
             // TODO: test
             var item = new WieldedItem(damage: 1);
-            Game.AddToMainScene(item);
-            item.Hide();
             inventory.AddItem(item);
-
             Team = Team.Friend;
             MaxHitPoints = max_hitpoints;
             CurrentHitPoints = MaxHitPoints;
@@ -81,17 +78,21 @@ namespace Omniplatformer
                 CurrentMana[type] = MaxMana(type);
             }
 
-            InitPos(center, halfsize);
+            // InitPos(center, halfsize);
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
-            Components.Add(new PlayerMoveComponent(this) { MaxMoveSpeed = 9, Acceleration = 0.5f });
+            var phys = new PlayerMoveComponent(this, center, halfsize) { MaxMoveSpeed = 9, Acceleration = 0.5f };
+            phys.AddAnchor(AnchorPoint.Hand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
+            Components.Add(phys);
         }
 
+        /*
         public void InitPos(Vector2 center, Vector2 halfsize)
         {
             var pos = new PositionComponent(this, center, halfsize);
             pos.AddAnchor(AnchorPoint.Hand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
             Components.Add(pos);
         }
+        */
 
         public void EarnExperience(int value)
         {
@@ -140,13 +141,14 @@ namespace Omniplatformer
         {
             if (Vulnerable || damage <= 0)
             {
-                if (damage >= 0)
-                    Vulnerable = false;
-                CurrentHitPoints -= damage;
                 var drawable = GetComponent<CharacterRenderComponent>();
+                if (damage >= 0)
+                {
+                    drawable.StartAnimation(Animation.Hit, inv_frames);
+                    Vulnerable = false;
+                }
+                CurrentHitPoints -= damage;
                 drawable._onAnimationEnd += Drawable__onAnimationEnd;
-                drawable.StartAnimation(Animation.Hit, inv_frames);
-
                 if (CurrentHitPoints <= 0)
                 {
                     onDestroy();
@@ -196,27 +198,12 @@ namespace Omniplatformer
             var damager = (HitComponent)WieldedItem;
             if (obj != null)
                 damager?.Hit(obj);
-
-
-            /*
-            var (damage, knockback) = (WieldedItem.Damage, WieldedItem.Knockback);
-            if (obj != null)
-            {
-                // damaging the target
-                obj.ApplyDamage(damage);
-                // applying knockback
-                var movable = (MoveComponent)obj;
-                var pos = GetComponent<PositionComponent>();
-                movable?.AdjustSpeed(new Vector2((int)pos.WorldPosition.face_direction * knockback.X, knockback.Y));
-            }
-            */
-
         }
 
         public GameObject GetMeleeTarget(float range)
         {
             var pos = GetComponent<PositionComponent>();
-            return pos.GetClosestObject(new Vector2(range * (int)pos.WorldPosition.face_direction, 0), x => x.Hittable && x.Team != Team.Friend);
+            return pos.GetClosestObject(new Vector2(range * (int)pos.WorldPosition.face_direction, 0), x => x.Hittable && x.GameObject.Team != Team.Friend);
         }
 
         private void onAttackend(object sender, AnimatedRenderComponent.AnimationEventArgs e)
@@ -277,9 +264,8 @@ namespace Omniplatformer
                 // TODO: move the inventory into the player class
                 // all this code should be in player's pickup
                 var x = item as Item;
-                PickUp(x);
-                x.Pickupable = false;
-                item.Hide();
+                inventory.AddItem(x);
+                Game.RemoveFromMainScene(item);
             }
             // GetBonus(item.Bonus);
             // item.onDestroy();
@@ -330,11 +316,6 @@ namespace Omniplatformer
                 EquipSlots.HandSlot.Item = null;
                 // WieldedItem = null;
             }
-        }
-
-        public void PickUp(Item item)
-        {
-            inventory.AddItem(item);
         }
 
         public void WieldCurrentSlot()

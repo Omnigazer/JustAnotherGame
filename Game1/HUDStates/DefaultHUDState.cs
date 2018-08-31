@@ -16,8 +16,6 @@ namespace Omniplatformer.HUDStates
         HUDContainer playerHUD;
         Game1 Game => GameService.Instance;
 
-        public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
-
         public DefaultHUDState(HUDContainer hud)
         {
             playerHUD = hud;
@@ -72,32 +70,7 @@ namespace Omniplatformer.HUDStates
             // TODO: possibly refactor this
             // reset the player's "intention to move" (move_direction) by default as a workaround
             Game.StopMoving();
-            var keyboard_state = Keyboard.GetState();
-            foreach (var (key, (pressed_action, released_action, continuous)) in Controls)
-            {
-                if (keyboard_state.IsKeyDown(key))
-                {
-                    if(continuous || !release_map.ContainsKey(key) || release_map[key])
-                    {
-                        release_map[key] = false;
-                        pressed_action();
-                    }
-                }
-                else
-                {
-                    release_map[key] = true;
-                    released_action?.Invoke();
-                }
-            }
-
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-            {
-                Game.DragObject();
-            }
-            else
-            {
-                Game.ReleaseDraggedObject();
-            }
+            base.HandleControls();
         }
     }
 }

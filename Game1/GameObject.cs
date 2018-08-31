@@ -35,12 +35,7 @@ namespace Omniplatformer
         public Game1 Game => GameService.Instance;
 
         // Candidates for component extraction
-        public virtual bool Solid { get; set; }
-        public virtual bool Liquid { get; set; }
-        public virtual bool Climbable { get; set; }
-        public virtual bool Pickupable { get; set; }
-        public virtual bool Hittable { get; set; }
-        public virtual bool Draggable { get; set; }
+        // public virtual bool Draggable { get; set; }
         // public virtual bool Hidden { get; set; }
         public Team Team { get; set; }
         public virtual GameObject Source => this;
@@ -57,11 +52,8 @@ namespace Omniplatformer
         public GameObject()
         {
             Id = Id == Guid.Empty ? Guid.NewGuid() : Id;
-            // Id = Id ?? new Guid();
             Components = new List<Component>();
             Cooldowns = new Dictionary<string, float>();
-            // TODO: move solid implementation to derived classes
-            Solid = true;
             Team = Team.Neutral;
         }
 
@@ -78,46 +70,10 @@ namespace Omniplatformer
             }
         }
 
-        public virtual float Friction => 0.2f;
-
         // TODO: move this into a damageable component
         public virtual void ApplyDamage(float damage)
         {
 
-        }
-
-        /*
-        public void SetPosition(float x, float y)
-        {
-            var pos = GetComponent<PositionComponent>();
-            pos.local_position = new Position(pos.local_position) { Coords = new Vector2(x, y) };
-        }
-        */
-
-        public void Hide()
-        {
-            var drawable = GetComponent<RenderComponent>();
-            if (drawable != null)
-            {
-                drawable.Hidden = true;
-            }
-            else
-            {
-                throw new Exception("Attempted to hide an object without a RenderComponent");
-            }
-        }
-
-        public void Reveal()
-        {
-            var drawable = GetComponent<RenderComponent>();
-            if (drawable != null)
-            {
-                drawable.Hidden = false;
-            }
-            else
-            {
-                throw new Exception("Attempted to hide an object without a RenderComponent");
-            }
         }
 
         public bool TryCooldown(string key, int value)

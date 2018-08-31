@@ -22,7 +22,7 @@ namespace Omniplatformer.Components
         {
             if (CurrentAnimations.ContainsKey(Animation.Death))
             {
-                var (ticks, length) = CurrentAnimations[Animation.Death];
+                var (ticks, length, current_step) = CurrentAnimations[Animation.Death];
                 float alpha = (float)(length - ticks) / length;
                 base.Draw(alpha);
             }

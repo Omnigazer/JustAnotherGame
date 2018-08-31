@@ -11,9 +11,9 @@ namespace Omniplatformer.Components
     {
         // protected Animation CurrentAnimation { get; set; }
         /// <summary>
-        /// Maps animation type to the tuple (current ticks, duration)
+        /// Maps animation type to the tuple (current ticks, duration, current step)
         /// </summary>
-        protected Dictionary<Animation, (float, float)> CurrentAnimations { get; set; } = new Dictionary<Animation, (float, float)>();
+        protected Dictionary<Animation, (float, float, int)> CurrentAnimations { get; set; } = new Dictionary<Animation, (float, float, int)>();
 
         public class AnimationEventArgs : EventArgs
         {
@@ -44,10 +44,10 @@ namespace Omniplatformer.Components
             if (CurrentAnimations.ContainsKey(animation))
             {
                 if (interrupt)
-                    CurrentAnimations[animation] = (0, length);
+                    CurrentAnimations[animation] = (0, length, 0);
             }
             else
-                CurrentAnimations.Add(animation, (0, length));
+                CurrentAnimations.Add(animation, (0, length, 0));
         }
 
         public void EndAnimation(Animation animation)
@@ -73,9 +73,9 @@ namespace Omniplatformer.Components
 
         public override void Tick(float time_scale)
         {
-            foreach (var (animation, (ticks, length)) in CurrentAnimations.ToList())
+            foreach (var (animation, (ticks, length, current_step)) in CurrentAnimations.ToList())
             {
-                CurrentAnimations[animation] = (ticks + time_scale, length);
+                CurrentAnimations[animation] = (ticks + time_scale, length, 0);
                 if (ticks + time_scale >= length)
                 {
                     EndAnimation(animation);

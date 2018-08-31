@@ -47,11 +47,6 @@ namespace Omniplatformer
         public event EventHandler<InventoryEventArgs> onTargetInventoryOpen = delegate { };
         public event EventHandler onTargetInventoryClosed = delegate { };
 
-        // mouse position on last tick
-        Point last_position = Point.Zero;
-        // object currently being mouse-dragged
-        GameObject tele_obj = null;
-
         int CurrentSongIndex { get; set; }
 
         public Game1()
@@ -92,7 +87,7 @@ namespace Omniplatformer
         void InitGameObjects()
         {
             CurrentLevel = GameContent.Instance.level;
-            CurrentLevel.Load("blank");
+            // CurrentLevel.Load("blank");
 
             // Register player
             player = new Player(
@@ -115,7 +110,7 @@ namespace Omniplatformer
                 AddToMainScene(character);
             }
 
-            LoadGroup("village", new Vector2(1300, 0));
+            LoadGroup("village", new Vector2(0, 0));
         }
 
         private void GameOver(object sender, EventArgs e)
@@ -161,7 +156,6 @@ namespace Omniplatformer
             if (!game_over && !console.Opened && IsActive)
             {
                 HUDState.HandleControls();
-                HUDState.HandleMouseEvents();
             }
 
             Simulate(gameTime);
@@ -172,7 +166,6 @@ namespace Omniplatformer
                 MediaPlayer.Play(GameContent.Instance.Songs[CurrentSongIndex]);
                 CurrentSongIndex = (CurrentSongIndex + 1) % GameContent.Instance.Songs.Count;
             }
-
 
             base.Update(gameTime);
         }
@@ -203,7 +196,10 @@ namespace Omniplatformer
         public void AddToMainScene(GameObject obj)
         {
             objects.Add(obj);
-            PhysicsSystem.objects.Add(obj);
+            var physicable = (PhysicsComponent)obj;
+            if (physicable != null)
+                PhysicsSystem.Register(physicable);
+            // PhysicsSystem.objects.Add(obj);
             var drawable = (RenderComponent)obj;
             if (drawable != null)
                 RenderSystem.RegisterDrawable(drawable);
@@ -213,7 +209,8 @@ namespace Omniplatformer
         public void RemoveFromMainScene(GameObject obj)
         {
             objects.Remove(obj);
-            PhysicsSystem.objects.Remove(obj);
+            var physicable = (PhysicsComponent)obj;
+            PhysicsSystem.Unregister(physicable);
             RenderSystem.RemoveFromDrawables((RenderComponent)obj);
             obj._onDestroy -= GameObject_onDestroy;
         }
@@ -346,7 +343,8 @@ namespace Omniplatformer
             {
                 if (obj is Chest)
                 {
-                    if (player_pos.Overlaps(obj))
+                    var pos = (PositionComponent)obj;
+                    if (player_pos.Overlaps(pos))
                     {
                         HUDState = inventoryHUD;
                         OpenTargetInventory(((Chest)obj).Inventory);
@@ -409,48 +407,6 @@ namespace Omniplatformer
         {
             var movable = (PlayerMoveComponent)player;
             movable.StopJumping();
-        }
-
-        public void DragObject()
-        {
-            var obj = GetObjectAtCursor();
-            if (tele_obj == null && obj != null)
-                tele_obj = obj;
-            if (tele_obj != null)
-            {
-                var mouseState = Mouse.GetState();
-                if (last_position == Point.Zero)
-                {
-                    last_position = mouseState.Position;
-                }
-                else
-                {
-                    // TODO: extract this funny shit
-                    // TODO: too many TODOs
-                    var dp = (mouseState.Position - last_position).ToVector2() / RenderSystem.Camera.Zoom;
-                    // Have to manually transform vector for delta between coords
-                    dp.Y = -dp.Y;
-                    // TODO: refactor this
-                    var tele_pos = (PositionComponent)tele_obj;
-                    if (tele_pos != null)
-                    {
-                        tele_pos.AdjustPosition(dp);
-                        // tele_obj.center += dp;
-                    }
-                    last_position = mouseState.Position;
-                }
-            }
-
-            /*
-            if (obj != null)
-                obj.color = Color.Green;
-            */
-        }
-
-        public void ReleaseDraggedObject()
-        {
-            last_position = Point.Zero;
-            tele_obj = null;
         }
 
         public void Fire()
@@ -572,7 +528,7 @@ namespace Omniplatformer
         public void SaveLevel(string name)
         {
             Log("Saving level");
-            string path = String.Format("{0}.json", name);
+            string path = String.Format("Content/Data/{0}.json", name);
             CurrentLevel.Save(path);
         }
 
@@ -581,6 +537,8 @@ namespace Omniplatformer
             // Clear everything
             objects.Clear();
             RenderSystem.drawables.Clear();
+            PhysicsSystem.objects.Clear();
+            PhysicsSystem.dynamics.Clear();
             CurrentLevel.objects.Clear();
 
             // Register the player back

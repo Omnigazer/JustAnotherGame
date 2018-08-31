@@ -11,8 +11,6 @@ namespace Omniplatformer.Components
     {
         public Vector2 CurrentMovement { get; set; }
         public event EventHandler<MoveEventArgs> _onMove = delegate { };
-
-
         public float VerticalSpeed
         {
             get => CurrentMovement.Y;
@@ -30,10 +28,12 @@ namespace Omniplatformer.Components
 
         }
 
+        /*
         protected void onMove(Vector2 displacement)
         {
             _onMove(this, new MoveEventArgs(displacement));
         }
+        */
 
         // Check what kinds of objects are we colliding here
         // TODO: problematic method & overrides, refactor
@@ -45,20 +45,14 @@ namespace Omniplatformer.Components
             }
         }
 
-        protected virtual void ProcessCollision(Direction direction, GameObject obj)
+        public virtual void ProcessCollision(Direction direction, GameObject obj)
         {
 
         }
 
-        public virtual Vector2 GetMoveVector()
+        public virtual void ProcessMovement()
         {
-            return CurrentMovement;
-        }
 
-        public virtual void ProcessMovement(float time_scale)
-        {
-            var displacement = GetMoveVector() * time_scale;
-            Move(displacement);
         }
 
         public virtual void AdjustSpeed(Vector2 v)
@@ -70,21 +64,7 @@ namespace Omniplatformer.Components
         {
             var pos = GetComponent<PositionComponent>();
             pos.AdjustPosition(displacement);
-            onMove(displacement);
-        }
-
-        // Set speed < e to zero to prevent shaking
-        public void TrimSpeed()
-        {
-            float e = 0.1f;
-            if (Math.Abs(VerticalSpeed) < e)
-            {
-                VerticalSpeed = 0;
-            }
-            if (Math.Abs(HorizontalSpeed) < e)
-            {
-                HorizontalSpeed = 0;
-            }
+            // onMove(displacement);
         }
     }
 }

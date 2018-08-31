@@ -23,8 +23,6 @@ namespace Omniplatformer
         public Character()
         {
             CurrentHitPoints = MaxHitPoints = 50;
-            Hittable = true;
-            Solid = false;
             Vulnerable = true;
         }
 
