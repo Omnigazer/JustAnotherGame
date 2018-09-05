@@ -79,10 +79,10 @@ namespace Omniplatformer
             }
 
             // InitPos(center, halfsize);
-            Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
             var phys = new PlayerMoveComponent(this, center, halfsize) { MaxMoveSpeed = 9, Acceleration = 0.5f };
             phys.AddAnchor(AnchorPoint.Hand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
             Components.Add(phys);
+            Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
         }
 
         /*
