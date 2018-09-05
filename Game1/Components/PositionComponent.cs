@@ -143,11 +143,9 @@ namespace Omniplatformer.Components
         public Rectangle GetRectangle()
         {
             var halfsize = WorldPosition.halfsize;
-            halfsize.X *= 2;
-            halfsize.Y *= 2;
             var zero = WorldPosition.Center - WorldPosition.halfsize;
             // zero = new Vector2((int)Math.Round(zero.X, 0, MidpointRounding.ToEven), (int)Math.Round(zero.Y, 0, MidpointRounding.ToEven));
-            return new Rectangle((zero).ToPoint(), halfsize.ToPoint());
+            return new Rectangle((zero).ToPoint(), new Point((int)halfsize.X * 2, (int)halfsize.Y * 2));
             // return new Rectangle((zero + new Vector2(WorldPosition.Origin.X * pt.X, WorldPosition.Origin.Y * pt.Y)).ToPoint(), pt);
         }
 
@@ -181,27 +179,28 @@ namespace Omniplatformer.Components
 
         public Direction Collides(PositionComponent other)
         {
-            PositionComponent their_pos = (PositionComponent)other;
-            if (their_pos == null)
+            if (other == null)
                 return Direction.None;
 
             if (Overlaps(other))
             {
-                var hd = Math.Abs(WorldPosition.Center.X - their_pos.WorldPosition.Center.X) - (WorldPosition.halfsize.X + their_pos.WorldPosition.halfsize.X);
-                var vd = Math.Abs(WorldPosition.Center.Y - their_pos.WorldPosition.Center.Y) - (WorldPosition.halfsize.Y + their_pos.WorldPosition.halfsize.Y);
+                var hd = Math.Abs(WorldPosition.Center.X - other.WorldPosition.Center.X) - (WorldPosition.halfsize.X + other.WorldPosition.halfsize.X);
+                var vd = Math.Abs(WorldPosition.Center.Y - other.WorldPosition.Center.Y) - (WorldPosition.halfsize.Y + other.WorldPosition.halfsize.Y);
 
                 // Now compare them to know the side of collision
 
                 if (hd > vd)
                 {
-                    if (WorldPosition.Center.X < their_pos.WorldPosition.Center.X)
+                    if (WorldPosition.Center.X < other.WorldPosition.Center.X)
                         return Direction.Right;
                     else
+                    {
                         return Direction.Left;
+                    }
                 }
                 else if (vd > hd)
                 {
-                    if (WorldPosition.Center.Y < their_pos.WorldPosition.Center.Y)
+                    if (WorldPosition.Center.Y < other.WorldPosition.Center.Y)
                         return Direction.Up;
                     else
                         return Direction.Down;

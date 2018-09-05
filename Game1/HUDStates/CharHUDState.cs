@@ -62,8 +62,6 @@ namespace Omniplatformer.HUDStates
             };
         }
 
-        bool lmb_is_pressed;
-
         public override void HandleControls()
         {
             Game.StopMoving();

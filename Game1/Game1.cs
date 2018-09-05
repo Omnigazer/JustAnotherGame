@@ -132,6 +132,7 @@ namespace Omniplatformer
 
             // TODO: use this.Content to load your game content here
 
+            Services.AddService(typeof(SpriteBatch), spriteBatch);
             LoadConsole(spriteBatch);
         }
 
@@ -441,8 +442,7 @@ namespace Omniplatformer
             System.Windows.Forms.Form winGameWindow = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(Window.Handle);
             winGameWindow.Show();
             winGameWindow.Hide();
-            var x = System.Windows.Forms.Application.OpenForms;
-            Services.AddService(typeof(SpriteBatch), spriteBatch);
+
             console = new GameConsole(this, spriteBatch, new GameConsoleOptions
             {
                 ToggleKey = 192,

@@ -139,7 +139,7 @@ namespace Omniplatformer.Components
         public override void ProcessCollision(Direction direction, PhysicsComponent obj)
         {
             base.ProcessCollision(direction, obj);
-            if (direction == Direction.Up)
+            if (direction == Direction.Up && obj.Solid)
             {
                 StopJumping();
             }

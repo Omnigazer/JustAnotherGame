@@ -21,7 +21,7 @@ namespace Omniplatformer
         public Liquid(Vector2 coords, Vector2 halfsize, Vector2 origin)
         {
             Components.Add(new RenderComponent(this, Color.Aqua * 0.5f, Layers.Liquid));
-            Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Liquid = true });
+            Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Liquid = true, Solid = false, Friction = 0.2f });
         }
 
         public override object AsJson()

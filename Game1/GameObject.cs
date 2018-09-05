@@ -60,11 +60,12 @@ namespace Omniplatformer
         // Process a single game frame
         public virtual void Tick(float time_scale)
         {
-            foreach (var c in Components)
+            // foreach (var c in Components)
+            for (int i = 0; i < Components.Count; i++)
             {
-                c.Tick(time_scale);
+                Components[i].Tick(time_scale);
             }
-            foreach (var (key, ticks) in Cooldowns.ToList())
+            foreach (var (key, ticks) in Cooldowns)
             {
                 Cooldowns[key] = Math.Max(ticks - time_scale, 0);
             }

@@ -77,6 +77,8 @@ namespace Omniplatformer
             // if (clamped_origin.Length() > 0) { if (origin.Length() > 0) { } }
             // var bounds = texture.Bounds;
             // bounds.Inflate((x_tiles - 1) * bounds.Width,  (y_tiles - 1) * bounds.Height);
+
+
             Instance.Draw(texture: texture, destinationRectangle: screen_rect, color: color, rotation: rotation, origin: origin,
                 effects: SpriteEffects.None, layerDepth: 0, sourceRectangle: bounds); // default parameters
         }
@@ -84,6 +86,7 @@ namespace Omniplatformer
         public static Rectangle GameToScreen(Rectangle rect, Vector2 clamped_origin)
         {
             // rect.Location = new Point(rect.Location.X, -rect.Location.Y);
+            // manual flip
             rect.Location = new Point(rect.Location.X, -rect.Location.Y - rect.Height);
             // rect.Location = new Point(rect.Location.X, -rect.Location.Y - rect.Height + (int)(2 * rect.Height * clamped_origin.Y));
 
