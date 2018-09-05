@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace Omniplatformer.Components
 {
 
-    public class PlatformMoveComponent : MoveComponent
+    public class PlatformMoveComponent : DynamicPhysicsComponent
     {
-        public PlatformMoveComponent(GameObject obj) : base(obj)
+        public PlatformMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj, coords, halfsize)
         {
         }
 

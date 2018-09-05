@@ -11,6 +11,7 @@ namespace Omniplatformer.Components
     {
         public float InverseMass { get; set; }
         public float Friction { get; set; }
+        public bool Tile { get; set; }
         public bool Solid { get; set; }
         public bool Liquid { get; set; }
         public virtual bool Climbable { get; set; }

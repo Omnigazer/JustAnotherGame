@@ -11,6 +11,7 @@ namespace Omniplatformer.Components
     {
         // Collision interaction flags
         public bool IsOnGround { get; set; }
+        public PhysicsComponent CurrentGround { get; set; }
         public bool IsInLiquid { get; set; }
         public float LiquidImmersion { get; set; }
         public bool IsNextToCeiling { get; set; }
@@ -59,6 +60,7 @@ namespace Omniplatformer.Components
 
         public virtual void ResetCollisionFlags()
         {
+            CurrentGround = null;
             /*
             foreach (var (direction, obj) in collisions)
             {

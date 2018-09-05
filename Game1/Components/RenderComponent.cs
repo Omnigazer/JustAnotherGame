@@ -10,7 +10,8 @@ namespace Omniplatformer.Components
 {
     public class RenderComponent : Component, IComparable<RenderComponent>
     {
-        public bool Hidden;
+        // public bool Hidden;
+        public bool Tile;
         public int ZIndex { get; set; } = Layers.Default;
         public Color color = Color.AliceBlue;
         public Texture2D Texture { get; set; }
@@ -55,7 +56,7 @@ namespace Omniplatformer.Components
             return Texture ?? GameContent.Instance.whitePixel;
         }
 
-        // TODO: Move this to the render component
+        /*
         public Rectangle GetDrawRectangle()
         {
             PositionComponent pos = GetComponent<PositionComponent>();
@@ -68,6 +69,7 @@ namespace Omniplatformer.Components
             pt.Y *= 2;
             return new Rectangle((new_center - pos.WorldPosition.halfsize).ToPoint(), pt);
         }
+        */
 
         public virtual void DrawToLightMask()
         {

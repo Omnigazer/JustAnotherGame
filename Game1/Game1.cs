@@ -71,6 +71,7 @@ namespace Omniplatformer
             InitServices();
             var playerHUD = new HUDContainer();
             InitGameObjects();
+            RenderSystem.InitVertexBuffer();
 
             defaultHUD = new DefaultHUDState(playerHUD);
             inventoryHUD = new InventoryHUDState(playerHUD, player.inventory);

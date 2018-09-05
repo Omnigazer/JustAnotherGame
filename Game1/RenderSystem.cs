@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omniplatformer.Utility;
 
 namespace Omniplatformer
 {
@@ -32,8 +33,11 @@ namespace Omniplatformer
         const float day_loop_length = 3600;
 
         GraphicsDevice GraphicsDevice { get; set; }
+        VertexBuffer TileBuffer { get; set; }
 
-        public List<RenderComponent> drawables = new List<RenderComponent>();
+        // public List<RenderComponent> drawables = new List<RenderComponent>();
+        public SortedList<int, RenderComponent> drawables = new SortedList<int, RenderComponent>(new DuplicateKeyComparer<int>());
+        public SortedList<int, RenderComponent> tiles = new SortedList<int, RenderComponent>(new DuplicateKeyComparer<int>());
 
         public RenderSystem(Game1 game)
         {
@@ -89,13 +93,18 @@ namespace Omniplatformer
 
         public void RegisterDrawable(RenderComponent drawable)
         {
-            drawables.Add(drawable);
-            drawables = drawables.OrderBy(x => x.ZIndex).ToList();
+            if (drawable.Tile)
+                tiles.Add(drawable.ZIndex, drawable);
+            else
+                drawables.Add(drawable.ZIndex, drawable);
+            // drawables.Add(drawable);
+            // drawables = drawables.OrderBy(x => x.ZIndex).ToList();
         }
 
         public void RemoveFromDrawables(RenderComponent drawable)
         {
-            drawables.Remove(drawable);
+            int index = drawables.IndexOfValue(drawable);
+            drawables.RemoveAt(index);
         }
 
         public void DrawToForegroundLayer()
@@ -109,7 +118,7 @@ namespace Omniplatformer
             // sample foreground
             // spriteBatch.Draw(GameContent.Instance.greenPixel, new Rectangle((new Vector2(-600, -1500)).ToPoint(), new Point(400, 400)), Color.White);
             //var location = new Point(200, 200);
-            foreach (var drawable in drawables)
+            foreach (var (zindex, drawable) in drawables)
             {
                 drawable.DrawToForeground();
             }
@@ -156,7 +165,7 @@ namespace Omniplatformer
             Vector2 mask_halfsize = new Vector2(400, 300); // TODO: Magic number / hardcoded
             var spriteBatch = GraphicsService.Instance;
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Camera.TranslationMatrix);
-            foreach (var drawable in drawables)
+            foreach (var (zindex, drawable) in drawables)
             {
                 drawable.DrawToLightMask();
             }
@@ -216,21 +225,67 @@ namespace Omniplatformer
             */
         }
 
+        public void InitVertexBuffer()
+        {
+            VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[tiles.Count * 6];
+            var buffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.None);
+
+            int i = 0;
+            foreach(var (zindex, tile) in tiles)
+            {
+                var rect = tile.pos.GetRectangle();
+                var vector = new Vector2(0.5f, 0.5f);
+                /*
+                // Top left triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
+
+                // Bottom right triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), Color.White, vector);
+                */
+
+                // Top left triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), Color.White, vector);
+
+                // Bottom right triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
+            }
+
+            buffer.SetData(vertices);
+            TileBuffer = buffer;
+        }
+
         public void DrawToMainLayer()
         {
             var spriteBatch = GraphicsService.Instance;
             // Main layer
             GraphicsDevice.SetRenderTarget(mainTarget);
             GraphicsDevice.Clear(Color.Transparent);
+
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
             // spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            foreach (var drawable in drawables.Where(x => !x.Hidden))
+            var rect = Camera.GetRectangle();
+
+            foreach (var (zindex, drawable) in drawables)
+            // foreach (var (zindex, drawable) in drawables.Where(x => !x.Value.Hidden).Take(10000))
             {
+                //if (rect.Intersects(drawable.pos.GetRectangle()))
+                //if(rect.Intersects(drawable.GetComponent<PositionComponent>().GetRectangle()))
                 drawable.Draw();
             }
 
             spriteBatch.End();
+
+            GraphicsDevice.SetVertexBuffer(TileBuffer);
+            GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, tiles.Count * 2);
 
             /*
             spriteBatch.Begin(SpriteSortMode.Immediate, new MultiplyBlendState());

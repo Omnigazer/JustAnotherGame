@@ -75,6 +75,7 @@
     <Compile Include="PhysicsSystem.cs" />
     <Compile Include="Spells\LifeDrain.cs" />
     <Compile Include="Spells\FireBolt.cs" />
+    <Compile Include="Utility\Comparer.cs" />
     <Compile Include="Utility\Deconstruct.cs" />
     <Compile Include="Enums\HorizontalDirection.cs" />
     <Compile Include="Graphics\MultiplyBlendState.cs" />
@@ -147,6 +148,7 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
