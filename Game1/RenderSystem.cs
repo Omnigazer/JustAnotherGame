@@ -37,7 +37,7 @@ namespace Omniplatformer
 
         // public List<RenderComponent> drawables = new List<RenderComponent>();
         public SortedList<int, RenderComponent> drawables = new SortedList<int, RenderComponent>(new DuplicateKeyComparer<int>());
-        public SortedList<int, RenderComponent> tiles = new SortedList<int, RenderComponent>(new DuplicateKeyComparer<int>());
+        List<RenderComponent> tiles = new List<RenderComponent>();
 
         public RenderSystem(Game1 game)
         {
@@ -94,7 +94,7 @@ namespace Omniplatformer
         public void RegisterDrawable(RenderComponent drawable)
         {
             if (drawable.Tile)
-                tiles.Add(drawable.ZIndex, drawable);
+                tiles.Add(drawable);
             else
                 drawables.Add(drawable.ZIndex, drawable);
             // drawables.Add(drawable);
@@ -231,7 +231,7 @@ namespace Omniplatformer
             var buffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.None);
 
             int i = 0;
-            foreach(var (zindex, tile) in tiles)
+            foreach(var tile in tiles)
             {
                 var rect = tile.pos.GetRectangle();
                 var vector = new Vector2(0.5f, 0.5f);
