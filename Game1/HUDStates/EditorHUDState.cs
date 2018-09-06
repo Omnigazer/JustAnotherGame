@@ -169,8 +169,10 @@ namespace Omniplatformer.HUDStates
                 {  Keys.Insert, (DecreaseWidth, noop, continuous_size) },
                 {  Keys.Back, (Game.CloseEditor, noop, true) },
 
+                /*
                 {  Keys.NumPad7, (PrevGroup, noop, false) },
                 {  Keys.NumPad9, (NextGroup, noop, false) },
+                */
 
                 {  Keys.NumPad4, (MoveGroupLeft, noop, true) },
                 {  Keys.NumPad6, (MoveGroupRight, noop, true) },
@@ -179,10 +181,11 @@ namespace Omniplatformer.HUDStates
             };
         }
 
-        public int CurrentGroupIndex { get; set; }
-        List<List<GameObject>> Groups => Game.Groups;
-        public List<GameObject> CurrentGroup => CurrentGroupIndex < Groups.Count ? Groups[CurrentGroupIndex] : null;
+        public string CurrentGroupName { get; set; } = "default";
+        Dictionary<string, List<GameObject>> Groups => Game.Groups;
+        public List<GameObject> CurrentGroup => CurrentGroupName != null && Groups.ContainsKey(CurrentGroupName) ? Groups[CurrentGroupName] : null;
 
+        /*
         public void NextGroup()
         {
             CurrentGroupIndex++;
@@ -199,12 +202,14 @@ namespace Omniplatformer.HUDStates
         {
             CurrentGroupIndex = Math.Max(0, CurrentGroupIndex - 1);
             Game.Log($"Current Group: {CurrentGroupIndex}");
-            /*
-            if (CurrentGroup == null)
-            {
-                Groups[CurrentGroupIndex] = new List<GameObject>();
-            }
-            */
+        }
+        */
+
+        public void SetGroup(string name)
+        {
+            CurrentGroupName = name;
+            if (!Groups.ContainsKey(name))
+                Groups.Add(name, new List<GameObject>());
         }
 
         public void MoveGroup(Vector2 d)
@@ -397,7 +402,7 @@ namespace Omniplatformer.HUDStates
         {
             var obj = Game.GetObjectAtCursor();
             Game.CurrentLevel.objects.Remove(obj);
-            foreach (var group in Groups)
+            foreach (var (name, group) in Groups)
             {
                 group.Remove(obj);
             }

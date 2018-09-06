@@ -29,13 +29,14 @@ namespace Omniplatformer
         public List<GameObject> objects = new List<GameObject>();
 
         // Editor groups
-        public List<List<GameObject>> Groups { get; set; } = new List<List<GameObject>>() { new List<GameObject>() };
+        // public List<List<GameObject>> Groups { get; set; } = new List<List<GameObject>>() { new List<GameObject>() };
+        public Dictionary<string, List<GameObject>> Groups { get; set; } = new Dictionary<string, List<GameObject>>() { { "default", new List<GameObject>() } };
 
         // HUD states & controls
         public HUDState HUDState { get; set; }
         HUDState defaultHUD;
         HUDState inventoryHUD;
-        HUDState editorHUD;
+        EditorHUDState editorHUD;
         HUDState charHUD;
         bool game_over;
 
@@ -465,9 +466,10 @@ namespace Omniplatformer
 
             console.AddCommand("merge", a =>
             {
-                if (a.Length == 2 && int.TryParse(a[0], out int first) && int.TryParse(a[1], out int second))
+                if (a.Length == 2)
                 {
-                    if (Groups.Count > Math.Max(first, second))
+                    string first = a[0], second = a[1];
+                    if (Groups.ContainsKey(first) && Groups.ContainsKey(second))
                     {
                         foreach (var obj in Groups[second])
                         {
@@ -477,7 +479,7 @@ namespace Omniplatformer
                     }
                     else
                     {
-                        return "Index out of bounds";
+                        return "Group not found";
                     }
                 }
                 return String.Format("invalid args");
@@ -501,12 +503,34 @@ namespace Omniplatformer
                 return "Level cleared.";
             });
 
+            console.AddCommand("showgroups", a =>
+            {
+                if (a.Length == 0)
+                {
+                    return "Groups: " + String.Join(" ", Groups.Keys);
+                }
+                else
+                    return String.Format("invalid args");
+            });
+
+            console.AddCommand("setgroup", a =>
+            {
+                if (a.Length == 1)
+                {
+                    string name = a[0];
+                    editorHUD.SetGroup(name);
+                    return "Group set.";
+                }
+                else
+                    return String.Format("invalid args");
+            });
+
             console.AddCommand("savegroup", a =>
             {
                 if (a.Length == 2 && int.TryParse(a[0], out int index))
                 {
                     string name = a[1];
-                    SaveGroup(index, name);
+                    SaveGroup(name);
                     return "Group saved.";
                 }
                 else
@@ -562,14 +586,14 @@ namespace Omniplatformer
                 AddToMainScene(obj);
                 CurrentLevel.objects.Add(obj);
             }
-            Groups.Add(group);
+            Groups.Add(name, group);
         }
 
-        public void SaveGroup(int index, string name)
+        public void SaveGroup(string name)
         {
-            Log(String.Format("Saving current group {0}", index));
-            string path = String.Format("{0}.json", name);
-            CurrentLevel.SaveGroup(Groups[index], path);
+            Log(String.Format("Saving group {0}", name));
+            string path = String.Format("Content/Data/{0}.json", name);
+            CurrentLevel.SaveGroup(Groups[name], path);
         }
         #endregion
     }
