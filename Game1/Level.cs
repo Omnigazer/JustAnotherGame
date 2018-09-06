@@ -8,6 +8,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using Omniplatformer.Components;
+// using System.Drawing;
+// using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace Omniplatformer
 {
@@ -20,90 +23,122 @@ namespace Omniplatformer
 
         }
 
-        /*
-        public Level(JObject data)
-        {
-            foreach (var obj_data in data["objects"])
-            {
-                switch ((string)obj_data["type"])
-                {
-                    case "SolidPlatform":
-                        {
-                            SolidPlatform platform;
-                            var coords = new Vector2(float.Parse((string)obj_data["coords"]["x"]), float.Parse((string)obj_data["coords"]["y"]));
-                            var halfsize = new Vector2(float.Parse((string)obj_data["halfsize"]["x"]), float.Parse((string)obj_data["halfsize"]["y"]));
-
-
-                            if (obj_data["origin"]?.Type == JTokenType.Object)
-                            {
-                                Vector2 origin = new Vector2(float.Parse((string)obj_data["origin"]["x"]), float.Parse((string)obj_data["origin"]["y"]));
-                                platform = new SolidPlatform(coords, halfsize, origin);
-                            }
-                            else
-                            {
-                                platform = new SolidPlatform(coords, halfsize);
-                            }
-                            objects.Add(platform);
-                            break;
-                        }
-                }
-            }
-
-            foreach (var obj_data in data["objects"])
-            {
-                switch ((string)obj_data["type"])
-                {
-                    case "ToughZombie":
-                        {
-                            ToughZombie zombie;
-                            var coords = new Vector2(float.Parse((string)obj_data["coords"]["x"]), float.Parse((string)obj_data["coords"]["y"]));
-                            var halfsize = new Vector2(float.Parse((string)obj_data["halfsize"]["x"]), float.Parse((string)obj_data["halfsize"]["y"]));
-                            zombie = new ToughZombie(coords, halfsize);
-
-                            characters.Add(zombie);
-                            break;
-                        }
-                }
-            }
-        }
-        */
-
         public void Save(string json_path)
         {
-            // json_path = @"E:\test_json.json";
             JsonSerializer serializer = new JsonSerializer();
-            // using (StreamReader sr = new StreamReader(json_path))
             using (StreamWriter sw = new StreamWriter(json_path))
             using (JsonWriter writer = new JsonTextWriter(sw))
-            //using (JsonReader reader = new JsonTextReader(sr))
             {
                 writer.Formatting = Formatting.Indented;
-                //serializer.Serialize(writer, product);
                 List<object> list = new List<object>();
                 foreach (var obj in objects)
                 {
                     list.Add(obj.AsJson());
                 }
-                // serializer.Serialize(writer, obj.AsJson());
                 serializer.Serialize(writer, new { objects = list });
-
-                //return new Level((JObject)serializer.Deserialize(reader));
             }
+        }
+
+        public void AddGroup(List<GameObject> group)
+        {
+            foreach(var obj in group)
+            {
+                objects.Add(obj);
+            }
+        }
+
+        public static int[,] ImageTo2DByteArray(System.Drawing.Bitmap bmp)
+        {
+            int width = bmp.Width;
+            int height = bmp.Height;
+            System.Drawing.Imaging.BitmapData data = bmp.LockBits(new System.Drawing.Rectangle(0, 0, width, height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+            byte[] bytes = new byte[height * data.Stride];
+            try
+            {
+                Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
+            }
+            finally
+            {
+                bmp.UnlockBits(data);
+            }
+
+            int[,] result = new int[height, width];
+            for (int y = 0; y < height; ++y)
+                for (int x = 0; x < width; ++x)
+                {
+                    int offset = y * data.Stride + x * 3;
+                    result[y, x] = (((bytes[offset + 0] << 16) + (bytes[offset + 1] << 8) + bytes[offset + 2]));
+                }
+            return result;
+        }
+
+        public List<GameObject> LoadFromBitmap(string path)
+        {
+            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(path);
+            System.Drawing.ImageConverter converter = new System.Drawing.ImageConverter();
+            int[,] array = ImageTo2DByteArray(bitmap);
+            int scale = 1;
+            var list = new List<GameObject>();
+            int tile_size = PhysicsSystem.TileSize;
+            var sectors = new string[bitmap.Width / scale, bitmap.Height / scale];
+            for (int i = 0; i < bitmap.Width; i++)
+            {
+                for (int j = 0; j < bitmap.Height; j++)
+                {
+                    var color = System.Drawing.Color.FromArgb(array[j, i]);
+                    switch (color) {
+                        case var c when (c.R == 0 && c.G == 0 && c.B == 0):
+                            {
+                                sectors[i / scale, j / scale] = "solid";
+                                break;
+                            }
+                        case var c when (c.B < c.R):
+                            {
+                                sectors[i / scale, j / scale] = "liquid";
+                                break;
+                            }
+                    }
+                }
+            }
+            for (int i = 0; i < bitmap.Width / scale; i++)
+                for (int j = 0; j < bitmap.Height / scale; j++)
+                {
+                    switch (sectors[i, j]) {
+                        case "solid":
+                            {
+                                list.Add(new SolidPlatform(
+                                new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size),
+                                new Vector2(tile_size / 2, tile_size / 2),
+                                Vector2.Zero,
+                                true
+                                ));
+                                break;
+                            }
+                        case "liquid":
+                            {
+                                list.Add(new Liquid(
+                                    new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size),
+                                    new Vector2(tile_size / 2, tile_size / 2),
+                                    Vector2.Zero,
+                                    true
+                                    ));
+                                break;
+                            }
+                    }
+
+                }
+            return list;
         }
 
         public void SaveGroup(List<GameObject> group, string json_path)
         {
             JsonSerializer serializer = new JsonSerializer();
-            // using (StreamReader sr = new StreamReader(json_path))
             using (StreamWriter sw = new StreamWriter(json_path))
             using (JsonWriter writer = new JsonTextWriter(sw))
-            //using (JsonReader reader = new JsonTextReader(sr))
             {
                 writer.Formatting = Formatting.Indented;
-                //serializer.Serialize(writer, product);
                 List<object> list = new List<object>();
-
-                // var (minx, miny) =
                 var origin = getMinCoords(group);
 
                 foreach (var obj in group)
@@ -113,10 +148,7 @@ namespace Omniplatformer
                     list.Add(obj.AsJson());
                     pos.local_position.Coords += origin;
                 }
-                // serializer.Serialize(writer, obj.AsJson());
                 serializer.Serialize(writer, new { objects = list });
-
-                //return new Level((JObject)serializer.Deserialize(reader));
             }
         }
 

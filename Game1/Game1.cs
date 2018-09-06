@@ -112,7 +112,19 @@ namespace Omniplatformer
                 AddToMainScene(character);
             }
 
-            LoadGroup("village", new Vector2(0, 0));
+            // var list = CurrentLevel.LoadFromBitmap(@"E:/Games/level_layouts.png");
+            var list = CurrentLevel.LoadFromBitmap(@"E:/Games/level1.png");
+            Groups.Add("bitmap", new List<GameObject>());
+            foreach (var obj in list)
+            {
+                Groups["bitmap"].Add(obj);
+                AddToMainScene(obj);
+            }
+
+                // RenderSystem.RegisterDrawable((RenderComponent)obj);
+
+            LoadGroup("village", new Vector2(1300, 0));
+            // LoadGroup("test_level", new Vector2(-6300, -1000));
         }
 
         private void GameOver(object sender, EventArgs e)
