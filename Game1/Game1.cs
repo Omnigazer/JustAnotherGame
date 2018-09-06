@@ -196,6 +196,9 @@ namespace Omniplatformer
             RenderSystem.SetCameraPosition(pos.WorldPosition.Center);
             // TODO: Add your drawing code here
             RenderSystem.Draw();
+            GraphicsService.Instance.Begin(SpriteSortMode.Immediate);
+            GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, gameTime.ElapsedGameTime.Milliseconds.ToString(), new Vector2(50, 50), Color.White);
+            GraphicsService.Instance.End();
             base.Draw(gameTime);
         }
 
