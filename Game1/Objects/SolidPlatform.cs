@@ -19,6 +19,7 @@ namespace Omniplatformer
 
         public SolidPlatform(Vector2 coords, Vector2 halfsize, Vector2 origin, bool tile = false)
         {
+            Tickable = false;
             Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Solid = true, Friction = 0.1f, Tile = tile });
             Components.Add(new RenderComponent(this) { Tile = tile });
         }

@@ -197,7 +197,8 @@ namespace Omniplatformer
 
         public void AddToMainScene(GameObject obj)
         {
-            objects.Add(obj);
+            if (obj.Tickable)
+                objects.Add(obj);
             var physicable = (PhysicsComponent)obj;
             if (physicable != null)
                 PhysicsSystem.Register(physicable);

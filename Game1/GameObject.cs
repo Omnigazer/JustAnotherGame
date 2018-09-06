@@ -13,6 +13,7 @@ namespace Omniplatformer
 {
     public abstract class GameObject
     {
+        public bool Tickable { get; set; }
         public Guid Id { get; set; }
 
         public T GetComponent<T>() where T : Component
@@ -54,6 +55,7 @@ namespace Omniplatformer
             Id = Id == Guid.Empty ? Guid.NewGuid() : Id;
             Components = new List<Component>();
             Cooldowns = new Dictionary<string, float>();
+            Tickable = true;
             Team = Team.Neutral;
         }
 
