@@ -599,7 +599,7 @@ namespace Omniplatformer
             foreach (var obj in group)
             {
                 AddToMainScene(obj);
-                CurrentLevel.objects.Add(obj);
+                // CurrentLevel.objects.Add(obj);
             }
             Groups.Add(name, group);
         }
