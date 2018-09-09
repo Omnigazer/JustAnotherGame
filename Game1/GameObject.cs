@@ -67,7 +67,7 @@ namespace Omniplatformer
             {
                 Components[i].Tick(time_scale);
             }
-            foreach (var (key, ticks) in Cooldowns)
+            foreach (var (key, ticks) in Cooldowns.ToList())
             {
                 Cooldowns[key] = Math.Max(ticks - time_scale, 0);
             }
