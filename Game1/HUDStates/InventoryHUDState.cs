@@ -74,7 +74,8 @@ namespace Omniplatformer.HUDStates
             {
                 MouseStorage = slot.Item;
                 slot.Item = null;
-                slot.OnItemRemove(MouseStorage);
+                if (MouseStorage != null)
+                    slot.OnItemRemove(MouseStorage);
             }
             else
             {
