@@ -42,7 +42,7 @@ namespace Omniplatformer
             Game.AddToMainScene(this);
         }
 
-        public override void OnUnequip()
+        public override void OnUnequip(Character character)
         {
             SetWielder(null);
             var item_pos = (PositionComponent)this;

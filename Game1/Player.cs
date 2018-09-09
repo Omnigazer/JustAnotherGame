@@ -19,7 +19,7 @@ namespace Omniplatformer
         // Character constants
         const float max_hitpoints = 5;
         const float max_mana = 10;
-        const float mana_regen_rate = 0.05f / 30;
+        const float mana_regen_rate = 0.1f / 60;
         const int inv_frames = 100;
 
         public bool ItemLocked { get; set; }
@@ -46,14 +46,6 @@ namespace Omniplatformer
         public Dictionary<ManaType, float> CurrentMana { get; set; }
         // public Dictionary<ManaType, float> MaxMana { get; set; }
 
-        public float MaxMana(ManaType manaType)
-        {
-            var x = (Skill)Enum.Parse(typeof(Skill), manaType.ToString());
-            // var x = typeof(Enum.Parse(Skill, manaType.ToString()));
-            if (Skills.ContainsKey(x))
-                return Skills[x];
-            return 0;
-        }
 
         public Player(Vector2 center, Vector2 halfsize)
         {
@@ -72,17 +64,28 @@ namespace Omniplatformer
             CurrentMana = new Dictionary<ManaType, float>();
             SkillPoints = 10;
             //MaxMana = new Dictionary<ManaType, float>();
-            foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
-            {
-                //MaxMana[type] = max_mana;
-                CurrentMana[type] = MaxMana(type);
-            }
 
             // InitPos(center, halfsize);
             var phys = new PlayerMoveComponent(this, center, halfsize) { MaxMoveSpeed = 9, Acceleration = 0.5f };
             phys.AddAnchor(AnchorPoint.Hand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
             Components.Add(phys);
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
+            Components.Add(new BonusComponent(this));
+
+            foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
+            {
+                //MaxMana[type] = max_mana;
+                CurrentMana[type] = MaxMana(type);
+            }
+        }
+
+        public float MaxMana(ManaType manaType)
+        {
+            var x = (Skill)Enum.Parse(typeof(Skill), manaType.ToString());
+            // var x = typeof(Enum.Parse(Skill, manaType.ToString()));
+            if (Skills.ContainsKey(x))
+                return GetSkill(x);
+            return 0;
         }
 
         /*
@@ -116,11 +119,17 @@ namespace Omniplatformer
             // Increase skill points
             SkillPoints += 5;
 
-            /*
-            if (!Skills.ContainsKey(Skill.Melee))
-                Skills.Add(Skill.Melee, 0);
-            Skills[Skill.Melee] += 3;
-            */
+        public int GetSkill(Skill skill, bool modified = true)
+        {
+            if (modified)
+            {
+                var bonusable = GetComponent<BonusComponent>();
+                return Skills[skill] + bonusable.SkillBonuses[skill].Sum();
+            }
+            else
+            {
+                return Skills[skill];
+            }
         }
 
         public void UpgradeSkill(Skill skill)
@@ -242,7 +251,8 @@ namespace Omniplatformer
         {
             foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
             {
-                CurrentMana[type] += mana_regen_rate * time_scale;
+                var bonusable = GetComponent<BonusComponent>();
+                CurrentMana[type] += (mana_regen_rate + bonusable.ManaRegenBonuses[type].Sum()) * time_scale;
                 CurrentMana[type] = Math.Min(CurrentMana[type], MaxMana(type));
             }
 

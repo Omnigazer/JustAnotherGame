@@ -22,6 +22,7 @@ namespace Omniplatformer
         public Texture2D whitePixel { get; set; }
         public Texture2D greenPixel { get; set; }
         public Texture2D bolt { get; set; }
+        public Texture2D chaos_orb { get; set; }
         public Texture2D testLiquid { get; set; }
         public Texture2D causticsMap { get; set; }
         public Texture2D ladder { get; set; }
@@ -60,6 +61,7 @@ namespace Omniplatformer
             characterRight = Content.Load<Texture2D>("Textures/char-right");
             cursor = Content.Load<Texture2D>("Textures/cursor2");
             bolt = Content.Load<Texture2D>("Textures/bolt");
+            chaos_orb = Content.Load<Texture2D>("Textures/chaos_orb");
             testLiquid = Content.Load<Texture2D>("Textures/testliquid");
             causticsMap = Content.Load<Texture2D>("Textures/caustics_atlas");
             ladder = Content.Load<Texture2D>("Textures/ladder");

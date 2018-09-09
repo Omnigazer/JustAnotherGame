@@ -14,6 +14,6 @@ namespace Omniplatformer.Items
         }
         public virtual bool CanEquip => false;
         public virtual void OnEquip(Character character) { }
-        public virtual void OnUnequip() { }
+        public virtual void OnUnequip(Character character) { }
     }
 }

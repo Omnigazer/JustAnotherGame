@@ -119,7 +119,43 @@ namespace Omniplatformer
 
         public override void OnItemRemove(Item item)
         {
-            item.OnUnequip();
+            item.OnUnequip(GameService.Player);
+        }
+    }
+
+    public class MiscSlot : Slot
+    {
+        protected override IEnumerable<Descriptor> AcceptedDescriptors()
+        {
+            return new[] { Descriptor.MiscSlot };
+        }
+
+        public override void OnItemAdd(Item item)
+        {
+            item.OnEquip(GameService.Player);
+        }
+
+        public override void OnItemRemove(Item item)
+        {
+            item.OnUnequip(GameService.Player);
+        }
+    }
+
+    public class ChannelSlot : Slot
+    {
+        protected override IEnumerable<Descriptor> AcceptedDescriptors()
+        {
+            return new[] { Descriptor.ChannelSlot };
+        }
+
+        public override void OnItemAdd(Item item)
+        {
+            item.OnEquip(GameService.Player);
+        }
+
+        public override void OnItemRemove(Item item)
+        {
+            item.OnUnequip(GameService.Player);
         }
     }
 }

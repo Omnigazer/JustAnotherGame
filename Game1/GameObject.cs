@@ -110,6 +110,11 @@ namespace Omniplatformer
             return obj.GetComponent<HitComponent>();
         }
 
+        public static explicit operator BonusComponent(GameObject obj)
+        {
+            return obj.GetComponent<BonusComponent>();
+        }
+
         public override string ToString()
         {
             var pos = GetComponent<PositionComponent>();

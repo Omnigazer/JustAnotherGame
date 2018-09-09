@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Characters\GoblinShaman.cs" />
     <Compile Include="Characters\Goblin.cs" />
+    <Compile Include="Components\BonusComponent.cs" />
     <Compile Include="Components\DynamicPhysicsComponent.cs" />
     <Compile Include="Components\LifeDrainHitComponent.cs" />
     <Compile Include="Components\MeleeDamageHitComponent.cs" />
