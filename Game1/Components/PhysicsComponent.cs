@@ -9,7 +9,7 @@ namespace Omniplatformer.Components
 {
     public class PhysicsComponent : PositionComponent
     {
-        public float InverseMass { get; set; }
+        public float InverseMass { get; set; } = 1;
         public float Friction { get; set; }
         public bool Tile { get; set; }
         public bool Solid { get; set; }

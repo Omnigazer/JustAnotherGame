@@ -15,15 +15,15 @@ namespace Omniplatformer.Components
         }
 
         // internal position offset counter
-        int position = 0;
+        float position = 0;
         int direction = 1;
-        int speed = 5;
+        float speed = 5;
         int horizontal_amp = 250;
 
-        public override void ProcessMovement()
+        public override void ProcessMovement(float time_scale)
         {
             CurrentMovement = new Vector2(speed * direction, 0);
-            position += speed * direction;
+            position += speed * direction * time_scale;
             if (Math.Abs(position) >= horizontal_amp)
             {
                 direction *= -1;

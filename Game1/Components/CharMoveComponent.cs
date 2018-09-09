@@ -78,14 +78,14 @@ namespace Omniplatformer.Components
             base.ProcessCollision(direction, obj);
         }
 
-        public override void ProcessMovement()
+        public override void ProcessMovement(float time_scale)
         {
-            ProcessWalking();
+            ProcessWalking(time_scale);
             TrimSpeed();
             CapMovement();
         }
 
-        public void ProcessWalking()
+        public void ProcessWalking(float time_scale)
         {
             var pos = GetComponent<PositionComponent>();
             switch (move_direction)
@@ -94,14 +94,14 @@ namespace Omniplatformer.Components
                     {
                         pos.SetLocalFace(HorizontalDirection.Left);
                         // CurrentMovement += new Vector2(-move_speed, 0);
-                        CurrentMovement += new Vector2(-Acceleration, 0);
+                        CurrentMovement += new Vector2(-Acceleration * time_scale, 0);
                         break;
                     }
                 case Direction.Right:
                     {
                         pos.SetLocalFace(HorizontalDirection.Right);
                         // CurrentMovement += new Vector2(move_speed, 0);
-                        CurrentMovement += new Vector2(Acceleration, 0);
+                        CurrentMovement += new Vector2(Acceleration * time_scale, 0);
                         break;
                     }
                 default:

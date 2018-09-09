@@ -48,7 +48,7 @@ namespace Omniplatformer.Components
             AdjustPosition(CurrentMovement * time_scale);
         }
 
-        public virtual void ProcessMovement()
+        public virtual void ProcessMovement(float time_scale)
         {
 
         }

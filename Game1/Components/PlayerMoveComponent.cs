@@ -195,7 +195,7 @@ namespace Omniplatformer.Components
         }
 
         // TODO: refactor this
-        public override void ProcessMovement()
+        public override void ProcessMovement(float time_scale)
         {
             if (IsClimbing)
             {
@@ -203,7 +203,7 @@ namespace Omniplatformer.Components
             }
             else
             {
-                ProcessWalking();
+                ProcessWalking(time_scale);
 
                 if (IsJumping)
                 {
