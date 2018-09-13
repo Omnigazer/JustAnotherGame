@@ -33,11 +33,13 @@ namespace Omniplatformer
         const float day_loop_length = 3600;
 
         GraphicsDevice GraphicsDevice { get; set; }
+        VertexBuffer BackBuffer { get; set; }
         VertexBuffer TileBuffer { get; set; }
 
         // public List<RenderComponent> drawables = new List<RenderComponent>();
         public SortedList<int, RenderComponent> drawables = new SortedList<int, RenderComponent>(new DuplicateKeyComparer<int>());
         List<RenderComponent> tiles = new List<RenderComponent>();
+        List<RenderComponent> background_tiles = new List<RenderComponent>();
 
         public RenderSystem(Game1 game)
         {
@@ -94,7 +96,10 @@ namespace Omniplatformer
         public void RegisterDrawable(RenderComponent drawable)
         {
             if (drawable.Tile)
-                tiles.Add(drawable);
+                if (drawable.GameObject is BackgroundQuad)
+                    background_tiles.Add(drawable);
+                else
+                    tiles.Add(drawable);
             else
                 drawables.Add(drawable.ZIndex, drawable);
             // drawables.Add(drawable);
@@ -196,6 +201,78 @@ namespace Omniplatformer
             GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
         }
 
+        public void InitVertexBuffers()
+        {
+            VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[tiles.Count * 6];
+            var buffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.None);
+
+            int i = 0;
+            foreach (var tile in tiles)
+            {
+                var rect = tile.pos.GetRectangle();
+                var vector = new Vector2(0.5f, 0.5f);
+                /*
+                // Top left triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
+
+                // Bottom right triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), Color.White, vector);
+                */
+
+                // Top left triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, vector);
+
+                // Bottom right triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), tile.Color, vector);
+            }
+
+            buffer.SetData(vertices);
+            TileBuffer = buffer;
+
+
+            vertices = new VertexPositionColorTexture[background_tiles.Count * 6];
+            buffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.None);
+
+            i = 0;
+            foreach (var tile in background_tiles)
+            {
+                var rect = tile.pos.GetRectangle();
+                var vector = new Vector2(0.5f, 0.5f);
+                /*
+                // Top left triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
+
+                // Bottom right triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), Color.White, vector);
+                */
+
+                // Top left triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, vector);
+
+                // Bottom right triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), tile.Color, vector);
+            }
+
+            buffer.SetData(vertices);
+            BackBuffer = buffer;
+        }
+
         public void DrawToRevealingMask()
         {
             var spriteBatch = GraphicsService.Instance;
@@ -225,49 +302,18 @@ namespace Omniplatformer
             */
         }
 
-        public void InitVertexBuffer()
-        {
-            VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[tiles.Count * 6];
-            var buffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.None);
-
-            int i = 0;
-            foreach(var tile in tiles)
-            {
-                var rect = tile.pos.GetRectangle();
-                var vector = new Vector2(0.5f, 0.5f);
-                /*
-                // Top left triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
-
-                // Bottom right triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), Color.White, vector);
-                */
-
-                // Top left triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), Color.White, vector);
-
-                // Bottom right triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
-            }
-
-            buffer.SetData(vertices);
-            TileBuffer = buffer;
-        }
-
         public void DrawToMainLayer()
         {
             var spriteBatch = GraphicsService.Instance;
             // Main layer
             GraphicsDevice.SetRenderTarget(mainTarget);
             GraphicsDevice.Clear(Color.Transparent);
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
+            spriteBatch.Draw(GameContent.Instance.whitePixel, new Rectangle(1, 1, 1, 1), Color.White);
+            spriteBatch.End();
+            GraphicsDevice.SetVertexBuffer(BackBuffer);
+            GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, background_tiles.Count * 2);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
             // spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
