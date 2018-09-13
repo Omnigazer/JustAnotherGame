@@ -87,17 +87,34 @@ namespace Omniplatformer
                 for (int j = 0; j < bitmap.Height; j++)
                 {
                     var color = System.Drawing.Color.FromArgb(array[j, i]);
+                    // Color order is reversed here for some reason, i.e. R is swapped with B
                     switch (color) {
-                        case var c when (c.R == 0 && c.G == 0 && c.B == 0):
+                        case var c when (c.B == 0 && c.G == 0 && c.R == 0):
                             {
                                 sectors[i / scale, j / scale] = "solid";
                                 break;
                             }
-                        case var c when (c.B < c.R):
+                        case var c when (c.B == 128 && c.G == 128 && c.R == 128):
+                            {
+                                sectors[i / scale, j / scale] = "background";
+                                break;
+                            }
+                        case var c when (c.B < c.R && false):
                             {
                                 sectors[i / scale, j / scale] = "liquid";
                                 break;
                             }
+                        case var c when (c.B == 0 && c.G == 127 && c.R == 14):
+                            {
+                                sectors[i / scale, j / scale] = "goblin";
+                                break;
+                            }
+                        case var c when (c.B == 255 && c.G == 106 && c.R == 0):
+                            {
+                                sectors[i / scale, j / scale] = "goblin shaman";
+                                break;
+                            }
+
                     }
                 }
             }
@@ -115,6 +132,16 @@ namespace Omniplatformer
                                 ));
                                 break;
                             }
+                        case "background":
+                            {
+                                list.Add(new BackgroundQuad(
+                                new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size),
+                                new Vector2(tile_size / 2, tile_size / 2),
+                                Vector2.Zero,
+                                true
+                                ));
+                                break;
+                            }
                         case "liquid":
                             {
                                 list.Add(new Liquid(
@@ -122,6 +149,20 @@ namespace Omniplatformer
                                     new Vector2(tile_size / 2, tile_size / 2),
                                     Vector2.Zero,
                                     true
+                                    ));
+                                break;
+                            }
+                        case "goblin":
+                            {
+                                list.Add(new Goblin(
+                                    new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size)
+                                    ));
+                                break;
+                            }
+                        case "goblin shaman":
+                            {
+                                list.Add(new GoblinShaman(
+                                    new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size)
                                     ));
                                 break;
                             }
