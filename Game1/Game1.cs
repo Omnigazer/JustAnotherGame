@@ -89,7 +89,7 @@ namespace Omniplatformer
         void InitGameObjects()
         {
             CurrentLevel = GameContent.Instance.level;
-            // CurrentLevel.Load("blank");
+            CurrentLevel.Load("blank");
 
             // Register player
             player = new Player(
@@ -101,7 +101,6 @@ namespace Omniplatformer
             );
             AddToMainScene(player);
             player._onDestroy += GameOver;
-            // RenderSystem.drawables.Add((RenderComponent)player);
 
             foreach (var obj in GameContent.Instance.level.objects)
             {
@@ -144,7 +143,6 @@ namespace Omniplatformer
             GameContent.Init(Content);
 
             // TODO: use this.Content to load your game content here
-
             Services.AddService(typeof(SpriteBatch), spriteBatch);
             LoadConsole(spriteBatch);
         }
@@ -245,6 +243,7 @@ namespace Omniplatformer
         {
             float time_scale = (float)gameTime.ElapsedGameTime.Milliseconds * 60 / 1000;
             PhysicsSystem.Tick(time_scale);
+            RenderSystem.Tick(time_scale);
             for (int j = objects.Count - 1; j >= 0; j--)
             {
                 var obj = objects[j];

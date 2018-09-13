@@ -46,7 +46,6 @@ namespace Omniplatformer
         public Dictionary<ManaType, float> CurrentMana { get; set; }
         // public Dictionary<ManaType, float> MaxMana { get; set; }
 
-
         public Player(Vector2 center, Vector2 halfsize)
         {
             foreach (Skill skill in Enum.GetValues(typeof(Skill)))
@@ -62,7 +61,7 @@ namespace Omniplatformer
             MaxHitPoints = max_hitpoints;
             CurrentHitPoints = MaxHitPoints;
             CurrentMana = new Dictionary<ManaType, float>();
-            SkillPoints = 10;
+            SkillPoints = 4;
             //MaxMana = new Dictionary<ManaType, float>();
 
             // InitPos(center, halfsize);
@@ -117,7 +116,8 @@ namespace Omniplatformer
             CurrentHitPoints += 2;
 
             // Increase skill points
-            SkillPoints += 5;
+            SkillPoints += 4;
+        }
 
         public int GetSkill(Skill skill, bool modified = true)
         {
@@ -185,8 +185,11 @@ namespace Omniplatformer
         #region Actions
         public void Fire()
         {
-            // Spells.FireBolt.Cast(this);
-            Spells.LifeDrain.Cast(this);
+            var pos = GetComponent<PositionComponent>();
+            var coords = pos.WorldPosition;
+            coords.Coords += new Vector2(coords.face_direction == HorizontalDirection.Left ? -1 : 1, 0);
+            Spells.FireBolt.Cast(this, coords);
+            // Spells.LifeDrain.Cast(this);
         }
 
         public void Swing()
