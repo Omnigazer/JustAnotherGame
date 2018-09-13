@@ -59,6 +59,7 @@ namespace Omniplatformer.Components
             // CurrentAnimation = Animation.Default;
         }
 
+        // TODO: extract this
         public event EventHandler<AnimationEventArgs> _onAnimationEnd = delegate { };
         public void onAnimationEnd(Animation animation)
         {
@@ -75,7 +76,7 @@ namespace Omniplatformer.Components
         {
             foreach (var (animation, (ticks, length, current_step)) in CurrentAnimations.ToList())
             {
-                CurrentAnimations[animation] = (ticks + time_scale, length, 0);
+                CurrentAnimations[animation] = (ticks + time_scale, length, current_step);
                 if (ticks + time_scale >= length)
                 {
                     EndAnimation(animation);

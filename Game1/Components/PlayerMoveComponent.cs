@@ -10,13 +10,13 @@ namespace Omniplatformer.Components
     public class PlayerMoveComponent : CharMoveComponent
     {
         // Movement constants
-        const float jump_accel = 5;
-        const float max_jumpspeed = 30;
+        const float jump_accel = 4;
+        const float max_jumpspeed = 24;
         const float soft_jump_cap = 0.3f * max_jumpspeed;
 
         // Movement dynamic caps
         public int max_jumps = 2;
-        public int max_jump_time = 15; // Max jump time
+        public int max_jump_time = 9; // Max jump time
         const int wall_jump_pin_ticks = 1; // Time required to be spent against the wall to walljump
 
         // Movement counters
@@ -31,6 +31,7 @@ namespace Omniplatformer.Components
         public PlayerMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj, coords, halfsize)
         {
             MaxMoveSpeed = 5;
+            Acceleration = 0.8f;
         }
 
         public override void Tick(float time_scale)

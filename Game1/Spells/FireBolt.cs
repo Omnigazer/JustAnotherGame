@@ -13,7 +13,7 @@ namespace Omniplatformer.Spells
     {
         public static void Cast(Character caster, Position target)
         {
-            if (caster.SpendMana(ManaType.Chaos, 1))
+            if (caster.SpendMana(ManaType.Chaos, 0))
             {
                 PositionComponent pos = (PositionComponent)caster;
                 var projectile = new FireBoltProjectile(pos.WorldPosition.Center, new Vector2(5, 5), caster);

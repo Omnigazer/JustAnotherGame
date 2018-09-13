@@ -20,6 +20,11 @@ namespace Omniplatformer
         public float Rotation { get; set; }
         public float Zoom { get; private set; }
 
+        public Rectangle GetRectangle()
+        {
+            return new Rectangle(Position.ToPoint() - new Point(ViewportWidth / 2, ViewportHeight / 2), new Point(ViewportWidth, ViewportHeight));
+        }
+
         public int ViewportWidth => Game.graphics.PreferredBackBufferWidth;
         public int ViewportHeight => Game.graphics.PreferredBackBufferHeight;
 

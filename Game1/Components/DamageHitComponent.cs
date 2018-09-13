@@ -38,7 +38,7 @@ namespace Omniplatformer.Components
 
         public void ApplyKnockback(GameObject target)
         {
-            var movable = (DynamicPhysicsComponent)target;
+            var movable = target.GetComponent<DynamicPhysicsComponent>();
             if (movable != null)
             {
                 var pos = GetComponent<PositionComponent>();

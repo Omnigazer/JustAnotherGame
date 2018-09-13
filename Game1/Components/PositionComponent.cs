@@ -188,7 +188,7 @@ namespace Omniplatformer.Components
                 var vd = Math.Abs(WorldPosition.Center.Y - other.WorldPosition.Center.Y) - (WorldPosition.halfsize.Y + other.WorldPosition.halfsize.Y);
 
                 // Now compare them to know the side of collision
-                if (hd > vd && (Math.Abs(vd) > WorldPosition.halfsize.Y / 3 || WorldPosition.Center.Y < other.WorldPosition.Center.Y))
+                if (hd > vd && (Math.Abs(vd) > WorldPosition.halfsize.Y || WorldPosition.Center.Y < other.WorldPosition.Center.Y))
                 {
                     if (WorldPosition.Center.X < other.WorldPosition.Center.X)
                         return Direction.Right;

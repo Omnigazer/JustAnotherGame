@@ -13,7 +13,7 @@ namespace Omniplatformer.Components
         // public bool Hidden;
         public bool Tile;
         public int ZIndex { get; set; } = Layers.Default;
-        public Color color = Color.AliceBlue;
+        public Color Color { get; set; } = Color.White;
         public Texture2D Texture { get; set; }
         public bool Tiled { get; set; }
         public PositionComponent pos { get; set; }
@@ -34,7 +34,7 @@ namespace Omniplatformer.Components
 
         public RenderComponent(GameObject obj, Color color, Texture2D texture, int z_index = 0, bool tiled = false) : base(obj)
         {
-            this.color = color;
+            this.Color = color;
             Texture = texture;
             this.ZIndex = z_index;
             Tiled = tiled;
@@ -48,7 +48,7 @@ namespace Omniplatformer.Components
 
         public virtual Color GetColor()
         {
-            return color;
+            return Color;
         }
 
         protected virtual Texture2D getCurrentSprite()

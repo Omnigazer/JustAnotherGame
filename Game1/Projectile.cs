@@ -23,7 +23,6 @@ namespace Omniplatformer
         public override GameObject Source => _source?.Source ?? this;
         public override void Tick(float time_scale)
         {
-            var movable = GetComponent<MoveComponent>();
             TTL -= time_scale;
             if (TTL <= 0)
             {

@@ -25,7 +25,7 @@ namespace Omniplatformer
                 texture = GameContent.Instance.cursor;
             Team = Team.Friend;
             // Damage = damage;
-            var Knockback = new Vector2(4, 4);
+            var Knockback = new Vector2(4, 3);
             var halfsize = new Vector2(3, 25);
             Descriptors.Add(Descriptor.HandSlot);
             Components.Add(new PhysicsComponent(this, Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)));
