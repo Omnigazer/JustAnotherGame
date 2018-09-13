@@ -60,7 +60,7 @@ namespace Omniplatformer.Characters
             CurrentHitPoints = MaxHitPoints = 8;
             var halfsize = new Vector2(15, 20);
             // Components.Add(new PositionComponent(this, coords, halfsize));
-            Components.Add(new CharMoveComponent(this, coords, halfsize, movespeed: 1.4f));
+            Components.Add(new CharMoveComponent(this, coords, halfsize, movespeed: 1.8f));
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight, Color.Green));
             Components.Add(new DamageHitComponent(this, damage: 3, knockback: new Vector2(5, 5)));
         }
@@ -70,7 +70,14 @@ namespace Omniplatformer.Characters
             var player_pos = GameService.Player.GetComponent<PositionComponent>();
             var pos = GetComponent<PositionComponent>();
             var movable = GetComponent<CharMoveComponent>();
-            movable.move_direction = pos.WorldPosition.Center.X < player_pos.WorldPosition.Center.X ? Direction.Right : Direction.Left;
+            if (Cooldowns.TryGetValue("Stun", out float val) && val > 0)
+            {
+                movable.move_direction = Direction.None;
+            }
+            else
+            {
+                movable.move_direction = pos.WorldPosition.Center.X < player_pos.WorldPosition.Center.X ? Direction.Right : Direction.Left;
+            }
         }
 
         /*

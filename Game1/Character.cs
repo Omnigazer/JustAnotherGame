@@ -41,6 +41,7 @@ namespace Omniplatformer
             CurrentHitPoints -= damage;
             var drawable = GetComponent<CharacterRenderComponent>();
             drawable.StartAnimation(AnimationType.Hit, 15);
+            Cooldowns.SetOrAdd("Stun", 20);
             if (CurrentHitPoints <= 0)
             {
                 onDestroy();
