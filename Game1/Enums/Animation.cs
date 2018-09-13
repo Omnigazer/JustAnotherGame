@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Omniplatformer
 {
-    public enum Animation
+    public enum AnimationType
     {
         Default,
         Hit,

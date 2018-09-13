@@ -14,6 +14,7 @@ namespace Omniplatformer.Components
         public bool Tile;
         public int ZIndex { get; set; } = Layers.Default;
         public Color Color { get; set; } = Color.White;
+        public float Opacity { get; set; } = 1;
         public Texture2D Texture { get; set; }
         public bool Tiled { get; set; }
         public PositionComponent pos { get; set; }
@@ -89,16 +90,18 @@ namespace Omniplatformer.Components
         public virtual void Draw()
         {
             // PositionComponent pos = GetComponent<PositionComponent>();
-            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor(), rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin, tiled: Tiled);
+            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor() * Opacity, rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin, tiled: Tiled);
 
             // GraphicsService.DrawGame(GameContent.Instance.whitePixel, rect, Color.Red, rotation: pos.WorldPosition.RotationAngle, clamped_origin: Vector2.Zero);
         }
 
+        /*
         // TODO: move these to more specific renderable implementations
         public virtual void Draw(float alpha)
         {
             // PositionComponent pos = GetComponent<PositionComponent>();
             GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor() * alpha, rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin);
         }
+        */
     }
 }

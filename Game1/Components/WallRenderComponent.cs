@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Omniplatformer.Animations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,24 +13,11 @@ namespace Omniplatformer.Components
     {
         public WallRenderComponent(GameObject obj) : base(obj)
         {
+            Animations.Add(AnimationType.Death, new DeathAnimation(this));
         }
 
         public WallRenderComponent(GameObject obj, Color color) : base(obj, color)
         {
-        }
-
-        public override void Draw()
-        {
-            if (CurrentAnimations.ContainsKey(Animation.Death))
-            {
-                var (ticks, length, current_step) = CurrentAnimations[Animation.Death];
-                float alpha = (float)(length - ticks) / length;
-                base.Draw(alpha);
-            }
-            else
-            {
-                base.Draw();
-            }
         }
     }
 }

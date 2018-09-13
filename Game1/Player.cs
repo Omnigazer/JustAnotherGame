@@ -153,7 +153,7 @@ namespace Omniplatformer
                 var drawable = GetComponent<CharacterRenderComponent>();
                 if (damage >= 0)
                 {
-                    drawable.StartAnimation(Animation.Hit, inv_frames);
+                    drawable.StartAnimation(AnimationType.Hit, inv_frames);
                     Vulnerable = false;
                 }
                 CurrentHitPoints -= damage;
@@ -168,7 +168,7 @@ namespace Omniplatformer
         private void Drawable__onAnimationEnd(object sender, AnimationEventArgs e)
         {
             var drawable = (CharacterRenderComponent)sender;
-            if (e.animation == Animation.Hit)
+            if (e.animation == AnimationType.Hit)
             {
                 drawable._onAnimationEnd -= Drawable__onAnimationEnd;
                 Vulnerable = true;
@@ -196,7 +196,7 @@ namespace Omniplatformer
                 ItemLocked = true;
                 var drawable = GetComponent<CharacterRenderComponent>();
                 drawable._onAnimationHit += onAttackend;
-                drawable.StartAnimation(Animation.Attack, Cooldowns["Melee"]);
+                drawable.StartAnimation(AnimationType.Attack, Cooldowns["Melee"]);
                 // drawable.StartAnimation(Animation.Attack, 10);
             }
         }
@@ -219,7 +219,7 @@ namespace Omniplatformer
         {
             var drawable = GetComponent<CharacterRenderComponent>();
             drawable._onAnimationHit -= onAttackend;
-            if (e.animation == Animation.Attack)
+            if (e.animation == AnimationType.Attack)
             {
                 MeleeHit();
                 ItemLocked = false;
@@ -322,9 +322,7 @@ namespace Omniplatformer
         {
             if (!ItemLocked)
             {
-                // TODO: should only be executed if it's actually hidden in the inventory or something
                 EquipSlots.HandSlot.Item = null;
-                // WieldedItem = null;
             }
         }
 

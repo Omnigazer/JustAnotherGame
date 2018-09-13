@@ -29,13 +29,13 @@ namespace Omniplatformer
             {
                 var drawable = GetComponent<AnimatedRenderComponent>();
                 drawable._onAnimationEnd += onDeathAnimationEnd;
-                drawable.StartAnimation(Animation.Death, 50);
+                drawable.StartAnimation(AnimationType.Death, 50);
             }
         }
 
-        private void onDeathAnimationEnd(object sender, AnimatedRenderComponent.AnimationEventArgs e)
+        private void onDeathAnimationEnd(object sender, AnimationEventArgs e)
         {
-            if (e.animation == Animation.Death)
+            if (e.animation == AnimationType.Death)
             {
                 onDestroy();
             }
