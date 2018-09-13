@@ -7,6 +7,15 @@ using Microsoft.Xna.Framework;
 
 namespace Omniplatformer.Components
 {
+    public class AnimationEventArgs : EventArgs
+    {
+        public Animation animation;
+        public AnimationEventArgs(Animation animation)
+        {
+            this.animation = animation;
+        }
+    }
+
     class AnimatedRenderComponent : RenderComponent
     {
         // protected Animation CurrentAnimation { get; set; }
@@ -14,15 +23,6 @@ namespace Omniplatformer.Components
         /// Maps animation type to the tuple (current ticks, duration, current step)
         /// </summary>
         protected Dictionary<Animation, (float, float, int)> CurrentAnimations { get; set; } = new Dictionary<Animation, (float, float, int)>();
-
-        public class AnimationEventArgs : EventArgs
-        {
-            public Animation animation;
-            public AnimationEventArgs(Animation animation)
-            {
-                this.animation = animation;
-            }
-        }
 
         public AnimatedRenderComponent(GameObject obj) : base(obj)
         {

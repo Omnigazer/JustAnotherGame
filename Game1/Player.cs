@@ -165,7 +165,7 @@ namespace Omniplatformer
             }
         }
 
-        private void Drawable__onAnimationEnd(object sender, AnimatedRenderComponent.AnimationEventArgs e)
+        private void Drawable__onAnimationEnd(object sender, AnimationEventArgs e)
         {
             var drawable = (CharacterRenderComponent)sender;
             if (e.animation == Animation.Hit)
@@ -215,7 +215,7 @@ namespace Omniplatformer
             return pos.GetClosestObject(new Vector2(range * (int)pos.WorldPosition.face_direction, 0), x => x.Hittable && x.GameObject.Team != Team.Friend);
         }
 
-        private void onAttackend(object sender, AnimatedRenderComponent.AnimationEventArgs e)
+        private void onAttackend(object sender, AnimationEventArgs e)
         {
             var drawable = GetComponent<CharacterRenderComponent>();
             drawable._onAnimationHit -= onAttackend;
