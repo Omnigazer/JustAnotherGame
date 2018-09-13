@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json.Linq;
 using Omniplatformer.Components;
+using Omniplatformer.Items;
 using Omniplatformer.Utility;
 
 namespace Omniplatformer.Characters
@@ -16,6 +17,11 @@ namespace Omniplatformer.Characters
         // internal counters for "random movement"
         int ticks = 0;
         int amp = 300;
+
+        /// <summary>
+        /// Busy flag, such as when it's casting a spell
+        /// </summary>
+        bool Busy { get; set; } = false;
 
         IEnumerator behaviorGen()
         {
@@ -67,10 +73,28 @@ namespace Omniplatformer.Characters
             var player_pos = GameService.Player.GetComponent<PositionComponent>();
             var pos = GetComponent<PositionComponent>();
             var movable = GetComponent<CharMoveComponent>();
-            movable.move_direction = pos.WorldPosition.Center.X < player_pos.WorldPosition.Center.X ? Direction.Right : Direction.Left;
+            var drawable = GetComponent<CharacterRenderComponent>();
+            if (Busy)
+                movable.move_direction = Direction.None;
+            else
+                movable.move_direction = pos.WorldPosition.Center.X < player_pos.WorldPosition.Center.X ? Direction.Right : Direction.Left;
             if (TryCooldown("Cast", 120))
             {
-                Spells.FireBolt.Cast(this, player_pos.WorldPosition);
+                Busy = true;
+                drawable.StartAnimation(AnimationType.Cast, 30);
+                EventHandler<AnimationEventArgs> handler = null;
+                handler = (sender, e) =>
+                {
+                    if (e.animation == AnimationType.Cast)
+                    {
+                        Spells.FireBolt.Cast(this, player_pos.WorldPosition);
+                        Busy = false;
+                        drawable._onAnimationEnd -= handler;
+                    }
+                };
+                drawable._onAnimationEnd += handler;
+                // drawable.on
+
             }
         }
 
@@ -97,7 +121,8 @@ namespace Omniplatformer.Characters
         public override void onDestroy()
         {
             // TODO: extract this into a drop component
-            WieldedItem drop = new WieldedItem(50);
+            // WieldedItem drop = new WieldedItem(50);
+            Item drop = new ChaosOrb();
             var pos = (PhysicsComponent)drop;
             pos.SetLocalCoords(GetComponent<PositionComponent>().WorldPosition.Coords);
             pos.Pickupable = true;

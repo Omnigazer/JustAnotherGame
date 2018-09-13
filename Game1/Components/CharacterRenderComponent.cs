@@ -18,6 +18,7 @@ namespace Omniplatformer.Components
         {
             Animations.Add(AnimationType.Attack, new AttackAnimation(this));
             Animations.Add(AnimationType.Hit, new HitAnimation(this));
+            Animations.Add(AnimationType.Cast, new CastAnimation(this));
             ZIndex = Layers.Character;
             this.left_texture = left_texture;
             this.right_texture = right_texture;

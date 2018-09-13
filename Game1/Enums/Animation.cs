@@ -11,6 +11,7 @@ namespace Omniplatformer
         Default,
         Hit,
         Attack,
+        Cast,
         Death
     }
 }
