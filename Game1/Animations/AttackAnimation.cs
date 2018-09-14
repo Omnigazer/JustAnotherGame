@@ -9,6 +9,7 @@ namespace Omniplatformer.Animations
 {
     public class AttackAnimation : Animation
     {
+        public override AnimationType AnimationType => AnimationType.Attack;
         int current_step;
 
         public AttackAnimation(AnimatedRenderComponent drawable) : base(drawable)

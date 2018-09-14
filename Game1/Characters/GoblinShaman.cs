@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json.Linq;
+using Omniplatformer.Animations;
 using Omniplatformer.Components;
 using Omniplatformer.Items;
 using Omniplatformer.Utility;

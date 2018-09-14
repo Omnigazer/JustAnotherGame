@@ -9,6 +9,7 @@ namespace Omniplatformer.Animations
 {
     public abstract class Animation
     {
+        public abstract AnimationType AnimationType { get; }
         public bool Active { get; private set; }
         protected float CurrentTime { get; set; }
         protected float Duration { get; set; }
@@ -29,6 +30,7 @@ namespace Omniplatformer.Animations
         public virtual void End()
         {
             Active = false;
+            Drawable.onAnimationEnd(AnimationType);
         }
 
         public virtual void Tick(float time_scale)

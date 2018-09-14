@@ -13,7 +13,7 @@ namespace Omniplatformer.Components
     {
         public WallRenderComponent(GameObject obj) : base(obj)
         {
-            Animations.Add(AnimationType.Death, new DeathAnimation(this));
+            AddAnimation(new DeathAnimation(this));
         }
 
         public WallRenderComponent(GameObject obj, Color color) : base(obj, color)

@@ -16,9 +16,9 @@ namespace Omniplatformer.Components
 
         public CharacterRenderComponent(GameObject obj, Texture2D left_texture, Texture2D right_texture, Color? color = null) : base(obj)
         {
-            Animations.Add(AnimationType.Attack, new AttackAnimation(this));
-            Animations.Add(AnimationType.Hit, new HitAnimation(this));
-            Animations.Add(AnimationType.Cast, new CastAnimation(this));
+            AddAnimation(new AttackAnimation(this));
+            AddAnimation(new HitAnimation(this));
+            AddAnimation(new CastAnimation(this));
             ZIndex = Layers.Character;
             this.left_texture = left_texture;
             this.right_texture = right_texture;

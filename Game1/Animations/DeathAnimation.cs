@@ -9,6 +9,8 @@ namespace Omniplatformer.Animations
 {
     public class DeathAnimation : Animation
     {
+        public override AnimationType AnimationType => AnimationType.Death;
+
         public DeathAnimation(AnimatedRenderComponent drawable) : base(drawable)
         {
 

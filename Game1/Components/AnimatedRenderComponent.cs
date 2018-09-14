@@ -24,7 +24,7 @@ namespace Omniplatformer.Components
         /// Maps animation type to the tuple (current ticks, duration, current step)
         /// </summary>
         // protected Dictionary<AnimationType, (float, float, int)> CurrentAnimations { get; set; } = new Dictionary<AnimationType, (float, float, int)>();
-        protected Dictionary<AnimationType, Animation> Animations { get; set; } = new Dictionary<AnimationType, Animation>();
+        private Dictionary<AnimationType, Animation> Animations { get; set; } = new Dictionary<AnimationType, Animation>();
 
         public AnimatedRenderComponent(GameObject obj) : base(obj)
         {
@@ -33,6 +33,11 @@ namespace Omniplatformer.Components
 
         public AnimatedRenderComponent(GameObject obj, Color color) : base(obj, color)
         {
+        }
+
+        public void AddAnimation(Animation animation)
+        {
+            Animations.Add(animation.AnimationType, animation);
         }
 
         /// <summary>
