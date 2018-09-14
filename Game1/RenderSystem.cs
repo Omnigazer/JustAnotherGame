@@ -316,6 +316,17 @@ namespace Omniplatformer
             */
         }
 
+        public void DrawBackground()
+        {
+            var spriteBatch = GraphicsService.Instance;
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Matrix.CreateTranslation(-(int)Camera.Position.X * 0,
+                                            0, 0) *
+                                            Matrix.CreateRotationZ(Camera.Rotation)
+                                            );
+            spriteBatch.Draw(GameContent.Instance.background, new Rectangle(0, 0, Camera.ViewportWidth, Camera.ViewportHeight), Color.White);
+            spriteBatch.End();
+        }
+
         public void DrawToMainLayer()
         {
             var spriteBatch = GraphicsService.Instance;
@@ -359,6 +370,16 @@ namespace Omniplatformer
                 GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, tiles.Count * 2);
             }
 
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            // Draw the foreground on top of main scene
+            spriteBatch.Draw(secretTarget, Vector2.Zero, Color.White);
+            // spriteBatch.Draw(finalSecretTarget, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, new MultiplyBlendState());
+            spriteBatch.Draw(lightsTarget, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
             /*
             spriteBatch.Begin(SpriteSortMode.Immediate, new MultiplyBlendState());
             spriteBatch.Draw(lightsTarget, Vector2.Zero, Color.White);
@@ -383,6 +404,7 @@ namespace Omniplatformer
             // Draw everything into the final scene
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
+            DrawBackground();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.TranslationMatrix);
 
@@ -397,12 +419,9 @@ namespace Omniplatformer
             // Draw the main scene
             spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
+
+            /*
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-
-
-            // var alphaEffect = GameContent.Instance.AlphaEffect;
-            // alphaEffect.Parameters["alphaMask"].SetValue(alphaMaskTarget);
-            // alphaEffect.CurrentTechnique.Passes[0].Apply();
             // Draw the foreground on top of main scene
             if (with_foreground)
                 spriteBatch.Draw(secretTarget, Vector2.Zero, Color.White);
@@ -412,6 +431,7 @@ namespace Omniplatformer
             spriteBatch.Begin(SpriteSortMode.Immediate, new MultiplyBlendState());
             spriteBatch.Draw(lightsTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
+            */
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             spriteBatch.Draw(HUDTarget, Vector2.Zero, Color.White);
