@@ -124,12 +124,18 @@ namespace Omniplatformer
                     switch (sectors[i, j]) {
                         case "solid":
                             {
-                                list.Add(new SolidPlatform(
+                                var obj = new SolidPlatform(
                                 new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size),
                                 new Vector2(tile_size / 2, tile_size / 2),
                                 Vector2.Zero,
                                 true
-                                ));
+                                );
+                                var drawable = (RenderComponent)obj;
+                                if (j > 0 && sectors[i, j - 1] == "solid")
+                                    drawable.TexBounds = (new Vector2(0.5f, 0), new Vector2(0.5f, 1));
+                                else
+                                    drawable.TexBounds = (new Vector2(0, 0), new Vector2(0.5f, 1));
+                                list.Add(obj);
                                 break;
                             }
                         case "background":

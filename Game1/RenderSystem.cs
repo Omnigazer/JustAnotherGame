@@ -224,14 +224,28 @@ namespace Omniplatformer
                 */
 
                 // Top left triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, vector);
+                // Top left triangle
+                var (offset, size) = tile.TexBounds;
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), tile.Color, offset);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, offset + new Vector2(size.X, 0));
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, offset + new Vector2(0, size.Y));
 
                 // Bottom right triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, offset + new Vector2(0, size.Y));
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, offset + new Vector2(size.X, 0));
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), tile.Color, offset + size);
+
+                /*
+                // Top left triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, rect.Bottom, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, rect.Top, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, rect.Top, 0), tile.Color, vector);
+
+                // Bottom right triangle
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, rect.Bottom, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, rect.Bottom, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, rect.Top, 0), tile.Color, vector);
+                */
             }
 
             buffer.SetData(vertices);
@@ -259,14 +273,14 @@ namespace Omniplatformer
                 */
 
                 // Top left triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), tile.Color, new Vector2(0, 0));
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, new Vector2(0.5f, 0));
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, new Vector2(0, 1));
 
                 // Bottom right triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), tile.Color, vector);
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, new Vector2(0, 1));
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, new Vector2(0.5f, 0));
+                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), tile.Color, new Vector2(0.5f, 1));
             }
 
             buffer.SetData(vertices);
@@ -330,8 +344,20 @@ namespace Omniplatformer
 
             spriteBatch.End();
 
+            BasicEffect basicEffect = new BasicEffect(GraphicsDevice);
+
+            basicEffect.TextureEnabled = true;
+            basicEffect.VertexColorEnabled = true;
+            // basicEffect.View = Matrix.CreateScale(0.5f);
+            basicEffect.World = Camera.TranslationMatrix;
+            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(0, 2560, 1440, 0, 0, 1);
+            basicEffect.Texture = GameContent.Instance.testTile;
             GraphicsDevice.SetVertexBuffer(TileBuffer);
-            GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, tiles.Count * 2);
+            foreach (var pass in basicEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, tiles.Count * 2);
+            }
 
             /*
             spriteBatch.Begin(SpriteSortMode.Immediate, new MultiplyBlendState());

@@ -16,6 +16,8 @@ namespace Omniplatformer.Components
         public Color Color { get; set; } = Color.White;
         public float Opacity { get; set; } = 1;
         public Texture2D Texture { get; set; }
+        // offset, size
+        public (Vector2, Vector2) TexBounds { get; set; } = (Vector2.Zero, new Vector2(1));
         public bool Tiled { get; set; }
         public PositionComponent pos { get; set; }
         public RenderComponent(GameObject obj) : base(obj)

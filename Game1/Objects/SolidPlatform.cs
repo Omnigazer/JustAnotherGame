@@ -21,7 +21,12 @@ namespace Omniplatformer
         {
             Tickable = false;
             Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Solid = true, Friction = 0.1f, Tile = tile });
-            Components.Add(new RenderComponent(this) { Tile = tile });
+            var c = new RenderComponent(this) { Tile = tile };
+            if (tile)
+            {
+                c.Texture = GameContent.Instance.testTile;
+            }
+            Components.Add(c);
         }
 
         public override object AsJson()
