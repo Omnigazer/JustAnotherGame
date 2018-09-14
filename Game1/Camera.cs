@@ -45,5 +45,10 @@ namespace Omniplatformer
             Zoom = Math.Max(0.125f, Zoom);
             Zoom = Math.Min(2f, Zoom);
         }
+
+        public void ResetZoom()
+        {
+            Zoom = 1.0f;
+        }
     }
 }

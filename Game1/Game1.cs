@@ -450,6 +450,11 @@ namespace Omniplatformer
             RenderSystem.Camera.AdjustZoom(-zoom_adjust_rate);
         }
 
+        public void ResetZoom()
+        {
+            RenderSystem.Camera.ResetZoom();
+        }
+
         #endregion
 
         #region Console
