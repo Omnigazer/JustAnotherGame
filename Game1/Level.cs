@@ -82,6 +82,31 @@ namespace Omniplatformer
             var list = new List<GameObject>();
             int tile_size = PhysicsSystem.TileSize;
             var sectors = new string[bitmap.Width / scale, bitmap.Height / scale];
+
+            void SetTileTexBounds(RenderComponent drawable, int i, int j, string type)
+            {
+                float x = 0, y = 0;
+                Vector2 size = new Vector2(0.33f, 0.33f);
+                if (j > 0 && sectors[i, j - 1] != type)
+                {
+                    y = 0;
+                }
+                else if (sectors[i, j + 1] != type)
+                    y = 0.66f;
+                else y = 0.33f;
+
+                if (i > 0 && sectors[i - 1, j] != type)
+                    x = 0;
+                else if (sectors[i + 1, j] != type)
+                    x = 0.66f;
+                else x = 0.33f;
+
+                Vector2 offset = new Vector2(x, y);
+                drawable.TexBounds = (offset, size);
+            }
+
+
+
             for (int i = 0; i < bitmap.Width; i++)
             {
                 for (int j = 0; j < bitmap.Height; j++)
@@ -131,10 +156,7 @@ namespace Omniplatformer
                                 true
                                 );
                                 var drawable = (RenderComponent)obj;
-                                if (j > 0 && sectors[i, j - 1] == "solid")
-                                    drawable.TexBounds = (new Vector2(0.5f, 0), new Vector2(0.5f, 1));
-                                else
-                                    drawable.TexBounds = (new Vector2(0, 0), new Vector2(0.5f, 1));
+                                SetTileTexBounds(drawable, i, j, "solid");
                                 list.Add(obj);
                                 break;
                             }
@@ -147,7 +169,7 @@ namespace Omniplatformer
                                 true
                                 );
                                 var drawable = (RenderComponent)obj;
-                                drawable.TexBounds = (new Vector2(0, 0), new Vector2(1, 1));
+                                SetTileTexBounds(drawable, i, j, "background");
                                 list.Add(obj);
                                 break;
                             }
