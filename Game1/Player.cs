@@ -17,7 +17,7 @@ namespace Omniplatformer
     public class Player : Character
     {
         // Character constants
-        const float max_hitpoints = 5;
+        const float max_hitpoints = 50;
         const float max_mana = 10;
         const float mana_regen_rate = 0.1f / 60;
         const int inv_frames = 100;
@@ -56,7 +56,7 @@ namespace Omniplatformer
             inventory = new Inventory();
             // TODO: test
             var item = new WieldedItem(damage: 1);
-            inventory.AddItem(item);
+
             Team = Team.Friend;
             MaxHitPoints = max_hitpoints;
             CurrentHitPoints = MaxHitPoints;
@@ -76,6 +76,7 @@ namespace Omniplatformer
                 //MaxMana[type] = max_mana;
                 CurrentMana[type] = MaxMana(type);
             }
+            WieldItem(item);
         }
 
         public float MaxMana(ManaType manaType)
@@ -199,7 +200,7 @@ namespace Omniplatformer
                 ItemLocked = true;
                 var drawable = GetComponent<CharacterRenderComponent>();
                 drawable._onAnimationHit += onAttackend;
-                drawable.StartAnimation(AnimationType.Attack, Cooldowns["Melee"]);
+                drawable.StartAnimation(AnimationType.Attack, 10);
                 // drawable.StartAnimation(Animation.Attack, 10);
             }
         }

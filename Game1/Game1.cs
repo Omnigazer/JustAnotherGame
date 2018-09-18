@@ -93,10 +93,10 @@ namespace Omniplatformer
 
             // Register player
             player = new Player(
-                new Vector2(100, 500),
+                new Vector2(100, -7500),
                 // new Vector2(110, 192)
                 // new Vector2(110, 192)
-                new Vector2(15, 27)
+                new Vector2(20, 36)
                 // new Vector2(11, 19.2f)
             );
             AddToMainScene(player);

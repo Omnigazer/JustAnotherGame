@@ -14,7 +14,8 @@ namespace Omniplatformer
             ColorBlendFunction = BlendFunction.Add;
             ColorSourceBlend = Blend.DestinationColor;
             ColorDestinationBlend = Blend.Zero;
-            AlphaBlendFunction = BlendFunction.Max;
+            AlphaBlendFunction = BlendFunction.Min;
+            // AlphaBlendFunction = BlendFunction.Max;
             AlphaSourceBlend = Blend.One;
             AlphaDestinationBlend = Blend.One;
         }

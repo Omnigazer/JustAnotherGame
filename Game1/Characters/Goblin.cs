@@ -58,11 +58,11 @@ namespace Omniplatformer.Characters
             Behavior = behaviorGen();
             Team = Team.Enemy;
             CurrentHitPoints = MaxHitPoints = 8;
-            var halfsize = new Vector2(15, 20);
+            var halfsize = new Vector2(20, 26);
             // Components.Add(new PositionComponent(this, coords, halfsize));
             Components.Add(new CharMoveComponent(this, coords, halfsize, movespeed: 1.8f));
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight, Color.Green));
-            Components.Add(new DamageHitComponent(this, damage: 3, knockback: new Vector2(5, 5)));
+            Components.Add(new DamageHitComponent(this, damage: 2, knockback: new Vector2(5, 5)));
         }
 
         public void MoveTowardsPlayer()

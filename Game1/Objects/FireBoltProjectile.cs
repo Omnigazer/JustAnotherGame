@@ -20,7 +20,7 @@ namespace Omniplatformer
             Team = source.Team;
             Components.Add(new ProjectileMoveComponent(this, center, halfsize));
             Components.Add(new GlowingRenderComponent(this));
-            Components.Add(new DamageHitComponent(this, damage: 1));
+            Components.Add(new DamageHitComponent(this, damage: 4));
             behavior = behaviorGen();
         }
 
