@@ -25,11 +25,13 @@ namespace Omniplatformer.HUDStates
             Button = MouseButton.None;
         }
 
-        public MouseEventArgs(MouseButton button)
+        public MouseEventArgs(MouseButton button, Point pos)
         {
             Button = button;
+            Position = pos;
         }
         public MouseButton Button { get; set; }
+        public Point Position { get; set; }
     }
 
     public abstract class HUDState
@@ -128,13 +130,13 @@ namespace Omniplatformer.HUDStates
             {
                 lmb_pressed = true;
                 Root.onMouseDown(mouse.Position);
-                MouseDown(this, new MouseEventArgs(MouseButton.Left));
+                MouseDown(this, new MouseEventArgs(MouseButton.Left, mouse.Position));
             }
             if (mouse.LeftButton == ButtonState.Released && lmb_pressed)
             {
                 lmb_pressed = false;
                 Root.onMouseUp(mouse.Position);
-                MouseUp(this, new MouseEventArgs(MouseButton.Left));
+                MouseUp(this, new MouseEventArgs(MouseButton.Left, mouse.Position));
             }
 
             // Right mouse button
@@ -142,13 +144,13 @@ namespace Omniplatformer.HUDStates
             {
                 rmb_pressed = true;
                 Root.onMouseDown(mouse.Position);
-                MouseDown(this, new MouseEventArgs(MouseButton.Right));
+                MouseDown(this, new MouseEventArgs(MouseButton.Right, mouse.Position));
             }
             if (mouse.RightButton == ButtonState.Released && rmb_pressed)
             {
                 rmb_pressed = false;
                 Root.onMouseUp(mouse.Position);
-                MouseUp(this, new MouseEventArgs(MouseButton.Right));
+                MouseUp(this, new MouseEventArgs(MouseButton.Right, mouse.Position));
             }
         }
 

@@ -184,12 +184,12 @@ namespace Omniplatformer
         }
 
         #region Actions
-        public void Fire()
+        public void Fire(Position? x = null)
         {
             var pos = GetComponent<PositionComponent>();
             var coords = pos.WorldPosition;
             coords.Coords += new Vector2(coords.face_direction == HorizontalDirection.Left ? -1 : 1, 0);
-            Spells.FireBolt.Cast(this, coords);
+            Spells.FireBolt.Cast(this, x ?? coords);
             // Spells.LifeDrain.Cast(this);
         }
 
