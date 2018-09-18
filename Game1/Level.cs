@@ -140,12 +140,15 @@ namespace Omniplatformer
                             }
                         case "background":
                             {
-                                list.Add(new BackgroundQuad(
+                                var obj = new BackgroundQuad(
                                 new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size),
                                 new Vector2(tile_size / 2, tile_size / 2),
                                 Vector2.Zero,
                                 true
-                                ));
+                                );
+                                var drawable = (RenderComponent)obj;
+                                drawable.TexBounds = (new Vector2(0, 0), new Vector2(1, 1));
+                                list.Add(obj);
                                 break;
                             }
                         case "liquid":

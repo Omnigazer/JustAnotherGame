@@ -27,6 +27,7 @@ namespace Omniplatformer
         public Texture2D causticsMap { get; set; }
         public Texture2D ladder { get; set; }
         public Texture2D testTile { get; set; }
+        public Texture2D backgroundTile { get; set; }
         public Texture2D background { get; set; }
 
         public SoundEffect startSound { get; set; }
@@ -61,6 +62,7 @@ namespace Omniplatformer
             //load images
             background = Content.Load<Texture2D>("Textures/background0");
             testTile = Content.Load<Texture2D>("Textures/test_tile");
+            backgroundTile = Content.Load<Texture2D>("Textures/background_tile");
             characterLeft = Content.Load<Texture2D>("Textures/char-left");
             characterRight = Content.Load<Texture2D>("Textures/char-right");
             cursor = Content.Load<Texture2D>("Textures/cursor2");

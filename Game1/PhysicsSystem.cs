@@ -10,7 +10,7 @@ namespace Omniplatformer
 {
     public class PhysicsSystem
     {
-        public static int TileSize => 8;
+        public static int TileSize => 16;
         // public List<GameObject> objects = new List<GameObject>();
         public List<PhysicsComponent> objects = new List<PhysicsComponent>();
         public List<DynamicPhysicsComponent> dynamics = new List<DynamicPhysicsComponent>();
