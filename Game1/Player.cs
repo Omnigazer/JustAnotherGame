@@ -11,6 +11,7 @@ using Omniplatformer.Components;
 using Omniplatformer.Enums;
 using Omniplatformer.Items;
 using static Omniplatformer.Enums.Skill;
+using Omniplatformer.Objects;
 
 namespace Omniplatformer
 {
@@ -187,9 +188,22 @@ namespace Omniplatformer
         public void Fire(Position? x = null)
         {
             var pos = GetComponent<PositionComponent>();
+
+            /*
             var coords = pos.WorldPosition;
             coords.Coords += new Vector2(coords.face_direction == HorizontalDirection.Left ? -1 : 1, 0);
             Spells.FireBolt.Cast(this, x ?? coords);
+            return;
+            */
+
+            if (x != null)
+            {
+                var direction = x.Value.Coords - pos.WorldPosition.Coords;
+                direction.Normalize();
+                direction *= 0;
+                var boulder = new Boulder((x ?? pos.WorldPosition).Coords, direction);
+                Game.AddToMainScene(boulder);
+            }
             // Spells.LifeDrain.Cast(this);
         }
 

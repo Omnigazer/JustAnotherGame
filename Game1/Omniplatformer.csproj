@@ -79,6 +79,7 @@
     <Compile Include="Objects\Chest.cs" />
     <Compile Include="Objects\BackgroundQuad.cs" />
     <Compile Include="Objects\LifeDrainProjectile.cs" />
+    <Compile Include="Objects\Boulder.cs" />
     <Compile Include="Objects\Particle.cs" />
     <Compile Include="PhysicsSystem.cs" />
     <Compile Include="Spells\LifeDrain.cs" />

@@ -12,12 +12,18 @@ namespace Omniplatformer
 {
     public class LifeDrainProjectile : Projectile
     {
-        public LifeDrainProjectile(Vector2 center, Vector2 halfsize, GameObject source = null): base(center, halfsize, source)
+        public LifeDrainProjectile(Vector2 center, Vector2 direction, GameObject source = null): base(source)
         {
             Team = source?.Team ?? Team.Friend;
-            // Components.Add(new DynamicPhysicsComponent(this, center, halfsize))
-            // Components.Add(new GlowingRenderComponent(this));
-            Components.Add(new ProjectileMoveComponent(this, center, halfsize));
+
+            var proj_movable = new ProjectileMoveComponent(this, center, new Vector2(20, 5)) { InverseMass = 0 };
+            // direction.Normalize();
+            // float speed = 20;
+            proj_movable.Rotate(-(float)Math.Atan2(direction.Y, direction.X));
+            // proj_movable.CurrentMovement = speed * direction;
+            proj_movable.CurrentMovement = direction;
+
+            Components.Add(proj_movable);
             var c = new GlowingRenderComponent(this) { GlowColor = Color.Purple };
             Components.Add(c);
             Components.Add(new LifeDrainHitComponent(this, damage: 3));

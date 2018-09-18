@@ -11,7 +11,7 @@ namespace Omniplatformer
     public abstract class Projectile : GameObject
     {
         const int default_ttl = 500;
-        public Projectile(Vector2 center, Vector2 halfsize, GameObject source = null)
+        public Projectile(GameObject source = null)
         {
             TTL = default_ttl;
             _source = source;

@@ -15,10 +15,17 @@ namespace Omniplatformer
     public class FireBoltProjectile : Projectile
     {
         IEnumerator behavior;
-        public FireBoltProjectile(Vector2 center, Vector2 halfsize, GameObject source = null): base(center, halfsize, source)
+        public FireBoltProjectile(Vector2 center, Vector2 direction, GameObject source = null): base(source)
         {
             Team = source.Team;
-            Components.Add(new ProjectileMoveComponent(this, center, halfsize));
+
+            var proj_movable = new ProjectileMoveComponent(this, center, new Vector2(5, 5)) { InverseMass = 0 };
+            direction.Normalize();
+            float speed = 20;
+            proj_movable.Rotate(-(float)Math.Atan2(direction.Y, direction.X));
+            proj_movable.CurrentMovement = speed * direction;
+
+            Components.Add(proj_movable);
             Components.Add(new GlowingRenderComponent(this));
             Components.Add(new DamageHitComponent(this, damage: 4));
             behavior = behaviorGen();
@@ -40,7 +47,7 @@ namespace Omniplatformer
         {
             var movable = GetComponent<ProjectileMoveComponent>();
             int x = RandomGen.Next(-15, 15), y = RandomGen.Next(-15, 15);
-            var spark = new Particle(movable.WorldPosition.Coords, new Vector2(1), new Vector2(x, y));
+            var spark = new Particle(movable.WorldPosition.Coords, new Vector2(x, y));
             Game.AddToMainScene(spark);
         }
 

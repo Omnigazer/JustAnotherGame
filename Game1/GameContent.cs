@@ -29,6 +29,7 @@ namespace Omniplatformer
         public Texture2D testTile { get; set; }
         public Texture2D backgroundTile { get; set; }
         public Texture2D background { get; set; }
+        public Texture2D boulder { get; set; }
 
         public SoundEffect startSound { get; set; }
         public SpriteFont defaultFont { get; set; }
@@ -62,6 +63,7 @@ namespace Omniplatformer
             //load images
             background = Content.Load<Texture2D>("Textures/background0");
             testTile = Content.Load<Texture2D>("Textures/test_tile");
+            boulder = Content.Load<Texture2D>("Textures/boulder");
             backgroundTile = Content.Load<Texture2D>("Textures/background_tile");
             characterLeft = Content.Load<Texture2D>("Textures/char-left");
             characterRight = Content.Load<Texture2D>("Textures/char-right");
