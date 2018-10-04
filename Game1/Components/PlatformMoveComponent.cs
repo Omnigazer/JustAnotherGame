@@ -20,10 +20,10 @@ namespace Omniplatformer.Components
         float speed = 5;
         int horizontal_amp = 250;
 
-        public override void ProcessMovement(float time_scale)
+        public override void ProcessMovement(float dt)
         {
             CurrentMovement = new Vector2(speed * direction, 0);
-            position += speed * direction * time_scale;
+            position += speed * direction * dt;
             if (Math.Abs(position) >= horizontal_amp)
             {
                 direction *= -1;

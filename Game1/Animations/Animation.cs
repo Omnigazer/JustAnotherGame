@@ -33,9 +33,9 @@ namespace Omniplatformer.Animations
             Drawable.onAnimationEnd(AnimationType);
         }
 
-        public virtual void Tick(float time_scale)
+        public virtual void Tick(float dt)
         {
-            CurrentTime += time_scale;
+            CurrentTime += dt;
             if (CurrentTime >= Duration)
                 End();
         }

@@ -20,6 +20,6 @@ namespace Omniplatformer.Components
             return GameObject.GetComponent<T>();
         }
 
-        public virtual void Tick(float time_scale) { }
+        public virtual void Tick(float dt) { }
     }
 }

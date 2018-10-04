@@ -31,16 +31,16 @@ namespace Omniplatformer.Animations
 
         class A { public static void B() { } }
 
-        public override void Tick(float time_scale)
+        public override void Tick(float dt)
         {
             // var (CurrentTime, Duration, current_step) = CurrentAnimations[AnimationType.Attack];
             float first_backswing_part = 0.3f;
             float forward_part = 0.1f;
             float backward_part = 1 - forward_part - first_backswing_part;
             float amp = (float)Math.PI / 2;
-            float first_backswing_step = time_scale * 0.3f * amp / (first_backswing_part * Duration);
-            float forward_step = time_scale * 1.3f * amp / ((forward_part) * Duration);
-            float back_step = time_scale * amp / (backward_part * Duration);
+            float first_backswing_step = dt * 0.3f * amp / (first_backswing_part * Duration);
+            float forward_step = dt * 1.3f * amp / ((forward_part) * Duration);
+            float back_step = dt * amp / (backward_part * Duration);
             float step = amp / Duration;
             // PositionComponent pos = Drawable.posGetComponent<PositionComponent>();
             PositionComponent pos = Drawable.pos;
@@ -71,7 +71,7 @@ namespace Omniplatformer.Animations
                     }
             }
             pos.CurrentAnchors[AnchorPoint.Hand] = anchor;
-            base.Tick(time_scale);
+            base.Tick(dt);
         }
     }
 }

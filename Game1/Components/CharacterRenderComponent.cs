@@ -75,9 +75,9 @@ namespace Omniplatformer.Components
             */
         }
 
-        public override void Tick(float time_scale)
+        public override void Tick(float dt)
         {
-            base.Tick(time_scale);
+            base.Tick(dt);
         }
 
         protected override Texture2D getCurrentSprite()

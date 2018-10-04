@@ -70,9 +70,9 @@ namespace Omniplatformer
             return (graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
-        public void Tick(float time_scale)
+        public void Tick(float dt)
         {
-            light_loop = (light_loop + time_scale) % light_loop_length;
+            light_loop = (light_loop + dt) % light_loop_length;
             // day_loop = (day_loop + 1) % day_loop_length;
         }
 

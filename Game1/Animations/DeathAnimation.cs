@@ -23,9 +23,9 @@ namespace Omniplatformer.Animations
             Drawable.Opacity = 1;
         }
 
-        public override void Tick(float time_scale)
+        public override void Tick(float dt)
         {
-            base.Tick(time_scale);
+            base.Tick(dt);
             float alpha = (float)(Duration - CurrentTime) / Duration;
             Drawable.Opacity = alpha;
         }

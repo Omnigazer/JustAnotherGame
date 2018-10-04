@@ -28,7 +28,7 @@ namespace Omniplatformer.Components
             }
         }
 
-        public override void ProcessMovement(float time_scale)
+        public override void ProcessMovement(float dt)
         {
             // CurrentMovement = Direction;
         }

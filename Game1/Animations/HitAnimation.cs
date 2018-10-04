@@ -23,9 +23,9 @@ namespace Omniplatformer.Animations
             base.End();
         }
 
-        public override void Tick(float time_scale)
+        public override void Tick(float dt)
         {
-            base.Tick(time_scale);
+            base.Tick(dt);
             Drawable.Color = Color.Red;
         }
     }

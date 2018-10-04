@@ -36,11 +36,11 @@ namespace Omniplatformer
             return new { type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
         }
 
-        public override void Tick(float time_scale)
+        public override void Tick(float dt)
         {
-            current_time_scale = time_scale;
+            current_dt = dt;
             behavior.MoveNext();
-            base.Tick(time_scale);
+            base.Tick(dt);
         }
 
         public void GenerateSpark()
@@ -51,14 +51,14 @@ namespace Omniplatformer
             Game.AddToMainScene(spark);
         }
 
-        float current_time_scale;
+        float current_dt;
         IEnumerator behaviorGen()
         {
             var movable = GetComponent<DynamicPhysicsComponent>();
             while (true)
             {
                 float wait_time = RandomGen.NextFloat(2, 8);
-                for (float t = 0; t < wait_time; t += current_time_scale)
+                for (float t = 0; t < wait_time; t += current_dt)
                 {
                     yield return null;
                 }

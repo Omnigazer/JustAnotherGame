@@ -37,23 +37,23 @@ namespace Omniplatformer
                 dynamics.Remove((DynamicPhysicsComponent)physicable);
         }
 
-        public void Tick(float time_scale)
+        public void Tick(float dt)
         {
             // should iterate through dynamic objects only
             for (int i = dynamics.Count - 1; i >= 0; i = Math.Min(i-1, dynamics.Count - 1))
             {
                 var obj = dynamics[i];
                 // apply external forces
-                ApplyGravity(obj, time_scale);
-                ApplyFriction(obj, time_scale);
+                ApplyGravity(obj, dt);
+                ApplyFriction(obj, dt);
                 // apply controls
-                obj.ProcessMovement(time_scale);
+                obj.ProcessMovement(dt);
                 // reset flags?
                 obj.ResetCollisionFlags();
                 ProcessCollisions(obj);
 
                 // Perform the movement
-                obj.Move(time_scale);
+                obj.Move(dt);
             }
         }
 
@@ -84,7 +84,7 @@ namespace Omniplatformer
         }
 
         // Yeah, and air resistance
-        protected void ApplyGravity(DynamicPhysicsComponent movable, float time_scale)
+        protected void ApplyGravity(DynamicPhysicsComponent movable, float dt)
         {
             float gravity = 1.1f * time_scale;
             // constant "air resistance" force times inverse mass
@@ -98,7 +98,7 @@ namespace Omniplatformer
             movable.CurrentMovement -= movable.CurrentMovement * a_air;
         }
 
-        protected void ApplyFriction(DynamicPhysicsComponent movable, float time_scale)
+        protected void ApplyFriction(DynamicPhysicsComponent movable, float dt)
         {
             // get current "platform"
             var ground = movable.CurrentGround;
@@ -113,7 +113,7 @@ namespace Omniplatformer
                 {
                     var speed = (ground as DynamicPhysicsComponent)?.HorizontalSpeed;
                     //if (speed >= 0 ? movable.HorizontalSpeed < speed : movable.HorizontalSpeed > speed)
-                    movable.HorizontalSpeed += (speed ?? 0 - movable.HorizontalSpeed) * 0.1f * friction * time_scale;
+                    movable.HorizontalSpeed += (speed ?? 0 - movable.HorizontalSpeed) * 0.1f * friction * dt;
                 }
             }
             else if (ground.Liquid)
@@ -121,16 +121,12 @@ namespace Omniplatformer
                 // var pos = movable.GetComponent<PositionComponent>();
                 // TODO: extract this
                 float immersion = movable.GetImmersionShare(ground.GameObject);
-                movable.CurrentMovement -= ground.Friction * immersion * movable.CurrentMovement * time_scale;
+                movable.CurrentMovement -= ground.Friction * immersion * movable.CurrentMovement * dt;
             }
         }
 
         public IEnumerable<PhysicsComponent> GetTilesFor(PhysicsComponent body)
         {
-            if (body.GameObject is Player && body.WorldPosition.Center.X > 430)
-            {
-
-            }
             var rect = body.GetRectangle();
 
             int left_index = rect.Left / TileSize - 1 + 2500;

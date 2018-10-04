@@ -34,9 +34,9 @@ namespace Omniplatformer.Components
             Acceleration = 0.8f;
         }
 
-        public override void Tick(float time_scale)
+        public override void Tick(float dt)
         {
-            current_jump_time -= time_scale;
+            current_jump_time -= dt;
 
             if (IsJumping && current_jump_time <= 0)
             {
@@ -51,19 +51,19 @@ namespace Omniplatformer.Components
 
             if (IsNextToWall || IsNextToRope)
             {
-                IncreasePinTime(time_scale);
+                IncreasePinTime(dt);
             }
             else
             {
                 ResetPin();
             }
 
-            base.Tick(time_scale);
+            base.Tick(dt);
         }
 
-        public void IncreasePinTime(float time_scale)
+        public void IncreasePinTime(float dt)
         {
-            current_pin_time += time_scale;
+            current_pin_time += dt;
             if (current_pin_time >= wall_jump_pin_ticks)
                 CanClimb = true;
         }
@@ -196,7 +196,7 @@ namespace Omniplatformer.Components
         }
 
         // TODO: refactor this
-        public override void ProcessMovement(float time_scale)
+        public override void ProcessMovement(float dt)
         {
             if (IsClimbing)
             {
@@ -204,7 +204,7 @@ namespace Omniplatformer.Components
             }
             else
             {
-                ProcessWalking(time_scale);
+                ProcessWalking(dt);
 
                 if (IsJumping)
                 {

@@ -21,9 +21,9 @@ namespace Omniplatformer
 
         public float TTL { get; set; }
         public override GameObject Source => _source?.Source ?? this;
-        public override void Tick(float time_scale)
+        public override void Tick(float dt)
         {
-            TTL -= time_scale;
+            TTL -= dt;
             if (TTL <= 0)
             {
                 onDestroy();

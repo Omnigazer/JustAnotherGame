@@ -35,7 +35,7 @@ namespace Omniplatformer.Characters
             movable.move_direction = pos.WorldPosition.Center.X < player_pos.WorldPosition.Center.X ? Direction.Right : Direction.Left;
         }
 
-        public void WalkAbout(float time_scale)
+        public void WalkAbout(float dt)
         {
             var movable = GetComponent<CharMoveComponent>();
 
@@ -47,7 +47,7 @@ namespace Omniplatformer.Characters
             {
                 movable.move_direction = Direction.Left;
             }
-            ticks = (ticks + time_scale) % amp;
+            ticks = (ticks + dt) % amp;
         }
 
         public override void ApplyDamage(float damage)
@@ -56,16 +56,16 @@ namespace Omniplatformer.Characters
             base.ApplyDamage(damage);
         }
 
-        public override void Tick(float time_scale)
+        public override void Tick(float dt)
         {
-            base.Tick(time_scale);
+            base.Tick(dt);
             if (Aggressive)
             {
                 MoveTowardsPlayer();
             }
             else
             {
-                WalkAbout(time_scale);
+                WalkAbout(dt);
             }
         }
 

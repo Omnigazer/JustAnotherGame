@@ -168,7 +168,6 @@ namespace Omniplatformer.Components
 
         public bool Overlaps(PositionComponent pos)
         {
-            // PositionComponent pos = (PositionComponent)pos;
             if (pos == null)
                 return false;
 

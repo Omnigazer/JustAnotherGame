@@ -43,12 +43,12 @@ namespace Omniplatformer.Components
 
         }
 
-        public virtual void Move(float time_scale)
+        public virtual void Move(float dt)
         {
-            AdjustPosition(CurrentMovement * time_scale);
+            AdjustPosition(CurrentMovement * dt);
         }
 
-        public virtual void ProcessMovement(float time_scale)
+        public virtual void ProcessMovement(float dt)
         {
 
         }

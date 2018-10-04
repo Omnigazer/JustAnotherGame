@@ -19,7 +19,7 @@ namespace Omniplatformer.Characters
         int amp = 300;
         */
 
-        float current_time_scale;
+        float current_dt;
         IEnumerator behaviorGen()
         {
             var movable = GetComponent<DynamicPhysicsComponent>();
@@ -27,25 +27,25 @@ namespace Omniplatformer.Characters
             {
                 float walk_time = RandomGen.NextFloat(150, 600);
                 movable.move_direction = Direction.Right;
-                for (float t = 0; t < walk_time; t += current_time_scale)
+                for (float t = 0; t < walk_time; t += current_dt)
                 {
                     yield return null;
                 }
 
                 movable.move_direction = Direction.None;
-                for (float t = 0; t < RandomGen.NextFloat(700, 2000); t += current_time_scale)
+                for (float t = 0; t < RandomGen.NextFloat(700, 2000); t += current_dt)
                 {
                     yield return null;
                 }
 
                 movable.move_direction = Direction.Left;
-                for (float t = 0; t < walk_time; t += current_time_scale)
+                for (float t = 0; t < walk_time; t += current_dt)
                 {
                     yield return null;
                 }
 
                 movable.move_direction = Direction.None;
-                for (float t = 0; t < RandomGen.NextFloat(700, 2000); t += current_time_scale)
+                for (float t = 0; t < RandomGen.NextFloat(700, 2000); t += current_dt)
                 {
                     yield return null;
                 }
@@ -113,9 +113,9 @@ namespace Omniplatformer.Characters
             base.ApplyDamage(damage);
         }
 
-        public override void Tick(float time_scale)
+        public override void Tick(float dt)
         {
-            base.Tick(time_scale);
+            base.Tick(dt);
             if (Aggressive)
             {
                 MoveTowardsPlayer();
@@ -123,7 +123,7 @@ namespace Omniplatformer.Characters
             else
             {
                 // WalkAbout();
-                current_time_scale = time_scale;
+                current_dt = dt;
                 Behavior.MoveNext();
             }
         }

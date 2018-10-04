@@ -86,17 +86,17 @@ namespace Omniplatformer.Components
             _onAnimationHit(this, new AnimationEventArgs(animation));
         }
 
-        public override void Tick(float time_scale)
+        public override void Tick(float dt)
         {
             foreach (var (type, animation) in Animations.Where(kv => kv.Value.Active))
             {
-                animation.Tick(time_scale);
+                animation.Tick(dt);
             }
             /*
             foreach (var (animation, (ticks, length, current_step)) in CurrentAnimations.ToList())
             {
-                CurrentAnimations[animation] = (ticks + time_scale, length, current_step);
-                if (ticks + time_scale >= length)
+                CurrentAnimations[animation] = (ticks + dt, length, current_step);
+                if (ticks + dt >= length)
                 {
                     EndAnimation(animation);
                 }
