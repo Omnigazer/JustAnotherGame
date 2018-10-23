@@ -13,7 +13,7 @@ namespace Omniplatformer.Objects
         public Boulder(Vector2 coords, Vector2 direction): base()
         {
             TTL = 50000;
-            var movable = new ProjectileMoveComponent(this, coords, new Vector2(10, 10)) { Solid = false, Hittable = false, InverseMass = 1 };
+            var movable = new ProjectileMoveComponent(this, coords, new Vector2(10, 10)) { Solid = false, Hittable = false, InverseMass = 0.5f };
             movable.CurrentMovement = direction;
             Components.Add(movable);
             Components.Add(new RenderComponent(this) { Texture = GameContent.Instance.boulder });

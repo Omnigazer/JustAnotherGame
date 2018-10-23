@@ -12,7 +12,7 @@ namespace Omniplatformer.Objects
     {
         public Particle(Vector2 coords, Vector2 direction): base()
         {
-            TTL = 50;
+            TTL = 15;
             var movable = new DynamicPhysicsComponent(this, coords, new Vector2(1)) { Solid = false, Hittable = false, InverseMass = 10 };
             movable.CurrentMovement = direction;
             Components.Add(movable);

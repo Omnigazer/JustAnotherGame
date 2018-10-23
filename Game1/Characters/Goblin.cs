@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json.Linq;
 using Omniplatformer.Components;
+using Omniplatformer.Objects;
 using Omniplatformer.Utility;
 
 namespace Omniplatformer.Characters
@@ -70,6 +71,39 @@ namespace Omniplatformer.Characters
             var player_pos = GameService.Player.GetComponent<PositionComponent>();
             var pos = GetComponent<PositionComponent>();
             var movable = GetComponent<CharMoveComponent>();
+            var drawable = GetComponent<CharacterRenderComponent>();
+            if (TryCooldown("Cast", 120))
+            {
+                float module = 30;
+                var distance = player_pos.WorldPosition.Coords - pos.WorldPosition.Coords;
+                var direction = BallisticsHelper.GetThrowVector(module, distance.X, distance.Y);
+
+                drawable.StartAnimation(AnimationType.Cast, 20);
+                EventHandler<AnimationEventArgs> handler = null;
+                handler = (sender, e) =>
+                {
+                    if (e.animation == AnimationType.Cast)
+                    {
+                        // var direction = player_pos.WorldPosition.Coords - pos.WorldPosition.Coords + new Vector2(0, 100);
+
+                        /*
+                        float module = 20;
+                        var distance = player_pos.WorldPosition.Coords - pos.WorldPosition.Coords;
+                        var direction = BallisticsHelper.GetThrowVector(module, distance.X, distance.Y);
+                        */
+
+                        if (direction != null)
+                        {
+                            var boulder = new Boulder((pos.WorldPosition).Coords, direction.Value) { Team = Team.Enemy };
+                            Game.AddToMainScene(boulder);
+                        }
+
+                        // Spells.FireBolt.Cast(this, player_pos.WorldPosition);
+                        drawable._onAnimationEnd -= handler;
+                    }
+                };
+                drawable._onAnimationEnd += handler;
+            }
             if (Cooldowns.TryGetValue("Stun", out float val) && val > 0)
             {
                 movable.move_direction = Direction.None;
@@ -78,6 +112,7 @@ namespace Omniplatformer.Characters
             {
                 movable.move_direction = pos.WorldPosition.Center.X < player_pos.WorldPosition.Center.X ? Direction.Right : Direction.Left;
             }
+            movable.move_direction = Direction.None;
         }
 
         /*

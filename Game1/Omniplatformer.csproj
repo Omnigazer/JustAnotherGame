@@ -84,6 +84,7 @@
     <Compile Include="PhysicsSystem.cs" />
     <Compile Include="Spells\LifeDrain.cs" />
     <Compile Include="Spells\FireBolt.cs" />
+    <Compile Include="Utility\BallisticsHelper.cs" />
     <Compile Include="Utility\Comparer.cs" />
     <Compile Include="Utility\Deconstruct.cs" />
     <Compile Include="Enums\HorizontalDirection.cs" />

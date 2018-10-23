@@ -200,7 +200,7 @@ namespace Omniplatformer
             {
                 var direction = x.Value.Coords - pos.WorldPosition.Coords;
                 direction.Normalize();
-                direction *= 0;
+                direction *= 20;
                 var boulder = new Boulder((x ?? pos.WorldPosition).Coords, direction);
                 Game.AddToMainScene(boulder);
             }
