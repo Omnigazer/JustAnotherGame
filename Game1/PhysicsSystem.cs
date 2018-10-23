@@ -10,6 +10,10 @@ namespace Omniplatformer
 {
     public class PhysicsSystem
     {
+        /// <summary>
+        /// The gravity constant
+        /// </summary>
+        public static float G => 1.1f;
         public static int TileSize => 16;
         // public List<GameObject> objects = new List<GameObject>();
         public List<PhysicsComponent> objects = new List<PhysicsComponent>();
@@ -86,15 +90,16 @@ namespace Omniplatformer
         // Yeah, and air resistance
         protected void ApplyGravity(DynamicPhysicsComponent movable, float dt)
         {
-            float gravity = 1.1f * time_scale;
+            if (movable.InverseMass == 0)
+                return;
             // constant "air resistance" force times inverse mass
-            float a_air = 0.004f * movable.InverseMass * time_scale;
+            float a_air = 0.004f * movable.InverseMass * dt * 0;
             /*
             float a = -(gravity - a_air);
             int direction_sign = Math.Sign(movable.HorizontalSpeed);
             movable.CurrentMovement += new Vector2(-a_air * direction_sign, a);
             */
-            movable.CurrentMovement += new Vector2(0, -gravity);
+            movable.CurrentMovement += new Vector2(0, -G * dt);
             movable.CurrentMovement -= movable.CurrentMovement * a_air;
         }
 
