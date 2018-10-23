@@ -187,7 +187,7 @@ namespace Omniplatformer.Components
                 var vd = Math.Abs(WorldPosition.Center.Y - other.WorldPosition.Center.Y) - (WorldPosition.halfsize.Y + other.WorldPosition.halfsize.Y);
 
                 // Now compare them to know the side of collision
-                if (hd > vd && (Math.Abs(vd) > WorldPosition.halfsize.Y || WorldPosition.Center.Y < other.WorldPosition.Center.Y))
+                if (hd > vd)// && (Math.Abs(vd) > WorldPosition.halfsize.Y || WorldPosition.Center.Y < other.WorldPosition.Center.Y))
                 {
                     if (WorldPosition.Center.X < other.WorldPosition.Center.X)
                         return Direction.Right;
@@ -207,24 +207,32 @@ namespace Omniplatformer.Components
             return Direction.None;
         }
 
-        public float GetIntersectionArea(GameObject obj)
+        public (float x, float y) GetIntersection(PositionComponent their_pos)
         {
-            PositionComponent their_pos = (PositionComponent)obj;
+            // PositionComponent their_pos = (PositionComponent)obj;
             if (their_pos == null)
-                return 0;
+                return (0, 0);
 
             var my_rect = GetRectangle();
             var their_rect = their_pos.GetRectangle();
             float intersection_width = Math.Min(my_rect.Right, their_rect.Right) - Math.Max(my_rect.Left, their_rect.Left);
             float intersection_height = Math.Min(my_rect.Bottom, their_rect.Bottom) - Math.Max(my_rect.Top, their_rect.Top);
-            return intersection_width * intersection_height;
+            return (intersection_width, intersection_height);
         }
 
-        public float GetImmersionShare(GameObject obj)
+        // public float GetIntersectionArea(GameObject obj)
+        public float GetIntersectionArea(PositionComponent their_pos)
+        {
+            (var x, var y) = GetIntersection(their_pos);
+            return x * y;
+        }
+
+        // public float GetImmersionShare(GameObject obj)
+        public float GetImmersionShare(PositionComponent pos)
         {
             var my_rect = GetRectangle();
             float my_area = (float)(my_rect.Width * my_rect.Height);
-            return GetIntersectionArea(obj) / my_area;
+            return GetIntersectionArea(pos) / my_area;
         }
 
         // TODO: properly implement this

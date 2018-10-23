@@ -81,10 +81,32 @@ namespace Omniplatformer
                     continue;
                 processCollision(other_obj);
             }
+            float? min_kx = null, min_ky = null;
+            PhysicsComponent hor_tile = null, ver_tile = null;
             foreach (var tile in GetTilesFor(obj))
             {
-                processCollision(tile);
+                var (kx, ky) = obj.GetIntersection(tile);
+                if (kx >= 0 && ky >= 0)
+                {
+                    if (min_kx == null || min_kx > kx)
+                    {
+                        min_kx = kx;
+                        hor_tile = tile;
+                    }
+
+                    if (min_ky == null || min_ky > ky)
+                    {
+                        min_ky = ky;
+                        ver_tile = tile;
+                    }
+                }
+
+                // processCollision(tile);
             }
+            if (ver_tile != null)
+                processCollision(ver_tile);
+            if (hor_tile != null)
+                processCollision(hor_tile);
         }
 
         // Yeah, and air resistance
@@ -125,7 +147,7 @@ namespace Omniplatformer
             {
                 // var pos = movable.GetComponent<PositionComponent>();
                 // TODO: extract this
-                float immersion = movable.GetImmersionShare(ground.GameObject);
+                float immersion = movable.GetImmersionShare(ground);
                 movable.CurrentMovement -= ground.Friction * immersion * movable.CurrentMovement * dt;
             }
         }

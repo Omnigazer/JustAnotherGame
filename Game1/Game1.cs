@@ -55,6 +55,7 @@ namespace Omniplatformer
             graphics = new GraphicsDeviceManager(this);
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Content.RootDirectory = "Content";
+            // IsFixedTimeStep = false;
         }
 
         /// <summary>
@@ -99,6 +100,8 @@ namespace Omniplatformer
                 new Vector2(20, 36)
                 // new Vector2(11, 19.2f)
             );
+            // var platform = new SolidPlatform(new Vector2(100, -7600), new Vector2(100, 10));
+            // AddToMainScene(platform);
             AddToMainScene(player);
             player._onDestroy += GameOver;
 
@@ -112,6 +115,7 @@ namespace Omniplatformer
             }
 
             // var list = CurrentLevel.LoadFromBitmap(@"E:/Games/level_layouts.png");
+
             var list = CurrentLevel.LoadFromBitmap(@"E:/Games/level1.png");
             Groups.Add("bitmap", new List<GameObject>());
             foreach (var obj in list)
@@ -120,7 +124,10 @@ namespace Omniplatformer
                 AddToMainScene(obj);
             }
 
-                // RenderSystem.RegisterDrawable((RenderComponent)obj);
+            AddToMainScene(new SolidPlatform(Vector2.Zero, Vector2.Zero, Vector2.Zero, true));
+            AddToMainScene(new BackgroundQuad(Vector2.Zero, Vector2.Zero, Vector2.Zero, true));
+
+            // RenderSystem.RegisterDrawable((RenderComponent)obj);
 
             LoadGroup("village", new Vector2(1300, 0));
             // LoadGroup("test_level", new Vector2(-6300, -1000));
@@ -196,6 +203,10 @@ namespace Omniplatformer
             RenderSystem.Draw();
             GraphicsService.Instance.Begin(SpriteSortMode.Immediate);
             GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, gameTime.ElapsedGameTime.Milliseconds.ToString(), new Vector2(50, 50), Color.White);
+            GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, objects.Count.ToString(), new Vector2(50, 250), Color.White);
+
+            GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, phys_time.ToString(), new Vector2(50, 350), Color.White);
+            GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, elapsed_frames.ToString(), new Vector2(50, 450), Color.White);
             GraphicsService.Instance.End();
             base.Draw(gameTime);
         }
@@ -238,16 +249,24 @@ namespace Omniplatformer
             RemoveFromMainScene(obj);
         }
 
+        long phys_time = 0;
+        long elapsed_frames = 0;
+
         #region Simulate
         public void Simulate(GameTime gameTime)
         {
-            float time_scale = (float)gameTime.ElapsedGameTime.Milliseconds * 60 / 1000;
-            PhysicsSystem.Tick(time_scale);
-            RenderSystem.Tick(time_scale);
+            float time_scale = 60.0f / 1000;
+            float dt = time_scale * (float)gameTime.ElapsedGameTime.Milliseconds;
+            var time = DateTime.Now;
+            PhysicsSystem.Tick(dt);
+            var elapsed = DateTime.Now - time;
+            elapsed_frames++;
+            phys_time += elapsed.Milliseconds;
+            RenderSystem.Tick(dt);
             for (int j = objects.Count - 1; j >= 0; j--)
             {
                 var obj = objects[j];
-                obj.Tick(time_scale);
+                obj.Tick(dt);
             }
         }
         #endregion
