@@ -150,8 +150,9 @@ namespace Omniplatformer.HUDStates
                 }
                 else
                 {
+                    if (release_map.ContainsKey(key) && !release_map[key])
+                        released_action?.Invoke();
                     release_map[key] = true;
-                    released_action?.Invoke();
                 }
             }
         }
