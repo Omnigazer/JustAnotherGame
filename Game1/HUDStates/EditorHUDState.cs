@@ -78,7 +78,7 @@ namespace Omniplatformer.HUDStates
             if (CurrentConstructor != null)
                 DrawCurrentBlock();
             DrawLogger();
-            DrawStatus();
+            // DrawStatus();
             base.Draw();
         }
 
@@ -118,6 +118,7 @@ namespace Omniplatformer.HUDStates
             spriteBatch.End();
         }
 
+        /*
         public void DrawStatus()
         {
             // TODO: TEST
@@ -134,10 +135,29 @@ namespace Omniplatformer.HUDStates
             }
             // Draw directly via the SpriteBatch instance bypassing y-axis flip
             // GraphicsService.Instance.Draw(GameContent.Instance.whitePixel, rect, Color.Gray * 0.8f);
-            displayMessage(String.Format("Current constructor: {0}", CurrentConstructor));
-            displayMessage(String.Format("Current group: {0}", CurrentGroupName));
-            displayMessage(String.Format("Current object: {0}", Game.GetObjectAtCursor()));
+            foreach (var msg in GetStatusMessages()) {
+                displayMessage(msg);
+            }
+            // displayMessage(String.Format("Current constructor: {0}", CurrentConstructor));
+            // displayMessage(String.Format("Current group: {0}", CurrentGroupName));
+            // displayMessage(String.Format("Current object: {0}", Game.GetObjectAtCursor()));
+            foreach (var msg in collision_messages)
+            {
+                displayMessage(msg);
+            }
             spriteBatch.End();
+        }
+        */
+
+        public override IEnumerable<string> GetStatusMessages()
+        {
+            yield return String.Format("Current constructor: {0}", CurrentConstructor);
+            yield return String.Format("Current group: {0}", CurrentGroupName);
+            yield return String.Format("Current object: {0}", Game.GetObjectAtCursor());
+            foreach (var msg in status_messages)
+            {
+                yield return msg;
+            }
         }
 
         public void DrawCurrentBlock()

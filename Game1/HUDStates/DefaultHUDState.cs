@@ -45,6 +45,16 @@ namespace Omniplatformer.HUDStates
             base.Draw();
         }
 
+        public override IEnumerable<string> GetStatusMessages()
+        {
+            yield return String.Format("Current object: {0}", Game.GetObjectAtCursor());
+            foreach (var msg in status_messages)
+            {
+                yield return msg;
+            }
+            status_messages.Clear();
+        }
+
         public void SetupControls()
         {
             Action noop = delegate { };

@@ -41,6 +41,9 @@ namespace Omniplatformer.HUDStates
         bool lmb_pressed;
         bool rmb_pressed;
         public static Point click_pos;
+
+        public List<string> status_messages = new List<string>();
+
         // Events
         protected event EventHandler<MouseEventArgs> MouseMove = delegate { };
         protected event EventHandler<MouseEventArgs> MouseUp = delegate { };
@@ -53,6 +56,7 @@ namespace Omniplatformer.HUDStates
         public virtual void Draw()
         {
             var spriteBatch = GraphicsService.Instance;
+            DrawStatus();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             Root.Draw();
             DrawCursor();
@@ -67,6 +71,43 @@ namespace Omniplatformer.HUDStates
             var rect = new Rectangle(cursor_position, cursor_size);
             // Draw directly via the SpriteBatch instance bypassing y-axis flip
             GraphicsService.Instance.Draw(GameContent.Instance.cursor, rect, Color.White);
+        }
+
+        public virtual IEnumerable<string> GetStatusMessages()
+        {
+            yield break;
+        }
+
+        public void DrawStatus()
+        {
+            // TODO: TEST
+            var spriteBatch = GraphicsService.Instance;
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            int log_width = 500, log_margin = 50;
+            Point log_position = new Point(log_margin, 300);
+            Point log_size = new Point(log_width, 700);
+            var rect = new Rectangle(log_position, log_size);
+            int i = 0;
+            void displayMessage(string message)
+            {
+                spriteBatch.DrawString(GameContent.Instance.defaultFont, message, (log_position + new Point(20, 20 + 20 * i++)).ToVector2(), Color.White);
+            }
+            // Draw directly via the SpriteBatch instance bypassing y-axis flip
+            // GraphicsService.Instance.Draw(GameContent.Instance.whitePixel, rect, Color.Gray * 0.8f);
+            foreach (var msg in GetStatusMessages())
+            {
+                displayMessage(msg);
+            }
+            // displayMessage(String.Format("Current constructor: {0}", CurrentConstructor));
+            // displayMessage(String.Format("Current group: {0}", CurrentGroupName));
+            // displayMessage(String.Format("Current object: {0}", Game.GetObjectAtCursor()));
+            /*
+            foreach (var msg in collision_messages)
+            {
+                displayMessage(msg);
+            }
+            */
+            spriteBatch.End();
         }
 
         /*
