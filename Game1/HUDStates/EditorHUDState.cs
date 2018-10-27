@@ -116,7 +116,7 @@ namespace Omniplatformer.HUDStates
                 spriteBatch.DrawString(GameContent.Instance.defaultFont, message, (log_position + new Point(20, 20 + 20 * i)).ToVector2(), Color.White);
             }
             spriteBatch.End();
-        }
+        }        
 
         /*
         public void DrawStatus()

@@ -75,6 +75,7 @@
     <Compile Include="InventoryEventArgs.cs" />
     <Compile Include="Items\ChaosOrb.cs" />
     <Compile Include="Items\Item.cs" />
+    <Compile Include="Items\Shield.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Objects\Chest.cs" />
     <Compile Include="Objects\BackgroundQuad.cs" />

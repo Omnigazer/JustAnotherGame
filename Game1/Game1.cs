@@ -100,6 +100,8 @@ namespace Omniplatformer
                 new Vector2(20, 36)
                 // new Vector2(11, 19.2f)
             );
+            var shield = new Shield();
+            shield.OnEquip(player);
             // var platform = new SolidPlatform(new Vector2(100, -7600), new Vector2(100, 10));
             // AddToMainScene(platform);
             AddToMainScene(player);
@@ -202,11 +204,11 @@ namespace Omniplatformer
             // TODO: Add your drawing code here
             RenderSystem.Draw();
             GraphicsService.Instance.Begin(SpriteSortMode.Immediate);
-            GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, gameTime.ElapsedGameTime.Milliseconds.ToString(), new Vector2(50, 50), Color.White);
+            // GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, gameTime.ElapsedGameTime.Milliseconds.ToString(), new Vector2(50, 50), Color.White);
             GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, objects.Count.ToString(), new Vector2(50, 250), Color.White);
 
-            GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, phys_time.ToString(), new Vector2(50, 350), Color.White);
-            GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, elapsed_frames.ToString(), new Vector2(50, 450), Color.White);
+            // GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, phys_time.ToString(), new Vector2(50, 350), Color.White);
+            // GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, elapsed_frames.ToString(), new Vector2(50, 450), Color.White);
             GraphicsService.Instance.End();
             base.Draw(gameTime);
         }
@@ -425,6 +427,10 @@ namespace Omniplatformer
             {
                 movable.StartClimbing();
             }
+            else
+            {
+                Duck();
+            }
             movable.move_direction = Direction.Down;
         }
 
@@ -449,6 +455,18 @@ namespace Omniplatformer
         public void Fire()
         {
             player.Fire();
+        }
+
+        public void Stand()
+        {
+            var x = (PositionComponent)player;
+            x.SetLocalHalfsize(x.WorldPosition.halfsize * 2);
+        }
+
+        public void Duck()
+        {
+            var x = (PositionComponent)player;
+            x.SetLocalHalfsize(x.WorldPosition.halfsize / 2);
         }
 
         public void Swing()

@@ -61,6 +61,14 @@ namespace Omniplatformer
             }
         }
 
+        public (float kx, float ky) GetCollisionTime(DynamicPhysicsComponent obj, PhysicsComponent other, float dt)
+        {
+            float px = Math.Abs(obj.WorldPosition.Center.X - other.WorldPosition.Center.X) - (obj.WorldPosition.halfsize.X + other.WorldPosition.halfsize.X);
+            float py = Math.Abs(obj.WorldPosition.Center.Y - other.WorldPosition.Center.Y) - (obj.WorldPosition.halfsize.Y + other.WorldPosition.halfsize.Y);
+
+            return (px, py);
+        }
+
         protected void ProcessCollisions(DynamicPhysicsComponent obj)
         {
             Direction collision_direction;
@@ -69,6 +77,10 @@ namespace Omniplatformer
                 collision_direction = obj.Collides(other_obj);
                 if (collision_direction != Direction.None)
                 {
+                    if (obj.GameObject is Player)
+                    {
+                        GameService.Instance.HUDState.status_messages.Add(other_obj.ToString() + " " + GetCollisionTime(obj, other_obj, 0));
+                    }
                     ApplyCollisionResponse(obj, other_obj, collision_direction);
                     obj.ProcessCollision(collision_direction, other_obj);
                 }
@@ -81,32 +93,11 @@ namespace Omniplatformer
                     continue;
                 processCollision(other_obj);
             }
-            float? min_kx = null, min_ky = null;
-            PhysicsComponent hor_tile = null, ver_tile = null;
+
             foreach (var tile in GetTilesFor(obj))
             {
-                var (kx, ky) = obj.GetIntersection(tile);
-                if (kx >= 0 && ky >= 0)
-                {
-                    if (min_kx == null || min_kx > kx)
-                    {
-                        min_kx = kx;
-                        hor_tile = tile;
-                    }
-
-                    if (min_ky == null || min_ky > ky)
-                    {
-                        min_ky = ky;
-                        ver_tile = tile;
-                    }
-                }
-
-                // processCollision(tile);
+                processCollision(tile);
             }
-            if (ver_tile != null)
-                processCollision(ver_tile);
-            if (hor_tile != null)
-                processCollision(hor_tile);
         }
 
         // Yeah, and air resistance
@@ -166,7 +157,6 @@ namespace Omniplatformer
                     if(tiles[i,j] != null)
                       yield return tiles[i,j];
                 }
-
         }
 
         protected void ApplyCollisionResponse(DynamicPhysicsComponent movable, PhysicsComponent target, Direction dir)
