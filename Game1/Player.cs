@@ -23,8 +23,8 @@ namespace Omniplatformer
         const float mana_regen_rate = 0.1f / 60;
         const int inv_frames = 100;
 
-        public bool ItemLocked { get; set; }
-        public WieldedItem WieldedItem { get => (WieldedItem)EquipSlots.HandSlot.Item; private set => WieldItem(value); }
+        public bool EquipLocked { get; set; }
+        public WieldedItem WieldedItem { get => (WieldedItem)EquipSlots.RightHandSlot.Item; private set => WieldItem(value); }
 
         // Equipment and inventory
         public Inventory inventory;
@@ -67,7 +67,8 @@ namespace Omniplatformer
 
             // InitPos(center, halfsize);
             var phys = new PlayerMoveComponent(this, center, halfsize) { MaxMoveSpeed = 9, Acceleration = 0.5f };
-            phys.AddAnchor(AnchorPoint.Hand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
+            phys.AddAnchor(AnchorPoint.RightHand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
+            phys.AddAnchor(AnchorPoint.LeftHand, new Position(new Vector2(-0.45f, -0.05f), Vector2.Zero, 0.6f));
             Components.Add(phys);
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
             Components.Add(new BonusComponent(this));
@@ -211,7 +212,7 @@ namespace Omniplatformer
         {
             if (WieldedItem != null && TryCooldown("Melee", (int)(30 * MeleeAttackRate)))
             {
-                ItemLocked = true;
+                EquipLocked = true;
                 var drawable = GetComponent<CharacterRenderComponent>();
                 drawable._onAnimationHit += onAttackend;
                 drawable.StartAnimation(AnimationType.Attack, 10);
@@ -240,7 +241,7 @@ namespace Omniplatformer
             if (e.animation == AnimationType.Attack)
             {
                 MeleeHit();
-                ItemLocked = false;
+                EquipLocked = false;
             }
         }
 
@@ -326,11 +327,11 @@ namespace Omniplatformer
 
         public void WieldItem(WieldedItem item)
         {
-            if (!ItemLocked)
+            if (!EquipLocked)
             {
                 if (WieldedItem != null)
                     UnwieldItem();
-                EquipSlots.HandSlot.Item = item;
+                EquipSlots.RightHandSlot.Item = item;
                 // WieldedItem = item;
                 item.OnEquip(this);
             }
@@ -338,16 +339,16 @@ namespace Omniplatformer
 
         public void UnwieldItem()
         {
-            if (!ItemLocked)
+            if (!EquipLocked)
             {
-                EquipSlots.HandSlot.Item = null;
+                EquipSlots.RightHandSlot.Item = null;
             }
         }
 
         public void WieldCurrentSlot()
         {
             // inventory.AddItem(sword);
-            if (!ItemLocked)
+            if (!EquipLocked)
             {
                 // inventory.AddItem(new WieldedItem(10, GameContent.Instance.bolt));
                 var item = inventory.CurrentSlot.Item;

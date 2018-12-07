@@ -25,7 +25,7 @@ namespace Omniplatformer.Animations
 
         public override void End()
         {
-            Drawable.pos.ResetAnchor(AnchorPoint.Hand);
+            Drawable.pos.ResetAnchor(AnchorPoint.RightHand);
             base.End();
         }
 
@@ -44,7 +44,7 @@ namespace Omniplatformer.Animations
             float step = amp / Duration;
             // PositionComponent pos = Drawable.posGetComponent<PositionComponent>();
             PositionComponent pos = Drawable.pos;
-            var anchor = pos.CurrentAnchors[AnchorPoint.Hand];
+            var anchor = pos.CurrentAnchors[AnchorPoint.RightHand];
             switch (current_step)
             {
                 case 0:
@@ -70,7 +70,7 @@ namespace Omniplatformer.Animations
                         break;
                     }
             }
-            pos.CurrentAnchors[AnchorPoint.Hand] = anchor;
+            pos.CurrentAnchors[AnchorPoint.RightHand] = anchor;
             base.Tick(dt);
         }
     }

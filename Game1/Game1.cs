@@ -101,6 +101,7 @@ namespace Omniplatformer
                 // new Vector2(11, 19.2f)
             );
             var shield = new Shield();
+            player.EquipSlots.LeftHandSlot.Item = shield;
             shield.OnEquip(player);
             // var platform = new SolidPlatform(new Vector2(100, -7600), new Vector2(100, 10));
             // AddToMainScene(platform);

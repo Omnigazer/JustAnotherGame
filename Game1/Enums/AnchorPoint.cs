@@ -8,6 +8,7 @@ namespace Omniplatformer
 {
     public enum AnchorPoint    {
         Default,
-        Hand
+        RightHand,
+        LeftHand
     }
 }

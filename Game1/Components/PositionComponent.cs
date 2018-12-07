@@ -108,9 +108,16 @@ namespace Omniplatformer.Components
             switch (anchor_name)
             {
                 // TODO: test
-                case AnchorPoint.Hand:
+                case AnchorPoint.RightHand:
                     {
-                        var clamped_position = CurrentAnchors[AnchorPoint.Hand];
+                        var clamped_position = CurrentAnchors[AnchorPoint.RightHand];
+                        var real_position = new Position(clamped_position) { Coords = new Vector2(2 * clamped_position.Center.X * local_position.halfsize.X, 2 * clamped_position.Center.Y * WorldPosition.halfsize.Y) };
+                        return real_position * WorldPosition;
+                        // return real_position;
+                    }
+                case AnchorPoint.LeftHand:
+                    {
+                        var clamped_position = CurrentAnchors[AnchorPoint.LeftHand];
                         var real_position = new Position(clamped_position) { Coords = new Vector2(2 * clamped_position.Center.X * local_position.halfsize.X, 2 * clamped_position.Center.Y * WorldPosition.halfsize.Y) };
                         return real_position * WorldPosition;
                         // return real_position;

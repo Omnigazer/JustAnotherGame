@@ -11,7 +11,8 @@ namespace Omniplatformer
     public class EquipSlotCollection // : IEnumerable<EquipSlot>
     {
         public ChannelSlot ChannelSlot { get; set; }
-        public EquipSlot HandSlot { get; set; }
+        public EquipSlot RightHandSlot { get; set; }
+        public EquipSlot LeftHandSlot { get; set; }
         public List<MiscSlot> MiscSlots { get; set; }
 
         public EquipSlotCollection()
@@ -21,7 +22,8 @@ namespace Omniplatformer
             {
                 MiscSlots.Add(new MiscSlot());
             }
-            HandSlot = new EquipSlot();
+            LeftHandSlot = new EquipSlot();
+            RightHandSlot = new EquipSlot();
             ChannelSlot = new ChannelSlot();
         }
 
