@@ -26,6 +26,7 @@ namespace Omniplatformer
         public Texture2D testLiquid { get; set; }
         public Texture2D causticsMap { get; set; }
         public Texture2D ladder { get; set; }
+        public Texture2D shield { get; set; }
         public Texture2D testTile { get; set; }
         public Texture2D backgroundTile { get; set; }
         public Texture2D background { get; set; }
@@ -73,6 +74,7 @@ namespace Omniplatformer
             testLiquid = Content.Load<Texture2D>("Textures/testliquid");
             causticsMap = Content.Load<Texture2D>("Textures/caustics_atlas");
             ladder = Content.Load<Texture2D>("Textures/ladder");
+            shield = Content.Load<Texture2D>("Textures/shield");
             alphaMask = Content.Load<Texture2D>("Textures/alphaMask");
             lightMask = Content.Load<Texture2D>("Textures/lightMask");
             healthBarLightMask = Content.Load<Texture2D>("Textures/healthBarlightMask");

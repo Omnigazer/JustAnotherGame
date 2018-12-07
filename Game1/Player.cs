@@ -81,6 +81,24 @@ namespace Omniplatformer
             WieldItem(item);
         }
 
+        public void StartBlocking()
+        {
+            var pos1 = (PositionComponent)EquipSlots.RightHandSlot.Item;
+            pos1.SetParent(this, AnchorPoint.LeftHand);
+
+            var pos2 = (PositionComponent)EquipSlots.LeftHandSlot.Item;
+            pos2.SetParent(this, AnchorPoint.RightHand);
+        }
+
+        public void StopBlocking()
+        {
+            var pos1 = (PositionComponent)EquipSlots.RightHandSlot.Item;
+            pos1.SetParent(this, AnchorPoint.RightHand);
+
+            var pos2 = (PositionComponent)EquipSlots.LeftHandSlot.Item;
+            pos2.SetParent(this, AnchorPoint.LeftHand);
+        }
+
         public float MaxMana(ManaType manaType)
         {
             var x = (Skill)Enum.Parse(typeof(Skill), manaType.ToString());

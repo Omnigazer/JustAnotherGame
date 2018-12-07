@@ -22,13 +22,13 @@ namespace Omniplatformer
         public Shield(Texture2D texture = null)
         {
             if (texture == null)
-                texture = GameContent.Instance.ladder;
+                texture = GameContent.Instance.shield;
             Team = Team.Friend;
             // Damage = damage;
-            var halfsize = new Vector2(8, 50);
+            var halfsize = new Vector2(10, 32);
             Descriptors.Add(Descriptor.HandSlot);
             Components.Add(new PhysicsComponent(this, Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)) { Hittable = true });
-            Components.Add(new RenderComponent(this, Color.White, texture));
+            Components.Add(new RenderComponent(this, Color.White, texture, 2));
         }
 
         public override void OnEquip(Character character)

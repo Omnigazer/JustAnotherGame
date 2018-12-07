@@ -20,6 +20,7 @@ namespace Omniplatformer.HUDStates
         {
             playerHUD = hud;
             MouseUp += DefaultHUDState_MouseUp;
+            MouseDown += DefaultHUDState_MouseDown;
             SetupControls();
         }
 
@@ -91,7 +92,14 @@ namespace Omniplatformer.HUDStates
             if (e.Button == MouseButton.Left)
                 Game.Swing();
             else
-                Game.player.Fire(coords);
+                // Game.player.Fire(coords);
+                Game.player.StopBlocking();
+        }
+
+        private void DefaultHUDState_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButton.Right)
+                Game.player.StartBlocking();
         }
     }
 }
