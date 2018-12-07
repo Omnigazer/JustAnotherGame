@@ -116,7 +116,7 @@ namespace Omniplatformer.HUDStates
                 spriteBatch.DrawString(GameContent.Instance.defaultFont, message, (log_position + new Point(20, 20 + 20 * i)).ToVector2(), Color.White);
             }
             spriteBatch.End();
-        }        
+        }
 
         /*
         public void DrawStatus()
@@ -158,6 +158,7 @@ namespace Omniplatformer.HUDStates
             {
                 yield return msg;
             }
+            status_messages.Clear();
         }
 
         public void DrawCurrentBlock()
@@ -445,12 +446,16 @@ namespace Omniplatformer.HUDStates
         public void DeleteObject()
         {
             var obj = Game.GetObjectAtCursor();
-            Game.CurrentLevel.objects.Remove(obj);
-            foreach (var (name, group) in Groups)
+            if (obj != null)
             {
-                group.Remove(obj);
+                Game.RemoveFromMainScene(obj);
+                Game.CurrentLevel.objects.Remove(obj);
+                foreach (var (name, group) in Groups)
+                {
+                    group.Remove(obj);
+                }
+                obj?.onDestroy();
             }
-            obj?.onDestroy();
         }
 
         public override void HandleControls()
