@@ -58,7 +58,7 @@ namespace Omniplatformer
                 effects: SpriteEffects.None, layerDepth: 0, sourceRectangle: bounds); // default parameters
         }
 
-        public static void DrawGame(Texture2D texture, Rectangle rect, Color color, float rotation, Vector2 clamped_origin, bool tiled = false)
+        public static void DrawGame(Texture2D texture, Rectangle rect, Color color, float rotation, Vector2 clamped_origin, bool flipped = false, bool tiled = false)
         {
             clamped_origin = new Vector2(clamped_origin.X, 1 - clamped_origin.Y);
             var bounds = texture.Bounds;
@@ -78,9 +78,11 @@ namespace Omniplatformer
             // var bounds = texture.Bounds;
             // bounds.Inflate((x_tiles - 1) * bounds.Width,  (y_tiles - 1) * bounds.Height);
 
-
+            var effects = SpriteEffects.None;
+            if (flipped)
+                effects = effects | SpriteEffects.FlipHorizontally;
             Instance.Draw(texture: texture, destinationRectangle: screen_rect, color: color, rotation: rotation, origin: origin,
-                effects: SpriteEffects.None, layerDepth: 0, sourceRectangle: bounds); // default parameters
+                effects: effects, layerDepth: 0, sourceRectangle: bounds); // default parameters
         }
 
         public static Rectangle GameToScreen(Rectangle rect, Vector2 clamped_origin)

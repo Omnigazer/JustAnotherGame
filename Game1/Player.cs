@@ -70,7 +70,7 @@ namespace Omniplatformer
             phys.AddAnchor(AnchorPoint.RightHand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
             phys.AddAnchor(AnchorPoint.LeftHand, new Position(new Vector2(-0.45f, -0.05f), Vector2.Zero, 0.6f));
             Components.Add(phys);
-            Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
+            Components.Add(new CharacterRenderComponent(this, GameContent.Instance.character));
             Components.Add(new BonusComponent(this));
 
             foreach (ManaType type in Enum.GetValues(typeof(ManaType)))

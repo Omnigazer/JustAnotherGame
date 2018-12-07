@@ -62,7 +62,7 @@ namespace Omniplatformer.Characters
             var halfsize = new Vector2(20, 26);
             // Components.Add(new PositionComponent(this, coords, halfsize));
             Components.Add(new CharMoveComponent(this, coords, halfsize, movespeed: 1.8f));
-            Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight, Color.Green));
+            Components.Add(new CharacterRenderComponent(this, GameContent.Instance.character, Color.Green));
             Components.Add(new DamageHitComponent(this, damage: 2, knockback: new Vector2(5, 5)));
         }
 

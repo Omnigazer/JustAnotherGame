@@ -11,17 +11,16 @@ namespace Omniplatformer.Components
 {
     class CharacterRenderComponent : AnimatedRenderComponent
     {
-        protected Texture2D left_texture, right_texture;
+        protected Texture2D texture;
         public Color defaultColor = Color.Gray;
 
-        public CharacterRenderComponent(GameObject obj, Texture2D left_texture, Texture2D right_texture, Color? color = null) : base(obj)
+        public CharacterRenderComponent(GameObject obj, Texture2D texture, Color? color = null) : base(obj)
         {
             AddAnimation(new AttackAnimation(this));
             AddAnimation(new HitAnimation(this));
             AddAnimation(new CastAnimation(this));
             ZIndex = Layers.Character;
-            this.left_texture = left_texture;
-            this.right_texture = right_texture;
+            this.texture = texture;
             defaultColor = color ?? Color.Gray;
         }
 
@@ -82,15 +81,7 @@ namespace Omniplatformer.Components
 
         protected override Texture2D getCurrentSprite()
         {
-            var pos = GetComponent<PositionComponent>();
-            if (pos.WorldPosition.face_direction == HorizontalDirection.Left)
-            {
-                return left_texture;
-            }
-            else
-            {
-                return right_texture;
-            }
+            return texture;
         }
     }
 }

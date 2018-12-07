@@ -16,8 +16,7 @@ namespace Omniplatformer
 {
     public class GameContent
     {
-        public Texture2D characterLeft { get; set; }
-        public Texture2D characterRight { get; set; }
+        public Texture2D character { get; set; }
         public Texture2D cursor { get; set; }
         public Texture2D whitePixel { get; set; }
         public Texture2D greenPixel { get; set; }
@@ -66,8 +65,7 @@ namespace Omniplatformer
             testTile = Content.Load<Texture2D>("Textures/test_tile");
             boulder = Content.Load<Texture2D>("Textures/boulder");
             backgroundTile = Content.Load<Texture2D>("Textures/background_tile");
-            characterLeft = Content.Load<Texture2D>("Textures/char-left");
-            characterRight = Content.Load<Texture2D>("Textures/char-right");
+            character = Content.Load<Texture2D>("Textures/character");
             cursor = Content.Load<Texture2D>("Textures/cursor2");
             bolt = Content.Load<Texture2D>("Textures/bolt");
             chaos_orb = Content.Load<Texture2D>("Textures/chaos_orb");

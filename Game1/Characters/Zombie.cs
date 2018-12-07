@@ -22,7 +22,7 @@ namespace Omniplatformer.Characters
             CurrentHitPoints = MaxHitPoints = 8;
             var halfsize = new Vector2(15, 20);
             // Components.Add(new PositionComponent(this, coords, halfsize));
-            Components.Add(new CharacterRenderComponent(this, GameContent.Instance.characterLeft, GameContent.Instance.characterRight));
+            Components.Add(new CharacterRenderComponent(this, GameContent.Instance.character));
             Components.Add(new CharMoveComponent(this, coords, halfsize, movespeed: 1.4f));
             Components.Add(new DamageHitComponent(this, damage: 3, knockback: new Vector2(5, 5)));
         }

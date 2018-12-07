@@ -92,7 +92,7 @@ namespace Omniplatformer.Components
         public virtual void Draw()
         {
             // PositionComponent pos = GetComponent<PositionComponent>();
-            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor() * Opacity, rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin, tiled: Tiled);
+            GraphicsService.DrawGame(getCurrentSprite(), pos.GetRectangle(), GetColor() * Opacity, rotation: pos.WorldPosition.RotationAngle, clamped_origin: pos.WorldPosition.Origin, tiled: Tiled, flipped: pos.WorldPosition.face_direction == HorizontalDirection.Left);
 
             // GraphicsService.DrawGame(GameContent.Instance.whitePixel, rect, Color.Red, rotation: pos.WorldPosition.RotationAngle, clamped_origin: Vector2.Zero);
         }
