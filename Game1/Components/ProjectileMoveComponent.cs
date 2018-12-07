@@ -15,7 +15,7 @@ namespace Omniplatformer.Components
         {
         }
 
-        public override void ProcessCollision(Direction direction, PhysicsComponent obj)
+        public override bool ProcessCollision(Direction direction, PhysicsComponent obj)
         {
             base.ProcessCollision(direction, obj);
             if (direction != Omniplatformer.Direction.None && obj.GameObject != GameObject.Source && (obj.Solid || obj.Hittable) && obj.GameObject.Team != GameObject.Team)
@@ -24,8 +24,10 @@ namespace Omniplatformer.Components
                 hittable?.Hit(obj.GameObject);
                 // TODO: might have to extract this
                 GameObject.onDestroy();
+                return true;
                 // Hit(obj);
             }
+            return false;
         }
 
         public override void ProcessMovement(float dt)

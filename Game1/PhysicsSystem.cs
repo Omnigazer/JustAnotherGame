@@ -43,21 +43,28 @@ namespace Omniplatformer
 
         public void Tick(float dt)
         {
-            // should iterate through dynamic objects only
+            // divide dt by this number
+            int N = 4;
+
             for (int i = dynamics.Count - 1; i >= 0; i = Math.Min(i-1, dynamics.Count - 1))
             {
                 var obj = dynamics[i];
-                // apply external forces
-                ApplyGravity(obj, dt);
-                ApplyFriction(obj, dt);
-                // apply controls
-                obj.ProcessMovement(dt);
-                // reset flags?
-                obj.ResetCollisionFlags();
-                ProcessCollisions(obj);
+                for (int j = 0; j < N; j++)
+                {
+                    float local_dt = dt / N;
+                    // apply external forces
+                    ApplyGravity(obj, local_dt);
+                    ApplyFriction(obj, local_dt);
+                    // apply controls
+                    obj.ProcessMovement(local_dt);
+                    // reset flags?
+                    obj.ResetCollisionFlags();
+                    if (ProcessCollisions(obj))
+                        break;
 
-                // Perform the movement
-                obj.Move(dt);
+                    // Perform the movement
+                    obj.Move(local_dt);
+                }
             }
         }
 
@@ -69,35 +76,52 @@ namespace Omniplatformer
             return (px, py);
         }
 
-        protected void ProcessCollisions(DynamicPhysicsComponent obj)
+        List<(float, PhysicsComponent)> collisionDistanceMap = new List<(float, PhysicsComponent)>();
+
+        protected bool ProcessCollisions(DynamicPhysicsComponent obj)
         {
             Direction collision_direction;
-            void processCollision(PhysicsComponent other_obj)
+            bool processCollision(PhysicsComponent other_obj)
             {
                 collision_direction = obj.Collides(other_obj);
                 if (collision_direction != Direction.None)
                 {
                     if (obj.GameObject is Player)
                     {
-                        GameService.Instance.HUDState.status_messages.Add(other_obj.ToString() + " " + GetCollisionTime(obj, other_obj, 0));
+                        GameService.Instance.HUDState.status_messages.Add(other_obj.ToString() + " " + GetCollisionTime(obj, other_obj));
                     }
                     ApplyCollisionResponse(obj, other_obj, collision_direction);
-                    obj.ProcessCollision(collision_direction, other_obj);
+                    return obj.ProcessCollision(collision_direction, other_obj);
                 }
+                return false;
             }
+
+            collisionDistanceMap.Clear();
 
             for (int j = objects.Count - 1; j >= 0; j--)
             {
                 var other_obj = objects[j];
                 if (obj == other_obj)
                     continue;
-                processCollision(other_obj);
+                var (px, py) = GetCollisionTime(obj, other_obj);
+                collisionDistanceMap.Add((px + py, other_obj));
+                // processCollision(other_obj);
+            }
+
+            collisionDistanceMap.Sort((x, y) => x.Item1.CompareTo(y.Item1));
+
+            foreach (var (distance, other) in collisionDistanceMap)
+            {
+                if (processCollision(other))
+                    return true;
             }
 
             foreach (var tile in GetTilesFor(obj))
             {
-                processCollision(tile);
+                if (processCollision(tile))
+                    return true;
             }
+            return false;
         }
 
         // Yeah, and air resistance

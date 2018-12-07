@@ -137,7 +137,7 @@ namespace Omniplatformer.Components
             base.ResetCollisionFlags();
         }
 
-        public override void ProcessCollision(Direction direction, PhysicsComponent obj)
+        public override bool ProcessCollision(Direction direction, PhysicsComponent obj)
         {
             base.ProcessCollision(direction, obj);
             if (direction == Direction.Up && obj.Solid)
@@ -159,6 +159,7 @@ namespace Omniplatformer.Components
                 player.Pickup(obj.GameObject);
                 obj.Pickupable = false;
             }
+            return false;
         }
 
         public override float GetUpSpeedCap()

@@ -50,7 +50,7 @@ namespace Omniplatformer.Components
             base.ResetCollisionFlags();
         }
 
-        public override void ProcessCollision(Direction direction, PhysicsComponent obj)
+        public override bool ProcessCollision(Direction direction, PhysicsComponent obj)
         {
             // TODO: make the component acquisition less costly
             var pos = GetComponent<PositionComponent>();
@@ -76,6 +76,7 @@ namespace Omniplatformer.Components
             }
 
             base.ProcessCollision(direction, obj);
+            return false;
         }
 
         public override void ProcessMovement(float dt)
