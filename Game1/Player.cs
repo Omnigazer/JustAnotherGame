@@ -24,6 +24,8 @@ namespace Omniplatformer
         const int inv_frames = 100;
 
         public bool EquipLocked { get; set; }
+        public bool Blocking { get; set; }
+
         public WieldedItem WieldedItem { get => (WieldedItem)EquipSlots.RightHandSlot.Item; private set => WieldItem(value); }
 
         // Equipment and inventory
@@ -83,6 +85,7 @@ namespace Omniplatformer
 
         public void StartBlocking()
         {
+            Blocking = true;
             var pos1 = (PositionComponent)EquipSlots.RightHandSlot.Item;
             pos1.SetParent(this, AnchorPoint.LeftHand);
 
@@ -92,6 +95,7 @@ namespace Omniplatformer
 
         public void StopBlocking()
         {
+            Blocking = false;
             var pos1 = (PositionComponent)EquipSlots.RightHandSlot.Item;
             pos1.SetParent(this, AnchorPoint.RightHand);
 
@@ -228,7 +232,7 @@ namespace Omniplatformer
 
         public void Swing()
         {
-            if (WieldedItem != null && TryCooldown("Melee", (int)(30 * MeleeAttackRate)))
+            if (!Blocking && WieldedItem != null && TryCooldown("Melee", (int)(30 * MeleeAttackRate)))
             {
                 EquipLocked = true;
                 var drawable = GetComponent<CharacterRenderComponent>();
