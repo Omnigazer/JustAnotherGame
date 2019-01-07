@@ -28,6 +28,7 @@ namespace Omniplatformer
             {
                 onDestroy();
             }
+            base.Tick(dt);
         }
     }
 }
