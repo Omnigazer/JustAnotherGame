@@ -63,7 +63,7 @@ namespace Omniplatformer.Characters
             // Components.Add(new PositionComponent(this, coords, halfsize));
             Components.Add(new CharMoveComponent(this, coords, halfsize, movespeed: 1.8f));
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.character, Color.Green));
-            Components.Add(new DamageHitComponent(this, damage: 2, knockback: new Vector2(5, 5)));
+            Components.Add(new DamageHitComponent(this, damage: 2, knockback: new Vector2(3, 2)));
         }
 
         public void MoveTowardsPlayer()

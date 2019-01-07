@@ -37,6 +37,7 @@ namespace Omniplatformer
             // draw-related
             var item_pos = (PositionComponent)this;
             item_pos.SetParent(character, AnchorPoint.LeftHand);
+            item_pos.SetLocalCenter(new Vector2(5, 5));
             Game.AddToMainScene(this);
         }
 

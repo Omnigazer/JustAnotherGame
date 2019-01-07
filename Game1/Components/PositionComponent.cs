@@ -290,7 +290,7 @@ namespace Omniplatformer.Components
         {
             parent_pos = (PositionComponent)obj;
             parent_anchor = anchor;
-            SetLocalCoords(Vector2.Zero);
+            // SetLocalCoords(Vector2.Zero);
         }
 
         public void ClearParent()

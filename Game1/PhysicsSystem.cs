@@ -68,7 +68,7 @@ namespace Omniplatformer
             }
         }
 
-        public (float kx, float ky) GetCollisionTime(DynamicPhysicsComponent obj, PhysicsComponent other, float dt)
+        public (float kx, float ky) GetCollisionTime(DynamicPhysicsComponent obj, PhysicsComponent other)
         {
             float px = Math.Abs(obj.WorldPosition.Center.X - other.WorldPosition.Center.X) - (obj.WorldPosition.halfsize.X + other.WorldPosition.halfsize.X);
             float py = Math.Abs(obj.WorldPosition.Center.Y - other.WorldPosition.Center.Y) - (obj.WorldPosition.halfsize.Y + other.WorldPosition.halfsize.Y);
@@ -86,10 +86,12 @@ namespace Omniplatformer
                 collision_direction = obj.Collides(other_obj);
                 if (collision_direction != Direction.None)
                 {
+                    /*
                     if (obj.GameObject is Player)
                     {
                         GameService.Instance.HUDState.status_messages.Add(other_obj.ToString() + " " + GetCollisionTime(obj, other_obj));
                     }
+                    */
                     ApplyCollisionResponse(obj, other_obj, collision_direction);
                     return obj.ProcessCollision(collision_direction, other_obj);
                 }
@@ -131,6 +133,7 @@ namespace Omniplatformer
                 return;
             // constant "air resistance" force times inverse mass
             float a_air = 0.004f * movable.InverseMass * dt * 0;
+            // float a_air = 0;
             /*
             float a = -(gravity - a_air);
             int direction_sign = Math.Sign(movable.HorizontalSpeed);

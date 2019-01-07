@@ -290,6 +290,19 @@ namespace Omniplatformer
                     return platform;
                 }
             }
+
+            foreach (var platform in PhysicsSystem.objects)
+            {
+                // if (!platform.Draggable)
+                // {
+                //     continue;
+                // }
+                var platform_pos = (PositionComponent)platform;
+                if (platform_pos.Contains(game_click_position))
+                {
+                    return platform.GameObject;
+                }
+            }
             return null;
         }
 
