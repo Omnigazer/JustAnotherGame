@@ -15,7 +15,6 @@ namespace Omniplatformer.HUDStates
     public class EditorHUDState : HUDState
     {
         HUDContainer playerHUD;
-        Game1 Game => GameService.Instance;
 
         // editor's state
         public Dictionary<string, Func<Vector2, Vector2, Vector2, GameObject>> PositionalConstructors;// = new Dictionary<string, Func<GameObject>>();

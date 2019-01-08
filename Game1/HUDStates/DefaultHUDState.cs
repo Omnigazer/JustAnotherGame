@@ -14,7 +14,6 @@ namespace Omniplatformer.HUDStates
     public class DefaultHUDState : HUDState
     {
         HUDContainer playerHUD;
-        Game1 Game => GameService.Instance;
 
         public DefaultHUDState(HUDContainer hud)
         {

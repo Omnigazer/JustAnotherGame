@@ -15,7 +15,6 @@ namespace Omniplatformer.HUDStates
         CharView view;
         // InventoryView PlayerInventoryView { get; set; }
         // InventoryView TargetInventoryView { get; set; }
-        Game1 Game => GameService.Instance;
 
         // TODO: TEMPORARY
         // Inventory inv;

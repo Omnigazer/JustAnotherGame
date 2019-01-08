@@ -43,6 +43,7 @@ namespace Omniplatformer.HUDStates
         public static Point click_pos;
 
         public List<string> status_messages = new List<string>();
+        protected Game1 Game => GameService.Instance;
 
         // Events
         protected event EventHandler<MouseEventArgs> MouseMove = delegate { };
