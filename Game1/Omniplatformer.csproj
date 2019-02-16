@@ -147,6 +147,7 @@
     <Compile Include="Items\WieldedItem.cs" />
     <Compile Include="Utility\PositionJson.cs" />
     <Compile Include="Utility\RandomGen.cs" />
+    <Compile Include="Utility\TileHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
