@@ -47,8 +47,6 @@ namespace Omniplatformer
         // public Song vampireKiller { get; set; }
         public List<Song> Songs { get; set; } = new List<Song>();
 
-        public Level level = new Level();
-
         public static GameContent Instance { get; private set; }
         ContentManager Content { get; set; }
 

@@ -79,6 +79,13 @@ namespace Omniplatformer.HUDStates
             yield break;
         }
 
+        public virtual void Tick()
+        {
+            // Update camera offset based on player position
+            var pos = (PositionComponent)Game.player;
+            Game.RenderSystem.SetCameraPosition(pos.WorldPosition.Center);
+        }
+
         public void DrawStatus()
         {
             // TODO: TEST

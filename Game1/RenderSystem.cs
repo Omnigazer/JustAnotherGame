@@ -36,6 +36,9 @@ namespace Omniplatformer
         VertexBuffer BackBuffer { get; set; }
         VertexBuffer TileBuffer { get; set; }
 
+        public Texture2D CurrentBackground { get; set; } = GameContent.Instance.whitePixel;
+
+
         // public List<RenderComponent> drawables = new List<RenderComponent>();
         public SortedList<int, RenderComponent> drawables = new SortedList<int, RenderComponent>(new DuplicateKeyComparer<int>());
         List<RenderComponent> tiles = new List<RenderComponent>();
@@ -74,6 +77,16 @@ namespace Omniplatformer
         {
             light_loop = (light_loop + dt) % light_loop_length;
             // day_loop = (day_loop + 1) % day_loop_length;
+        }
+
+        public void Clear()
+        {
+            drawables.Clear();
+            tiles.Clear();
+            background_tiles.Clear();
+            BackBuffer.Dispose();
+            TileBuffer.Dispose();
+            CurrentBackground = GameContent.Instance.whitePixel;
         }
 
         public void Draw()
@@ -324,7 +337,7 @@ namespace Omniplatformer
                                             0, 0) *
                                             Matrix.CreateRotationZ(Camera.Rotation)
                                             );
-            spriteBatch.Draw(GameContent.Instance.background, new Rectangle(0, 0, Camera.ViewportWidth, Camera.ViewportHeight), Color.White);
+            spriteBatch.Draw(CurrentBackground, new Rectangle(0, 0, Camera.ViewportWidth, Camera.ViewportHeight), Color.White);
             spriteBatch.End();
         }
 
@@ -347,10 +360,13 @@ namespace Omniplatformer
             basicEffect.World = Camera.TranslationMatrix;
             basicEffect.Projection = Matrix.CreateOrthographicOffCenter(0, 2560, 1440, 0, 0, 1);
             basicEffect.Texture = GameContent.Instance.backgroundTile;
-            foreach (var pass in basicEffect.CurrentTechnique.Passes)
+            if (background_tiles.Count > 0)
             {
-                pass.Apply();
-                GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, background_tiles.Count * 2);
+                foreach (var pass in basicEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, background_tiles.Count * 2);
+                }
             }
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
@@ -377,10 +393,13 @@ namespace Omniplatformer
             basicEffect.Projection = Matrix.CreateOrthographicOffCenter(0, 2560, 1440, 0, 0, 1);
             basicEffect.Texture = GameContent.Instance.testTile;
             GraphicsDevice.SetVertexBuffer(TileBuffer);
-            foreach (var pass in basicEffect.CurrentTechnique.Passes)
+            if (tiles.Count > 0)
             {
-                pass.Apply();
-                GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, tiles.Count * 2);
+                foreach (var pass in basicEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, tiles.Count * 2);
+                }
             }
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);

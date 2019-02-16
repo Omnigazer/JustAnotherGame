@@ -49,7 +49,7 @@ namespace Omniplatformer
         public Dictionary<ManaType, float> CurrentMana { get; set; }
         // public Dictionary<ManaType, float> MaxMana { get; set; }
 
-        public Player(Vector2 center, Vector2 halfsize)
+        public Player()
         {
             foreach (Skill skill in Enum.GetValues(typeof(Skill)))
             {
@@ -67,8 +67,9 @@ namespace Omniplatformer
             SkillPoints = 4;
             //MaxMana = new Dictionary<ManaType, float>();
 
+            var halfsize = new Vector2(20, 36);
             // InitPos(center, halfsize);
-            var phys = new PlayerMoveComponent(this, center, halfsize) { MaxMoveSpeed = 9, Acceleration = 0.5f };
+            var phys = new PlayerMoveComponent(this, Vector2.Zero, halfsize) { MaxMoveSpeed = 9, Acceleration = 0.5f };
             phys.AddAnchor(AnchorPoint.RightHand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
             phys.AddAnchor(AnchorPoint.LeftHand, new Position(new Vector2(-0.45f, -0.05f), Vector2.Zero, 0.6f));
             Components.Add(phys);

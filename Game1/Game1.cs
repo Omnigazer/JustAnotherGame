@@ -72,7 +72,7 @@ namespace Omniplatformer
             PhysicsSystem = new PhysicsSystem();
             InitServices();
             var playerHUD = new HUDContainer();
-            InitGameObjects();
+            LoadLevel();
             RenderSystem.InitVertexBuffers();
 
             defaultHUD = new DefaultHUDState(playerHUD);
@@ -87,53 +87,34 @@ namespace Omniplatformer
             GameService.Init(this);
         }
 
-        void InitGameObjects()
+        void LoadLevel()
         {
-            CurrentLevel = GameContent.Instance.level;
-            CurrentLevel.Load("blank");
+            CurrentLevel = new Level();
+            // No args currently
+            CurrentLevel.LoadFromBitmap();
 
             // Register player
-            player = new Player(
-                new Vector2(100, -7500),
-                // new Vector2(110, 192)
-                // new Vector2(110, 192)
-                new Vector2(20, 36)
-                // new Vector2(11, 19.2f)
-            );
+            // TODO: extract this somewhere
+            player = new Player();
             var shield = new Shield();
             player.EquipSlots.LeftHandSlot.Item = shield;
             shield.OnEquip(player);
-            // var platform = new SolidPlatform(new Vector2(100, -7600), new Vector2(100, 10));
-            // AddToMainScene(platform);
             AddToMainScene(player);
             player._onDestroy += GameOver;
 
-            foreach (var obj in GameContent.Instance.level.objects)
-            {
-                AddToMainScene(obj);
-            }
-            foreach (var character in GameContent.Instance.level.characters)
-            {
-                AddToMainScene(character);
-            }
+            CurrentLevel.LoadPlayer(player);
+        }
 
-            // var list = CurrentLevel.LoadFromBitmap(@"E:/Games/level_layouts.png");
-
-            var list = CurrentLevel.LoadFromBitmap(@"E:/Games/level1.png");
-            Groups.Add("bitmap", new List<GameObject>());
-            foreach (var obj in list)
-            {
-                Groups["bitmap"].Add(obj);
-                AddToMainScene(obj);
-            }
-
-            AddToMainScene(new SolidPlatform(Vector2.Zero, Vector2.Zero, Vector2.Zero, true));
-            AddToMainScene(new BackgroundQuad(Vector2.Zero, Vector2.Zero, Vector2.Zero, true));
-
-            // RenderSystem.RegisterDrawable((RenderComponent)obj);
-
-            LoadGroup("village", new Vector2(1300, 0));
-            // LoadGroup("test_level", new Vector2(-6300, -1000));
+        void UnloadLevel()
+        {
+            PhysicsSystem.objects.Clear();
+            PhysicsSystem.dynamics.Clear();
+            RenderSystem.Clear();
+            for (int i = 0; i < PhysicsSystem.tiles.GetLength(0); i++)
+                for (int j = 0; j < PhysicsSystem.tiles.GetLength(1); j++)
+                {
+                    PhysicsSystem.tiles[i, j] = null;
+                }
         }
 
         private void GameOver(object sender, EventArgs e)
@@ -199,9 +180,6 @@ namespace Omniplatformer
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            // Update camera offset based on player position
-            var pos = (PositionComponent)player;
-            RenderSystem.SetCameraPosition(pos.WorldPosition.Center);
             // TODO: Add your drawing code here
             RenderSystem.Draw();
             GraphicsService.Instance.Begin(SpriteSortMode.Immediate);
@@ -271,6 +249,7 @@ namespace Omniplatformer
                 var obj = objects[j];
                 obj.Tick(dt);
             }
+            HUDState.Tick();
         }
         #endregion
 
@@ -617,6 +596,17 @@ namespace Omniplatformer
                 else
                     return String.Format("invalid args");
             });
+
+            console.AddCommand("unloadlevel", a =>
+            {
+                if (a.Length == 0)
+                {
+                    UnloadLevel();
+                    return "Level unloaded.";
+                }
+                else
+                    return String.Format("invalid args");
+            });
         }
         #endregion
 
@@ -650,7 +640,7 @@ namespace Omniplatformer
             Log(String.Format("Loading group '{0}'", name));
             string path = String.Format("Content/Data/{0}.json", name);
 
-            var group = GameContent.Instance.level.LoadGroup(path, origin ?? ((PositionComponent)player).WorldPosition.Coords);
+            var group = LevelLoader.LoadGroup(path, origin ?? ((PositionComponent)player).WorldPosition.Coords);
             foreach (var obj in group)
             {
                 AddToMainScene(obj);
@@ -663,7 +653,7 @@ namespace Omniplatformer
         {
             Log(String.Format("Saving group {0}", name));
             string path = String.Format("Content/Data/{0}.json", name);
-            CurrentLevel.SaveGroup(Groups[name], path);
+            LevelLoader.SaveGroup(Groups[name], path);
         }
         #endregion
     }

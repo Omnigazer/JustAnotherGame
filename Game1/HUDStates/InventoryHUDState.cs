@@ -23,7 +23,6 @@ namespace Omniplatformer.HUDStates
         InventoryView PlayerInventoryView { get; set; }
         InventoryView TargetInventoryView { get; set; }
         EquipView EquipView { get; set; }
-        Game1 Game => GameService.Instance;
 
         Item MouseStorage { get; set; }
 

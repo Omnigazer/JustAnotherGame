@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Omniplatformer.Characters;
 using Omniplatformer.Components;
 using Omniplatformer.HUD;
+using Omniplatformer.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,11 @@ namespace Omniplatformer.HUDStates
             { "Ladder", (GameContent.Instance.ladder, new Vector2(0.5f, 0.5f), true, Color.White) },
             { "Chest", (null, new Vector2(0.5f, 0.5f), false, Color.Firebrick) }
         };
+
+        public override void Tick()
+        {
+
+        }
 
         public EditorHUDState(HUDContainer hud)
         {
@@ -85,6 +91,7 @@ namespace Omniplatformer.HUDStates
         {
             PositionalConstructors = new Dictionary<string, Func<Vector2, Vector2, Vector2, GameObject>>()
             {
+                { "Tile", (coords, halfsize, origin) => { return new SolidPlatform(coords, new Vector2(PhysicsSystem.TileSize / 2, PhysicsSystem.TileSize / 2), origin, true); } },
                 { "SolidPlatform", (coords, halfsize, origin) => { return new SolidPlatform(coords, halfsize, origin); } },
                 { "MovingPlatform", (coords, halfsize, origin) => { return new MovingPlatform(coords, halfsize); } },
                 { "Liquid", (coords, halfsize, origin) => { return new Liquid(coords, halfsize, origin); } },
@@ -193,10 +200,16 @@ namespace Omniplatformer.HUDStates
             Action noop = delegate { };
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
-                {  Keys.A, (Game.WalkLeft, noop, true) },
-                {  Keys.D, (Game.WalkRight, noop, true) },
-                {  Keys.S, (Game.GoDown, noop, true) },
-                {  Keys.W, (Game.GoUp, noop, true) },
+                // {  Keys.A, (Game.WalkLeft, noop, true) },
+                // {  Keys.D, (Game.WalkRight, noop, true) },
+                // {  Keys.S, (Game.GoDown, noop, true) },
+                // {  Keys.W, (Game.GoUp, noop, true) },
+
+                {  Keys.A, (MoveCameraLeft, noop, true) },
+                {  Keys.D, (MoveCameraRight, noop, true) },
+                {  Keys.S, (MoveCameraDown, noop, true) },
+                {  Keys.W, (MoveCameraUp, noop, true) },
+
                 {  Keys.Space, (Game.Jump, Game.StopJumping, false) },
                 {  Keys.I, (Game.OpenInventory, noop, false) },
                 {  Keys.Z, (Game.Fire, noop, false) },
@@ -313,6 +326,28 @@ namespace Omniplatformer.HUDStates
             CurrentConstructor = null;
         }
 
+        float cam_speed = 15;
+
+        public void MoveCameraLeft()
+        {
+            Game.RenderSystem.Camera.Position += new Vector2(-cam_speed, 0);
+        }
+
+        public void MoveCameraRight()
+        {
+            Game.RenderSystem.Camera.Position += new Vector2(cam_speed, 0);
+        }
+
+        public void MoveCameraUp()
+        {
+            Game.RenderSystem.Camera.Position += new Vector2(0, cam_speed);
+        }
+
+        public void MoveCameraDown()
+        {
+            Game.RenderSystem.Camera.Position += new Vector2(0, -cam_speed);
+        }
+
         public Vector2 GetInGameCoords(Point click_position)
         {
             var ingame_pos = Game.RenderSystem.ScreenToGame(click_position);
@@ -422,23 +457,38 @@ namespace Omniplatformer.HUDStates
         public void ApplyConstructor()
         {
             var pos = Mouse.GetState().Position;
-            // var (coords, halfsize, origin) = (Game.RenderSystem.ScreenToGame(click_pos), (pos - click_pos).ToVector2() / (2 * Game.RenderSystem.Camera.Zoom), new Vector2(0, 1));
             var click_coords = GetInGameCoords(pos);
-            // var end_coords = GetInGameCoords(pos);
-
-            // var halfsize = (end_coords - click_coords) / 2;//.ToVector2() / (2 * Game.RenderSystem.Camera.Zoom);
             var halfsize = new Vector2(current_block_width / 2, current_block_height / 2);
             if (halfsize.Length() > 0)
             {
                 halfsize = new Vector2(Math.Abs(halfsize.X), Math.Abs(halfsize.Y));
-                // var (or_x, or_y) = (pos.X > click_pos.X ? 0 : 1, pos.Y > click_pos.Y ? 1 : 0);
-                // var origin = new Vector2(or_x, or_y);
                 var origin = new Vector2(0, 1);
-                // var obj = new SolidPlatform(coords, halfsize, origin);
+                Game.Log(click_coords.ToString());
+                click_coords = new Vector2(
+                    ((int)click_coords.X / PhysicsSystem.TileSize) * PhysicsSystem.TileSize,
+                    ((int)click_coords.Y / PhysicsSystem.TileSize) * PhysicsSystem.TileSize
+                    );
                 var obj = PositionalConstructors[CurrentConstructor](click_coords, halfsize, origin);
                 CurrentGroup.Add(obj);
                 Game.AddToMainScene(obj);
+                var helper = new TileHelper(Game.PhysicsSystem.tiles);
+                int i = (int)click_coords.X / PhysicsSystem.TileSize + 2500;
+                int j = (int)click_coords.Y / PhysicsSystem.TileSize + 2500;
+                helper.SetTileTexBounds((RenderComponent)obj, i, j);
                 Game.CurrentLevel.objects.Add(obj);
+
+                for (int _i = i - 1; _i <= i + 1; _i++)
+                    for (int _j = j - 1; _j <= j + 1; _j++)
+                    {
+                        var tile = Game.PhysicsSystem.tiles[_i, _j]?.GameObject;
+                        if(tile != null)
+                            helper.SetTileTexBounds((RenderComponent)tile, _i, _j);
+                    }
+
+                if (((RenderComponent)obj).Tile)
+                {
+                    Game.RenderSystem.InitVertexBuffers();
+                }
             }
         }
 
