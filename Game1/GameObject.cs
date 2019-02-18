@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.Components;
+using Omniplatformer.Scenes;
 using Omniplatformer.Utility;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Omniplatformer
 {
     public abstract class GameObject
     {
+        public Scene CurrentScene { get; set; }
         public bool Tickable { get; set; }
         public Guid Id { get; set; }
 

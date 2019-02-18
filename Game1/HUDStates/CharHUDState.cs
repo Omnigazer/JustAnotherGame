@@ -38,7 +38,7 @@ namespace Omniplatformer.HUDStates
                 var slot = view.GetSlotAtPosition(mouse.Position);
                 if (slot != null)
                 {
-                    Game.player.UpgradeSkill(slot.Skill);
+                    Game.Player.UpgradeSkill(slot.Skill);
                 }
             }
         }

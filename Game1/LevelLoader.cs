@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Omniplatformer.Characters;
 using Omniplatformer.Components;
+using Omniplatformer.Scenes;
 using Omniplatformer.Utility;
 using System;
 using System.Collections.Generic;

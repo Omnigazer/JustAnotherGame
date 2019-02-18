@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Omniplatformer.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

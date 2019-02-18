@@ -9,10 +9,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Omniplatformer.Utility;
+using Omniplatformer.Scenes;
 
-namespace Omniplatformer
+namespace Omniplatformer.Scenes
 {
-    public class RenderSystem
+    public class RenderSystem : ISubsystem
     {
         public Game1 Game { get; set; }
         public Camera Camera { get; set; }
@@ -106,6 +107,20 @@ namespace Omniplatformer
             RenderLayers();
         }
 
+        public void RegisterObject(GameObject obj)
+        {
+            var drawable = (RenderComponent)obj;
+            if (drawable != null)
+                RegisterDrawable(drawable);
+        }
+
+        public void UnregisterObject(GameObject obj)
+        {
+            var drawable = (RenderComponent)obj;
+            if (drawable != null)
+                RemoveFromDrawables(drawable);
+        }
+
         public void RegisterDrawable(RenderComponent drawable)
         {
             if (drawable.Tile)
@@ -119,6 +134,7 @@ namespace Omniplatformer
             // drawables = drawables.OrderBy(x => x.ZIndex).ToList();
         }
 
+        // !TODO: manage adding and removing tiles on the fly
         public void RemoveFromDrawables(RenderComponent drawable)
         {
             int index = drawables.IndexOfValue(drawable);
@@ -216,6 +232,8 @@ namespace Omniplatformer
 
         public void InitVertexBuffers()
         {
+            if (tiles.Count == 0)
+                return;
             VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[tiles.Count * 6];
             var buffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.None);
 

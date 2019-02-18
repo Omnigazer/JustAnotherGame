@@ -254,7 +254,7 @@ namespace Omniplatformer.Components
 
             // IEnumerable<GameObject> list = GameService.Characters.Union(GameService.Objects).Where(x => x.Hittable && rect.Intersects(((PositionComponent)x).GetRectangle()));
 
-            IEnumerable<PhysicsComponent> list = GameService.Instance.PhysicsSystem.objects.Where(x => x.Hittable && rect.Intersects(x.GetRectangle()));
+            IEnumerable<PhysicsComponent> list = Scene.PhysicsSystem.objects.Where(x => x.Hittable && rect.Intersects(x.GetRectangle()));
             if (predicate != null)
                 list = list.Where(predicate);
             return list.FirstOrDefault()?.GameObject;

@@ -82,7 +82,7 @@ namespace Omniplatformer.HUDStates
         public virtual void Tick()
         {
             // Update camera offset based on player position
-            var pos = (PositionComponent)Game.player;
+            var pos = (PositionComponent)Game.Player;
             Game.RenderSystem.SetCameraPosition(pos.WorldPosition.Center);
         }
 

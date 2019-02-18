@@ -137,7 +137,7 @@ namespace Omniplatformer.Characters
             var pos = GetComponent<PositionComponent>();
 
             // Aggravate everyone in the 1000 radius
-            foreach (var obj in Game.GetObjectsAroundPosition(pos.WorldPosition, 1000))
+            foreach (var obj in CurrentScene.PhysicsSystem.GetObjectsAroundPosition(pos.WorldPosition, 1000))
             {
                 if (obj is Character)
                 {

@@ -83,7 +83,10 @@
     <Compile Include="Objects\LifeDrainProjectile.cs" />
     <Compile Include="Objects\Boulder.cs" />
     <Compile Include="Objects\Particle.cs" />
-    <Compile Include="PhysicsSystem.cs" />
+    <Compile Include="Scenes\PhysicsSystem.cs" />
+    <Compile Include="Scenes\Scene.cs" />
+    <Compile Include="Scenes\SimulationSystem.cs" />
+    <Compile Include="Scenes\Subsystem.cs" />
     <Compile Include="Spells\LifeDrain.cs" />
     <Compile Include="Spells\FireBolt.cs" />
     <Compile Include="Utility\BallisticsHelper.cs" />
@@ -136,7 +139,7 @@
     <Compile Include="Components\CharacterRenderComponent.cs" />
     <Compile Include="Components\RenderComponent.cs" />
     <Compile Include="Objects\ForegroundQuad.cs" />
-    <Compile Include="RenderSystem.cs" />
+    <Compile Include="Scenes\RenderSystem.cs" />
     <Compile Include="Objects\SolidPlatform.cs" />
     <Compile Include="Enums\Team.cs" />
     <Compile Include="Objects\FireBoltProjectile.cs" />

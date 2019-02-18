@@ -34,7 +34,7 @@ namespace Omniplatformer.HUDStates
             playerHUD = hud;
             PlayerInventoryView = new InventoryView(this, inv);
             TargetInventoryView = new InventoryView(this, inv) { Visible = false };
-            EquipView = new EquipView(this, Game.player);
+            EquipView = new EquipView(this, Game.Player);
             Root.RegisterChild(PlayerInventoryView);
             Root.RegisterChild(TargetInventoryView);
             Root.RegisterChild(EquipView);
@@ -144,7 +144,7 @@ namespace Omniplatformer.HUDStates
                 {  Keys.Up, (inv.MoveUp, noop, false) },
                 {  Keys.Right, (inv.MoveRight, noop, false) },
                 {  Keys.Down, (inv.MoveDown, noop, false) },
-                {  Keys.X, (Game.player.WieldCurrentSlot, noop, false) },
+                {  Keys.X, (Game.Player.WieldCurrentSlot, noop, false) },
                 {  Keys.C, (Game.CloseChest, noop, false) },
                 {  Keys.Escape, (Game.CloseInventory, noop, false) }
             };

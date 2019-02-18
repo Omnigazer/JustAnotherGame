@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Omniplatformer.HUDStates;
 using Microsoft.Xna.Framework.Media;
 using MonoGameConsole;
+using Omniplatformer.Scenes;
 
 namespace Omniplatformer
 {
@@ -20,17 +21,17 @@ namespace Omniplatformer
     {
         // Graphics objects
         public GraphicsDeviceManager graphics;
-        public RenderSystem RenderSystem { get; set; }
-        public PhysicsSystem PhysicsSystem { get; set; }
+        public Level MainScene { get; set; }
+        public RenderSystem RenderSystem => MainScene.RenderSystem;
+        public PhysicsSystem PhysicsSystem => MainScene.PhysicsSystem;
 
         // Game objects
-        public Player player;
-        public Level CurrentLevel { get; set; }
-        public List<GameObject> objects = new List<GameObject>();
+        public Player Player => MainScene.Player;
+        // public Level CurrentLevel { get; set; }
 
         // Editor groups
         // public List<List<GameObject>> Groups { get; set; } = new List<List<GameObject>>() { new List<GameObject>() };
-        public Dictionary<string, List<GameObject>> Groups { get; set; } = new Dictionary<string, List<GameObject>>() { { "default", new List<GameObject>() } };
+        public Dictionary<string, List<GameObject>> Groups => MainScene.Groups;
 
         // HUD states & controls
         public HUDState HUDState { get; set; }
@@ -68,15 +69,12 @@ namespace Omniplatformer
         {
             // TODO: Add your initialization logic here
             base.Initialize();
-            RenderSystem = new RenderSystem(this);
-            PhysicsSystem = new PhysicsSystem();
             InitServices();
             var playerHUD = new HUDContainer();
-            LoadLevel();
-            RenderSystem.InitVertexBuffers();
+            LoadLevel(true);
 
             defaultHUD = new DefaultHUDState(playerHUD);
-            inventoryHUD = new InventoryHUDState(playerHUD, player.inventory);
+            inventoryHUD = new InventoryHUDState(playerHUD, Player.inventory);
             charHUD = new CharHUDState(playerHUD);
             editorHUD = new EditorHUDState(playerHUD);
             HUDState = defaultHUD;
@@ -87,24 +85,36 @@ namespace Omniplatformer
             GameService.Init(this);
         }
 
-        void LoadLevel()
+        void LoadLevel(bool bitmap)
         {
-            CurrentLevel = new Level();
-            // No args currently
-            CurrentLevel.LoadFromBitmap();
+            MainScene = new Level();
+            MainScene.RenderSystem = new RenderSystem(this);
+            MainScene.PhysicsSystem = new PhysicsSystem();
+            // TODO: refactor this
+            MainScene.Subsystems.Add(MainScene.RenderSystem);
+            MainScene.Subsystems.Add(MainScene.PhysicsSystem);
+            MainScene.Subsystems.Add(new SimulationSystem());
+            //
+            // level.LoadFromBitmap();
+            if (bitmap)
+                MainScene.LoadFromBitmap();
+            else
+                MainScene.Load("village");
 
             // Register player
             // TODO: extract this somewhere
-            player = new Player();
+            MainScene.Player = new Player();
             var shield = new Shield();
-            player.EquipSlots.LeftHandSlot.Item = shield;
-            shield.OnEquip(player);
-            AddToMainScene(player);
-            player._onDestroy += GameOver;
+            Player.EquipSlots.LeftHandSlot.Item = shield;
+            shield.OnEquip(Player);
+            AddToMainScene(Player);
+            Player._onDestroy += GameOver;
 
-            CurrentLevel.LoadPlayer(player);
+            MainScene.LoadPlayer(Player);
+            MainScene.RenderSystem.InitVertexBuffers();
         }
 
+        /*
         void UnloadLevel()
         {
             PhysicsSystem.objects.Clear();
@@ -116,6 +126,7 @@ namespace Omniplatformer
                     PhysicsSystem.tiles[i, j] = null;
                 }
         }
+        */
 
         private void GameOver(object sender, EventArgs e)
         {
@@ -180,11 +191,10 @@ namespace Omniplatformer
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            // TODO: Add your drawing code here
             RenderSystem.Draw();
             GraphicsService.Instance.Begin(SpriteSortMode.Immediate);
             // GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, gameTime.ElapsedGameTime.Milliseconds.ToString(), new Vector2(50, 50), Color.White);
-            GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, objects.Count.ToString(), new Vector2(50, 250), Color.White);
+            GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, PhysicsSystem.objects.Count.ToString(), new Vector2(50, 250), Color.White);
 
             // GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, phys_time.ToString(), new Vector2(50, 350), Color.White);
             // GraphicsService.Instance.DrawString(GameContent.Instance.defaultFont, elapsed_frames.ToString(), new Vector2(50, 450), Color.White);
@@ -203,24 +213,18 @@ namespace Omniplatformer
 
         public void AddToMainScene(GameObject obj)
         {
-            if (obj.Tickable)
-                objects.Add(obj);
-            var physicable = (PhysicsComponent)obj;
-            if (physicable != null)
-                PhysicsSystem.Register(physicable);
-            // PhysicsSystem.objects.Add(obj);
-            var drawable = (RenderComponent)obj;
-            if (drawable != null)
-                RenderSystem.RegisterDrawable(drawable);
-            obj._onDestroy += GameObject_onDestroy;
+            AddToScene(obj, MainScene);
+        }
+
+        public void AddToScene(GameObject obj, Scene scene)
+        {
+            scene.RegisterObject(obj);
         }
 
         public void RemoveFromMainScene(GameObject obj)
         {
-            objects.Remove(obj);
-            var physicable = (PhysicsComponent)obj;
-            PhysicsSystem.Unregister(physicable);
-            RenderSystem.RemoveFromDrawables((RenderComponent)obj);
+            MainScene.UnregisterObject(obj);
+            // TODO: refactor this
             obj._onDestroy -= GameObject_onDestroy;
         }
 
@@ -230,77 +234,22 @@ namespace Omniplatformer
             RemoveFromMainScene(obj);
         }
 
-        long phys_time = 0;
-        long elapsed_frames = 0;
-
         #region Simulate
         public void Simulate(GameTime gameTime)
         {
             float time_scale = 60.0f / 1000;
             float dt = time_scale * (float)gameTime.ElapsedGameTime.Milliseconds;
-            var time = DateTime.Now;
-            PhysicsSystem.Tick(dt);
-            var elapsed = DateTime.Now - time;
-            elapsed_frames++;
-            phys_time += elapsed.Milliseconds;
-            RenderSystem.Tick(dt);
-            for (int j = objects.Count - 1; j >= 0; j--)
-            {
-                var obj = objects[j];
-                obj.Tick(dt);
-            }
+            MainScene.ProcessSubsystems(dt);
+            // TODO: include this as a subsystem
             HUDState.Tick();
         }
         #endregion
 
         #region Position logic
-        public GameObject GetObjectAtCoords(Point pt)
-        {
-            var game_click_position = RenderSystem.ScreenToGame(pt);
-            foreach (var platform in objects)
-            {
-                // if (!platform.Draggable)
-                // {
-                //     continue;
-                // }
-                var platform_pos = (PositionComponent)platform;
-                if (platform_pos.Contains(game_click_position))
-                {
-                    return platform;
-                }
-            }
-
-            foreach (var platform in PhysicsSystem.objects)
-            {
-                // if (!platform.Draggable)
-                // {
-                //     continue;
-                // }
-                var platform_pos = (PositionComponent)platform;
-                if (platform_pos.Contains(game_click_position))
-                {
-                    return platform.GameObject;
-                }
-            }
-            return null;
-        }
-
-        public IEnumerable<GameObject> GetObjectsAroundPosition(Position position, int radius)
-        {
-            foreach (var obj in objects)
-            {
-                var pos = (PositionComponent)obj;
-                var vector = pos.WorldPosition.Center - position.Center;
-                if (vector.Length() < radius)
-                {
-                    yield return obj;
-                }
-            }
-        }
-
         public GameObject GetObjectAtCursor()
         {
-            return GetObjectAtCoords(Mouse.GetState().Position);
+            var coords = RenderSystem.ScreenToGame(Mouse.GetState().Position);
+            return PhysicsSystem.GetObjectAtCoords(coords);
         }
         #endregion
 
@@ -366,22 +315,18 @@ namespace Omniplatformer
             onTargetInventoryClosed(this, new EventArgs());
         }
 
-        // TODO: refactor this
         public void OpenChest()
         {
-            var player_pos = (PositionComponent)player;
+            var player_pos = (PositionComponent)Player;
 
-            foreach(var obj in objects)
+            foreach (var obj in PhysicsSystem.GetOverlappingObjects(player_pos))
             {
+                // TODO: refactor this into a component
                 if (obj is Chest)
                 {
-                    var pos = (PositionComponent)obj;
-                    if (player_pos.Overlaps(pos))
-                    {
-                        HUDState = inventoryHUD;
-                        OpenTargetInventory(((Chest)obj).Inventory);
-                        break;
-                    }
+                    HUDState = inventoryHUD;
+                    OpenTargetInventory(((Chest)obj).Inventory);
+                    break;
                 }
             }
         }
@@ -393,19 +338,19 @@ namespace Omniplatformer
 
         public void WalkLeft()
         {
-            var movable = (PlayerMoveComponent)player;
+            var movable = (PlayerMoveComponent)Player;
             movable.move_direction = Direction.Left;
         }
 
         public void WalkRight()
         {
-            var movable = (PlayerMoveComponent)player;
+            var movable = (PlayerMoveComponent)Player;
             movable.move_direction = Direction.Right;
         }
 
         public void GoUp()
         {
-            var movable = (PlayerMoveComponent)player;
+            var movable = (PlayerMoveComponent)Player;
             if (movable.CanClimb)
             {
                 movable.StartClimbing();
@@ -415,7 +360,7 @@ namespace Omniplatformer
 
         public void GoDown()
         {
-            var movable = (PlayerMoveComponent)player;
+            var movable = (PlayerMoveComponent)Player;
             if (movable.CanClimb)
             {
                 movable.StartClimbing();
@@ -429,42 +374,42 @@ namespace Omniplatformer
 
         public void StopMoving()
         {
-            var movable = (PlayerMoveComponent)player;
+            var movable = (PlayerMoveComponent)Player;
             movable.move_direction = Direction.None;
         }
 
         public void Jump()
         {
-            var movable = (PlayerMoveComponent)player;
+            var movable = (PlayerMoveComponent)Player;
             movable.Jump();
         }
 
         public void StopJumping()
         {
-            var movable = (PlayerMoveComponent)player;
+            var movable = (PlayerMoveComponent)Player;
             movable.StopJumping();
         }
 
         public void Fire()
         {
-            player.Fire();
+            Player.Fire();
         }
 
         public void Stand()
         {
-            var x = (PositionComponent)player;
+            var x = (PositionComponent)Player;
             x.SetLocalHalfsize(x.WorldPosition.halfsize * 2);
         }
 
         public void Duck()
         {
-            var x = (PositionComponent)player;
+            var x = (PositionComponent)Player;
             x.SetLocalHalfsize(x.WorldPosition.halfsize / 2);
         }
 
         public void Swing()
         {
-            player.Swing();
+            Player.Swing();
         }
 
         // fps is assumed to be 30 while we're tick-based
@@ -546,11 +491,13 @@ namespace Omniplatformer
                     return String.Format("invalid args");
             });
 
+            /*
             console.AddCommand("clearlevel", a =>
             {
                 ClearCurrentLevel();
                 return "Level cleared.";
             });
+            */
 
             console.AddCommand("showgroups", a =>
             {
@@ -601,8 +548,28 @@ namespace Omniplatformer
             {
                 if (a.Length == 0)
                 {
-                    UnloadLevel();
-                    return "Level unloaded.";
+                    // UnloadLevel();
+                    // return "Level unloaded.";
+                    return "Not implemented.";
+                }
+                else
+                    return String.Format("invalid args");
+            });
+
+            console.AddCommand("load", a =>
+            {
+                if (a.Length == 1)
+                {
+                    string arg = a[0];
+                    LoadLevel(arg == "bitmap");
+                    /*
+                    TestScene.Player = Player;
+                    MainScene = TestScene;
+                    AddToMainScene(Player);
+                    MainScene.LoadPlayer(Player);
+                     */
+
+                    return "Done.";
                 }
                 else
                     return String.Format("invalid args");
@@ -615,9 +582,10 @@ namespace Omniplatformer
         {
             Log("Saving level");
             string path = String.Format("Content/Data/{0}.json", name);
-            CurrentLevel.Save(path);
+            MainScene.Save(path);
         }
 
+        /*
         public void ClearCurrentLevel()
         {
             // Clear everything
@@ -628,8 +596,9 @@ namespace Omniplatformer
             CurrentLevel.objects.Clear();
 
             // Register the player back
-            AddToMainScene(player);
+            AddToMainScene(Player);
         }
+        */
 
         /// <summary>
         /// Load group of objects, or "location"
@@ -640,7 +609,7 @@ namespace Omniplatformer
             Log(String.Format("Loading group '{0}'", name));
             string path = String.Format("Content/Data/{0}.json", name);
 
-            var group = LevelLoader.LoadGroup(path, origin ?? ((PositionComponent)player).WorldPosition.Coords);
+            var group = LevelLoader.LoadGroup(path, origin ?? ((PositionComponent)Player).WorldPosition.Coords);
             foreach (var obj in group)
             {
                 AddToMainScene(obj);

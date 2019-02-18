@@ -11,7 +11,7 @@ namespace Omniplatformer
     public static class GraphicsService
     {
         static Game1 game;
-        public static RenderSystem RenderSystem => game.RenderSystem;
+        // public static RenderSystem RenderSystem => game.RenderSystem;
         public static SpriteBatch Instance { get; private set; }
         public static GraphicsDevice GraphicsDevice => game.GraphicsDevice;
 

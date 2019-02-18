@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Omniplatformer.Scenes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace Omniplatformer.Components
     public abstract class Component
     {
         public GameObject GameObject { get; set; }
+        public Scene Scene => GameObject.CurrentScene;
         public string Tag { get; set; }
         public Component(GameObject obj)
         {

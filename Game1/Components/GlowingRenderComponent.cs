@@ -42,7 +42,7 @@ namespace Omniplatformer.Components
             // spriteBatch.Draw(lightMask, GameToScreen(rect), GetLightColor());
             var lightMask = GameContent.Instance.lightMask;
             // TODO: find a better way to apply glow to stuff
-            GraphicsService.DrawGameCentered(lightMask, rect, GraphicsService.RenderSystem.GetLightColor(GlowColor));
+            GraphicsService.DrawGameCentered(lightMask, rect, Scene.RenderSystem.GetLightColor(GlowColor));
         }
     }
 }

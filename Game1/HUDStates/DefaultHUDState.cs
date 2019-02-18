@@ -92,13 +92,13 @@ namespace Omniplatformer.HUDStates
                 Game.Swing();
             else
                 // Game.player.Fire(coords);
-                Game.player.StopBlocking();
+                Game.Player.StopBlocking();
         }
 
         private void DefaultHUDState_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButton.Right)
-                Game.player.StartBlocking();
+                Game.Player.StartBlocking();
         }
     }
 }

@@ -1,14 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Omniplatformer.Components;
+using Omniplatformer.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Omniplatformer
+namespace Omniplatformer.Scenes
 {
-    public class PhysicsSystem
+    public class PhysicsSystem : ISubsystem
     {
         /// <summary>
         /// The gravity constant
@@ -19,6 +20,20 @@ namespace Omniplatformer
         public List<PhysicsComponent> objects = new List<PhysicsComponent>();
         public List<DynamicPhysicsComponent> dynamics = new List<DynamicPhysicsComponent>();
         public PhysicsComponent[,] tiles = new PhysicsComponent[5000, 5000];
+
+        public void RegisterObject(GameObject obj)
+        {
+            var physicable = (PhysicsComponent)obj;
+            if (physicable != null)
+                Register(physicable);
+        }
+
+        public void UnregisterObject(GameObject obj)
+        {
+            var physicable = (PhysicsComponent)obj;
+            if (physicable != null)
+                Unregister(physicable);
+        }
 
         public void Register(PhysicsComponent physicable)
         {
@@ -275,6 +290,54 @@ namespace Omniplatformer
                         subject_pos.SetLocalCenter(new Vector2(subject_pos.WorldPosition.Center.X, new_y));
                         break;
                     }
+            }
+        }
+
+        public GameObject GetObjectAtCoords(Vector2 coords)
+        {
+            /*
+            foreach (var platform in objects)
+            {
+                // if (!platform.Draggable)
+                // {
+                //     continue;
+                // }
+                var platform_pos = (PositionComponent)platform;
+                if (platform_pos.Contains(coords))
+                {
+                    return platform;
+                }
+            }
+            */
+
+            foreach (var component in objects)
+            {
+                if (component.Contains(coords))
+                {
+                    return component.GameObject;
+                }
+            }
+            return null;
+        }
+
+        public IEnumerable<GameObject> GetOverlappingObjects(PositionComponent physicable)
+        {
+            foreach (var component in objects)
+            {
+                if (physicable.Overlaps(component))
+                    yield return component.GameObject;
+            }
+        }
+
+        public IEnumerable<GameObject> GetObjectsAroundPosition(Position position, int radius)
+        {
+            foreach (var component in objects)
+            {
+                var vector = component.WorldPosition.Center - position.Center;
+                if (vector.Length() < radius)
+                {
+                    yield return component.GameObject;
+                }
             }
         }
     }

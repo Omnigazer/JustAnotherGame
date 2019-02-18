@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Omniplatformer.Characters;
 using Omniplatformer.Components;
 using Omniplatformer.HUD;
+using Omniplatformer.Scenes;
 using Omniplatformer.Utility;
 using System;
 using System.Collections.Generic;
@@ -353,7 +354,7 @@ namespace Omniplatformer.HUDStates
             var ingame_pos = Game.RenderSystem.ScreenToGame(click_position);
             if (PinMode || true)
             {
-                var obj = Game.GetObjectAtCoords(click_position);
+                var obj = Game.PhysicsSystem.GetObjectAtCoords(ingame_pos);
                 if (obj == null)
                     return ingame_pos;
                 var obj_pos = (PositionComponent)obj;
@@ -475,7 +476,6 @@ namespace Omniplatformer.HUDStates
                 int i = (int)click_coords.X / PhysicsSystem.TileSize + 2500;
                 int j = (int)click_coords.Y / PhysicsSystem.TileSize + 2500;
                 helper.SetTileTexBounds((RenderComponent)obj, i, j);
-                Game.CurrentLevel.objects.Add(obj);
 
                 for (int _i = i - 1; _i <= i + 1; _i++)
                     for (int _j = j - 1; _j <= j + 1; _j++)
@@ -498,12 +498,11 @@ namespace Omniplatformer.HUDStates
             if (obj != null)
             {
                 Game.RemoveFromMainScene(obj);
-                Game.CurrentLevel.objects.Remove(obj);
+                Game.MainScene.UnregisterObject(obj);
                 foreach (var (name, group) in Groups)
                 {
                     group.Remove(obj);
                 }
-                obj?.onDestroy();
             }
         }
 

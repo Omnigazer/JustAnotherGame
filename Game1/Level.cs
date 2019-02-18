@@ -12,12 +12,14 @@ using Omniplatformer.Components;
 // using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework.Graphics;
+using Omniplatformer.Scenes;
 
 namespace Omniplatformer
 {
-    public class Level
+    public class Level : Scene
     {
-        public List<GameObject> objects = new List<GameObject>();
+        // public List<GameObject> objects = new List<GameObject>();
+        public IEnumerable<GameObject> Objects => new List<GameObject>();
         Game1 Game => GameService.Instance;
         // public List<Character> characters = new List<Character>();
         public Texture2D Background { get; set; }
@@ -35,7 +37,7 @@ namespace Omniplatformer
             {
                 writer.Formatting = Formatting.Indented;
                 List<object> list = new List<object>();
-                foreach (var obj in objects)
+                foreach (var obj in Objects)
                 {
                     list.Add(obj.AsJson());
                 }
@@ -47,28 +49,36 @@ namespace Omniplatformer
         {
             foreach(var obj in group)
             {
-                objects.Add(obj);
+                RegisterObject(obj);
             }
         }
 
         public void LoadFromBitmap()
         {
-            objects = LevelLoader.LoadFromBitmap(@"E:/Games/level1.png");
 
-            Game.Groups.Add("bitmap", new List<GameObject>());
-            foreach (var obj in objects)
+            foreach (var obj in LevelLoader.LoadFromBitmap(@"E:/Games/level1.png"))
             {
-                Game.Groups["bitmap"].Add(obj);
-                Game.AddToMainScene(obj);
+                RegisterObject(obj);
             }
 
-            Game.RenderSystem.CurrentBackground = GameContent.Instance.background;
+            // Game.Groups.Add("bitmap", new List<GameObject>());
+            // foreach (var obj in Objects)
+            // {
+                // Game.Groups["bitmap"].Add(obj);
+            //    Game.AddToMainScene(obj);
+            // }
+
+            RenderSystem.CurrentBackground = GameContent.Instance.background;
         }
 
         public void LoadPlayer(Player player)
         {
             var player_pos = (PositionComponent)player;
-            player_pos.SetLocalCenter(new Vector2(100, -7500));
+            // player_pos.SetLocalCenter(new Vector2(100, -7500));
+            player_pos.SetLocalCenter(new Vector2(100, 500));
+            Game.AddToScene(player.EquipSlots.RightHandSlot.Item, this);
+            Game.AddToScene(player.EquipSlots.LeftHandSlot.Item, this);
+            // player.EquipSlots.RightHandSlot.Item.OnEquip(player);
         }
 
         // TODO: should be moved to level initializer
@@ -101,9 +111,12 @@ namespace Omniplatformer
                     var obj = (GameObject)deserializer.decodeObject((JObject)obj_data);
                 }
                 // objects = SerializeService.Instance.GetObjects();
-                objects = storage.Values.ToList();
+
+                foreach (var obj in storage.Values)
+                    RegisterObject(obj);
 
                 //return new Level((JObject)serializer.Deserialize(reader));
             }
+            RenderSystem.CurrentBackground = GameContent.Instance.background;
         }
     }}
