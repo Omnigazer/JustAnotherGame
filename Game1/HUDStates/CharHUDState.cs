@@ -57,7 +57,7 @@ namespace Omniplatformer.HUDStates
             {
                 // {  Keys.X, (Game.player.WieldCurrentSlot, noop, false) },
                 // {  Keys.C, (Game.CloseChest, noop, false) },
-                {  Keys.Escape, (Game.CloseChar, noop, false) }
+                {  Keys.C, (Game.CloseChar, noop, false) }
             };
         }
 
