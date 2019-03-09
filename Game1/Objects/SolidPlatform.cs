@@ -58,7 +58,7 @@ namespace Omniplatformer
             var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
             coords.X = (float)Math.Round(coords.X);
             coords.Y = (float)Math.Round(coords.Y);
-            var platform = new SolidPlatform(coords, halfsize, origin);
+            var platform = new SolidPlatform(coords, halfsize, origin, true);
             // SerializeService.Instance.RegisterObject(platform);
             return platform;
         }

@@ -24,10 +24,10 @@ namespace Omniplatformer
             return new { type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
         }
 
-        public static GameObject FromJson(JObject data)
+        public static GameObject FromJson(Deserializer deserializer)
         {
-            var (coords, halfsize, origin) = PositionJson.FromJson(data);
-            return new BackgroundQuad(coords, halfsize, origin);
+            var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
+            return new BackgroundQuad(coords, halfsize, origin, true);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Omniplatformer.Components;
+using Omniplatformer.Objects;
 using Omniplatformer.Scenes;
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,28 @@ namespace Omniplatformer.Scenes
         // public List<GameObject> objects = new List<GameObject>();
         public List<PhysicsComponent> objects = new List<PhysicsComponent>();
         public List<DynamicPhysicsComponent> dynamics = new List<DynamicPhysicsComponent>();
-        public PhysicsComponent[,] tiles = new PhysicsComponent[5000, 5000];
+        public TileMapPhysicsComponent TileMap { get; set; }
+
+        public int GridWidth { get; set; }
+        public int GridHeight { get; set; }
+
+        public PhysicsSystem()
+        {
+            GridWidth = 5000;
+            GridHeight = 5000;
+        }
 
         public void RegisterObject(GameObject obj)
         {
             var physicable = (PhysicsComponent)obj;
             if (physicable != null)
                 Register(physicable);
+
+            var tilemap = obj.GetComponent<TileMapPhysicsComponent>();
+            if (tilemap != null)
+            {
+                TileMap = tilemap;
+            }
         }
 
         public void UnregisterObject(GameObject obj)
@@ -37,14 +53,10 @@ namespace Omniplatformer.Scenes
 
         public void Register(PhysicsComponent physicable)
         {
-            if (physicable.Tile)
-            {
-                int i = (int)physicable.WorldPosition.Coords.X / TileSize;
-                int j = (int)physicable.WorldPosition.Coords.Y / TileSize;
-                tiles[i + 2500, j + 2500] = physicable;
-            }
-            else
-                objects.Add(physicable);
+            // TODO: refactor this
+            if (physicable is TileMapPhysicsComponent)
+                return;
+            objects.Add(physicable);
             if (physicable is DynamicPhysicsComponent)
                 dynamics.Add((DynamicPhysicsComponent)physicable);
         }
@@ -98,18 +110,41 @@ namespace Omniplatformer.Scenes
             Direction collision_direction;
             bool processCollision(PhysicsComponent other_obj)
             {
-                collision_direction = obj.Collides(other_obj);
-                if (collision_direction != Direction.None)
+                collision_direction = obj.Collides(other_obj.WorldPosition);
+
+                if (collision_direction == Direction.None)
+                    return false;
+
+                /*
+                if (obj.GameObject is Player)
                 {
-                    /*
-                    if (obj.GameObject is Player)
-                    {
-                        GameService.Instance.HUDState.status_messages.Add(other_obj.ToString() + " " + GetCollisionTime(obj, other_obj));
-                    }
-                    */
-                    ApplyCollisionResponse(obj, other_obj, collision_direction);
-                    return obj.ProcessCollision(collision_direction, other_obj);
+                    GameService.Instance.HUDState.status_messages.Add(other_obj.ToString() + " " + GetCollisionTime(obj, other_obj));
                 }
+                */
+
+                // TODO: remove this workaround
+                if (obj.Solid && other_obj.Solid)
+                    ApplyCollisionResponse(obj, other_obj, other_obj.WorldPosition, collision_direction);
+                return obj.ProcessCollision(collision_direction, other_obj);
+            }
+
+            bool processTilemapCollision()
+            {
+                // foreach(Position pos in TileMap.GetTilesFor(obj))
+                foreach (var (i, j) in TileMap.GetTilesFor(obj))
+                {
+                    var pos = GetTileAtIndices(i, j);
+                    if (TileMap.Grid[i, j] > 9)
+                        continue;
+                    collision_direction = obj.Collides(pos);
+                    if (collision_direction != Direction.None)
+                    {
+                        ApplyCollisionResponse(obj, TileMap, pos, collision_direction);
+                        if (obj.ProcessCollision(collision_direction, TileMap))
+                            return true;
+                    }
+                }
+
                 return false;
             }
 
@@ -133,12 +168,7 @@ namespace Omniplatformer.Scenes
                     return true;
             }
 
-            foreach (var tile in GetTilesFor(obj))
-            {
-                if (processCollision(tile))
-                    return true;
-            }
-            return false;
+            return processTilemapCollision();
         }
 
         // Yeah, and air resistance
@@ -166,14 +196,15 @@ namespace Omniplatformer.Scenes
                 return;
 
             if (ground.Solid) {
-                float friction = 1 - ground.Friction;
+                // float friction = 1 - ground.Friction;
+                float friction = ground.Friction;
                 //if (movable.move_direction == Direction.None)
                 //    movable.HorizontalSpeed *= 1 - friction;
 
                 {
+                    // TODO: implement "chassis"
                     var speed = (ground as DynamicPhysicsComponent)?.HorizontalSpeed;
-                    //if (speed >= 0 ? movable.HorizontalSpeed < speed : movable.HorizontalSpeed > speed)
-                    movable.HorizontalSpeed += (speed ?? 0 - movable.HorizontalSpeed) * 0.1f * friction * dt;
+                    movable.HorizontalSpeed += ((speed ?? 0) - movable.HorizontalSpeed) * friction * dt * 0.1f;
                 }
             }
             else if (ground.Liquid)
@@ -185,25 +216,9 @@ namespace Omniplatformer.Scenes
             }
         }
 
-        public IEnumerable<PhysicsComponent> GetTilesFor(PhysicsComponent body)
+        protected void ApplyCollisionResponse(DynamicPhysicsComponent movable, PhysicsComponent target, Position target_pos, Direction dir)
         {
-            var rect = body.GetRectangle();
-
-            int left_index = rect.Left / TileSize - 1 + 2500;
-            int width = rect.Width / TileSize + 2;
-            int top_index = rect.Top / TileSize - 1 + 2500;
-            int height = rect.Height / TileSize + 2;
-            for (int i = left_index; i <= left_index + width; i++)
-                for(int j = top_index; j <= top_index + height; j++)
-                {
-                    if(tiles[i,j] != null)
-                      yield return tiles[i,j];
-                }
-        }
-
-        protected void ApplyCollisionResponse(DynamicPhysicsComponent movable, PhysicsComponent target, Direction dir)
-        {
-            if (target.Solid)
+            // if (target.Solid)
             {
                 switch (dir)
                 {
@@ -227,6 +242,7 @@ namespace Omniplatformer.Scenes
                             movable.VerticalSpeed = Math.Max(0, movable.CurrentMovement.Y);
                             movable.CurrentGround = target;
                             /*
+
                             float friction = 1 - target.Friction;
                             if (movable.move_direction != Direction.None)
                                 friction -= 1f;
@@ -242,7 +258,7 @@ namespace Omniplatformer.Scenes
                             break;
                         }
                 }
-                PinTo(movable, target, dir);
+                PinTo(movable, target_pos, dir);
             }
             /*
             else if (target.Liquid)
@@ -256,41 +272,57 @@ namespace Omniplatformer.Scenes
         }
 
         // Adjusts the subject's position in case of "penetration"
-        protected void PinTo(PhysicsComponent subject, PhysicsComponent target, Direction direction)
+        protected void PinTo(PhysicsComponent subject, Position target_position, Direction direction)
         {
-            // var subject_pos = (PositionComponent)subject;
-            // var their_pos = (PositionComponent)target;
-
-            var subject_pos = subject.GetComponent<PositionComponent>();
-            var their_pos = target.GetComponent<PositionComponent>();
-
             switch (direction)
             {
                 case Direction.Right:
                     {
-                        var new_x = their_pos.WorldPosition.Center.X - (their_pos.WorldPosition.halfsize.X + subject_pos.WorldPosition.halfsize.X);
-                        subject_pos.SetLocalCenter(new Vector2(new_x, subject_pos.WorldPosition.Center.Y));
+                        var new_x = target_position.Center.X - (target_position.halfsize.X + subject.WorldPosition.halfsize.X);
+                        subject.SetLocalCenter(new Vector2(new_x, subject.WorldPosition.Center.Y));
                         break;
                     }
                 case Direction.Left:
                     {
-                        var new_x = their_pos.WorldPosition.Center.X + (their_pos.WorldPosition.halfsize.X + subject_pos.WorldPosition.halfsize.X);
-                        subject_pos.SetLocalCenter(new Vector2(new_x, subject_pos.WorldPosition.Center.Y));
+                        var new_x = target_position.Center.X + (target_position.halfsize.X + subject.WorldPosition.halfsize.X);
+                        subject.SetLocalCenter(new Vector2(new_x, subject.WorldPosition.Center.Y));
                         break;
                     }
                 case Direction.Up:
                     {
-                        var new_y = their_pos.WorldPosition.Center.Y - (their_pos.WorldPosition.halfsize.Y + subject_pos.WorldPosition.halfsize.Y);
-                        subject_pos.SetLocalCenter(new Vector2(subject_pos.WorldPosition.Center.X, new_y));
+                        var new_y = target_position.Center.Y - (target_position.halfsize.Y + subject.WorldPosition.halfsize.Y);
+                        subject.SetLocalCenter(new Vector2(subject.WorldPosition.Center.X, new_y));
                         break;
                     }
                 case Direction.Down:
                     {
-                        var new_y = their_pos.WorldPosition.Center.Y + (their_pos.WorldPosition.halfsize.Y + subject_pos.WorldPosition.halfsize.Y);
-                        subject_pos.SetLocalCenter(new Vector2(subject_pos.WorldPosition.Center.X, new_y));
+                        var new_y = target_position.Center.Y + (target_position.halfsize.Y + subject.WorldPosition.halfsize.Y);
+                        subject.SetLocalCenter(new Vector2(subject.WorldPosition.Center.X, new_y));
                         break;
                     }
             }
+        }
+
+        public Position GetTileAtIndices(int i, int j)
+        {
+            return new Position(new Vector2(i * TileSize, j * TileSize), new Vector2(TileSize / 2));
+        }
+
+        public (int, int) GetTileIndices(Vector2 coords)
+        {
+            return ((int)coords.X / TileSize, (int)coords.Y / TileSize);
+        }
+
+        public short GetTileAtCoords(Vector2 coords)
+        {
+            var (i, j) = GetTileIndices(coords);
+            return TileMap.Grid[i, j];
+        }
+
+        public void RemoveTileAtCoords(Vector2 coords)
+        {
+            var (i, j) = GetTileIndices(coords);
+            TileMap.Grid[i, j] = 0;
         }
 
         public GameObject GetObjectAtCoords(Vector2 coords)
@@ -324,7 +356,7 @@ namespace Omniplatformer.Scenes
         {
             foreach (var component in objects)
             {
-                if (physicable.Overlaps(component))
+                if (physicable.Overlaps(component.WorldPosition))
                     yield return component.GameObject;
             }
         }

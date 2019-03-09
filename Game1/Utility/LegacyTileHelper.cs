@@ -11,57 +11,55 @@ namespace Omniplatformer.Utility
     /// <summary>
     /// Helps determine tile texture coordinates.
     /// </summary>
-    class TileHelper
+    class LegacyTileHelper
     {
-        Component[,] Grid { get; set; }
-        // string[,] TypeGrid => (string[,])Grid;
+        object[,] Grid { get; set; }
+        string[,] TypeGrid => (string[,])Grid;
 
-        public TileHelper(Component[,] grid)
+        public LegacyTileHelper(object[,] grid)
         {
             Grid = grid;
         }
 
-        /*
         public void SetTileTexBounds(RenderComponent drawable, int i, int j, string type)
         {
             float x = 0, y = 0;
             Vector2 size = new Vector2(0.33f, 0.33f);
             // if (j > 0 && TypeGrid[i, j - 1] != type)
-            if (j > 0 && !CheckForTile(Grid[i, j - 1], type))
+            if (j > 0 && !CheckForTile(TypeGrid[i, j - 1], type))
             {
                 y = 0;
             }
-            else if (!CheckForTile(Grid[i, j + 1], type))
+            else if (!CheckForTile(TypeGrid[i, j + 1], type))
                 y = 0.66f;
             else y = 0.33f;
 
-            if (i > 0 && !CheckForTile(Grid[i - 1, j], type))
+            if (i > 0 && !CheckForTile(TypeGrid[i - 1, j], type))
                 x = 0;
-            else if (!CheckForTile(Grid[i + 1, j], type))
+            else if (!CheckForTile(TypeGrid[i + 1, j], type))
                 x = 0.66f;
             else x = 0.33f;
 
             Vector2 offset = new Vector2(x, y);
             drawable.TexBounds = (offset, size);
         }
-        */
 
         public void SetTileTexBounds(RenderComponent drawable, int i, int j)
         {
             float x = 0, y = 0;
             Vector2 size = new Vector2(0.33f, 0.33f);
             // if (j > 0 && TypeGrid[i, j - 1] != type)
-            if (j > 0 && !CheckForTile(Grid[i, j + 1], drawable))
+            if (j > 0 && !CheckForTile(Grid[i, j + 1]))
             {
                 y = 0;
             }
-            else if (!CheckForTile(Grid[i, j - 1], drawable))
+            else if (!CheckForTile(Grid[i, j - 1]))
                 y = 0.66f;
             else y = 0.33f;
 
-            if (i > 0 && !CheckForTile(Grid[i - 1, j], drawable))
+            if (i > 0 && !CheckForTile(Grid[i - 1, j]))
                 x = 0;
-            else if (!CheckForTile(Grid[i + 1, j], drawable))
+            else if (!CheckForTile(Grid[i + 1, j]))
                 x = 0.66f;
             else x = 0.33f;
 
@@ -94,18 +92,6 @@ namespace Omniplatformer.Utility
         }
         */
 
-        public void ProcessTiles()
-        {
-            for (int i=0;i<Grid.GetLength(0);i++)
-                for (int j = 0; j < Grid.GetLength(1); j++)
-                {
-                    var comp = Grid[i, j];
-                    if (comp == null)
-                        continue;
-                    SetTileTexBounds((RenderComponent)comp.GameObject, i, j);
-                }
-        }
-
         // Check whether there's a compatible type in the nearby tile
         public bool CheckForTile(string type, string target_type)
         {
@@ -114,14 +100,11 @@ namespace Omniplatformer.Utility
         }
 
         // Check whether there's a compatible type in the nearby tile
-        public bool CheckForTile(Component type, Component target)
+        public bool CheckForTile(object type)
         {
-            if (type == null)
-                return false;
             // return new string[] { "solid", "background" }.Contains(type);
             // return new Component[] { component }.Contains(type);
-            // return type != null;
-            return type.GameObject.GetType() == target.GameObject.GetType();
+            return type != null;
         }
     }
 }

@@ -71,7 +71,7 @@ namespace Omniplatformer
             base.Initialize();
             InitServices();
             var playerHUD = new HUDContainer();
-            LoadLevel(true);
+            LoadLevel(false);
 
             defaultHUD = new DefaultHUDState(playerHUD);
             inventoryHUD = new InventoryHUDState(playerHUD, Player.inventory);
@@ -97,9 +97,9 @@ namespace Omniplatformer
             //
             // level.LoadFromBitmap();
             if (bitmap)
-                MainScene.LoadFromBitmap();
+                MainScene.LoadFromBitmap("level1");
             else
-                MainScene.Load("village");
+                MainScene.Load("bsave5");
 
             // Register player
             // TODO: extract this somewhere
@@ -111,7 +111,6 @@ namespace Omniplatformer
             Player._onDestroy += GameOver;
 
             MainScene.LoadPlayer(Player);
-            MainScene.RenderSystem.InitVertexBuffers();
         }
 
         /*
@@ -455,6 +454,13 @@ namespace Omniplatformer
             console.AddCommand("ping", a =>
             {
                 // TODO your logic
+                return String.Format("pong");
+            });
+
+            console.AddCommand("upload_buffers", a =>
+            {
+                // TODO your logic
+                RenderSystem.tilemap.UploadBuffers();
                 return String.Format("pong");
             });
 

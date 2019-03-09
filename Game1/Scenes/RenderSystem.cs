@@ -34,16 +34,13 @@ namespace Omniplatformer.Scenes
         const float day_loop_length = 3600;
 
         GraphicsDevice GraphicsDevice { get; set; }
-        VertexBuffer BackBuffer { get; set; }
-        VertexBuffer TileBuffer { get; set; }
 
         public Texture2D CurrentBackground { get; set; } = GameContent.Instance.whitePixel;
 
+        public TileMapRenderComponent tilemap;
 
         // public List<RenderComponent> drawables = new List<RenderComponent>();
         public SortedList<int, RenderComponent> drawables = new SortedList<int, RenderComponent>(new DuplicateKeyComparer<int>());
-        List<RenderComponent> tiles = new List<RenderComponent>();
-        List<RenderComponent> background_tiles = new List<RenderComponent>();
 
         public RenderSystem(Game1 game)
         {
@@ -83,10 +80,10 @@ namespace Omniplatformer.Scenes
         public void Clear()
         {
             drawables.Clear();
-            tiles.Clear();
-            background_tiles.Clear();
-            BackBuffer.Dispose();
-            TileBuffer.Dispose();
+            // tiles.Clear();
+            // background_tiles.Clear();
+            // BackBuffer.Dispose();
+            // TileBuffer.Dispose();
             CurrentBackground = GameContent.Instance.whitePixel;
         }
 
@@ -123,15 +120,13 @@ namespace Omniplatformer.Scenes
 
         public void RegisterDrawable(RenderComponent drawable)
         {
-            if (drawable.Tile)
-                if (drawable.GameObject is BackgroundQuad)
-                    background_tiles.Add(drawable);
-                else
-                    tiles.Add(drawable);
-            else
+            if(drawable is TileMapRenderComponent)
+            {
+                tilemap = (TileMapRenderComponent)drawable;
+                return;
+            }
+            if (!drawable.Tile)
                 drawables.Add(drawable.ZIndex, drawable);
-            // drawables.Add(drawable);
-            // drawables = drawables.OrderBy(x => x.ZIndex).ToList();
         }
 
         // !TODO: manage adding and removing tiles on the fly
@@ -230,95 +225,6 @@ namespace Omniplatformer.Scenes
             GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
         }
 
-        public void InitVertexBuffers()
-        {
-            if (tiles.Count == 0)
-                return;
-            VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[tiles.Count * 6];
-            var buffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.None);
-
-            int i = 0;
-            foreach (var tile in tiles)
-            {
-                var rect = tile.pos.GetRectangle();
-                var vector = new Vector2(0.5f, 0.5f);
-                /*
-                // Top left triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
-
-                // Bottom right triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), Color.White, vector);
-                */
-
-                // Top left triangle
-                // Top left triangle
-                var (offset, size) = tile.TexBounds;
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), tile.Color, offset);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, offset + new Vector2(size.X, 0));
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, offset + new Vector2(0, size.Y));
-
-                // Bottom right triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, offset + new Vector2(0, size.Y));
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, offset + new Vector2(size.X, 0));
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), tile.Color, offset + size);
-
-                /*
-                // Top left triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, rect.Bottom, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, rect.Top, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, rect.Top, 0), tile.Color, vector);
-
-                // Bottom right triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, rect.Bottom, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, rect.Bottom, 0), tile.Color, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, rect.Top, 0), tile.Color, vector);
-                */
-            }
-
-            buffer.SetData(vertices);
-            TileBuffer = buffer;
-
-
-            vertices = new VertexPositionColorTexture[background_tiles.Count * 6];
-            buffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColorTexture), vertices.Length, BufferUsage.None);
-
-            i = 0;
-            foreach (var tile in background_tiles)
-            {
-                var rect = tile.pos.GetRectangle();
-                var vector = new Vector2(0.5f, 0.5f);
-                /*
-                // Top left triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
-
-                // Bottom right triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), Color.White, vector);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), Color.White, vector);
-                */
-
-                var (offset, size) = tile.TexBounds;
-                // Top left triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), tile.Color, offset);
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, offset + new Vector2(size.X, 0));
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, offset + new Vector2(0, size.Y));
-
-                // Bottom right triangle
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), tile.Color, offset + new Vector2(0, size.Y));
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), tile.Color, offset + new Vector2(size.X, 0));
-                vertices[i++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), tile.Color, offset + size);
-            }
-
-            buffer.SetData(vertices);
-            BackBuffer = buffer;
-        }
-
         public void DrawToRevealingMask()
         {
             var spriteBatch = GraphicsService.Instance;
@@ -369,23 +275,8 @@ namespace Omniplatformer.Scenes
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
             spriteBatch.Draw(GameContent.Instance.whitePixel, new Rectangle(1, 1, 1, 1), Color.White);
             spriteBatch.End();
-            GraphicsDevice.SetVertexBuffer(BackBuffer);
-            BasicEffect basicEffect = new BasicEffect(GraphicsDevice);
 
-            basicEffect.TextureEnabled = true;
-            basicEffect.VertexColorEnabled = true;
-            // basicEffect.View = Matrix.CreateScale(0.5f);
-            basicEffect.World = Camera.TranslationMatrix;
-            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(0, 2560, 1440, 0, 0, 1);
-            basicEffect.Texture = GameContent.Instance.backgroundTile;
-            if (background_tiles.Count > 0)
-            {
-                foreach (var pass in basicEffect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-                    GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, background_tiles.Count * 2);
-                }
-            }
+            tilemap.Draw();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
             // spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
@@ -401,24 +292,6 @@ namespace Omniplatformer.Scenes
             }
 
             spriteBatch.End();
-
-            basicEffect = new BasicEffect(GraphicsDevice);
-
-            basicEffect.TextureEnabled = true;
-            basicEffect.VertexColorEnabled = true;
-            // basicEffect.View = Matrix.CreateScale(0.5f);
-            basicEffect.World = Camera.TranslationMatrix;
-            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(0, 2560, 1440, 0, 0, 1);
-            basicEffect.Texture = GameContent.Instance.testTile;
-            GraphicsDevice.SetVertexBuffer(TileBuffer);
-            if (tiles.Count > 0)
-            {
-                foreach (var pass in basicEffect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-                    GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, tiles.Count * 2);
-                }
-            }
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             // Draw the foreground on top of main scene

@@ -53,7 +53,9 @@
     <Compile Include="Components\DynamicPhysicsComponent.cs" />
     <Compile Include="Components\LifeDrainHitComponent.cs" />
     <Compile Include="Components\MeleeDamageHitComponent.cs" />
+    <Compile Include="Components\TileMapPhysicsComponent.cs" />
     <Compile Include="Components\PhysicsComponent.cs" />
+    <Compile Include="Components\TileMapRenderComponent.cs" />
     <Compile Include="Descriptor.cs" />
     <Compile Include="Effects.cs" />
     <Compile Include="Enums\AnchorPoint.cs" />
@@ -76,13 +78,15 @@
     <Compile Include="Items\ChaosOrb.cs" />
     <Compile Include="Items\Item.cs" />
     <Compile Include="Items\Shield.cs" />
-    <Compile Include="Level.cs" />
+    <Compile Include="Scenes\Level.cs" />
     <Compile Include="LevelLoader.cs" />
     <Compile Include="Objects\Chest.cs" />
     <Compile Include="Objects\BackgroundQuad.cs" />
     <Compile Include="Objects\LifeDrainProjectile.cs" />
     <Compile Include="Objects\Boulder.cs" />
     <Compile Include="Objects\Particle.cs" />
+    <Compile Include="Objects\Tile.cs" />
+    <Compile Include="Objects\TileMap.cs" />
     <Compile Include="Scenes\PhysicsSystem.cs" />
     <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Scenes\SimulationSystem.cs" />
@@ -152,6 +156,7 @@
     <Compile Include="Utility\PositionJson.cs" />
     <Compile Include="Utility\RandomGen.cs" />
     <Compile Include="Utility\TileHelper.cs" />
+    <Compile Include="Utility\LegacyTileHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

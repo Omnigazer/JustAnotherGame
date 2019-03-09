@@ -225,7 +225,7 @@ namespace Omniplatformer.HUDStates
                 {  Keys.End, (DecreaseHeight, noop, continuous_size) },
                 {  Keys.PageUp, (IncreaseWidth, noop, continuous_size) },
                 {  Keys.Insert, (DecreaseWidth, noop, continuous_size) },
-                {  Keys.F11, (Game.CloseEditor, noop, true) },
+                {  Keys.F11, (Game.CloseEditor, noop, false) },
 
                 /*
                 {  Keys.NumPad7, (PrevGroup, noop, false) },
@@ -472,29 +472,14 @@ namespace Omniplatformer.HUDStates
                 var obj = PositionalConstructors[CurrentConstructor](click_coords, halfsize, origin);
                 CurrentGroup.Add(obj);
                 Game.AddToMainScene(obj);
-                var helper = new TileHelper(Game.PhysicsSystem.tiles);
-                int i = (int)click_coords.X / PhysicsSystem.TileSize + 2500;
-                int j = (int)click_coords.Y / PhysicsSystem.TileSize + 2500;
-                helper.SetTileTexBounds((RenderComponent)obj, i, j);
-
-                for (int _i = i - 1; _i <= i + 1; _i++)
-                    for (int _j = j - 1; _j <= j + 1; _j++)
-                    {
-                        var tile = Game.PhysicsSystem.tiles[_i, _j]?.GameObject;
-                        if(tile != null)
-                            helper.SetTileTexBounds((RenderComponent)tile, _i, _j);
-                    }
-
-                if (((RenderComponent)obj).Tile)
-                {
-                    Game.RenderSystem.InitVertexBuffers();
-                }
             }
         }
 
         public void DeleteObject()
         {
             var obj = Game.GetObjectAtCursor();
+            var coords = Game.RenderSystem.ScreenToGame(Mouse.GetState().Position);
+            var tile = Game.PhysicsSystem.GetTileAtCoords(coords);
             if (obj != null)
             {
                 Game.RemoveFromMainScene(obj);
@@ -503,6 +488,9 @@ namespace Omniplatformer.HUDStates
                 {
                     group.Remove(obj);
                 }
+            }
+            else if (tile != 0) {
+                Game.PhysicsSystem.RemoveTileAtCoords(coords);
             }
         }
 

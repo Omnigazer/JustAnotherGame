@@ -173,30 +173,24 @@ namespace Omniplatformer.Components
             return false;
         }
 
-        public bool Overlaps(PositionComponent pos)
+        public bool Overlaps(Position pos)
         {
-            if (pos == null)
-                return false;
-
-            if (Math.Abs(WorldPosition.Center.X - pos.WorldPosition.Center.X) > WorldPosition.halfsize.X + pos.WorldPosition.halfsize.X) return false;
-            if (Math.Abs(WorldPosition.Center.Y - pos.WorldPosition.Center.Y) > WorldPosition.halfsize.Y + pos.WorldPosition.halfsize.Y) return false;
+            if (Math.Abs(WorldPosition.Center.X - pos.Center.X) > WorldPosition.halfsize.X + pos.halfsize.X) return false;
+            if (Math.Abs(WorldPosition.Center.Y - pos.Center.Y) > WorldPosition.halfsize.Y + pos.halfsize.Y) return false;
             return true;
         }
 
-        public Direction Collides(PositionComponent other)
+        public Direction Collides(Position other)
         {
-            if (other == null)
-                return Direction.None;
-
             if (Overlaps(other))
             {
-                var hd = Math.Abs(WorldPosition.Center.X - other.WorldPosition.Center.X) - (WorldPosition.halfsize.X + other.WorldPosition.halfsize.X);
-                var vd = Math.Abs(WorldPosition.Center.Y - other.WorldPosition.Center.Y) - (WorldPosition.halfsize.Y + other.WorldPosition.halfsize.Y);
+                var hd = Math.Abs(WorldPosition.Center.X - other.Center.X) - (WorldPosition.halfsize.X + other.halfsize.X);
+                var vd = Math.Abs(WorldPosition.Center.Y - other.Center.Y) - (WorldPosition.halfsize.Y + other.halfsize.Y);
 
                 // Now compare them to know the side of collision
-                if (hd > vd && (Math.Abs(vd) > WorldPosition.halfsize.Y || WorldPosition.Center.Y < other.WorldPosition.Center.Y))
+                if (hd > vd && (Math.Abs(vd) > WorldPosition.halfsize.Y || WorldPosition.Center.Y < other.Center.Y))
                 {
-                    if (WorldPosition.Center.X < other.WorldPosition.Center.X)
+                    if (WorldPosition.Center.X < other.Center.X)
                         return Direction.Right;
                     else
                     {
@@ -205,7 +199,7 @@ namespace Omniplatformer.Components
                 }
                 else if (vd > hd)
                 {
-                    if (WorldPosition.Center.Y < other.WorldPosition.Center.Y)
+                    if (WorldPosition.Center.Y < other.Center.Y)
                         return Direction.Up;
                     else
                         return Direction.Down;

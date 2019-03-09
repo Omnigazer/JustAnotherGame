@@ -60,7 +60,12 @@ namespace Omniplatformer.Utility
             }
             Type type = Type.GetType(inner["type"].ToString());
 
-            obj = (GameObject)type.GetMethod("FromJson").Invoke(null, new object[] { new Deserializer(inner, storage) });
+            if (type == typeof(SolidPlatform))
+                obj = SolidPlatform.FromJson(new Deserializer(inner, storage));
+            else if (type == typeof(BackgroundQuad))
+                obj = BackgroundQuad.FromJson(new Deserializer(inner, storage));
+            else
+                obj = (GameObject)type.GetMethod("FromJson").Invoke(null, new object[] { new Deserializer(inner, storage) });
             if (id != Guid.Empty)
                 obj.Id = id;
             storage.Add(obj.Id, obj);

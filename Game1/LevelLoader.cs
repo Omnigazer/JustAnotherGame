@@ -133,7 +133,7 @@ namespace Omniplatformer
             int tile_size = PhysicsSystem.TileSize;
             var sectors = new string[bitmap.Width / scale, bitmap.Height / scale];
 
-            TileHelper tile_helper = new TileHelper(sectors);
+            LegacyTileHelper tile_helper = new LegacyTileHelper(sectors);
 
             for (int i = 0; i < bitmap.Width; i++)
             {
@@ -180,7 +180,7 @@ namespace Omniplatformer
                         case "solid":
                             {
                                 var obj = new SolidPlatform(
-                                new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size),
+                                new Vector2(i * tile_size, (5000 - j - 1) * tile_size),
                                 new Vector2(tile_size / 2, tile_size / 2),
                                 Vector2.Zero,
                                 true
@@ -193,7 +193,7 @@ namespace Omniplatformer
                         case "background":
                             {
                                 var obj = new BackgroundQuad(
-                                new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size),
+                                new Vector2(i * tile_size, (5000 - j - 1) * tile_size),
                                 new Vector2(tile_size / 2, tile_size / 2),
                                 Vector2.Zero,
                                 true
@@ -206,7 +206,7 @@ namespace Omniplatformer
                         case "liquid":
                             {
                                 list.Add(new Liquid(
-                                    new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size),
+                                    new Vector2(i * tile_size, (5000 - j - 1) * tile_size),
                                     new Vector2(tile_size / 2, tile_size / 2),
                                     Vector2.Zero,
                                     true
@@ -216,14 +216,14 @@ namespace Omniplatformer
                         case "goblin":
                             {
                                 list.Add(new Goblin(
-                                    new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size)
+                                    new Vector2(i * tile_size, (5000 - j - 1) * tile_size)
                                     ));
                                 break;
                             }
                         case "goblin shaman":
                             {
                                 list.Add(new GoblinShaman(
-                                    new Vector2(i * tile_size - 100 * tile_size, -j * tile_size + 100 * tile_size)
+                                    new Vector2(i * tile_size, (5000 - j - 1) * tile_size)
                                     ));
                                 break;
                             }
