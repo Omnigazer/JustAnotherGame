@@ -30,6 +30,7 @@ namespace Omniplatformer.Components
 
         public PlayerMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj, coords, halfsize)
         {
+            Solid = true;
             MaxMoveSpeed = 5;
             Acceleration = 0.8f;
         }
