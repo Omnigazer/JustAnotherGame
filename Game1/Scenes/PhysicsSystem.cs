@@ -279,25 +279,25 @@ namespace Omniplatformer.Scenes
                 case Direction.Right:
                     {
                         var new_x = target_position.Center.X - (target_position.halfsize.X + subject.WorldPosition.halfsize.X);
-                        subject.SetLocalCenter(new Vector2(new_x, subject.WorldPosition.Center.Y));
+                        subject.SetWorldCenter(new Vector2(new_x, subject.WorldPosition.Center.Y));
                         break;
                     }
                 case Direction.Left:
                     {
                         var new_x = target_position.Center.X + (target_position.halfsize.X + subject.WorldPosition.halfsize.X);
-                        subject.SetLocalCenter(new Vector2(new_x, subject.WorldPosition.Center.Y));
+                        subject.SetWorldCenter(new Vector2(new_x, subject.WorldPosition.Center.Y));
                         break;
                     }
                 case Direction.Up:
                     {
                         var new_y = target_position.Center.Y - (target_position.halfsize.Y + subject.WorldPosition.halfsize.Y);
-                        subject.SetLocalCenter(new Vector2(subject.WorldPosition.Center.X, new_y));
+                        subject.SetWorldCenter(new Vector2(subject.WorldPosition.Center.X, new_y));
                         break;
                     }
                 case Direction.Down:
                     {
                         var new_y = target_position.Center.Y + (target_position.halfsize.Y + subject.WorldPosition.halfsize.Y);
-                        subject.SetLocalCenter(new Vector2(subject.WorldPosition.Center.X, new_y));
+                        subject.SetWorldCenter(new Vector2(subject.WorldPosition.Center.X, new_y));
                         break;
                     }
             }

@@ -270,6 +270,12 @@ namespace Omniplatformer.Components
             SetLocalCoords(center - diff);
         }
 
+        public void SetWorldCenter(Vector2 center)
+        {
+            var diff = local_position.Center - local_position.Coords + (parent_pos?.WorldPosition.Coords ?? Vector2.Zero);
+            SetLocalCoords(center - diff);
+        }
+
         public void SetLocalCoords(Vector2 coords)
         {
             local_position.Coords = coords;
