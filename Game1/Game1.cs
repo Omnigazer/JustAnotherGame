@@ -74,7 +74,7 @@ namespace Omniplatformer
             LoadLevel(false);
 
             defaultHUD = new DefaultHUDState(playerHUD);
-            inventoryHUD = new InventoryHUDState(playerHUD, Player.inventory);
+            inventoryHUD = new InventoryHUDState(playerHUD, Player.Inventory);
             charHUD = new CharHUDState(playerHUD);
             editorHUD = new EditorHUDState(playerHUD);
             HUDState = defaultHUD;
@@ -94,38 +94,13 @@ namespace Omniplatformer
             MainScene.Subsystems.Add(MainScene.RenderSystem);
             MainScene.Subsystems.Add(MainScene.PhysicsSystem);
             MainScene.Subsystems.Add(new SimulationSystem());
-            //
-            // level.LoadFromBitmap();
             if (bitmap)
                 MainScene.LoadFromBitmap("level1");
             else
-                MainScene.Load("bsave5");
-
-            // Register player
-            // TODO: extract this somewhere
-            MainScene.Player = new Player();
-            var shield = new Shield();
-            Player.EquipSlots.LeftHandSlot.Item = shield;
-            shield.OnEquip(Player);
-            AddToMainScene(Player);
+                MainScene.Load("bsave6");
+            // TODO: extract this
             Player._onDestroy += GameOver;
-
-            MainScene.LoadPlayer(Player);
         }
-
-        /*
-        void UnloadLevel()
-        {
-            PhysicsSystem.objects.Clear();
-            PhysicsSystem.dynamics.Clear();
-            RenderSystem.Clear();
-            for (int i = 0; i < PhysicsSystem.tiles.GetLength(0); i++)
-                for (int j = 0; j < PhysicsSystem.tiles.GetLength(1); j++)
-                {
-                    PhysicsSystem.tiles[i, j] = null;
-                }
-        }
-        */
 
         private void GameOver(object sender, EventArgs e)
         {
@@ -590,21 +565,6 @@ namespace Omniplatformer
             string path = String.Format("Content/Data/{0}.json", name);
             MainScene.Save(path);
         }
-
-        /*
-        public void ClearCurrentLevel()
-        {
-            // Clear everything
-            objects.Clear();
-            RenderSystem.drawables.Clear();
-            PhysicsSystem.objects.Clear();
-            PhysicsSystem.dynamics.Clear();
-            CurrentLevel.objects.Clear();
-
-            // Register the player back
-            AddToMainScene(Player);
-        }
-        */
 
         /// <summary>
         /// Load group of objects, or "location"

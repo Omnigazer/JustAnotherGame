@@ -38,7 +38,10 @@ namespace Omniplatformer.HUD
             slot_view = new InventorySlotView(player.EquipSlots.RightHandSlot, new Point(200, slot_margin)) { Width = slot_width, Height = slot_height };
             slot_view.MouseUp += Slot_view_MouseUp;
             RegisterChild(slot_view);
-            slot_view = new InventorySlotView(player.EquipSlots.ChannelSlot, new Point(350, slot_margin)) { Width = slot_width, Height = slot_height };
+            slot_view = new InventorySlotView(player.EquipSlots.LeftHandSlot, new Point(350, slot_margin)) { Width = slot_width, Height = slot_height };
+            slot_view.MouseUp += Slot_view_MouseUp;
+            RegisterChild(slot_view);
+            slot_view = new InventorySlotView(player.EquipSlots.ChannelSlot, new Point(200, slot_height + 2 * slot_margin)) { Width = slot_width, Height = slot_height };
             slot_view.MouseUp += Slot_view_MouseUp;
             RegisterChild(slot_view);
         }

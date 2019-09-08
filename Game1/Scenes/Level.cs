@@ -42,8 +42,7 @@ namespace Omniplatformer
                 List<object> list = new List<object>();
                 foreach (var obj in this.PhysicsSystem.objects)
                 {
-                    if (!(obj.GameObject is Player))
-                        list.Add(obj.GameObject.AsJson());
+                    list.Add(obj.GameObject.AsJson());
                 }
 
                 List<object> tile_list = new List<object>();
@@ -95,16 +94,6 @@ namespace Omniplatformer
             // }
 
             RenderSystem.CurrentBackground = GameContent.Instance.background;
-        }
-
-        public void LoadPlayer(Player player)
-        {
-            var player_pos = (PositionComponent)player;
-            // player_pos.SetLocalCenter(new Vector2(100, -7500));
-            player_pos.SetLocalCenter(new Vector2(2500 * 16, 2500 * 16));
-            Game.AddToScene(player.EquipSlots.RightHandSlot.Item, this);
-            Game.AddToScene(player.EquipSlots.LeftHandSlot.Item, this);
-            // player.EquipSlots.RightHandSlot.Item.OnEquip(player);
         }
 
         // TODO: should be moved to level initializer

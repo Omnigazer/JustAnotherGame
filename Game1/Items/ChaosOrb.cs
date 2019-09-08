@@ -55,15 +55,9 @@ namespace Omniplatformer
             };
         }
 
-        /*
         public static GameObject FromJson(Deserializer deserializer)
         {
-            // var item = new WieldedItem((int)data["damage"]) { Id = id };
-            // var data = deserializer.getData();
-            // var item = new WieldedItem((int)data["damage"]);
-            // SerializeService.Instance.RegisterObject(item);
-            // return item;
+            return new ChaosOrb();
         }
-        */
     }
 }

@@ -12,6 +12,7 @@ using Omniplatformer.Enums;
 using Omniplatformer.Items;
 using static Omniplatformer.Enums.Skill;
 using Omniplatformer.Objects;
+using Omniplatformer.Utility;
 
 namespace Omniplatformer
 {
@@ -29,8 +30,8 @@ namespace Omniplatformer
         public WieldedItem WieldedItem { get => (WieldedItem)EquipSlots.RightHandSlot.Item; private set => WieldItem(value); }
 
         // Equipment and inventory
-        public Inventory inventory;
-        public EquipSlotCollection EquipSlots;
+        public Inventory Inventory { get; set; } = new Inventory();
+        public EquipSlotCollection EquipSlots { get; set; } = new EquipSlotCollection();
 
 
         //
@@ -46,46 +47,44 @@ namespace Omniplatformer
         // spans from 0.6 to 0.2 with a weight of 20
         public float MeleeAttackRate => (float)(60 - 40 * ((float)Skills[Melee] / (Skills[Melee] + 20))) / 100f;
 
-        public Dictionary<ManaType, float> CurrentMana { get; set; }
+        public Dictionary<ManaType, float> CurrentMana { get; set; } = new Dictionary<ManaType, float>();
         // public Dictionary<ManaType, float> MaxMana { get; set; }
 
         public Player()
         {
+            InitComponents();
+            Team = Team.Friend;
+            MaxHitPoints = max_hitpoints;
+            CurrentHitPoints = MaxHitPoints;
+            SkillPoints = 4;
+
             foreach (Skill skill in Enum.GetValues(typeof(Skill)))
             {
                 Skills.Add(skill, 0);
             }
-            EquipSlots = new EquipSlotCollection();
-            inventory = new Inventory();
-            // TODO: test
-            var item = new WieldedItem(damage: 1);
 
-            Team = Team.Friend;
-            MaxHitPoints = max_hitpoints;
-            CurrentHitPoints = MaxHitPoints;
-            CurrentMana = new Dictionary<ManaType, float>();
-            SkillPoints = 4;
-            //MaxMana = new Dictionary<ManaType, float>();
+            foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
+            {
+                CurrentMana[type] = MaxMana(type);
+            }
+        }
 
+        void InitComponents()
+        {
             var halfsize = new Vector2(20, 36);
-            // InitPos(center, halfsize);
             var phys = new PlayerMoveComponent(this, Vector2.Zero, halfsize) { MaxMoveSpeed = 9, Acceleration = 0.5f };
             phys.AddAnchor(AnchorPoint.RightHand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
             phys.AddAnchor(AnchorPoint.LeftHand, new Position(new Vector2(-0.45f, -0.05f), Vector2.Zero, 0.6f));
             Components.Add(phys);
             Components.Add(new CharacterRenderComponent(this, GameContent.Instance.character));
             Components.Add(new BonusComponent(this));
-
-            foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
-            {
-                //MaxMana[type] = max_mana;
-                CurrentMana[type] = MaxMana(type);
-            }
-            WieldItem(item);
         }
 
         public void StartBlocking()
         {
+            if(EquipSlots.LeftHandSlot.Item == null)
+                return;
+
             Blocking = true;
             var pos1 = (PositionComponent)EquipSlots.RightHandSlot.Item;
             pos1.SetParent(this, AnchorPoint.LeftHand);
@@ -96,6 +95,9 @@ namespace Omniplatformer
 
         public void StopBlocking()
         {
+            if (EquipSlots.LeftHandSlot.Item == null)
+                return;
+
             Blocking = false;
             var pos1 = (PositionComponent)EquipSlots.RightHandSlot.Item;
             pos1.SetParent(this, AnchorPoint.RightHand);
@@ -107,20 +109,10 @@ namespace Omniplatformer
         public float MaxMana(ManaType manaType)
         {
             var x = (Skill)Enum.Parse(typeof(Skill), manaType.ToString());
-            // var x = typeof(Enum.Parse(Skill, manaType.ToString()));
             if (Skills.ContainsKey(x))
                 return GetSkill(x);
             return 0;
         }
-
-        /*
-        public void InitPos(Vector2 center, Vector2 halfsize)
-        {
-            var pos = new PositionComponent(this, center, halfsize);
-            pos.AddAnchor(AnchorPoint.Hand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
-            Components.Add(pos);
-        }
-        */
 
         public void EarnExperience(int value)
         {
@@ -206,6 +198,39 @@ namespace Omniplatformer
         {
             RegenerateMana(dt);
             base.Tick(dt);
+        }
+
+        public override object AsJson()
+        {
+            return new {
+                Id,
+                type = GetType().AssemblyQualifiedName,
+                Position = PositionJson.ToJson(this),
+                Inventory = InventoryJson.ToJson(this),
+                EquipSlots = EquipSlotsJson.ToJson(this.EquipSlots)
+            };
+        }
+
+        public static GameObject FromJson(Deserializer deserializer)
+        {
+            var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
+            var player = new Player();
+            var pos = (PositionComponent)player;
+            pos.SetLocalCoords(coords);
+            foreach (Item item in InventoryJson.FromJson(deserializer.getData(), deserializer))
+            {
+                player.Inventory.AddItem(item);
+            }
+            player.EquipSlots = EquipSlotsJson.FromJson(deserializer.getData()["EquipSlots"], deserializer);
+            // TODO: refactor this
+            {
+                GameService.Instance.MainScene.Player = player;
+                foreach (var slot in player.EquipSlots.GetSlots().Where(x => x.Item != null))
+                {
+                    slot.OnItemAdd(slot.Item);
+                }
+            }
+            return player;
         }
 
         #region Actions
@@ -316,7 +341,7 @@ namespace Omniplatformer
                 // TODO: move the inventory into the player class
                 // all this code should be in player's pickup
                 var x = item as Item;
-                inventory.AddItem(x);
+                Inventory.AddItem(x);
                 Game.RemoveFromMainScene(item);
             }
             // GetBonus(item.Bonus);
@@ -374,8 +399,8 @@ namespace Omniplatformer
             if (!EquipLocked)
             {
                 // inventory.AddItem(new WieldedItem(10, GameContent.Instance.bolt));
-                var item = inventory.CurrentSlot.Item;
-                inventory.CurrentSlot.Item = WieldedItem;
+                var item = Inventory.CurrentSlot.Item;
+                Inventory.CurrentSlot.Item = WieldedItem;
                 if (item != null)
                 {
                     WieldItem((WieldedItem)item);

@@ -27,13 +27,18 @@ namespace Omniplatformer
             ChannelSlot = new ChannelSlot();
         }
 
-        /*
-        public IEnumerator<EquipSlot> GetEnumerator()
+        public IEnumerable<Slot> GetSlots()
         {
-            return miscSlots.GetEnumerator();
+            yield return ChannelSlot;
+            yield return LeftHandSlot;
+            yield return RightHandSlot;
+            foreach(var slot in MiscSlots)
+            {
+                yield return slot;
+            }
         }
 
-
+        /*
         IEnumerator IEnumerable.GetEnumerator()
         {
             return miscSlots.GetEnumerator();

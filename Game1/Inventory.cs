@@ -95,7 +95,7 @@ namespace Omniplatformer
         public bool IsHighlighted => IsCurrent || IsHovered;
         protected override IEnumerable<Descriptor> AcceptedDescriptors()
         {
-            return new[] { Descriptor.Item };
+            yield return Descriptor.Item;
         }
 
         public InventorySlot(int row, int column)
@@ -109,7 +109,7 @@ namespace Omniplatformer
     {
         protected override IEnumerable<Descriptor> AcceptedDescriptors()
         {
-            return new[] { Descriptor.HandSlot };
+            yield return Descriptor.HandSlot;
         }
 
         public override void OnItemAdd(Item item)
@@ -127,7 +127,7 @@ namespace Omniplatformer
     {
         protected override IEnumerable<Descriptor> AcceptedDescriptors()
         {
-            return new[] { Descriptor.MiscSlot };
+            yield return Descriptor.MiscSlot;
         }
 
         public override void OnItemAdd(Item item)
@@ -145,7 +145,7 @@ namespace Omniplatformer
     {
         protected override IEnumerable<Descriptor> AcceptedDescriptors()
         {
-            return new[] { Descriptor.ChannelSlot };
+            yield return Descriptor.ChannelSlot;
         }
 
         public override void OnItemAdd(Item item)
