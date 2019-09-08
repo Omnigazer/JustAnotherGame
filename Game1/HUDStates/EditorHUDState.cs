@@ -92,7 +92,6 @@ namespace Omniplatformer.HUDStates
         {
             PositionalConstructors = new Dictionary<string, Func<Vector2, Vector2, Vector2, GameObject>>()
             {
-                { "Tile", (coords, halfsize, origin) => { return new SolidPlatform(coords, new Vector2(PhysicsSystem.TileSize / 2, PhysicsSystem.TileSize / 2), origin, true); } },
                 { "SolidPlatform", (coords, halfsize, origin) => { return new SolidPlatform(coords, halfsize, origin); } },
                 { "MovingPlatform", (coords, halfsize, origin) => { return new MovingPlatform(coords, halfsize); } },
                 { "Liquid", (coords, halfsize, origin) => { return new Liquid(coords, halfsize, origin); } },
@@ -352,7 +351,7 @@ namespace Omniplatformer.HUDStates
         public Vector2 GetInGameCoords(Point click_position)
         {
             var ingame_pos = Game.RenderSystem.ScreenToGame(click_position);
-            if (PinMode || true)
+            if (PinMode && false)
             {
                 var obj = Game.PhysicsSystem.GetObjectAtCoords(ingame_pos);
                 if (obj == null)
@@ -465,10 +464,12 @@ namespace Omniplatformer.HUDStates
                 halfsize = new Vector2(Math.Abs(halfsize.X), Math.Abs(halfsize.Y));
                 var origin = new Vector2(0, 1);
                 Game.Log(click_coords.ToString());
+                /*
                 click_coords = new Vector2(
                     ((int)click_coords.X / PhysicsSystem.TileSize) * PhysicsSystem.TileSize,
                     ((int)click_coords.Y / PhysicsSystem.TileSize) * PhysicsSystem.TileSize
                     );
+                */
                 var obj = PositionalConstructors[CurrentConstructor](click_coords, halfsize, origin);
                 CurrentGroup.Add(obj);
                 Game.AddToMainScene(obj);
@@ -483,7 +484,6 @@ namespace Omniplatformer.HUDStates
             if (obj != null)
             {
                 Game.RemoveFromMainScene(obj);
-                Game.MainScene.UnregisterObject(obj);
                 foreach (var (name, group) in Groups)
                 {
                     group.Remove(obj);
