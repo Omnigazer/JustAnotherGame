@@ -131,7 +131,7 @@ namespace Omniplatformer.HUDStates
 
         public virtual void HandleControls()
         {
-            HandleKeyBoard();
+            HandleKeyboard();
             HandleMouseEvents();
         }
 
@@ -143,7 +143,7 @@ namespace Omniplatformer.HUDStates
             Root = new Root();
         }
 
-        public void HandleKeyBoard()
+        public void HandleKeyboard()
         {
             var keyboard_state = Keyboard.GetState();
             foreach (var (key, (pressed_action, released_action, continuous)) in Controls)
