@@ -79,11 +79,22 @@ namespace Omniplatformer.HUDStates
             yield break;
         }
 
+        // Update camera offset based on player position
+        public void AdjustCamera()
+        {
+            var pos = (PositionComponent)Game.Player;
+            var direction = pos.WorldPosition.Center - Game.RenderSystem.Camera.Position;
+            float min_camera_speed = 1f;
+            float max_camera_speed = direction.Length() / 8;
+            float camera_speed = Math.Max(Math.Min(min_camera_speed, direction.Length()), max_camera_speed);
+            if (direction.Length() > 1)
+                direction.Normalize();
+            Game.RenderSystem.Camera.Position = Game.RenderSystem.Camera.Position + direction * camera_speed;
+        }
+
         public virtual void Tick()
         {
-            // Update camera offset based on player position
-            var pos = (PositionComponent)Game.Player;
-            Game.RenderSystem.SetCameraPosition(pos.WorldPosition.Center);
+            AdjustCamera();
         }
 
         public void DrawStatus()
