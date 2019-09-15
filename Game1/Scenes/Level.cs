@@ -119,6 +119,7 @@ namespace Omniplatformer
                     // var type = Type.GetType(type_name);
                     // var obj = (GameObject)type.GetMethod("FromJson").Invoke(null, new object[] { (JObject)obj_data });
                     var obj = (GameObject)deserializer.decodeObject((JObject)obj_data);
+                    RegisterObject(obj);
                 }
                 // objects = SerializeService.Instance.GetObjects();
 
@@ -133,8 +134,10 @@ namespace Omniplatformer
                 }
                 */
 
+                /*
                 foreach (var obj in storage.Values)
                     RegisterObject(obj);
+                */
             }
 
             BinaryFormatter bf = new BinaryFormatter();
