@@ -215,6 +215,8 @@ namespace Omniplatformer
             float dt = time_scale * (float)gameTime.ElapsedGameTime.Milliseconds;
             MainScene.ProcessSubsystems(dt);
             // TODO: include this as a subsystem
+            var drawable = (TileMapRenderComponent)MainScene.TileMap;
+            drawable.RebuildBuffers();
             HUDState.Tick();
         }
         #endregion
@@ -429,13 +431,6 @@ namespace Omniplatformer
             console.AddCommand("ping", a =>
             {
                 // TODO your logic
-                return String.Format("pong");
-            });
-
-            console.AddCommand("upload_buffers", a =>
-            {
-                // TODO your logic
-                RenderSystem.tilemap.UploadBuffers();
                 return String.Format("pong");
             });
 

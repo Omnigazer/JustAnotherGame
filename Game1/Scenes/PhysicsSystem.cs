@@ -287,7 +287,7 @@ namespace Omniplatformer.Scenes
 
         public Position GetTileAtIndices(int i, int j)
         {
-            return new Position(new Vector2(i * TileSize, j * TileSize), new Vector2(TileSize / 2));
+            return new Position(new Vector2(i * TileSize, j * TileSize), new Vector2(TileSize / 2), 0, Vector2.Zero);
         }
 
         public (int, int) GetTileIndices(Vector2 coords)

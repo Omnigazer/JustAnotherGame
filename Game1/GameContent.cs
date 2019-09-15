@@ -32,6 +32,7 @@ namespace Omniplatformer
         public Texture2D boulder { get; set; }
 
         public Texture2D atlas { get; set; }
+        public Dictionary<short, Rectangle> atlas_meta { get; set; }
 
         public SoundEffect startSound { get; set; }
         public SpriteFont defaultFont { get; set; }
@@ -57,11 +58,32 @@ namespace Omniplatformer
             Instance = new GameContent(content);
         }
 
+        public Dictionary<short, Rectangle> ImportTileMetadata(string path)
+        {
+            var meta = new Dictionary<short, Rectangle>();
+            using (StreamReader sr = new StreamReader(path))
+            using (JsonReader reader = new JsonTextReader(sr))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                var data = (JObject)serializer.Deserialize(reader);
+                foreach (JProperty token in data.Children())
+                {
+                    var obj = token.Value;
+                    var location = new Point(obj["location"]["x"].Value<int>(), obj["location"]["y"].Value<int>());
+                    var size = new Point(obj["size"]["x"].Value<int>(), obj["size"]["y"].Value<int>());
+                    meta.Add(short.Parse(token.Name), new Rectangle(location, size));
+                }
+            }
+
+            return meta;
+        }
+
         private GameContent(ContentManager Content)
         {
             this.Content = Content;
             //load images
             atlas = Content.Load<Texture2D>("Textures/atlas");
+            atlas_meta = ImportTileMetadata("Content/test.meta");
             background = Content.Load<Texture2D>("Textures/background0");
             testTile = Content.Load<Texture2D>("Textures/test_tile");
             boulder = Content.Load<Texture2D>("Textures/boulder");
@@ -88,12 +110,10 @@ namespace Omniplatformer
             BlurEffect = Content.Load<Effect>("Effects/blureffect");
 
             whitePixel = new Texture2D(GraphicsService.Instance.GraphicsDevice, 1, 1);
-            whitePixel = new Texture2D(GraphicsService.Instance.GraphicsDevice, 2, 2);
 
             // Create a 1D array of color data to fill the pixel texture with.
             Color[] colorData = {
-                    // Color.White
-                    Color.White, Color.White, Color.White, Color.White
+                    Color.White
                 };
             whitePixel.SetData(colorData);
 

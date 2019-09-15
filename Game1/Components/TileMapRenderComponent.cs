@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.Scenes;
+using Omniplatformer.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,146 +13,76 @@ namespace Omniplatformer.Components
     public class TileMapRenderComponent : RenderComponent
     {
         public GraphicsDevice GraphicsDevice => GameObject.Game.GraphicsDevice;
-
-        // Buffers
-        IndexBuffer back_index_buffer;
-        int[] _back_index_buffer;
-        //
-        VertexPositionColorTexture[] _backbuffer;
         VertexBuffer BackBuffer { get; set; }
 
-        // Tex meta
-        int AtlasWidth => 1280;
-        int AtlasHeight => 1280;
-        int TileWidth => 64;
-        int TileHeight => 64;
+        int RegionWidth => (GameService.Instance.RenderSystem.Camera.ViewportWidth) / PhysicsSystem.TileSize;
+        int RegionHeight => (GameService.Instance.RenderSystem.Camera.ViewportHeight) / PhysicsSystem.TileSize;
 
+        TileRegion[] regions = new TileRegion[4];
 
-        // List<RenderComponent> tiles = new List<RenderComponent>();
-        // List<RenderComponent> background_tiles = new List<RenderComponent>();
-        int tile_vertex_count;
-        int tile_index_count;
-
+        int region_i, region_j;
+        bool to_the_right, to_the_high;
 
         public TileMapRenderComponent(GameObject obj) : base(obj)
         {
-            InitVertexBuffers();
-        }
-
-        public TileMapRenderComponent(GameObject obj, Color color) : base(obj, color)
-        {
 
         }
 
-        public TileMapRenderComponent(GameObject obj, Color color, int z_index = 0) : base(obj, color, z_index)
+        public void RebuildBuffers(bool force = false)
         {
+            Vector2 coords = GameService.Instance.RenderSystem.Camera.Position;
+            var (x, y) = GameService.Instance.PhysicsSystem.GetTileIndices(coords);
 
+            if ((region_i == x / RegionWidth && region_j == y / RegionHeight) &&
+                (to_the_right == x % RegionWidth >= RegionWidth / 2) &&
+                (to_the_high == y % RegionHeight >= RegionHeight / 2) && !force)
+                return;
+
+            region_i = x / RegionWidth;
+            region_j = y / RegionHeight;
+            to_the_right = x % RegionWidth >= RegionWidth / 2;
+            to_the_high = y % RegionHeight >= RegionHeight / 2;
+
+            int h_offset = to_the_right ? 1 : -1;
+            int v_offset = to_the_high ? 1 : -1;
+            BuildBuffer(0, region_i, region_j);
+            BuildBuffer(1, region_i + h_offset, region_j);
+            BuildBuffer(2, region_i, region_j + v_offset);
+            BuildBuffer(3, region_i + h_offset, region_j + v_offset);
         }
 
-        public TileMapRenderComponent(GameObject obj, Color color, Texture2D texture, int z_index = 0, bool tiled = false) : base(obj, color, texture, z_index, tiled)
+        /// <summary>
+        /// Build the tile buffer at the specified region index with target coordinates' tiles
+        /// </summary>
+        /// <param name="region_index">Index in the local region array</param>
+        /// <param name="region_i">X coordinate of the region in the grid</param>
+        /// <param name="region_j">Y coordinate of the region in the grid</param>
+        void BuildBuffer(int region_index, int region_i, int region_j)
         {
+            int tile_count = RegionWidth * RegionHeight;
+            var grid = ((Objects.TileMap)GameObject).Grid;
+            // TODO: account for the resolution change
+            if (regions[region_index] == null)
+                regions[region_index] = new TileRegion(tile_count);
 
-        }
+            var region = regions[region_index];
+            region.ResetBuffers();
 
-        public void InitVertexBuffers()
-        {
-            _backbuffer = new VertexPositionColorTexture[2000000];
-            back_index_buffer = new IndexBuffer(GraphicsDevice, typeof(int), 3000000, BufferUsage.WriteOnly);
-            _back_index_buffer = new int[3000000];
-            BackBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColorTexture), _backbuffer.Length, BufferUsage.None);
-        }
-
-        public void UploadBuffers()
-        {
-            BackBuffer.SetData(_backbuffer);
-            back_index_buffer.SetData(_back_index_buffer);
-        }
-
-        public (Vector2 offset, Vector2 size) GetTileTexCoords(short type)
-        {
-            var tex_width = ((float)TileWidth) / AtlasWidth;
-            int gtype = ((type - 1) / 9) * 3;
-            int ltype = (type - 1) % 9 + 1;
-            var offset = new Vector2(gtype + (ltype - 1) % 3, (ltype - 1) / 3) * tex_width;
-            var size = new Vector2(tex_width, tex_width);
-            return (offset, size);
-        }
-
-        public void AddBackgroundTile(int i, int j, short type)
-        {
-            // Register into the grid here
-
-            int tile_size = PhysicsSystem.TileSize;
-            var rect = new Rectangle(i * tile_size - tile_size / 2, j * tile_size - tile_size / 2, tile_size, tile_size);
-            var color = Color.White;
-
-            var (offset, size) = GetTileTexCoords(type);
-
-            _backbuffer[tile_vertex_count++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Bottom, 0), color, offset);
-            _backbuffer[tile_vertex_count++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Bottom, 0), color, offset + new Vector2(size.X, 0));
-            _backbuffer[tile_vertex_count++] = new VertexPositionColorTexture(new Vector3(rect.Left, -rect.Top, 0), color, offset + new Vector2(0, size.Y));
-            _backbuffer[tile_vertex_count++] = new VertexPositionColorTexture(new Vector3(rect.Right, -rect.Top, 0), color, offset + size);
-
-            _back_index_buffer[tile_index_count++] = tile_vertex_count - 4;
-            _back_index_buffer[tile_index_count++] = tile_vertex_count - 3;
-            _back_index_buffer[tile_index_count++] = tile_vertex_count - 2;
-
-            _back_index_buffer[tile_index_count++] = tile_vertex_count - 2;
-            _back_index_buffer[tile_index_count++] = tile_vertex_count - 3;
-            _back_index_buffer[tile_index_count++] = tile_vertex_count - 1;
-        }
-
-        // public void RemoveTile(RenderComponent tile)
-        public void RemoveTile(int i, int j)
-        {
-            // var tile = (RenderComponent)obj;
-
-            // VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[tiles.Count * 6];
-            // TileBuffer.GetData(vertices);
-
-            /*
-            for(int i = tiles.IndexOf(tile) * 6; i < _tilebuffer.Length - 12; i++)
-            {
-                for (int j = 0; j < 6; j++)
+            for (int i = region_i * RegionWidth; i < (region_i + 1) * RegionWidth; i++)
+                for (int j = region_j * RegionHeight; j < (region_j + 1) * RegionHeight; j++)
                 {
-                    _tilebuffer[i + j] = _tilebuffer[i + j + 6];
+                    var type = grid[i, j];
+                    if (type == 0)
+                        continue;
+                    region.AddBackgroundTile(i, j, type);
                 }
-            }
-
-            int i = tiles.IndexOf(tile) * 6;
-            for (int j = 0; j < 6; j++)
-            {
-                var x = new VertexPositionColorTexture();
-                _tilebuffer[i + j] = x;
-            }
-
-            TileBuffer.SetData(_tilebuffer);
-
-            tiles.Remove(tile);
-            */
+            region.SetData();
         }
 
         public override void Draw()
         {
-            GraphicsDevice.SetVertexBuffer(BackBuffer);
-            BasicEffect basicEffect = new BasicEffect(GameObject.Game.GraphicsDevice);
-
-            basicEffect.TextureEnabled = true;
-            basicEffect.VertexColorEnabled = true;
-            // basicEffect.View = Matrix.CreateScale(0.5f);
-            basicEffect.World = GameObject.CurrentScene.RenderSystem.Camera.TranslationMatrix;
-            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(0, 2560, 1440, 0, 0, 1);
-            // basicEffect.Texture = GameContent.Instance.backgroundTile;
-            basicEffect.Texture = GameContent.Instance.atlas;
-
-            foreach (var pass in basicEffect.CurrentTechnique.Passes)
-            {
-                pass.Apply();
-                // GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, background_tiles.Count * 2);
-                //GraphicsDevice.Indices.SetData()
-                GraphicsDevice.Indices = back_index_buffer;
-                GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, tile_vertex_count / 2);
-            }
+            foreach (var region in regions)
+                region?.Draw();
         }
     }
 }

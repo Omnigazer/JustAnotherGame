@@ -34,7 +34,7 @@ namespace Omniplatformer
             // DrawGame(texture, rect, color, rotation, new Vector2(1, 1));
         }
 
-        public static void DrawScreen(Texture2D texture, Rectangle rect, Color color, float rotation, Vector2 clamped_origin, float scale = 1, bool tiled = false)
+        public static void DrawScreen(Texture2D texture, Rectangle rect, Color color, float rotation, Vector2 clamped_origin, float scale = 1, bool tiled = false, Rectangle? source_rect = null)
         {
             rect = new Rectangle(rect.X, rect.Y, (int)(rect.Width * scale), (int)(rect.Height * scale));
             // clamped_origin = new Vector2(clamped_origin.X, 1 - clamped_origin.Y);
@@ -48,6 +48,7 @@ namespace Omniplatformer
 
             // var origin = new Vector2(texture.Bounds.Width * clamped_origin.X, texture.Bounds.Height * clamped_origin.Y);
             var origin = new Vector2(bounds.Width * clamped_origin.X, bounds.Height * clamped_origin.Y);
+            bounds = source_rect ?? bounds;
             var screen_rect = rect;// game.GameToScreen(rect, clamped_origin);
             //if (origin.Length() > 0)
                // screen_rect.Offset(rect.Size.X * clamped_origin.X, rect.Size.Y * clamped_origin.Y);
@@ -58,7 +59,7 @@ namespace Omniplatformer
                 effects: SpriteEffects.None, layerDepth: 0, sourceRectangle: bounds); // default parameters
         }
 
-        public static void DrawGame(Texture2D texture, Rectangle rect, Color color, float rotation, Vector2 clamped_origin, bool flipped = false, bool tiled = false)
+        public static void DrawGame(Texture2D texture, Rectangle rect, Color color, float rotation, Vector2 clamped_origin, bool flipped = false, bool tiled = false, Rectangle? source_rect = null)
         {
             clamped_origin = new Vector2(clamped_origin.X, 1 - clamped_origin.Y);
             var bounds = texture.Bounds;
@@ -71,6 +72,7 @@ namespace Omniplatformer
 
             // var origin = new Vector2(texture.Bounds.Width * clamped_origin.X, texture.Bounds.Height * clamped_origin.Y);
             var origin = new Vector2(bounds.Width * clamped_origin.X, bounds.Height * clamped_origin.Y);
+            bounds = source_rect ?? bounds;
             var screen_rect = GameToScreen(rect, clamped_origin);
             if (origin.Length() > 0)
                 screen_rect.Offset(rect.Size.X * clamped_origin.X, rect.Size.Y * clamped_origin.Y);

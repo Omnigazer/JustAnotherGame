@@ -27,6 +27,9 @@ namespace Omniplatformer.Scenes
         RenderTarget2D HUDTarget = null;
         // Revealable foreground layer (preliminary)
 
+        // utility effect for tile DIPs
+        public BasicEffect basicEffect;
+
         // Internal counters
         float light_loop = 0;
         const float light_loop_length = 100;
@@ -52,6 +55,13 @@ namespace Omniplatformer.Scenes
                 graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Height
                 );
             InitRenderTargets();
+            basicEffect = new BasicEffect(GraphicsDevice)
+            {
+                TextureEnabled = true,
+                VertexColorEnabled = true,
+                Projection = Matrix.CreateOrthographicOffCenter(0, 2560, 1440, 0, 0, 1),
+                Texture = GameContent.Instance.atlas
+            };
         }
 
         public void SetCameraPosition(Vector2 coords)

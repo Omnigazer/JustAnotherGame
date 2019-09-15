@@ -32,6 +32,7 @@ namespace Omniplatformer.HUDStates
         }
         public MouseButton Button { get; set; }
         public Point Position { get; set; }
+        public Point? LastPosition { get; set; }
     }
 
     public abstract class HUDState

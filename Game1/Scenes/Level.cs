@@ -175,7 +175,6 @@ namespace Omniplatformer
                     RegisterObject(obj);
                     */
                 }
-                drawable.UploadBuffers();
                 RegisterObject(TileMap);
             }
 

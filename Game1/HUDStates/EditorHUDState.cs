@@ -36,7 +36,10 @@ namespace Omniplatformer.HUDStates
 
         public override void Tick()
         {
-
+            if (brush_down)
+                PlaceTiles();
+            else if (eraser_down)
+                PlaceTiles(0);
         }
 
         public EditorHUDState(HUDContainer hud)
@@ -45,13 +48,26 @@ namespace Omniplatformer.HUDStates
             SetupControls();
             InitObjectConstructors();
             RegisterHandlers();
+            Root.RegisterChild(new TilePicker());
         }
 
         public void RegisterHandlers()
         {
             Root.MouseDown += OnMouseDown;
-            Root.MouseMove += OnMouseMove;
             Root.MouseUp += OnMouseUp;
+            Root.MouseMove += OnMouseMove;
+            MouseWheelUp += EditorHUDState_MouseWheelUp;
+            MouseWheelDown += EditorHUDState_MouseWheelDown;
+        }
+
+        private void EditorHUDState_MouseWheelDown(object sender, MouseEventArgs e)
+        {
+            ShrinkBrush();
+        }
+
+        private void EditorHUDState_MouseWheelUp(object sender, MouseEventArgs e)
+        {
+            EnlargeBrush();
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
@@ -59,6 +75,8 @@ namespace Omniplatformer.HUDStates
             DragObject();
         }
 
+        bool brush_down = false;
+        bool eraser_down = false;
         private void OnMouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButton.Left)
@@ -66,16 +84,28 @@ namespace Omniplatformer.HUDStates
                 if (CurrentConstructor != null)
                     ApplyConstructor();
                 else
-                    StartDragging();
+                {
+                    brush_down = true;
+                }
+            }
+            else
+            {
+                eraser_down = true;
             }
         }
 
         private void OnMouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButton.Left)
+            {
+                brush_down = false;
                 StopDragging();
+            }
             else
+            {
+                eraser_down = false;
                 DeleteObject();
+            }
         }
 
         public override void Draw()
@@ -83,6 +113,8 @@ namespace Omniplatformer.HUDStates
             playerHUD.Draw();
             if (CurrentConstructor != null)
                 DrawCurrentBlock();
+            else
+                DrawCurrentTile();
             DrawLogger();
             // DrawStatus();
             base.Draw();
@@ -124,37 +156,6 @@ namespace Omniplatformer.HUDStates
             spriteBatch.End();
         }
 
-        /*
-        public void DrawStatus()
-        {
-            // TODO: TEST
-            var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            int log_width = 500, log_margin = 50;
-            Point log_position = new Point(log_margin, 300);
-            Point log_size = new Point(log_width, 700);
-            var rect = new Rectangle(log_position, log_size);
-            int i = 0;
-            void displayMessage(string message)
-            {
-                spriteBatch.DrawString(GameContent.Instance.defaultFont, message, (log_position + new Point(20, 20 + 20 * i++)).ToVector2(), Color.White);
-            }
-            // Draw directly via the SpriteBatch instance bypassing y-axis flip
-            // GraphicsService.Instance.Draw(GameContent.Instance.whitePixel, rect, Color.Gray * 0.8f);
-            foreach (var msg in GetStatusMessages()) {
-                displayMessage(msg);
-            }
-            // displayMessage(String.Format("Current constructor: {0}", CurrentConstructor));
-            // displayMessage(String.Format("Current group: {0}", CurrentGroupName));
-            // displayMessage(String.Format("Current object: {0}", Game.GetObjectAtCursor()));
-            foreach (var msg in collision_messages)
-            {
-                displayMessage(msg);
-            }
-            spriteBatch.End();
-        }
-        */
-
         public override IEnumerable<string> GetStatusMessages()
         {
             yield return String.Format("Current constructor: {0}", CurrentConstructor);
@@ -164,7 +165,6 @@ namespace Omniplatformer.HUDStates
             {
                 yield return msg;
             }
-            status_messages.Clear();
         }
 
         public void DrawCurrentBlock()
@@ -188,6 +188,110 @@ namespace Omniplatformer.HUDStates
             spriteBatch.End();
         }
 
+        #region Tiles
+        public void DrawCurrentTile()
+        {
+            var spriteBatch = GraphicsService.Instance;
+
+            var mouse_pos = Mouse.GetState().Position;
+            Vector2 mouse_coords = Game.RenderSystem.ScreenToGame(mouse_pos);
+            var x = (int)mouse_coords.X / PhysicsSystem.TileSize;
+            var y = (int)mouse_coords.Y / PhysicsSystem.TileSize;
+            for (int i = x; i < x + brush_size; i++)
+            {
+                for (int j = y; j < y + brush_size; j++)
+                {
+                    DrawTile(i, j);
+                }
+            }
+        }
+
+        public int current_tile = 2;
+        public void DrawTile(int x, int y)
+        {
+            if (GameContent.Instance.atlas_meta.ContainsKey((short)current_tile))
+            {
+                var spriteBatch = GraphicsService.Instance;
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Game.RenderSystem.Camera.TranslationMatrix);
+
+                Vector2 mouse_coords = new Vector2(x * PhysicsSystem.TileSize, y * PhysicsSystem.TileSize);
+                var rect = new Rectangle(mouse_coords.ToPoint(), new Point(PhysicsSystem.TileSize));
+                var tex = GameContent.Instance.atlas;
+                var source_rect = GameContent.Instance.atlas_meta[(short)current_tile];
+                GraphicsService.DrawGame(tex, rect, Color.White, 0, new Vector2(0.0f, 1f), source_rect: source_rect);
+                spriteBatch.End();
+            }
+        }
+
+        int brush_size = 1;
+        public void EnlargeBrush()
+        {
+            brush_size++;
+        }
+
+        public void ShrinkBrush()
+        {
+            brush_size = Math.Max(0, brush_size - 1);
+        }
+
+        public void NextTile()
+        {
+            current_tile++;
+        }
+
+        public void PrevTile()
+        {
+            current_tile = Math.Max(0, current_tile - 1);
+        }
+
+        public void PlaceTiles(short? type = null)
+        {
+            type = (short)(type ?? current_tile);
+            var pos = Mouse.GetState().Position;
+            var click_coords = GetInGameCoords(pos);
+            var (x, y) = Game.PhysicsSystem.GetTileIndices(click_coords);
+            bool rebuild = false;
+            for (int i = x; i < x + brush_size; i++)
+            {
+                for (int j = y; j < y + brush_size; j++)
+                {
+                    // DrawTile(i, j);
+                    rebuild = PlaceTile(i, j, type.Value) || rebuild;
+                }
+            }
+            if (rebuild)
+            {
+                var tilemap = Game.MainScene.TileMap;
+                var drawable = (TileMapRenderComponent)tilemap;
+                drawable.RebuildBuffers(true);
+            }
+        }
+
+        public bool PlaceTile(int x, int y, short type)
+        {
+            var tile = new Tile() { Col = y, Row = x, Type = type };
+            var tilemap = Game.MainScene.TileMap;
+            if (tilemap.Grid[x, y] != tile.Type)
+            {
+                tilemap.RegisterTile(tile);
+                return true;
+            }
+            return false;
+        }
+
+        public void RemoveTile()
+        {
+            var pos = Mouse.GetState().Position;
+            var click_coords = GetInGameCoords(pos);
+            var (x, y) = Game.PhysicsSystem.GetTileIndices(click_coords);
+            var tile = new Tile() { Col = y, Row = x };
+            Game.MainScene.TileMap.RemoveTile(tile);
+            var drawable = (TileMapRenderComponent)Game.MainScene.TileMap;
+            drawable.RebuildBuffers(true);
+        }
+        #endregion
+
+
         int increment = 8;
         public void IncreaseWidth() => current_block_width += increment;
         public void DecreaseWidth() => current_block_width -= increment;
@@ -200,21 +304,13 @@ namespace Omniplatformer.HUDStates
             Action noop = delegate { };
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
-                // {  Keys.A, (Game.WalkLeft, noop, true) },
-                // {  Keys.D, (Game.WalkRight, noop, true) },
-                // {  Keys.S, (Game.GoDown, noop, true) },
-                // {  Keys.W, (Game.GoUp, noop, true) },
-
                 {  Keys.A, (MoveCameraLeft, noop, true) },
                 {  Keys.D, (MoveCameraRight, noop, true) },
                 {  Keys.S, (MoveCameraDown, noop, true) },
                 {  Keys.W, (MoveCameraUp, noop, true) },
 
-                {  Keys.Space, (Game.Jump, Game.StopJumping, false) },
-                {  Keys.I, (Game.OpenInventory, noop, false) },
-                {  Keys.Z, (Game.Fire, noop, false) },
-                {  Keys.X, (Game.Swing, noop, false) },
-                {  Keys.C, (Game.OpenChest, noop, false) },
+                {  Keys.Z, (PrevTile, noop, false) },
+                {  Keys.C, (NextTile, noop, false) },
                 {  Keys.Q, (SetPrevConstructor, noop, false) },
                 {  Keys.E, (SetNextConstructor, noop, false) },
                 {  Keys.R, (ClearConstructor, noop, false) },
@@ -241,26 +337,6 @@ namespace Omniplatformer.HUDStates
         public string CurrentGroupName { get; set; } = "default";
         Dictionary<string, List<GameObject>> Groups => Game.Groups;
         public List<GameObject> CurrentGroup => CurrentGroupName != null && Groups.ContainsKey(CurrentGroupName) ? Groups[CurrentGroupName] : null;
-
-        /*
-        public void NextGroup()
-        {
-            CurrentGroupIndex++;
-            Game.Log($"Current Group: {CurrentGroupIndex}");
-            if (CurrentGroup == null)
-            {
-                Groups.Add(new List<GameObject>());
-                // Maybe should switch to dictionary
-                // Groups[CurrentGroupIndex] = ;
-            }
-        }
-
-        public void PrevGroup()
-        {
-            CurrentGroupIndex = Math.Max(0, CurrentGroupIndex - 1);
-            Game.Log($"Current Group: {CurrentGroupIndex}");
-        }
-        */
 
         public void SetGroup(string name)
         {
@@ -480,7 +556,6 @@ namespace Omniplatformer.HUDStates
         {
             var obj = Game.GetObjectAtCursor();
             var coords = Game.RenderSystem.ScreenToGame(Mouse.GetState().Position);
-            var tile = Game.PhysicsSystem.GetTileAtCoords(coords);
             if (obj != null)
             {
                 Game.RemoveFromMainScene(obj);
@@ -489,10 +564,8 @@ namespace Omniplatformer.HUDStates
                     group.Remove(obj);
                 }
             }
-            else if (tile != 0) {
-                Game.PhysicsSystem.RemoveTileAtCoords(coords);
-            }
+            else
+                RemoveTile();
         }
-
     }
 }

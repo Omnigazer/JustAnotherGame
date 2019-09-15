@@ -28,9 +28,14 @@ namespace Omniplatformer.Objects
             // short val = (short)(tile.Type == 's' ? 1 : 2);
             short val = (short)tile.Type;
             Grid[tile.Row, tile.Col] = val;
+        }
 
+        public void RemoveTile(Tile tile)
+        {
+            Grid[tile.Row, tile.Col] = 0;
             var drawable = (TileMapRenderComponent)this;
-            drawable.AddBackgroundTile(tile.Row, tile.Col, val);
+            // drawable.ReloadBuffer();
+            // drawable.
         }
     }
 }
