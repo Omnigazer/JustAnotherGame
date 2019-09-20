@@ -28,11 +28,14 @@ namespace Omniplatformer.Components
         public bool IsClimbing { get; set; }
         public bool IsJumping { get; set; }
 
+        public float ChassisSpeed { get; set; }
+
         public PlayerMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj, coords, halfsize)
         {
             Solid = true;
             MaxMoveSpeed = 5;
             Acceleration = 0.8f;
+            InverseMass = 0.1f;
         }
 
         public override void Tick(float dt)
@@ -207,7 +210,6 @@ namespace Omniplatformer.Components
             else
             {
                 ProcessWalking(dt);
-
                 if (IsJumping)
                 {
                     CurrentMovement += new Vector2(0, jump_accel);
@@ -216,6 +218,45 @@ namespace Omniplatformer.Components
                 TrimSpeed();
                 CapMovement();
             }
+        }
+
+        public override void ProcessWalking(float dt)
+        {
+            var pos = GetComponent<PositionComponent>();
+            switch (move_direction)
+            {
+                case Direction.Left:
+                    {
+                        pos.SetLocalFace(HorizontalDirection.Left);
+                        // CurrentMovement += new Vector2(-move_speed, 0);
+                        ChassisSpeed += -Acceleration * dt;
+                        break;
+                    }
+                case Direction.Right:
+                    {
+                        pos.SetLocalFace(HorizontalDirection.Right);
+                        // CurrentMovement += new Vector2(move_speed, 0);
+                        ChassisSpeed += Acceleration * dt;
+                        break;
+                    }
+                case Direction.None:
+                    {
+                        ChassisSpeed = 0;
+                        break;
+                    }
+            }
+        }
+
+        public override void CapMovement()
+        {
+            float fall_cap = GetDownSpeedCap();
+            float capped_y = Math.Max(CurrentMovement.Y, fall_cap);
+            capped_y = Math.Min(capped_y, GetUpSpeedCap());
+            if (Math.Abs(ChassisSpeed) > GetHorizontalSpeedCap())
+            {
+                ChassisSpeed = GetHorizontalSpeedCap() * Math.Sign(ChassisSpeed);
+            }
+            VerticalSpeed = capped_y;
         }
     }
 }

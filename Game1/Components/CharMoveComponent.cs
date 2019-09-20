@@ -26,12 +26,14 @@ namespace Omniplatformer.Components
         {
             MaxMoveSpeed = 5;
             Hittable = true;
+            Solid = true;
         }
 
         public CharMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize, float movespeed) : base(obj, coords, halfsize)
         {
             MaxMoveSpeed = movespeed;
             Hittable = true;
+            Solid = true;
         }
 
         // Check what kinds of objects are we colliding here
@@ -86,7 +88,7 @@ namespace Omniplatformer.Components
             CapMovement();
         }
 
-        public void ProcessWalking(float dt)
+        public virtual void ProcessWalking(float dt)
         {
             var pos = GetComponent<PositionComponent>();
             switch (move_direction)
@@ -155,7 +157,8 @@ namespace Omniplatformer.Components
             capped_y = Math.Min(capped_y, GetUpSpeedCap());
             if (Math.Abs(HorizontalSpeed) > GetHorizontalSpeedCap())
             {
-                HorizontalSpeed -= 2 * Acceleration * Math.Sign(HorizontalSpeed);
+                // HorizontalSpeed -= 2 * Acceleration * Math.Sign(HorizontalSpeed) * (Math.Abs(HorizontalSpeed) - GetHorizontalSpeedCap());
+                HorizontalSpeed = GetHorizontalSpeedCap() * Math.Sign(HorizontalSpeed);
             }
             VerticalSpeed = capped_y;
         }

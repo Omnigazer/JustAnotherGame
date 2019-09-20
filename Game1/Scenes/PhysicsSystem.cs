@@ -81,9 +81,9 @@ namespace Omniplatformer.Scenes
                     float local_dt = dt / N;
                     // apply external forces
                     ApplyGravity(obj, local_dt);
-                    ApplyFriction(obj, local_dt);
                     // apply controls
                     obj.ProcessMovement(local_dt);
+                    ApplyFriction(obj, local_dt);
                     // reset flags?
                     obj.ResetCollisionFlags();
                     if (ProcessCollisions(obj))
@@ -176,49 +176,40 @@ namespace Omniplatformer.Scenes
         {
             if (movable.InverseMass == 0)
                 return;
-            // constant "air resistance" force times inverse mass
-            float a_air = 0.004f * movable.InverseMass * dt * 0;
-            // float a_air = 0;
-            /*
-            float a = -(gravity - a_air);
-            int direction_sign = Math.Sign(movable.HorizontalSpeed);
-            movable.CurrentMovement += new Vector2(-a_air * direction_sign, a);
-            */
             movable.CurrentMovement += new Vector2(0, -G * dt);
-            movable.CurrentMovement -= movable.CurrentMovement * a_air;
         }
 
         protected void ApplyFriction(DynamicPhysicsComponent movable, float dt)
         {
             // get current "platform"
             var ground = movable.CurrentGround;
+
+            // air friction
             if (ground == null)
-                return;
-
-            if (ground.Solid) {
-                // float friction = 1 - ground.Friction;
-                float friction = ground.Friction;
-                //if (movable.move_direction == Direction.None)
-                //    movable.HorizontalSpeed *= 1 - friction;
-
-                {
-                    // TODO: implement "chassis"
-                    var speed = (ground as DynamicPhysicsComponent)?.HorizontalSpeed;
-                    movable.HorizontalSpeed += ((speed ?? 0) - movable.HorizontalSpeed) * friction * dt * 0.1f;
-                }
-            }
-            else if (ground.Liquid)
             {
-                // var pos = movable.GetComponent<PositionComponent>();
-                // TODO: extract this
-                float immersion = movable.GetImmersionShare(ground);
-                movable.CurrentMovement -= ground.Friction * immersion * movable.CurrentMovement * dt;
+                var chassis_speed = (movable.GetComponent<PlayerMoveComponent>())?.ChassisSpeed ?? 0;
+                float air_control = 150f;
+                float v_air = 0.004f * movable.InverseMass;
+                float h_air = 0.004f * movable.InverseMass;
+                if (movable.move_direction != Direction.None)
+                    h_air *= air_control;
+                movable.HorizontalSpeed += (chassis_speed - movable.HorizontalSpeed) * h_air * dt;
+                movable.VerticalSpeed += (-movable.HorizontalSpeed) * v_air * dt;
+            }
+            else if (ground.Solid) {
+                float friction = ground.Friction;
+                {
+                    var chassis_speed = (movable.GetComponent<PlayerMoveComponent>())?.ChassisSpeed ?? 0;
+                    var ground_speed = (ground as DynamicPhysicsComponent)?.HorizontalSpeed;
+                    var delta = ((ground_speed ?? 0) - movable.HorizontalSpeed + chassis_speed) * friction * dt;
+                    movable.HorizontalSpeed += delta;
+                }
             }
         }
 
         protected void ApplyCollisionResponse(DynamicPhysicsComponent movable, PhysicsComponent target, Position target_pos, Direction dir)
         {
-            // if (target.Solid)
+            if (target.Solid)
             {
                 switch (dir)
                 {
@@ -230,36 +221,27 @@ namespace Omniplatformer.Scenes
                     case Direction.Left:
                         {
                             movable.HorizontalSpeed = Math.Max(0, movable.HorizontalSpeed);
+                            if(movable is PlayerMoveComponent)
+                            movable.GetComponent<PlayerMoveComponent>().ChassisSpeed = Math.Max(0, movable.GetComponent<PlayerMoveComponent>().ChassisSpeed);
                             break;
                         }
                     case Direction.Right:
                         {
                             movable.HorizontalSpeed = Math.Min(0, movable.HorizontalSpeed);
+                            if (movable is PlayerMoveComponent)
+                                movable.GetComponent<PlayerMoveComponent>().ChassisSpeed = Math.Min(0, movable.GetComponent<PlayerMoveComponent>().ChassisSpeed);
                             break;
                         }
                     case Direction.Down:
                         {
                             movable.VerticalSpeed = Math.Max(0, movable.CurrentMovement.Y);
                             movable.CurrentGround = target;
-                            /*
-
-                            float friction = 1 - target.Friction;
-                            if (movable.move_direction != Direction.None)
-                                friction -= 1f;
-                            //if (movable.move_direction == Direction.None)
-                            //    movable.HorizontalSpeed *= 1 - friction;
-                            if (target is DynamicPhysicsComponent)
-                            {
-                                var speed = (target as DynamicPhysicsComponent).HorizontalSpeed;
-                                //if (speed >= 0 ? movable.HorizontalSpeed < speed : movable.HorizontalSpeed > speed)
-                                movable.HorizontalSpeed += (speed - movable.HorizontalSpeed) * friction;
-                            }
-                            */
                             break;
                         }
                 }
                 PinTo(movable, target_pos, dir);
             }
+            // TODO: reimplement this
             /*
             else if (target.Liquid)
             {
@@ -327,21 +309,6 @@ namespace Omniplatformer.Scenes
 
         public GameObject GetObjectAtCoords(Vector2 coords)
         {
-            /*
-            foreach (var platform in objects)
-            {
-                // if (!platform.Draggable)
-                // {
-                //     continue;
-                // }
-                var platform_pos = (PositionComponent)platform;
-                if (platform_pos.Contains(coords))
-                {
-                    return platform;
-                }
-            }
-            */
-
             foreach (var component in objects)
             {
                 if (component.Contains(coords))

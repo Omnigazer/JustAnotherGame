@@ -15,9 +15,8 @@ namespace Omniplatformer
     {
         public MovingPlatform(Vector2 coords, Vector2 halfsize)
         {
-            // Components.Add(new PhysicsComponent(this, position, new Vector2(100, 10)));
+            Components.Add(new PlatformMoveComponent(this, coords, halfsize) { Solid = true, Friction = 0.08f });
             Components.Add(new RenderComponent(this));
-            Components.Add(new PlatformMoveComponent(this, coords, halfsize) { Solid = true, Friction = 0 });
         }
 
         public override object AsJson()

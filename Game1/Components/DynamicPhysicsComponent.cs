@@ -72,7 +72,7 @@ namespace Omniplatformer.Components
         // Set speed < e to zero to prevent shaking
         public void TrimSpeed()
         {
-            float e = 0.1f;
+            float e = 0.01f;
             if (Math.Abs(VerticalSpeed) < e)
             {
                 VerticalSpeed = 0;
