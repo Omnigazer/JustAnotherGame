@@ -44,7 +44,7 @@ namespace Omniplatformer.Components
                 var pos = GetComponent<PositionComponent>();
                 var their_pos = (PositionComponent)target;
                 var dir_sign = Math.Sign(their_pos.WorldPosition.Center.X - pos.WorldPosition.Center.X);
-                movable.CurrentMovement += new Vector2(Knockback.X * dir_sign, Knockback.Y);
+                movable.ApplyImpulse(new Vector2(Knockback.X * dir_sign, Knockback.Y));
             }
         }
 

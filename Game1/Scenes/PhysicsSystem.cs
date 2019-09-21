@@ -176,7 +176,7 @@ namespace Omniplatformer.Scenes
         {
             if (movable.InverseMass == 0)
                 return;
-            movable.CurrentMovement += new Vector2(0, -G * dt);
+            movable.ApplyImpulse(new Vector2(0, -G * dt), true);
         }
 
         protected void ApplyFriction(DynamicPhysicsComponent movable, float dt)
@@ -215,7 +215,7 @@ namespace Omniplatformer.Scenes
                 {
                     case Direction.Up:
                         {
-                            movable.VerticalSpeed = Math.Min(0, movable.CurrentMovement.Y);
+                            movable.VerticalSpeed = Math.Min(0, movable.VerticalSpeed);
                             break;
                         }
                     case Direction.Left:
@@ -234,7 +234,7 @@ namespace Omniplatformer.Scenes
                         }
                     case Direction.Down:
                         {
-                            movable.VerticalSpeed = Math.Max(0, movable.CurrentMovement.Y);
+                            movable.VerticalSpeed = Math.Max(0, movable.VerticalSpeed);
                             movable.CurrentGround = target;
                             break;
                         }

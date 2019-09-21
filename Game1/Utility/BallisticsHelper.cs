@@ -10,24 +10,19 @@ namespace Omniplatformer.Utility
 {
     class BallisticsHelper
     {
-        public static Vector2? GetThrowVector(float module, float distance, float height = 0)
+        public static Vector2? GetThrowVector(float force, float inverse_mass, float distance, float height = 0)
         {
+            float speed = force * inverse_mass;
             int dir = Math.Sign(distance);
             distance = Math.Abs(distance);
-            distance += 50;
-            // float module = 20;
-            // var distance = (player_pos.WorldPosition.Coords - pos.WorldPosition.Coords).X;
-            // old formula
-            // float angle = (float)Math.Asin(distance / (module * module)) / 2;
             float g = PhysicsSystem.G;
-            float angle = (float)Math.Atan2(module * module - Math.Sqrt(Math.Pow(module, 4) - g * (g * distance * distance + 2 * height * module * module)), g * distance);
-
+            float angle = (float)Math.Atan2(speed * speed - Math.Sqrt(Math.Pow(speed, 4) - g * (g * distance * distance + 2 * height * speed * speed)), g * distance);
 
             if (!float.IsNaN(angle))
             {
                 var direction = new Vector2((float)Math.Cos(angle) * dir, (float)Math.Sin(angle));
                 direction.Normalize();
-                direction *= module;
+                direction *= force;
                 return direction;
             }
 

@@ -10,11 +10,11 @@ namespace Omniplatformer.Objects
 {
     class Boulder : Projectile
     {
-        public Boulder(Vector2 coords, Vector2 direction): base()
+        public static float InverseMass => 0.8f;
+        public Boulder(Vector2 coords): base()
         {
             TTL = 50000;
-            var movable = new ProjectileMoveComponent(this, coords, new Vector2(10, 10)) { Solid = false, Hittable = false, InverseMass = 0.5f };
-            movable.CurrentMovement = direction;
+            var movable = new ProjectileMoveComponent(this, coords, new Vector2(6, 6)) { Solid = false, Hittable = false, InverseMass = InverseMass };
             Components.Add(movable);
             var c = new AnimatedRenderComponent(this) { Texture = GameContent.Instance.boulder };
             c.AddAnimation(new Animations.DeathAnimation(c));

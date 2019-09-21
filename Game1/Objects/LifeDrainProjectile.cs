@@ -21,7 +21,7 @@ namespace Omniplatformer
             // float speed = 20;
             proj_movable.Rotate(-(float)Math.Atan2(direction.Y, direction.X));
             // proj_movable.CurrentMovement = speed * direction;
-            proj_movable.CurrentMovement = direction;
+            proj_movable.ApplyImpulse(direction, true);
 
             Components.Add(proj_movable);
             var c = new GlowingRenderComponent(this) { GlowColor = Color.Purple };

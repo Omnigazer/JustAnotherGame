@@ -74,9 +74,9 @@ namespace Omniplatformer.Characters
             var drawable = GetComponent<CharacterRenderComponent>();
             if (TryCooldown("Cast", 120))
             {
-                float module = 30;
+                float force = 30;
                 var distance = player_pos.WorldPosition.Coords - pos.WorldPosition.Coords;
-                var direction = BallisticsHelper.GetThrowVector(module, distance.X, distance.Y);
+                var direction = BallisticsHelper.GetThrowVector(force, Boulder.InverseMass, distance.X, distance.Y);
 
                 drawable.StartAnimation(AnimationType.Cast, 20);
                 EventHandler<AnimationEventArgs> handler = null;
@@ -84,18 +84,12 @@ namespace Omniplatformer.Characters
                 {
                     if (e.animation == AnimationType.Cast)
                     {
-                        // var direction = player_pos.WorldPosition.Coords - pos.WorldPosition.Coords + new Vector2(0, 100);
-
-                        /*
-                        float module = 20;
-                        var distance = player_pos.WorldPosition.Coords - pos.WorldPosition.Coords;
-                        var direction = BallisticsHelper.GetThrowVector(module, distance.X, distance.Y);
-                        */
-
                         if (direction != null)
                         {
-                            var boulder = new Boulder((pos.WorldPosition).Coords, direction.Value) { Team = Team.Enemy };
+                            var boulder = new Boulder((pos.WorldPosition).Coords) { Team = Team.Enemy };
                             Game.AddToMainScene(boulder);
+                            var b_movable = (DynamicPhysicsComponent)boulder;
+                            b_movable.ApplyImpulse(direction.Value);
                         }
 
                         // Spells.FireBolt.Cast(this, player_pos.WorldPosition);

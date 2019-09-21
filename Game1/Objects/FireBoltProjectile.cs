@@ -23,7 +23,7 @@ namespace Omniplatformer
             direction.Normalize();
             float speed = 20;
             proj_movable.Rotate(-(float)Math.Atan2(direction.Y, direction.X));
-            proj_movable.CurrentMovement = speed * direction;
+            proj_movable.ApplyImpulse(speed * direction, true);
 
             Components.Add(proj_movable);
             Components.Add(new GlowingRenderComponent(this));
@@ -46,8 +46,10 @@ namespace Omniplatformer
         public void GenerateSpark()
         {
             var movable = GetComponent<ProjectileMoveComponent>();
-            int x = RandomGen.Next(-15, 15), y = RandomGen.Next(-15, 15);
-            var spark = new Particle(movable.WorldPosition.Coords, new Vector2(x, y));
+            float x = RandomGen.NextFloat(-1.5f, 1.5f), y = RandomGen.NextFloat(-1.5f, 1.5f);
+            var spark = new Particle(movable.WorldPosition.Coords);
+            var s_movable = (DynamicPhysicsComponent)spark;
+            s_movable.ApplyImpulse(new Vector2(x, y));
             Game.AddToMainScene(spark);
         }
 
