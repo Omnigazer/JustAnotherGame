@@ -82,7 +82,7 @@ namespace Omniplatformer
 
         public void StartBlocking()
         {
-            if(EquipSlots.LeftHandSlot.Item == null)
+            if(EquipSlots.LeftHandSlot.Item == null || EquipLocked)
                 return;
 
             Blocking = true;
