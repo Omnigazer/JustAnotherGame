@@ -1,0 +1,111 @@
+{
+  "objects": [
+    {
+      "Id": "ccd52f91-650b-4b56-b57b-dc9ef22ab459",
+      "type": "Omniplatformer.Characters.Goblin, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Position": {
+        "coords": {
+          "x": 47307.8945,
+          "y": 33762.0
+        },
+        "halfsize": {
+          "x": 20.0,
+          "y": 26.0
+        },
+        "origin": {
+          "x": 0.5,
+          "y": 0.5
+        }
+      }
+    },
+    {
+      "Id": "092180e1-18c7-452b-9b74-6642e6ab5894",
+      "type": "Omniplatformer.Characters.Goblin, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Position": {
+        "coords": {
+          "x": 47502.38,
+          "y": 33762.0
+        },
+        "halfsize": {
+          "x": 20.0,
+          "y": 26.0
+        },
+        "origin": {
+          "x": 0.5,
+          "y": 0.5
+        }
+      }
+    },
+    {
+      "Id": "32bc9b3d-95d7-4631-8bc8-e7c0892f7e4d",
+      "type": "Omniplatformer.Characters.Goblin, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Position": {
+        "coords": {
+          "x": 47543.3672,
+          "y": 33762.0
+        },
+        "halfsize": {
+          "x": 20.0,
+          "y": 26.0
+        },
+        "origin": {
+          "x": 0.5,
+          "y": 0.5
+        }
+      }
+    },
+    {
+      "Id": "79d49643-094a-4231-b2e9-f206f992bf01",
+      "type": "Omniplatformer.Shield, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "Id": "477b7ea4-5529-41e6-830f-e1cf8dee16c7",
+      "type": "Omniplatformer.WieldedItem, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "damage": 1
+    },
+    {
+      "Id": "2400e95c-35e5-465f-a30a-806ce0181553",
+      "type": "Omniplatformer.Player, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Position": {
+        "coords": {
+          "x": 41206.3867,
+          "y": 32732.0
+        },
+        "halfsize": {
+          "x": 20.0,
+          "y": 36.0
+        },
+        "origin": {
+          "x": 0.5,
+          "y": 0.5
+        }
+      },
+      "Inventory": [],
+      "EquipSlots": {
+        "LeftHand": {
+          "Id": "79d49643-094a-4231-b2e9-f206f992bf01",
+          "type": "Omniplatformer.Shield, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+        },
+        "RightHand": {
+          "Id": "477b7ea4-5529-41e6-830f-e1cf8dee16c7",
+          "type": "Omniplatformer.WieldedItem, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+          "damage": 1
+        },
+        "ChannelSlot": {
+          "Id": "3692d351-6074-4804-ad5c-07a793a09cce",
+          "type": "Omniplatformer.ChaosOrb, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+        },
+        "MiscSlots": []
+      }
+    },
+    {
+      "Id": "477b7ea4-5529-41e6-830f-e1cf8dee16c7",
+      "type": "Omniplatformer.WieldedItem, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "damage": 1
+    },
+    {
+      "Id": "79d49643-094a-4231-b2e9-f206f992bf01",
+      "type": "Omniplatformer.Shield, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    }
+  ]
+}

@@ -97,7 +97,7 @@ namespace Omniplatformer
             if (bitmap)
                 MainScene.LoadFromBitmap("level1");
             else
-                MainScene.Load("bsave6");
+                MainScene.Load("default_level");
             // TODO: extract this
             Player._onDestroy += GameOver;
         }
