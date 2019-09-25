@@ -62,7 +62,6 @@ namespace Omniplatformer.Utility
         {
             var id_str = inner["Id"];
             Guid id = Guid.Empty;
-            GameObject obj;
             if (id_str != null)
             {
                 id = Guid.Parse(inner["Id"].ToString());
@@ -72,11 +71,16 @@ namespace Omniplatformer.Utility
                 }
             }
             Type type = Type.GetType(inner["type"].ToString());
-            obj = (GameObject)type.GetMethod("FromJson").Invoke(null, new object[] { new Deserializer(inner, storage) });
+            object obj = type.GetMethod("FromJson").Invoke(null, new object[] { new Deserializer(inner, storage) });
 
             if (id != Guid.Empty)
-                obj.Id = id;
-            storage.Add(obj.Id, obj);
+            {
+                GameObject gobj = (GameObject)obj;
+                gobj.Id = id;
+                storage.Add(gobj.Id, gobj);
+            }
+
+
             return obj;
         }
 
