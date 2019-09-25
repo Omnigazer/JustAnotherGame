@@ -66,6 +66,12 @@ namespace Omniplatformer.Scenes
             graphics.ApplyChanges();
         }
 
+        public void ToggleFullScreen()
+        {
+            graphics.IsFullScreen = !graphics.IsFullScreen;
+            graphics.ApplyChanges();
+        }
+
         public (int, int) GetResolution()
         {
             return (graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);

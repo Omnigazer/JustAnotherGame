@@ -73,7 +73,8 @@ namespace Omniplatformer.HUDStates
                 {  Keys.OemMinus, (Game.ZoomOut, noop, true) },
                 {  Keys.OemPlus, (Game.ZoomIn, noop, true) },
                 {  Keys.OemCloseBrackets, (Game.ResetZoom, noop, true) },
-                {  Keys.F11, (Game.OpenEditor, noop, false) }
+                {  Keys.F11, (Game.OpenEditor, noop, false) },
+                {  Keys.F12, (Game.RenderSystem.ToggleFullScreen, noop, false) }
             };
         }
 
