@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using Omniplatformer.Components;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,14 +38,13 @@ namespace Omniplatformer.Utility
         public static (Vector2 coords, Vector2 halfsize, Vector2 origin) FromJson(JObject input)
         {
             JObject pos_data = (JObject)input["Position"];
-            var coords = new Vector2(float.Parse((string)pos_data["coords"]["x"]), float.Parse((string)pos_data["coords"]["y"]));
-            var halfsize = new Vector2(float.Parse((string)pos_data["halfsize"]["x"]), float.Parse((string)pos_data["halfsize"]["y"]));
+            var coords = new Vector2(pos_data["coords"]["x"].Value<float>(), pos_data["coords"]["y"].Value<float>());
+            var halfsize = new Vector2(pos_data["halfsize"]["x"].Value<float>(), pos_data["halfsize"]["y"].Value<float>());
 
             Vector2 origin = Position.DefaultOrigin;
             if (pos_data["origin"]?.Type == JTokenType.Object)
             {
-                origin = new Vector2(float.Parse((string)pos_data["origin"]["x"]), float.Parse((string)pos_data["origin"]["y"]));
-                // return new SolidPlatform(coords, halfsize, origin);
+                origin = new Vector2(pos_data["origin"]["x"].Value<float>(), pos_data["origin"]["y"].Value<float>());
             }
             return (coords, halfsize, origin);
         }
