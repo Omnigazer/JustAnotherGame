@@ -36,24 +36,32 @@ namespace Omniplatformer.HUDStates
 
     public abstract class HUDState
     {
+        // Internal flags
         // tracks key press/release
         public static Dictionary<Keys, bool> release_map = new Dictionary<Keys, bool>();
-        bool lmb_pressed;
-        bool rmb_pressed;
-        public static Point click_pos;
+        protected bool lmb_pressed;
+        protected bool rmb_pressed;
+        static int last_scroll_value;
+        protected Point mouse_pos;
+        public static Point? last_click_pos;
+        ViewControl captured_element;
 
         public List<string> status_messages = new List<string>();
         protected Game1 Game => GameService.Instance;
+        // Root window
+        public Root Root { get; set; }
 
         // Events
         protected event EventHandler<MouseEventArgs> MouseMove = delegate { };
         protected event EventHandler<MouseEventArgs> MouseUp = delegate { };
         protected event EventHandler<MouseEventArgs> MouseDown = delegate { };
+        protected event EventHandler<MouseEventArgs> MouseWheelUp = delegate { };
+        protected event EventHandler<MouseEventArgs> MouseWheelDown = delegate { };
         // Keyboard controls
         public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
 
         // public static GameObject MouseStorage { get; set; }
-        Point mouse_pos;
+
         public virtual void Draw()
         {
             var spriteBatch = GraphicsService.Instance;
@@ -117,37 +125,15 @@ namespace Omniplatformer.HUDStates
             {
                 displayMessage(msg);
             }
-            // displayMessage(String.Format("Current constructor: {0}", CurrentConstructor));
-            // displayMessage(String.Format("Current group: {0}", CurrentGroupName));
-            // displayMessage(String.Format("Current object: {0}", Game.GetObjectAtCursor()));
-            /*
-            foreach (var msg in collision_messages)
-            {
-                displayMessage(msg);
-            }
-            */
+            status_messages.Clear();
             spriteBatch.End();
         }
-
-        /*
-        public virtual void DrawStorage()
-        {
-            if (MouseStorage != null)
-            {
-                var mouse_pos = Mouse.GetState().Position;
-                GraphicsService.DrawScreen(((RenderComponent)MouseStorage).Texture, new Rectangle(mouse_pos, new Point(60, 60)), Color.White, 0, Vector2.Zero);
-            }
-        }
-        */
 
         public virtual void HandleControls()
         {
             HandleKeyboard();
             HandleMouseEvents();
         }
-
-        // public List<ViewControl> Children { get; } = new List<ViewControl>();
-        public Root Root { get; set; }
 
         public HUDState()
         {
@@ -181,37 +167,55 @@ namespace Omniplatformer.HUDStates
             var mouse = Mouse.GetState();
             if (mouse.Position != mouse_pos)
             {
-                Root.MouseMove(mouse.Position);
+                if (!lmb_pressed && !rmb_pressed)
+                    Root.onMouseMove(mouse.Position);
+                else
+                    captured_element.onMouseMove(mouse.Position - captured_element?.Parent?.Position ?? Point.Zero);
+
                 mouse_pos = mouse.Position;
-                MouseMove(this, new MouseEventArgs());
+            }
+
+            if(mouse.ScrollWheelValue != last_scroll_value)
+            {
+                if (mouse.ScrollWheelValue > last_scroll_value)
+                    MouseWheelUp(this, new MouseEventArgs());
+                else
+                    MouseWheelDown(this, new MouseEventArgs());
+                last_scroll_value = mouse.ScrollWheelValue;
             }
 
             // Left mouse button
             if (mouse.LeftButton == ButtonState.Pressed && !lmb_pressed)
             {
+                if(!lmb_pressed && !rmb_pressed)
+                    captured_element = Root.onMouseDown(MouseButton.Left, mouse.Position);
+                else
+                {
+                    captured_element.onMouseDown(MouseButton.Left, mouse.Position);
+                }
                 lmb_pressed = true;
-                Root.onMouseDown(mouse.Position);
-                MouseDown(this, new MouseEventArgs(MouseButton.Left, mouse.Position));
             }
             if (mouse.LeftButton == ButtonState.Released && lmb_pressed)
             {
                 lmb_pressed = false;
-                Root.onMouseUp(mouse.Position);
-                MouseUp(this, new MouseEventArgs(MouseButton.Left, mouse.Position));
+                captured_element.onMouseUp(MouseButton.Left, mouse.Position);
             }
 
             // Right mouse button
             if (mouse.RightButton == ButtonState.Pressed && !rmb_pressed)
             {
+                if (!lmb_pressed && !rmb_pressed)
+                    captured_element = Root.onMouseDown(MouseButton.Right, mouse.Position);
+                else
+                {
+                    captured_element.onMouseDown(MouseButton.Right, mouse.Position);
+                }
                 rmb_pressed = true;
-                Root.onMouseDown(mouse.Position);
-                MouseDown(this, new MouseEventArgs(MouseButton.Right, mouse.Position));
             }
             if (mouse.RightButton == ButtonState.Released && rmb_pressed)
             {
                 rmb_pressed = false;
-                Root.onMouseUp(mouse.Position);
-                MouseUp(this, new MouseEventArgs(MouseButton.Right, mouse.Position));
+                captured_element.onMouseUp(MouseButton.Right, mouse.Position);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Omniplatformer.HUDStates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,13 +27,15 @@ namespace Omniplatformer.HUD
         protected virtual GameObject DragObject { get; set; }
         public bool IsDropTarget { get; set; } = false;
 
-        public bool mouse_capture;
+        public virtual bool ConsumesEvents => true;
 
         // Events
+        public event EventHandler<MouseEventArgs> MouseMove = delegate { };
         public event EventHandler MouseEnter = delegate { };
         public event EventHandler MouseLeave = delegate { };
-        public event EventHandler MouseDown = delegate { };
-        public event EventHandler MouseUp = delegate { };
+        public event EventHandler<MouseEventArgs> MouseDown = delegate { };
+        public event EventHandler<MouseEventArgs> MouseUp = delegate { };
+        public event EventHandler<MouseEventArgs> MouseClick = delegate { };
         /*
         public event EventHandler Drag = delegate { };
         public class DropEventArgs : EventArgs
@@ -46,28 +49,36 @@ namespace Omniplatformer.HUD
         public event EventHandler<DropEventArgs> Drop = delegate { };
         */
 
-        public void onMouseDown(Point pt)
+        public ViewControl onMouseDown(MouseButton button, Point pt)
         {
             foreach (var child in Children.Where(x => x.Visible))
             {
                 if (child.Rect.Contains(pt))
                 {
-                    child.onMouseDown(convertToChildCoords(child, pt));
+                    var result = child.onMouseDown(button, convertToChildCoords(child, pt));
+                    if (result != null)
+                    {
+                        return result;
+                    }
                 }
             }
-            MouseDown(this, new EventArgs());
+            if(ConsumesEvents)
+            {
+                MouseDown(this, new MouseEventArgs(button, pt));
+                return this;
+            }
+            return null;
         }
 
-        public void onMouseUp(Point pt)
+        public void onMouseUp(MouseButton button, Point pt)
         {
-            foreach (var child in Children.Where(x => x.Visible))
-            {
-                if (child.Rect.Contains(pt))
-                {
-                    child.onMouseUp(convertToChildCoords(child, pt));
-                }
-            }
-            MouseUp(this, new EventArgs());
+            // TODO: refactor this?
+            // casting global coords to local coords
+            pt = pt - Parent?.Position ?? Point.Zero;
+            if (Rect.Contains(pt))
+                MouseClick(this, new MouseEventArgs(button, pt));
+            MouseUp(this, new MouseEventArgs(button, pt));
+            return;
         }
 
         /*
@@ -113,7 +124,7 @@ namespace Omniplatformer.HUD
         }
         */
 
-        public void MouseMove(Point pt)
+        public void onMouseMove(Point pt)
         {
             if (!Hover)
             {
@@ -124,7 +135,7 @@ namespace Omniplatformer.HUD
             {
                 if (child.Rect.Contains(pt))
                 {
-                    child.MouseMove(convertToChildCoords(child, pt));
+                    child.onMouseMove(convertToChildCoords(child, pt));
                 }
                 else if (child.Hover)
                 {

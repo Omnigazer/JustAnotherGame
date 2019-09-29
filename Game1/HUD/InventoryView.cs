@@ -47,16 +47,19 @@ namespace Omniplatformer.HUD
                         )
                 { Width = slot_width, Height = slot_height };
                 RegisterChild(view);
-                view.MouseUp += View_MouseUp;
+                view.MouseClick += View_MouseUp;
             }
             Width = slot_width * Inventory.Cols + slot_margin * (Inventory.Cols - 1);
             Height = slot_height * Inventory.Rows + slot_margin * (Inventory.Rows - 1);
         }
 
-        private void View_MouseUp(object sender, System.EventArgs e)
+        private void View_MouseUp(object sender, MouseEventArgs e)
         {
-            var view = (InventorySlotView)sender;
-            controller.OnSlotClick(view.Slot);
+            if(e.Button == MouseButton.Left)
+            {
+                var view = (InventorySlotView)sender;
+                controller.OnSlotClick(view.Slot);
+            }
         }
 
         // TODO: find a better place to extract this

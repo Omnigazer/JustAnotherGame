@@ -18,8 +18,8 @@ namespace Omniplatformer.HUDStates
         public DefaultHUDState(HUDContainer hud)
         {
             playerHUD = hud;
-            MouseUp += DefaultHUDState_MouseUp;
-            MouseDown += DefaultHUDState_MouseDown;
+            Root.MouseUp += DefaultHUDState_MouseUp;
+            Root.MouseDown += DefaultHUDState_MouseDown;
             SetupControls();
         }
 

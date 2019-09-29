@@ -49,9 +49,9 @@ namespace Omniplatformer.HUDStates
 
         public void RegisterHandlers()
         {
-            MouseDown += OnMouseDown;
-            MouseMove += OnMouseMove;
-            MouseUp += OnMouseUp;
+            Root.MouseDown += OnMouseDown;
+            Root.MouseMove += OnMouseMove;
+            Root.MouseUp += OnMouseUp;
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)

@@ -31,25 +31,28 @@ namespace Omniplatformer.HUD
             foreach (var slot in player.EquipSlots.MiscSlots)
             {
                 slot_view = new InventorySlotView(slot, new Point(50, slot_margin + i * (slot_width + slot_margin))) { Width = slot_width, Height = slot_height };
-                slot_view.MouseUp += Slot_view_MouseUp;
+                slot_view.MouseClick += Slot_view_MouseUp;
                 RegisterChild(slot_view);
                 i++;
             }
             slot_view = new InventorySlotView(player.EquipSlots.RightHandSlot, new Point(200, slot_margin)) { Width = slot_width, Height = slot_height };
-            slot_view.MouseUp += Slot_view_MouseUp;
+            slot_view.MouseClick += Slot_view_MouseUp;
             RegisterChild(slot_view);
             slot_view = new InventorySlotView(player.EquipSlots.LeftHandSlot, new Point(350, slot_margin)) { Width = slot_width, Height = slot_height };
-            slot_view.MouseUp += Slot_view_MouseUp;
+            slot_view.MouseClick += Slot_view_MouseUp;
             RegisterChild(slot_view);
             slot_view = new InventorySlotView(player.EquipSlots.ChannelSlot, new Point(200, slot_height + 2 * slot_margin)) { Width = slot_width, Height = slot_height };
-            slot_view.MouseUp += Slot_view_MouseUp;
+            slot_view.MouseClick += Slot_view_MouseUp;
             RegisterChild(slot_view);
         }
 
-        private void Slot_view_MouseUp(object sender, EventArgs e)
+        private void Slot_view_MouseUp(object sender, MouseEventArgs e)
         {
-            var view = (InventorySlotView)sender;
-            controller.OnSlotClick(view.Slot);
+            if(e.Button == MouseButton.Left)
+            {
+                var view = (InventorySlotView)sender;
+                controller.OnSlotClick(view.Slot);
+            }
         }
 
         /*

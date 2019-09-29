@@ -27,7 +27,7 @@ namespace Omniplatformer.HUDStates
             // TODO: remove this reference
             // this.inv = inv;
             SetupControls();
-            MouseUp += OnMouseUp;
+            Root.MouseUp += OnMouseUp;
         }
 
         private void OnMouseUp(object sender, MouseEventArgs e)
