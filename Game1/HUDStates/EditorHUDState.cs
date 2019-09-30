@@ -494,13 +494,5 @@ namespace Omniplatformer.HUDStates
             }
         }
 
-        public override void HandleControls()
-        {
-            // TODO: possibly refactor this
-            // reset the player's "intention to move" (move_direction) by default as a workaround
-            Game.StopMoving();
-            base.HandleControls();
-        }
-
     }
 }

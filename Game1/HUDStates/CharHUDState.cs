@@ -60,11 +60,5 @@ namespace Omniplatformer.HUDStates
                 {  Keys.C, (Game.CloseChar, noop, false) }
             };
         }
-
-        public override void HandleControls()
-        {
-            Game.StopMoving();
-            base.HandleControls();
-        }
     }
 }

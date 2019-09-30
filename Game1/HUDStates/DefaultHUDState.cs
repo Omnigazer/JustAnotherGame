@@ -78,14 +78,6 @@ namespace Omniplatformer.HUDStates
             };
         }
 
-        public override void HandleControls()
-        {
-            // TODO: possibly refactor this
-            // reset the player's "intention to move" (move_direction) by default as a workaround
-            Game.StopMoving();
-            base.HandleControls();
-        }
-
         private void DefaultHUDState_MouseUp(object sender, MouseEventArgs e)
         {
             var coords = new Position(Game.RenderSystem.ScreenToGame(e.Position), new Vector2(0,0));

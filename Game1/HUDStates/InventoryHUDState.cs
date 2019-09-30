@@ -167,11 +167,5 @@ namespace Omniplatformer.HUDStates
                 dragged_slot.Item = item;
             }
         }
-
-        public override void HandleControls()
-        {
-            Game.StopMoving();
-            base.HandleControls();
-        }
     }
 }
