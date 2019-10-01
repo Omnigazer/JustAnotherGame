@@ -157,6 +157,7 @@
     <Compile Include="Utility\InventoryJson.cs" />
     <Compile Include="Utility\PositionJson.cs" />
     <Compile Include="Utility\RandomGen.cs" />
+    <Compile Include="Utility\SpriteBatchExtensions.cs" />
     <Compile Include="Utility\TileHelper.cs" />
     <Compile Include="Utility\LegacyTileHelper.cs" />
   </ItemGroup>

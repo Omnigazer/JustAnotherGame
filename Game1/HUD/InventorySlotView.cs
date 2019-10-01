@@ -30,8 +30,7 @@ namespace Omniplatformer.HUD
         public override void Draw()
         {
             var spriteBatch = GraphicsService.Instance;
-            Point size = new Point(Width, Height);
-            Rectangle outer_rect = new Rectangle(GlobalPosition, size);
+            Rectangle outer_rect = GlobalRect;
             float alpha = Hover || Slot.IsCurrent ? 1 : 0.6f;
             // float alpha = 1;
             spriteBatch.Draw(GameContent.Instance.whitePixel, outer_rect, Color.Gray * alpha);

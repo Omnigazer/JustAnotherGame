@@ -76,9 +76,8 @@ namespace Omniplatformer.HUD
         public void DrawContainer()
         {
             var spriteBatch = GraphicsService.Instance;
-            var rect = new Rectangle(GlobalPosition, new Point(Width, Height));
             float alpha = 0.9f;
-            spriteBatch.Draw(GameContent.Instance.whitePixel, rect, Color.DarkGray * alpha);
+            spriteBatch.Draw(GameContent.Instance.whitePixel, GlobalRect, Color.DarkGray * alpha);
         }
     }
 }

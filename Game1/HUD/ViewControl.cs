@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Omniplatformer.HUDStates;
+using Omniplatformer.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Omniplatformer.HUD
         public int Width { get; set; }
         public int Height { get; set; }
         public Rectangle Rect => new Rectangle(Position, new Point(Width, Height));
+        public Rectangle GlobalRect => new Rectangle(GlobalPosition, new Point(Width, Height));
         public ViewControl Parent { get; set; }
         public ViewControl Root => Parent?.Root ?? this;
         public List<ViewControl> Children { get; set; } = new List<ViewControl>();
@@ -174,6 +176,17 @@ namespace Omniplatformer.HUD
             {
                 control.Draw();
             }
+        }
+
+        public void DrawBorder(Color? color = null, float thickness = 1f)
+        {
+            var rect = GlobalRect;
+            color = color ?? Color.White;
+            var spriteBatch = GraphicsService.Instance;
+            spriteBatch.DrawLine(new Vector2(rect.Left, rect.Top), new Vector2(rect.Left, rect.Bottom), Color.White, thickness);
+            spriteBatch.DrawLine(new Vector2(rect.Left, rect.Bottom), new Vector2(rect.Right, rect.Bottom), Color.White, thickness);
+            spriteBatch.DrawLine(new Vector2(rect.Right, rect.Top), new Vector2(rect.Right, rect.Bottom), Color.White, thickness);
+            spriteBatch.DrawLine(new Vector2(rect.Right, rect.Top), new Vector2(rect.Left, rect.Top), Color.White, thickness);
         }
     }
 }
