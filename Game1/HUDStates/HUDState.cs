@@ -66,8 +66,7 @@ namespace Omniplatformer.HUDStates
         public virtual void Draw()
         {
             var spriteBatch = GraphicsService.Instance;
-            DrawStatus();
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             Root.Draw();
             DrawCursor();
             // DrawStorage();
@@ -106,30 +105,6 @@ namespace Omniplatformer.HUDStates
             AdjustCamera();
         }
 
-        public void DrawStatus()
-        {
-            // TODO: TEST
-            var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            int log_width = 500, log_margin = 50;
-            Point log_position = new Point(log_margin, 300);
-            Point log_size = new Point(log_width, 700);
-            var rect = new Rectangle(log_position, log_size);
-            int i = 0;
-            void displayMessage(string message)
-            {
-                spriteBatch.DrawString(GameContent.Instance.defaultFont, message, (log_position + new Point(20, 20 + 20 * i++)).ToVector2(), Color.White);
-            }
-            // Draw directly via the SpriteBatch instance bypassing y-axis flip
-            // GraphicsService.Instance.Draw(GameContent.Instance.whitePixel, rect, Color.Gray * 0.8f);
-            foreach (var msg in GetStatusMessages())
-            {
-                displayMessage(msg);
-            }
-            status_messages.Clear();
-            spriteBatch.End();
-        }
-
         public virtual void HandleControls()
         {
             HandleKeyboard();
@@ -139,6 +114,15 @@ namespace Omniplatformer.HUDStates
         public HUDState()
         {
             Root = new Root();
+        }
+
+        public virtual void RegisterChildren() { }
+
+        protected void SetupGUI()
+        {
+            RegisterChildren();
+            Root.RegisterChild(new StatusView(this));
+            Root.Node.CalculateLayout();
         }
 
         public void HandleKeyboard()
@@ -219,6 +203,5 @@ namespace Omniplatformer.HUDStates
                 captured_element.onMouseUp(MouseButton.Right, mouse.Position);
             }
         }
-
     }
 }

@@ -70,13 +70,11 @@ namespace Omniplatformer
             // TODO: Add your initialization logic here
             base.Initialize();
             InitServices();
-            var playerHUD = new HUDContainer();
             LoadLevel(false);
-
-            defaultHUD = new DefaultHUDState(playerHUD);
-            inventoryHUD = new InventoryHUDState(playerHUD, Player.Inventory);
-            charHUD = new CharHUDState(playerHUD);
-            editorHUD = new EditorHUDState(playerHUD);
+            defaultHUD = new DefaultHUDState();
+            inventoryHUD = new InventoryHUDState(Player.Inventory);
+            charHUD = new CharHUDState();
+            editorHUD = new EditorHUDState();
             HUDState = defaultHUD;
         }
 

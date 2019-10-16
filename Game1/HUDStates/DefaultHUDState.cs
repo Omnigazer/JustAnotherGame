@@ -15,33 +15,27 @@ namespace Omniplatformer.HUDStates
     {
         HUDContainer playerHUD;
 
-        public DefaultHUDState(HUDContainer hud)
+        public DefaultHUDState()
         {
-            playerHUD = hud;
+            playerHUD = new HUDContainer();
             Root.MouseUp += DefaultHUDState_MouseUp;
             Root.MouseDown += DefaultHUDState_MouseDown;
             SetupControls();
+            SetupGUI();
+        }
+
+        public override void RegisterChildren()
+        {
+            Root.RegisterChild(playerHUD);
+            var logs = new LogView(Game.Logs);
+            logs.Node.PositionType = Facebook.Yoga.YogaPositionType.Absolute;
+            logs.Node.Right = 50;
+            logs.Node.Top = 200;
+            Root.RegisterChild(logs);
         }
 
         public override void Draw()
         {
-            playerHUD.Draw();
-
-            // TODO: TEST
-            var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            int log_width = 500, log_margin = 50;
-            Point log_position = new Point(Game.GraphicsDevice.PresentationParameters.BackBufferWidth - log_width - log_margin, 300);
-            Point log_size = new Point(log_width, 700);
-            var rect = new Rectangle(log_position, log_size);
-            // Draw directly via the SpriteBatch instance bypassing y-axis flip
-            GraphicsService.Instance.Draw(GameContent.Instance.whitePixel, rect, Color.Gray * 0.8f);
-            foreach (var (message, i) in Game.Logs.Select((x, i) => (x, i)))
-            {
-                // GraphicsService.Instance.Draw(GameContent.Instance.whitePixel, rect, Color.Gray);
-                spriteBatch.DrawString(GameContent.Instance.defaultFont, message, (log_position + new Point(20, 20 + 20 * i)).ToVector2(), Color.White);
-            }
-            spriteBatch.End();
             base.Draw();
         }
 

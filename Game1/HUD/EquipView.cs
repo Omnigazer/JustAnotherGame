@@ -15,62 +15,55 @@ namespace Omniplatformer.HUD
         Player Player { get; set; }
         IInventoryController controller;
 
-        // slots starting position
-        const int slot_width = 70, slot_height = 70;
-        const int slot_margin = 30;
-
         public EquipView(IInventoryController controller, Player player)
+        {
+            Player = player;
+            this.controller = controller;
+            SetupGUI();
+        }
+
+        public override void SetupNode()
         {
             Width = 1000;
             Height = 800;
-            Player = player;
-            this.controller = controller;
-            int i = 0;
-            InventorySlotView slot_view;
+        }
 
-            foreach (var slot in player.EquipSlots.MiscSlots)
+        public void SetupGUI()
+        {
+            var main_equip_slots = new Row()
             {
-                slot_view = new InventorySlotView(slot, new Point(50, slot_margin + i * (slot_width + slot_margin))) { Width = slot_width, Height = slot_height };
-                slot_view.MouseClick += Slot_view_MouseUp;
-                RegisterChild(slot_view);
-                i++;
+                BuildEquipSlot(Player.EquipSlots.RightHandSlot),
+                BuildEquipSlot(Player.EquipSlots.LeftHandSlot),
+                BuildEquipSlot(Player.EquipSlots.ChannelSlot)
+            };
+            var misc_slots = new Row();
+            foreach (var slot in Player.EquipSlots.MiscSlots)
+            {
+                misc_slots.RegisterChild(BuildEquipSlot(slot));
             }
-            slot_view = new InventorySlotView(player.EquipSlots.RightHandSlot, new Point(200, slot_margin)) { Width = slot_width, Height = slot_height };
-            slot_view.MouseClick += Slot_view_MouseUp;
-            RegisterChild(slot_view);
-            slot_view = new InventorySlotView(player.EquipSlots.LeftHandSlot, new Point(350, slot_margin)) { Width = slot_width, Height = slot_height };
-            slot_view.MouseClick += Slot_view_MouseUp;
-            RegisterChild(slot_view);
-            slot_view = new InventorySlotView(player.EquipSlots.ChannelSlot, new Point(200, slot_height + 2 * slot_margin)) { Width = slot_width, Height = slot_height };
-            slot_view.MouseClick += Slot_view_MouseUp;
-            RegisterChild(slot_view);
+            RegisterChild(main_equip_slots);
+            RegisterChild(misc_slots);
+        }
+
+        public InventorySlotView BuildEquipSlot(Slot slot)
+        {
+            var view = new InventorySlotView(slot);
+            view.MouseClick += Slot_view_MouseUp;
+            return view;
         }
 
         private void Slot_view_MouseUp(object sender, MouseEventArgs e)
         {
-            if(e.Button == MouseButton.Left)
+            if (e.Button == MouseButton.Left)
             {
                 var view = (InventorySlotView)sender;
                 controller.OnSlotClick(view.Slot);
             }
         }
 
-        /*
-        private void Slot_view_Drag(object sender, System.EventArgs e)
-        {
-            Player.UnwieldItem();
-        }
-
-        private void Slot_view_Drop(object sender, DropEventArgs e)
-        {
-            Player.WieldItem((WieldedItem)e.DraggedItem);
-        }
-        */
-
-        public override void Draw()
+        public override void DrawSelf()
         {
             DrawContainer();
-            base.Draw();
         }
 
         public void DrawContainer()

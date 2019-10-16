@@ -15,6 +15,8 @@
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -69,9 +71,17 @@
     <Compile Include="HUDStates\HUDState.cs" />
     <Compile Include="HUDStates\CharHUDState.cs" />
     <Compile Include="HUD\CharView.cs" />
+    <Compile Include="HUD\Column.cs" />
+    <Compile Include="HUD\Row.cs" />
     <Compile Include="HUD\EquipView.cs" />
+    <Compile Include="HUD\HealthBar.cs" />
     <Compile Include="HUD\InventorySlotView.cs" />
+    <Compile Include="HUD\SkillPointsView.cs" />
+    <Compile Include="HUD\SkillSlotView.cs" />
+    <Compile Include="HUD\StatusView.cs" />
+    <Compile Include="HUD\LogView.cs" />
     <Compile Include="HUD\TilePicker.cs" />
+    <Compile Include="HUD\TilePickerItem.cs" />
     <Compile Include="HUD\ViewControl.cs" />
     <Compile Include="HUD\Window.cs" />
     <Compile Include="Inventory.cs" />
@@ -90,6 +100,7 @@
     <Compile Include="Objects\TileMap.cs" />
     <Compile Include="Scenes\PhysicsSystem.cs" />
     <Compile Include="Scenes\Scene.cs" />
+    <Compile Include="Scenes\UpdateSystem.cs" />
     <Compile Include="Scenes\SimulationSystem.cs" />
     <Compile Include="Scenes\Subsystem.cs" />
     <Compile Include="Spells\LifeDrain.cs" />
@@ -164,8 +175,12 @@
     <Compile Include="Utility\TileRegion.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework">
-      <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
+    <Reference Include="Facebook.Yoga, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Facebook.Yoga.1.5.0-pre1\lib\net45\Facebook.Yoga.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="MonoGameConsole, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Console.WindowsDX.3.5.0.2\lib\net451\MonoGameConsole.dll</HintPath>
@@ -196,6 +211,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
+  <Import Project="..\packages\Facebook.Yoga.1.5.0-pre1\build\net45\Facebook.Yoga.targets" Condition="Exists('..\packages\Facebook.Yoga.1.5.0-pre1\build\net45\Facebook.Yoga.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Facebook.Yoga.1.5.0-pre1\build\net45\Facebook.Yoga.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Facebook.Yoga.1.5.0-pre1\build\net45\Facebook.Yoga.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

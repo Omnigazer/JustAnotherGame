@@ -13,41 +13,26 @@ namespace Omniplatformer.HUDStates
     {
         HUDContainer playerHUD;
         CharView view;
-        // InventoryView PlayerInventoryView { get; set; }
-        // InventoryView TargetInventoryView { get; set; }
 
-        // TODO: TEMPORARY
-        // Inventory inv;
-
-        public CharHUDState(HUDContainer hud)
+        public CharHUDState()
         {
-            playerHUD = hud;
+            playerHUD = new HUDContainer();
             view = new CharView();
-            // PlayerInventoryView = new InventoryView(inv, false);
-            // TODO: remove this reference
-            // this.inv = inv;
             SetupControls();
-            Root.MouseUp += OnMouseUp;
-        }
-
-        private void OnMouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButton.Left)
+            var col = new Column()
             {
-                var mouse = Mouse.GetState();
-                var slot = view.GetSlotAtPosition(mouse.Position);
-                if (slot != null)
-                {
-                    Game.Player.UpgradeSkill(slot.Skill);
-                }
-            }
-        }
-
-        public override void Draw()
-        {
-            view.Draw();
-            playerHUD.Draw();
-            base.Draw();
+                playerHUD
+            };
+            //col.RegisterChild();
+            Root.RegisterChild(col);
+            // Root.RegisterChild(playerHUD);
+            col = new Column()
+            {
+                view
+            };
+            Root.RegisterChild(col);
+            // Root.RegisterChild(view);
+            SetupGUI();
         }
 
         public void SetupControls()
@@ -55,8 +40,6 @@ namespace Omniplatformer.HUDStates
             Action noop = delegate { };
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
-                // {  Keys.X, (Game.player.WieldCurrentSlot, noop, false) },
-                // {  Keys.C, (Game.CloseChest, noop, false) },
                 {  Keys.C, (Game.CloseChar, noop, false) }
             };
         }

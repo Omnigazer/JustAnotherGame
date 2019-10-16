@@ -11,13 +11,14 @@ namespace Omniplatformer.Scenes
         public List<ISubsystem> Subsystems { get; set; } = new List<ISubsystem>();
         public RenderSystem RenderSystem { get; set; }
         public PhysicsSystem PhysicsSystem { get; set; }
+        public UpdateSystem UpdateSystem { get; set; }
         public Player Player { get; set; }
 
         public Dictionary<string, List<GameObject>> Groups { get; set; } = new Dictionary<string, List<GameObject>>() { { "default", new List<GameObject>() } };
 
         public Scene()
         {
-
+            UpdateSystem = new UpdateSystem();
         }
 
         public void RegisterObject(GameObject obj)
@@ -26,7 +27,6 @@ namespace Omniplatformer.Scenes
             {
                 system.RegisterObject(obj);
             }
-
             obj.CurrentScene = this;
             obj._onDestroy += Obj__onDestroy;
         }
@@ -54,6 +54,7 @@ namespace Omniplatformer.Scenes
             {
                 system.Tick(dt);
             }
+            UpdateSystem.Tick(dt);
         }
     }
 }

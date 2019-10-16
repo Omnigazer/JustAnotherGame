@@ -42,13 +42,19 @@ namespace Omniplatformer.HUDStates
                 PlaceTiles(0);
         }
 
-        public EditorHUDState(HUDContainer hud)
+        public EditorHUDState()
         {
-            playerHUD = hud;
+            playerHUD = new HUDContainer();
             SetupControls();
             InitObjectConstructors();
             RegisterHandlers();
-            Root.RegisterChild(new TilePicker());
+            var picker = new TilePicker();
+            var x = picker.Node;
+            x.FlexDirection = Facebook.Yoga.YogaFlexDirection.Row;
+            x.Wrap = Facebook.Yoga.YogaWrap.Wrap;
+            Root.RegisterChild(playerHUD);
+            Root.RegisterChild(picker);
+            SetupGUI();
         }
 
         public void RegisterHandlers()
@@ -110,7 +116,6 @@ namespace Omniplatformer.HUDStates
 
         public override void Draw()
         {
-            playerHUD.Draw();
             if (CurrentConstructor != null)
                 DrawCurrentBlock();
             else

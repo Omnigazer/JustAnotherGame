@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Omniplatformer.HUD
 {
-    public class ExperienceBar : ViewControl, IUpdatable
+    public class HealthBar : ViewControl, IUpdatable
     {
-        public Player Player => GameService.Player;
+        Player Player => GameService.Player;
 
-        public ExperienceBar()
+        public HealthBar()
         {
 
         }
@@ -21,8 +21,9 @@ namespace Omniplatformer.HUD
         public override void SetupNode()
         {
             Width = 400;
-            Height = 30;
+            Height = 60;
             BorderThickness = 5;
+            Padding = 15;
         }
 
         protected int bar_loop = 0;
@@ -50,31 +51,26 @@ namespace Omniplatformer.HUD
             distortEffect.CurrentTechnique.Passes[0].Apply();
         }
 
-        void DrawBar()
+        void DrawHealthBar()
         {
             DrawBorder(Color.Gray);
             var spriteBatch = GraphicsService.Instance;
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            int current_experience = Player.CurrentExperience, max_experience = Player.MaxExperience;
 
             Rectangle inner_rect = GlobalRect;
-            inner_rect.Width = (int)(Width * ((float)current_experience / max_experience));
-
+            inner_rect.Width = (int)(GlobalRect.Width * ((float)Player.CurrentHitPoints / Player.MaxHitPoints));
             var source_rect = new Rectangle((int)(bar_loop / loop_period), 0, GameContent.Instance.testLiquid.Width / 2, GameContent.Instance.testLiquid.Height);
             ApplyDistort();
 
-            spriteBatch.Draw(GameContent.Instance.testLiquid, inner_rect, source_rect, Color.Beige);
-            // draw caustics over the bar
-            source_rect = new Rectangle(0, 0, GameContent.Instance.causticsMap.Width, GameContent.Instance.causticsMap.Height / 4);
-            spriteBatch.Draw(GameContent.Instance.causticsMap, inner_rect, source_rect, Color.White);
+            spriteBatch.Draw(GameContent.Instance.testLiquid, inner_rect, source_rect, Color.Red);
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
         }
 
         public override void DrawSelf()
         {
-            DrawBar();
+            DrawHealthBar();
         }
 
         void IUpdatable.Tick(float dt)

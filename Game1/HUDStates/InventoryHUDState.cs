@@ -29,20 +29,37 @@ namespace Omniplatformer.HUDStates
         // TODO: TEMPORARY
         Inventory inv;
 
-        public InventoryHUDState(HUDContainer hud, Inventory inv)
+        public InventoryHUDState(Inventory inv)
         {
-            playerHUD = hud;
-            PlayerInventoryView = new InventoryView(this, inv);
-            TargetInventoryView = new InventoryView(this, inv) { Visible = false };
-            EquipView = new EquipView(this, Game.Player);
-            Root.RegisterChild(PlayerInventoryView);
-            Root.RegisterChild(TargetInventoryView);
-            Root.RegisterChild(EquipView);
+            playerHUD = new HUDContainer();
             // TODO: remove this reference
             this.inv = inv;
             SetupControls();
             Game.onTargetInventoryOpen += onTargetInventoryOpen;
             Game.onTargetInventoryClosed += onTargetInventoryClosed;
+            SetupGUI();
+        }
+
+        public override void RegisterChildren()
+        {
+            PlayerInventoryView = new InventoryView(this, inv);
+            var x = PlayerInventoryView.Node;
+            x.Top = 20;
+            x.Right = 20;
+            x.PositionType = Facebook.Yoga.YogaPositionType.Absolute;
+            x.FlexDirection = Facebook.Yoga.YogaFlexDirection.Row;
+            x.Wrap = Facebook.Yoga.YogaWrap.Wrap;
+
+            TargetInventoryView = new InventoryView(this, inv) { Visible = false };
+            x = TargetInventoryView.Node;
+            x.PositionType = Facebook.Yoga.YogaPositionType.Absolute;
+
+            EquipView = new EquipView(this, Game.Player);
+
+            Root.RegisterChild(playerHUD);
+            Root.RegisterChild(PlayerInventoryView);
+            Root.RegisterChild(TargetInventoryView);
+            Root.RegisterChild(EquipView);
         }
 
         private void onTargetInventoryOpen(object sender, InventoryEventArgs e)
@@ -98,29 +115,10 @@ namespace Omniplatformer.HUDStates
             }
         }
 
-        public void ProcessLayout()
-        {
-            int margin = 50;
-            var (screen_width, screen_height) = Game.RenderSystem.GetResolution();
-            PlayerInventoryView.Position = new Point(
-                screen_width - PlayerInventoryView.Width - margin,
-                margin
-                );
-            Point target_inv_position = PlayerInventoryView.Position + new Point(0, PlayerInventoryView.Height) + new Point(0, margin);
-            if (TargetInventoryView != null)
-                TargetInventoryView.Position = target_inv_position;
-
-            Point equip_position = new Point(600, 2 * margin);
-            EquipView.Position = equip_position;
-        }
-
         public override void Draw()
         {
-            // EquipView.Draw(new Point());
-            ProcessLayout();
             base.Draw();
             DrawStorage();
-            playerHUD.Draw();
         }
 
         public virtual void DrawStorage()
@@ -149,23 +147,6 @@ namespace Omniplatformer.HUDStates
                 {  Keys.Escape, (Game.CloseInventory, noop, false) },
                 {  Keys.I, (Game.CloseInventory, noop, false) }
             };
-        }
-
-        InventorySlot dragged_slot;
-
-        void DragItem(InventorySlot slot)
-        {
-            dragged_slot = slot;
-        }
-
-        void DropDraggedSlot(InventorySlot target)
-        {
-            if (target != null)
-            {
-                var item = target.Item;
-                target.Item = dragged_slot.Item;
-                dragged_slot.Item = item;
-            }
         }
     }
 }

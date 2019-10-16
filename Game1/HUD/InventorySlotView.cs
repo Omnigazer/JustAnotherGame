@@ -12,12 +12,11 @@ namespace Omniplatformer.HUD
     public class InventorySlotView : ViewControl
     {
         public Slot Slot { get; set; }
-        protected override GameObject DragObject { get => Slot.Item; set => Slot.Item = (WieldedItem)value; }
+        // protected override GameObject DragObject { get => Slot.Item; set => Slot.Item = (WieldedItem)value; }
 
-        public InventorySlotView(Slot slot, Point position)
+        public InventorySlotView(Slot slot)
         {
             Slot = slot;
-            Position = position;
             IsDragSource = true;
             IsDropTarget = true;
         }
@@ -27,7 +26,14 @@ namespace Omniplatformer.HUD
 
         }
 
-        public override void Draw()
+        public override void SetupNode()
+        {
+            Width = 70;
+            Height = 70;
+            Node.Margin = 5;
+        }
+
+        public override void DrawSelf()
         {
             var spriteBatch = GraphicsService.Instance;
             Rectangle outer_rect = GlobalRect;
