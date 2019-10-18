@@ -92,18 +92,6 @@
 /processorParam:TextureFormat=Color
 /build:Textures/alphaMask.png
 
-#begin Textures/atlas.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/atlas.png
-
 #begin Textures/background_tile.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -211,6 +199,21 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/character.png
+
+#begin Textures/CompiledAtlas/atlas.atlas
+/copy:Textures/CompiledAtlas/atlas.atlas
+
+#begin Textures/CompiledAtlas/atlas.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/CompiledAtlas/atlas.png
 
 #begin Textures/cursor.png
 /importer:TextureImporter

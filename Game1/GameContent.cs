@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Omniplatformer.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -58,32 +59,12 @@ namespace Omniplatformer
             Instance = new GameContent(content);
         }
 
-        public Dictionary<short, Rectangle> ImportTileMetadata(string path)
-        {
-            var meta = new Dictionary<short, Rectangle>();
-            using (StreamReader sr = new StreamReader(path))
-            using (JsonReader reader = new JsonTextReader(sr))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                var data = (JObject)serializer.Deserialize(reader);
-                foreach (JProperty token in data.Children())
-                {
-                    var obj = token.Value;
-                    var location = new Point(obj["location"]["x"].Value<int>(), obj["location"]["y"].Value<int>());
-                    var size = new Point(obj["size"]["x"].Value<int>(), obj["size"]["y"].Value<int>());
-                    meta.Add(short.Parse(token.Name), new Rectangle(location, size));
-                }
-            }
-
-            return meta;
-        }
-
         private GameContent(ContentManager Content)
         {
             this.Content = Content;
             //load images
             atlas = Content.Load<Texture2D>("Textures/atlas");
-            atlas_meta = ImportTileMetadata("Content/test.meta");
+            atlas_meta = AtlasMetaImporter.NewImportTileMetadata("Content/Textures/atlas.atlas");
             background = Content.Load<Texture2D>("Textures/background0");
             testTile = Content.Load<Texture2D>("Textures/test_tile");
             boulder = Content.Load<Texture2D>("Textures/boulder");

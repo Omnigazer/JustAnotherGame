@@ -43,6 +43,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Animations\Animation.cs" />
     <Compile Include="Animations\CastAnimation.cs" />
@@ -105,6 +108,7 @@
     <Compile Include="Scenes\Subsystem.cs" />
     <Compile Include="Spells\LifeDrain.cs" />
     <Compile Include="Spells\FireBolt.cs" />
+    <Compile Include="Utility\AtlasMetaImporter.cs" />
     <Compile Include="Utility\BallisticsHelper.cs" />
     <Compile Include="Utility\Comparer.cs" />
     <Compile Include="Utility\Deconstruct.cs" />
@@ -199,7 +203,11 @@
   <ItemGroup>
     <Content Include="Content\hyu.png" />
     <Content Include="Icon.ico" />
+    <Content Include="SpriteAtlasPacker.exe" />
   </ItemGroup>
+  <Target Name="CompileAtlas" BeforeTargets="RunContentBuilder">
+    <Exec Command="$(ProjectDir)SpriteAtlasPacker.exe -image:$(ProjectDir)Content\Textures\CompiledAtlas\atlas.png -map:$(ProjectDir)Content\Textures\CompiledAtlas\atlas.atlas $(ProjectDir)Content\Textures\AtlasSource" />
+  </Target>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.config" />
@@ -218,6 +226,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Facebook.Yoga.1.5.0-pre1\build\net45\Facebook.Yoga.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Facebook.Yoga.1.5.0-pre1\build\net45\Facebook.Yoga.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
