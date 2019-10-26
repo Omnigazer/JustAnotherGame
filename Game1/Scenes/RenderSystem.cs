@@ -289,10 +289,10 @@ namespace Omniplatformer.Scenes
             GraphicsDevice.Clear(Color.Transparent);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
-            spriteBatch.Draw(GameContent.Instance.whitePixel, new Rectangle(1, 1, 1, 1), Color.White);
+            tilemap.Draw();
             spriteBatch.End();
 
-            tilemap.Draw();
+
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
             // spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);

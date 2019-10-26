@@ -42,8 +42,8 @@ namespace Omniplatformer.Utility
             if (GameContent.Instance.atlas_meta.ContainsKey(type))
             {
                 var source_rect = GameContent.Instance.atlas_meta[type];
-                return (new Vector2((float)source_rect.Left / AtlasWidth, (float)source_rect.Top / AtlasHeight),
-                    new Vector2((float)source_rect.Width / AtlasWidth, (float)source_rect.Height / AtlasHeight));
+                return (new Vector2(((float)source_rect.Left + 0.5f) / AtlasWidth, ((float)source_rect.Top + 0.5f) / AtlasHeight),
+                    new Vector2(((float)source_rect.Width - 1) / AtlasWidth, ((float)source_rect.Height - 1) / AtlasHeight));
             }
             return (Vector2.Zero, Vector2.Zero);
         }
