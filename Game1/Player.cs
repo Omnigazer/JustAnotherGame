@@ -27,7 +27,8 @@ namespace Omniplatformer
         public bool EquipLocked { get; set; }
         public bool Blocking { get; set; }
 
-        public WieldedItem WieldedItem { get => (WieldedItem)EquipSlots.RightHandSlot.Item; private set => WieldItem(value); }
+        // public WieldedItem WieldedItem { get => (WieldedItem)EquipSlots.RightHandSlot.Item; private set => WieldItem(value); }
+        public WieldedItem WieldedItem => (WieldedItem)EquipSlots.RightHandSlot.Item;
 
         // Equipment and inventory
         public Inventory Inventory { get; set; } = new Inventory();
@@ -259,7 +260,7 @@ namespace Omniplatformer
 
         public void PerformItemAction(Item item, bool is_down)
         {
-            
+
         }
 
         public void PerformItemAction(WieldedItem item, bool is_down)
@@ -376,58 +377,6 @@ namespace Omniplatformer
                     }
             }
         }
-
-        public void ToggleItem(WieldedItem item)
-        {
-            if (WieldedItem == item)
-            {
-                UnwieldItem();
-            }
-            else
-            {
-                WieldItem(item);
-            }
-        }
-
-        public void WieldItem(WieldedItem item)
-        {
-            if (!EquipLocked)
-            {
-                if (WieldedItem != null)
-                    UnwieldItem();
-                EquipSlots.RightHandSlot.Item = item;
-                // WieldedItem = item;
-                item.OnEquip(this);
-            }
-        }
-
-        public void UnwieldItem()
-        {
-            if (!EquipLocked)
-            {
-                EquipSlots.RightHandSlot.Item = null;
-            }
-        }
-
-        public void WieldCurrentSlot()
-        {
-            // inventory.AddItem(sword);
-            if (!EquipLocked)
-            {
-                // inventory.AddItem(new WieldedItem(10, GameContent.Instance.bolt));
-                var item = Inventory.CurrentSlot.Item;
-                Inventory.CurrentSlot.Item = WieldedItem;
-                if (item != null)
-                {
-                    WieldItem((WieldedItem)item);
-                }
-                else if (WieldedItem != null)
-                {
-                    UnwieldItem();
-                }
-            }
-        }
-
         #endregion
     }
 }

@@ -382,11 +382,6 @@ namespace Omniplatformer
             x.SetLocalHalfsize(x.WorldPosition.halfsize / 2);
         }
 
-        public void Swing()
-        {
-            Player.Swing();
-        }
-
         // fps is assumed to be 30 while we're tick-based
         float zoom_adjust_rate = 0.2f / 30;
 
