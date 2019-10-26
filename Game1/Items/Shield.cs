@@ -26,7 +26,7 @@ namespace Omniplatformer
             Team = Team.Friend;
             // Damage = damage;
             var halfsize = new Vector2(10, 32);
-            Descriptors.Add(Descriptor.HandSlot);
+            Descriptors.Add(Descriptor.LeftHandSlot);
             Components.Add(new PhysicsComponent(this, Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)) { Hittable = true });
             Components.Add(new RenderComponent(this, Color.White, texture, 2));
         }

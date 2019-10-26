@@ -94,27 +94,27 @@ namespace Omniplatformer
         // Typecasts
         public static explicit operator RenderComponent(GameObject obj)
         {
-            return obj.GetComponent<RenderComponent>();
+            return obj?.GetComponent<RenderComponent>();
         }
 
         public static explicit operator PositionComponent(GameObject obj)
         {
-            return obj.GetComponent<PositionComponent>();
+            return obj?.GetComponent<PositionComponent>();
         }
 
         public static explicit operator MoveComponent(GameObject obj)
         {
-            return obj.GetComponent<MoveComponent>();
+            return obj?.GetComponent<MoveComponent>();
         }
 
         public static explicit operator HitComponent(GameObject obj)
         {
-            return obj.GetComponent<HitComponent>();
+            return obj?.GetComponent<HitComponent>();
         }
 
         public static explicit operator BonusComponent(GameObject obj)
         {
-            return obj.GetComponent<BonusComponent>();
+            return obj?.GetComponent<BonusComponent>();
         }
 
         public override string ToString()

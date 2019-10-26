@@ -87,7 +87,7 @@ namespace Omniplatformer
 
             Blocking = true;
             var pos1 = (PositionComponent)EquipSlots.RightHandSlot.Item;
-            pos1.SetParent(this, AnchorPoint.LeftHand);
+            pos1?.SetParent(this, AnchorPoint.LeftHand);
 
             var pos2 = (PositionComponent)EquipSlots.LeftHandSlot.Item;
             pos2.SetParent(this, AnchorPoint.RightHand);
@@ -100,7 +100,7 @@ namespace Omniplatformer
 
             Blocking = false;
             var pos1 = (PositionComponent)EquipSlots.RightHandSlot.Item;
-            pos1.SetParent(this, AnchorPoint.RightHand);
+            pos1?.SetParent(this, AnchorPoint.RightHand);
 
             var pos2 = (PositionComponent)EquipSlots.LeftHandSlot.Item;
             pos2.SetParent(this, AnchorPoint.LeftHand);
@@ -257,22 +257,37 @@ namespace Omniplatformer
             // Spells.LifeDrain.Cast(this);
         }
 
-        public void Swing()
+        public void PerformItemAction(Item item, bool is_down)
         {
-            if (!Blocking && WieldedItem != null && TryCooldown("Melee", (int)(30 * MeleeAttackRate)))
+            
+        }
+
+        public void PerformItemAction(WieldedItem item, bool is_down)
+        {
+            if (!is_down)
             {
-                EquipLocked = true;
-                var drawable = GetComponent<CharacterRenderComponent>();
-                drawable._onAnimationHit += onAttackend;
-                drawable.StartAnimation(AnimationType.Attack, 10);
-                // drawable.StartAnimation(Animation.Attack, 10);
+                if (!Blocking && TryCooldown("Melee", (int)(30 * MeleeAttackRate)))
+                {
+                    EquipLocked = true;
+                    var drawable = GetComponent<CharacterRenderComponent>();
+                    drawable._onAnimationHit += onAttackend;
+                    drawable.StartAnimation(AnimationType.Attack, 10);
+                    // drawable.StartAnimation(Animation.Attack, 10);
+                }
             }
         }
 
-        public void MeleeHit()
+        public void PerformItemAction(Shield item, bool is_down)
+        {
+            if (is_down)
+                StartBlocking();
+            else
+                StopBlocking();
+        }
+        public void MeleeHit(WieldedItem weapon)
         {
             GameObject obj = GetMeleeTarget(range: 60);
-            var damager = (HitComponent)WieldedItem;
+            var damager = (HitComponent)weapon;
             if (obj != null)
                 damager?.Hit(obj);
         }
@@ -289,7 +304,7 @@ namespace Omniplatformer
             drawable._onAnimationHit -= onAttackend;
             if (e.animation == AnimationType.Attack)
             {
-                MeleeHit();
+                MeleeHit(WieldedItem);
                 EquipLocked = false;
             }
         }

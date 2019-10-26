@@ -11,6 +11,7 @@ using Omniplatformer.HUDStates;
 using Microsoft.Xna.Framework.Media;
 using MonoGameConsole;
 using Omniplatformer.Scenes;
+using Omniplatformer.Items;
 
 namespace Omniplatformer
 {
@@ -402,6 +403,18 @@ namespace Omniplatformer
         public void ResetZoom()
         {
             RenderSystem.Camera.ResetZoom();
+        }
+
+        public void PerformMouseAction(MouseEventArgs e, bool is_down)
+        {
+            Item item = e.Button switch
+            {
+                MouseButton.Left => Player.EquipSlots.RightHandSlot.Item,
+                MouseButton.Right => Player.EquipSlots.LeftHandSlot.Item,
+                _ => null
+            };
+            if (item != null)
+                Player.PerformItemAction((dynamic)item, is_down);
         }
 
         #endregion

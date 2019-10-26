@@ -11,6 +11,8 @@ namespace Omniplatformer
         // Item descriptors
         Item,
         HandSlot,
+        LeftHandSlot,
+        RightHandSlot,
         MiscSlot,
         ChannelSlot,
     }

@@ -123,6 +123,24 @@ namespace Omniplatformer
         }
     }
 
+    public class RightHandSlot : EquipSlot
+    {
+        protected override IEnumerable<Descriptor> AcceptedDescriptors()
+        {
+            yield return Descriptor.HandSlot;
+            yield return Descriptor.RightHandSlot;
+        }
+    }
+
+    public class LeftHandSlot : EquipSlot
+    {
+        protected override IEnumerable<Descriptor> AcceptedDescriptors()
+        {
+            yield return Descriptor.HandSlot;
+            yield return Descriptor.LeftHandSlot;
+        }
+    }
+
     public class MiscSlot : Slot
     {
         protected override IEnumerable<Descriptor> AcceptedDescriptors()

@@ -18,8 +18,8 @@ namespace Omniplatformer.HUDStates
         public DefaultHUDState()
         {
             playerHUD = new HUDContainer();
-            Root.MouseUp += DefaultHUDState_MouseUp;
-            Root.MouseDown += DefaultHUDState_MouseDown;
+            Root.MouseDown += onMouseDown;
+            Root.MouseUp += onMouseUp;
             SetupControls();
             SetupGUI();
         }
@@ -61,7 +61,6 @@ namespace Omniplatformer.HUDStates
                 {  Keys.Space, (Game.Jump, Game.StopJumping, false) },
                 {  Keys.I, (Game.OpenInventory, noop, false) },
                 {  Keys.Z, (Game.Fire, noop, false) },
-                {  Keys.X, (Game.Swing, noop, false) },
                 {  Keys.C, (Game.OpenChar, noop, false) },
                 {  Keys.E, (Game.OpenChest, noop, false) },
                 {  Keys.OemMinus, (Game.ZoomOut, noop, true) },
@@ -72,20 +71,14 @@ namespace Omniplatformer.HUDStates
             };
         }
 
-        private void DefaultHUDState_MouseUp(object sender, MouseEventArgs e)
-        {
-            var coords = new Position(Game.RenderSystem.ScreenToGame(e.Position), new Vector2(0,0));
-            if (e.Button == MouseButton.Left)
-                Game.Swing();
-            else
-                // Game.player.Fire(coords);
-                Game.Player.StopBlocking();
+        private void onMouseUp(object sender, MouseEventArgs e)
+        {            
+            Game.PerformMouseAction(e, false);
         }
 
-        private void DefaultHUDState_MouseDown(object sender, MouseEventArgs e)
+        private void onMouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButton.Right)
-                Game.Player.StartBlocking();
+            Game.PerformMouseAction(e, true);            
         }
     }
 }
