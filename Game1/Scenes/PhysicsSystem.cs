@@ -134,8 +134,6 @@ namespace Omniplatformer.Scenes
                 foreach (var (i, j) in TileMap.GetTilesFor(obj))
                 {
                     var pos = GetTileAtIndices(i, j);
-                    if (TileMap.Grid[i, j] > 9)
-                        continue;
                     collision_direction = obj.Collides(pos);
                     if (collision_direction != Direction.None)
                     {
@@ -298,13 +296,13 @@ namespace Omniplatformer.Scenes
         public short GetTileAtCoords(Vector2 coords)
         {
             var (i, j) = GetTileIndices(coords);
-            return TileMap.Grid[i, j];
+            return TileMap.Grid[i, j].Item1;
         }
 
         public void RemoveTileAtCoords(Vector2 coords)
         {
             var (i, j) = GetTileIndices(coords);
-            TileMap.Grid[i, j] = 0;
+            TileMap.Grid[i, j] = (0, 0);
         }
 
         public GameObject GetObjectAtCoords(Vector2 coords)

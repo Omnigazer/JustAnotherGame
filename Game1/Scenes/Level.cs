@@ -14,6 +14,8 @@ using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.Scenes;
 using System.Runtime.Serialization.Formatters.Binary;
+using ZeroFormatter;
+using Omniplatformer.Objects;
 
 namespace Omniplatformer
 {
@@ -45,12 +47,12 @@ namespace Omniplatformer
                     list.Add(obj.GameObject.AsJson());
                 }
 
-                List<object> tile_list = new List<object>();
+                List<Tile> tile_list = new List<Tile>();
                 var grid = PhysicsSystem.TileMap.Grid;
                 for (int i = 0; i < grid.GetLength(0); i++)
                     for (int j = 0; j < grid.GetLength(1); j++)
                     {
-                        if (grid[i, j] != 0)
+                        if (grid[i, j] != (0, 0))
                         {
                             // char type = grid[i, j] == 1 ? 's' : 'b';
                             var s = new Tile()
@@ -62,9 +64,13 @@ namespace Omniplatformer
                             tile_list.Add(s);
                         }
                     }
+
+                var cont = new GridContainer(tile_list);
+                var bytes = ZeroFormatterSerializer.Serialize(cont);
+
                 string tile_path = json_path + ".tile";
                 using (var fs = new FileStream(tile_path, FileMode.Create))
-                    bf.Serialize(fs, tile_list);
+                    fs.Write(bytes, 0, bytes.Length);
 
                 serializer.Serialize(writer, new { objects = list });
             }
@@ -141,13 +147,15 @@ namespace Omniplatformer
             }
 
             BinaryFormatter bf = new BinaryFormatter();
-            using (StreamReader sr = new StreamReader(json_path + ".tile"))
+            using (FileStream fs = new FileStream(json_path + ".tile", FileMode.Open))
             {
                 TileMap = new Objects.TileMap();
-                var drawable = (TileMapRenderComponent)TileMap;
 
-                List<object> tiles = (List<object>)bf.Deserialize(sr.BaseStream);
+                var container = ZeroFormatterSerializer.Deserialize<GridContainer>(fs);
+                List<Tile> tiles = container.List;
+
                 foreach (Tile tile in tiles) {
+                    // TileMap.RegisterTile(new Tile() { Col = tile.Col, Row = tile.Row, Type = ((short)tile.Type, 0) });
                     TileMap.RegisterTile(tile);
                     /*
                     GameObject obj = null;

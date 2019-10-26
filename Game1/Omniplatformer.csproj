@@ -94,6 +94,8 @@
     <Compile Include="Items\ChaosOrb.cs" />
     <Compile Include="Items\Item.cs" />
     <Compile Include="Items\Shield.cs" />
+    <Compile Include="Objects\GridContainer.cs" />
+    <Compile Include="Objects\TileBuffer.cs" />
     <Compile Include="Scenes\Level.cs" />
     <Compile Include="LevelLoader.cs" />
     <Compile Include="Objects\Chest.cs" />
@@ -202,6 +204,12 @@
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="ZeroFormatter, Version=1.6.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZeroFormatter.1.6.4\lib\net45\ZeroFormatter.dll</HintPath>
+    </Reference>
+    <Reference Include="ZeroFormatter.Interfaces, Version=1.6.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZeroFormatter.Interfaces.1.6.4\lib\net45\ZeroFormatter.Interfaces.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\hyu.png" />

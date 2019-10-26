@@ -25,7 +25,7 @@ namespace Omniplatformer.Components
 
         public TileMapRenderComponent(GameObject obj) : base(obj)
         {
-
+            ZIndex = 1;
         }
 
         public void RebuildBuffers(bool force = false)
@@ -71,12 +71,19 @@ namespace Omniplatformer.Components
             for (int i = region_i * RegionWidth; i < (region_i + 1) * RegionWidth; i++)
                 for (int j = region_j * RegionHeight; j < (region_j + 1) * RegionHeight; j++)
                 {
-                    var type = grid[i, j];
-                    if (type == 0)
-                        continue;
-                    region.AddBackgroundTile(i, j, type);
+                    var (middle_type, back_type) = grid[i, j];
+                    if (middle_type != 0)
+                        region.AddMiddleTile(i, j, middle_type);
+                    if (back_type != 0)
+                        region.AddBackgroundTile(i, j, back_type);
                 }
             region.SetData();
+        }
+
+        public override void DrawToBackground()
+        {
+            foreach (var region in regions)
+                region?.DrawToBackground();
         }
 
         public override void Draw()

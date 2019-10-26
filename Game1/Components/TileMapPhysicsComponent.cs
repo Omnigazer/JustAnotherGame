@@ -11,10 +11,10 @@ namespace Omniplatformer.Components
     public class TileMapPhysicsComponent : PhysicsComponent
     {
         PhysicsSystem PhysicsSystem => Scene.PhysicsSystem;
-        public short[,] Grid { get; set; }
+        public (short, short)[,] Grid { get; set; }
         public static int TileSize => PhysicsSystem.TileSize;
 
-        public TileMapPhysicsComponent(GameObject obj, short[,] grid): base(obj, Vector2.Zero, Vector2.Zero)
+        public TileMapPhysicsComponent(GameObject obj, (short, short)[,] grid) : base(obj, Vector2.Zero, Vector2.Zero)
         // public TileMapPhysicsComponent(GameObject obj, short[,] grid) : base(obj)
         {
             Solid = true;
@@ -40,7 +40,7 @@ namespace Omniplatformer.Components
             for (int i = left_index; i <= left_index + width; i++)
                 for (int j = top_index; j <= top_index + height; j++)
                 {
-                    if (i >= 0 && j >= 0 && i < Grid.GetLength(0) && j < Grid.GetLength(1) && Grid[i, j] != 0)
+                    if (i >= 0 && j >= 0 && i < Grid.GetLength(0) && j < Grid.GetLength(1) && Grid[i, j].Item1 != 0)
                         // yield return (i, j)Grid[i, j];
                         yield return (i, j);
                 }

@@ -40,7 +40,6 @@ namespace Omniplatformer.Scenes
 
         public Texture2D CurrentBackground { get; set; } = GameContent.Instance.whitePixel;
 
-        public TileMapRenderComponent tilemap;
 
         // public List<RenderComponent> drawables = new List<RenderComponent>();
         public SortedList<int, RenderComponent> drawables = new SortedList<int, RenderComponent>(new DuplicateKeyComparer<int>());
@@ -136,11 +135,6 @@ namespace Omniplatformer.Scenes
 
         public void RegisterDrawable(RenderComponent drawable)
         {
-            if(drawable is TileMapRenderComponent)
-            {
-                tilemap = (TileMapRenderComponent)drawable;
-                return;
-            }
             if (!drawable.Tile)
                 drawables.Add(drawable.ZIndex, drawable);
         }
@@ -281,6 +275,20 @@ namespace Omniplatformer.Scenes
             spriteBatch.End();
         }
 
+        public void DrawToBackgroundLayer()
+        {
+            var spriteBatch = GraphicsService.Instance;
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Matrix.CreateTranslation(-(int)Camera.Position.X * 0,
+                                            0, 0) *
+                                            Matrix.CreateRotationZ(Camera.Rotation)
+                                            );
+            foreach (var (zindex, drawable) in drawables)
+            {
+                drawable.DrawToBackground();
+            }
+            spriteBatch.End();
+        }
+
         public void DrawToMainLayer()
         {
             var spriteBatch = GraphicsService.Instance;
@@ -288,11 +296,14 @@ namespace Omniplatformer.Scenes
             GraphicsDevice.SetRenderTarget(mainTarget);
             GraphicsDevice.Clear(Color.Transparent);
 
+            /*
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
             tilemap.Draw();
             spriteBatch.End();
+            */
 
-
+            DrawBackground();
+            DrawToBackgroundLayer();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
             // spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
@@ -343,7 +354,6 @@ namespace Omniplatformer.Scenes
             // Draw everything into the final scene
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
-            DrawBackground();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.TranslationMatrix);
 

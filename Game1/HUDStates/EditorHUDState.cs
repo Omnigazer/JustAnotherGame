@@ -48,12 +48,11 @@ namespace Omniplatformer.HUDStates
             SetupControls();
             InitObjectConstructors();
             RegisterHandlers();
-            var picker = new TilePicker();
-            var x = picker.Node;
-            x.FlexDirection = Facebook.Yoga.YogaFlexDirection.Row;
-            x.Wrap = Facebook.Yoga.YogaWrap.Wrap;
+            var picker = new TilePicker(false);
+            var background_picker = new TilePicker(true);
             Root.RegisterChild(playerHUD);
             Root.RegisterChild(picker);
+            Root.RegisterChild(background_picker);
             SetupGUI();
         }
 
@@ -212,6 +211,7 @@ namespace Omniplatformer.HUDStates
         }
 
         public int current_tile = 2;
+        public bool background = true;
         public void DrawTile(int x, int y)
         {
             if (GameContent.Instance.atlas_meta.ContainsKey((short)current_tile))
@@ -239,16 +239,6 @@ namespace Omniplatformer.HUDStates
             brush_size = Math.Max(0, brush_size - 1);
         }
 
-        public void NextTile()
-        {
-            current_tile++;
-        }
-
-        public void PrevTile()
-        {
-            current_tile = Math.Max(0, current_tile - 1);
-        }
-
         public void PlaceTiles(short? type = null)
         {
             type = (short)(type ?? current_tile);
@@ -274,8 +264,10 @@ namespace Omniplatformer.HUDStates
 
         public bool PlaceTile(int x, int y, short type)
         {
-            var tile = new Tile() { Col = y, Row = x, Type = type };
+            // var tile = new Tile() { Col = y, Row = x, Type = (type, 0)};
             var tilemap = Game.MainScene.TileMap;
+            var tile_type = background ? (tilemap.Grid[x, y].Item1, type) : (type, tilemap.Grid[x, y].Item2);
+            var tile = new Tile() { Col = y, Row = x, Type = tile_type };
             if (tilemap.Grid[x, y] != tile.Type)
             {
                 tilemap.RegisterTile(tile);
@@ -314,8 +306,6 @@ namespace Omniplatformer.HUDStates
                 {  Keys.S, (MoveCameraDown, noop, true) },
                 {  Keys.W, (MoveCameraUp, noop, true) },
 
-                {  Keys.Z, (PrevTile, noop, false) },
-                {  Keys.C, (NextTile, noop, false) },
                 {  Keys.Q, (SetPrevConstructor, noop, false) },
                 {  Keys.E, (SetNextConstructor, noop, false) },
                 {  Keys.R, (ClearConstructor, noop, false) },

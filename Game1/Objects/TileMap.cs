@@ -12,11 +12,11 @@ namespace Omniplatformer.Objects
     {
         public int GridWidth { get; set; } = 5000;
         public int GridHeight { get; set; } = 5000;
-        public short[,] Grid { get; set; }
+        public (short, short)[,] Grid { get; set; }
 
         public TileMap()
         {
-            Grid = new short[GridWidth, GridHeight];
+            Grid = new (short, short)[GridWidth, GridHeight];
             var drawable = new TileMapRenderComponent(this);
             Components.Add(drawable);
             var physicable = new TileMapPhysicsComponent(this, Grid);
@@ -25,14 +25,12 @@ namespace Omniplatformer.Objects
 
         public void RegisterTile(Tile tile)
         {
-            // short val = (short)(tile.Type == 's' ? 1 : 2);
-            short val = (short)tile.Type;
-            Grid[tile.Row, tile.Col] = val;
+            Grid[tile.Row, tile.Col] = tile.Type;
         }
 
         public void RemoveTile(Tile tile)
         {
-            Grid[tile.Row, tile.Col] = 0;
+            Grid[tile.Row, tile.Col] = (0, 0);
             var drawable = (TileMapRenderComponent)this;
             // drawable.ReloadBuffer();
             // drawable.

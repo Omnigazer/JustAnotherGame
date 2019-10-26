@@ -89,6 +89,11 @@ namespace Omniplatformer.Components
 
         }
 
+        public virtual void DrawToBackground()
+        {
+
+        }
+
         public virtual void Draw()
         {
             // PositionComponent pos = GetComponent<PositionComponent>();

@@ -5,8 +5,8 @@
       "type": "Omniplatformer.Characters.Goblin, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       "Position": {
         "coords": {
-          "x": 47307.8945,
-          "y": 33762.0
+          "x": 46620.9922,
+          "y": 33770.0
         },
         "halfsize": {
           "x": 20.0,
@@ -23,8 +23,8 @@
       "type": "Omniplatformer.Characters.Goblin, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       "Position": {
         "coords": {
-          "x": 47502.38,
-          "y": 33762.0
+          "x": 46664.4258,
+          "y": 33770.0
         },
         "halfsize": {
           "x": 20.0,
@@ -41,8 +41,8 @@
       "type": "Omniplatformer.Characters.Goblin, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       "Position": {
         "coords": {
-          "x": 47543.3672,
-          "y": 33762.0
+          "x": 47724.0,
+          "y": 33802.0
         },
         "halfsize": {
           "x": 20.0,
@@ -64,12 +64,66 @@
       "damage": 1
     },
     {
+      "Id": "79d49643-094a-4231-b2e9-f206f992bf01",
+      "type": "Omniplatformer.Shield, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "Id": "477b7ea4-5529-41e6-830f-e1cf8dee16c7",
+      "type": "Omniplatformer.WieldedItem, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "damage": 1
+    },
+    {
+      "Id": "79d49643-094a-4231-b2e9-f206f992bf01",
+      "type": "Omniplatformer.Shield, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "Id": "477b7ea4-5529-41e6-830f-e1cf8dee16c7",
+      "type": "Omniplatformer.WieldedItem, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "damage": 1
+    },
+    {
+      "Id": "79d49643-094a-4231-b2e9-f206f992bf01",
+      "type": "Omniplatformer.Shield, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "Id": "477b7ea4-5529-41e6-830f-e1cf8dee16c7",
+      "type": "Omniplatformer.WieldedItem, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "damage": 1
+    },
+    {
+      "Id": "79d49643-094a-4231-b2e9-f206f992bf01",
+      "type": "Omniplatformer.Shield, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "Id": "477b7ea4-5529-41e6-830f-e1cf8dee16c7",
+      "type": "Omniplatformer.WieldedItem, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "damage": 1
+    },
+    {
+      "Id": "79d49643-094a-4231-b2e9-f206f992bf01",
+      "type": "Omniplatformer.Shield, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "Id": "477b7ea4-5529-41e6-830f-e1cf8dee16c7",
+      "type": "Omniplatformer.WieldedItem, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "damage": 1
+    },
+    {
+      "Id": "79d49643-094a-4231-b2e9-f206f992bf01",
+      "type": "Omniplatformer.Shield, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "Id": "477b7ea4-5529-41e6-830f-e1cf8dee16c7",
+      "type": "Omniplatformer.WieldedItem, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "damage": 1
+    },
+    {
       "Id": "2400e95c-35e5-465f-a30a-806ce0181553",
       "type": "Omniplatformer.Player, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
       "Position": {
         "coords": {
-          "x": 41206.3867,
-          "y": 32732.0
+          "x": 43787.57,
+          "y": 33572.0
         },
         "halfsize": {
           "x": 20.0,
