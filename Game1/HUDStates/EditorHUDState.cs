@@ -48,11 +48,9 @@ namespace Omniplatformer.HUDStates
             SetupControls();
             InitObjectConstructors();
             RegisterHandlers();
-            var picker = new TilePicker(false);
-            var background_picker = new TilePicker(true);
+            var picker = new TilePicker();
             Root.RegisterChild(playerHUD);
             Root.RegisterChild(picker);
-            Root.RegisterChild(background_picker);
             SetupGUI();
         }
 

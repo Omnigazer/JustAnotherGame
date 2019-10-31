@@ -17,9 +17,9 @@ namespace Omniplatformer.HUD
 
         bool IsBackground { get; set; }
 
-        public TilePicker(bool background)
+        public TilePicker()
         {
-            IsBackground = background;
+
         }
 
         public override void SetupNode()
@@ -31,7 +31,16 @@ namespace Omniplatformer.HUD
             Width = slot_width * cols + (cols) * slot_margin * 2;
             Height = slot_height * rows + (rows) * slot_margin * 2;
 
-            foreach(short key in GameContent.Instance.atlas_meta.Keys)
+            var checkbox = new CheckBox();
+            checkbox.Margin = 5;
+            checkbox.MouseClick += (sender, e) => { IsBackground = !IsBackground; (((EditorHUDState)GameService.Instance.HUDState)).background = IsBackground; };
+
+            var row = new Row();
+            row.RelativeWidth = 100;
+            row.RegisterChild(checkbox);
+            RegisterChild(row);
+
+            foreach (short key in GameContent.Instance.atlas_meta.Keys)
             {
                 RegisterTile(key);
             }

@@ -77,6 +77,7 @@
     <Compile Include="HUDStates\CharHUDState.cs" />
     <Compile Include="HUD\CharView.cs" />
     <Compile Include="HUD\Column.cs" />
+    <Compile Include="HUD\Checkbox.cs" />
     <Compile Include="HUD\Row.cs" />
     <Compile Include="HUD\EquipView.cs" />
     <Compile Include="HUD\HealthBar.cs" />
