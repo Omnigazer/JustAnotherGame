@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Omniplatformer.Characters;
 using Omniplatformer.Components;
-using Omniplatformer.HUD;
 using Omniplatformer.Scenes;
 using Omniplatformer.Utility;
 using System;
@@ -11,6 +9,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omniplatformer.Components.Physics;
+using Omniplatformer.Components.Rendering;
+using Omniplatformer.Content;
+using Omniplatformer.Objects;
+using Omniplatformer.Objects.Characters;
+using Omniplatformer.Objects.Interactibles;
+using Omniplatformer.Objects.Terrain;
+using Omniplatformer.Scenes.Subsystems;
+using Omniplatformer.Services;
+using Omniplatformer.Utility.DataStructs;
+using Omniplatformer.Views.Editor;
+using Omniplatformer.Views.HUD;
+using Omniplatformer.Utility.Extensions;
 
 namespace Omniplatformer.HUDStates
 {

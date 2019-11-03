@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Omniplatformer.Enums;
+using Omniplatformer.Objects;
+using Omniplatformer.Objects.Characters;
 
 namespace Omniplatformer.Components
 {

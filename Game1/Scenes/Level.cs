@@ -1,23 +1,20 @@
-﻿using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Omniplatformer.Characters;
-using Omniplatformer.Utility;
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Omniplatformer.Components;
+using System.Runtime.Serialization.Formatters.Binary;
+using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Omniplatformer.Content;
+using Omniplatformer.Objects;
+using Omniplatformer.Services;
+using Omniplatformer.Utility;
+using Omniplatformer.Utility.DataStructs;
+using ZeroFormatter;
 // using System.Drawing;
 // using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework.Graphics;
-using Omniplatformer.Scenes;
-using System.Runtime.Serialization.Formatters.Binary;
-using ZeroFormatter;
-using Omniplatformer.Objects;
 
-namespace Omniplatformer
+namespace Omniplatformer.Scenes
 {
     public class Level : Scene
     {

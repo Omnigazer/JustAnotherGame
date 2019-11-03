@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Omniplatformer
-{
-    static class Layers
+﻿namespace Omniplatformer.Enums
+{    static class Layers
     {
         public static int Background => -1;
         public static int Default => 0;

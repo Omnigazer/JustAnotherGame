@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Omniplatformer.HUD;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omniplatformer.Views.BasicControls;
+using Omniplatformer.Views.Character;
+using Omniplatformer.Views.HUD;
 
 namespace Omniplatformer.HUDStates
 {

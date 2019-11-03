@@ -5,6 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omniplatformer.Components.Physics;
+using Omniplatformer.Enums;
+using Omniplatformer.Objects;
+using Omniplatformer.Objects.Projectiles;
+using Omniplatformer.Services;
 
 
 namespace Omniplatformer.Spells

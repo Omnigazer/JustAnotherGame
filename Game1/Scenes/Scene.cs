@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omniplatformer.Objects;
+using Omniplatformer.Objects.Characters;
+using Omniplatformer.Scenes.Subsystems;
 
 namespace Omniplatformer.Scenes
 {

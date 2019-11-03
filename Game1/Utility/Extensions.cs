@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Omniplatformer.Utility
 {
-    public static class Extensions
+    public static class ExtensionClass
     {
         // Numeric extensions
         public static int LimitToRange(

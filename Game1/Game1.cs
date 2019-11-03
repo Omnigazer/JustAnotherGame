@@ -2,16 +2,25 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Omniplatformer.Characters;
 using Omniplatformer.Components;
-using Omniplatformer.HUD;
 using System;
 using System.Collections.Generic;
 using Omniplatformer.HUDStates;
 using Microsoft.Xna.Framework.Media;
 using MonoGameConsole;
+using Omniplatformer.Components.Physics;
+using Omniplatformer.Components.Rendering;
+using Omniplatformer.Content;
+using Omniplatformer.Enums;
+using Omniplatformer.Objects;
+using Omniplatformer.Objects.Characters;
+using Omniplatformer.Objects.Interactibles;
+using Omniplatformer.Objects.Inventory;
+using Omniplatformer.Objects.Items;
 using Omniplatformer.Scenes;
-using Omniplatformer.Items;
+using Omniplatformer.Scenes.Subsystems;
+using Omniplatformer.Services;
+using Omniplatformer.Utility;
 
 namespace Omniplatformer
 {

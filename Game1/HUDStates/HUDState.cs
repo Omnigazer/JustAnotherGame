@@ -2,12 +2,18 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Omniplatformer.Components;
-using Omniplatformer.HUD;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omniplatformer.Components.Physics;
+using Omniplatformer.Content;
+using Omniplatformer.Services;
+using Omniplatformer.Views;
+using Omniplatformer.Views.BasicControls;
+using Omniplatformer.Views.HUD;
+using Omniplatformer.Utility.Extensions;
 
 namespace Omniplatformer.HUDStates
 {

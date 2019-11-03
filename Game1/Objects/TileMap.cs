@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omniplatformer.Components.Physics;
+using Omniplatformer.Components.Rendering;
+using Omniplatformer.Utility.DataStructs;
 
 namespace Omniplatformer.Objects
 {
