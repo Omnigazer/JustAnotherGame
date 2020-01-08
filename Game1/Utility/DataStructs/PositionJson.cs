@@ -19,8 +19,8 @@ namespace Omniplatformer.Utility.DataStructs
                 },
                 halfsize = new
                 {
-                    x = pos.WorldPosition.halfsize.X,
-                    y = pos.WorldPosition.halfsize.Y
+                    x = pos.WorldPosition.Halfsize.X,
+                    y = pos.WorldPosition.Halfsize.Y
                 },
                 origin = new
                 {

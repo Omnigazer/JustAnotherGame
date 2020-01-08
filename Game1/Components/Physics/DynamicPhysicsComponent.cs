@@ -7,8 +7,8 @@ namespace Omniplatformer.Components.Physics
 {
     public class DynamicPhysicsComponent : PhysicsComponent
     {
+        const float epsilon = 0.01f;
         // Collision interaction flags
-        public bool IsOnGround { get; set; }
         public PhysicsComponent CurrentGround { get; set; }
         public bool IsInLiquid { get; set; }
         public float LiquidImmersion { get; set; }
@@ -22,7 +22,7 @@ namespace Omniplatformer.Components.Physics
         protected Vector2 CurrentMovement { get; set; }
 
         // Movement counters and flags
-        public Direction move_direction;
+        public Direction MoveDirection { get; set; }
 
         public float VerticalSpeed
         {
@@ -69,23 +69,16 @@ namespace Omniplatformer.Components.Physics
         public virtual void ResetCollisionFlags()
         {
             CurrentGround = null;
-            /*
-            foreach (var (direction, obj) in collisions)
-            {
-                ProcessCollision(direction, obj);
-            }
-            */
         }
 
         // Set speed < e to zero to prevent shaking
         public void TrimSpeed()
         {
-            float e = 0.01f;
-            if (Math.Abs(VerticalSpeed) < e)
+            if (Math.Abs(VerticalSpeed) < epsilon)
             {
                 VerticalSpeed = 0;
             }
-            if (Math.Abs(HorizontalSpeed) < e)
+            if (Math.Abs(HorizontalSpeed) < epsilon)
             {
                 HorizontalSpeed = 0;
             }

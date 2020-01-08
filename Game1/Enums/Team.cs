@@ -2,8 +2,8 @@
 {
     public enum Team
     {
-        Friend,
-        Neutral,
-        Enemy
+        Neutral = 0,
+        Friend = 1,
+        Enemy = 2
     }
 }

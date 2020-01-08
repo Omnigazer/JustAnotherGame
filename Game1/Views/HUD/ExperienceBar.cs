@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Content;
 using Omniplatformer.Objects.Characters;
 using Omniplatformer.Scenes.Subsystems;
@@ -10,12 +11,9 @@ namespace Omniplatformer.Views.HUD
 {
     public class ExperienceBar : ViewControl, IUpdatable
     {
-        public Player Player => GameService.Player;
+        public ExperienceComponent Player => GameService.Player.GetComponent<ExperienceComponent>();
 
-        public ExperienceBar()
-        {
-
-        }
+        public ExperienceBar() { }
 
         public override void SetupNode()
         {

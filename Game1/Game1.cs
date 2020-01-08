@@ -323,13 +323,13 @@ namespace Omniplatformer
         public void WalkLeft()
         {
             var movable = (PlayerMoveComponent)Player;
-            movable.move_direction = Direction.Left;
+            movable.MoveDirection = Direction.Left;
         }
 
         public void WalkRight()
         {
             var movable = (PlayerMoveComponent)Player;
-            movable.move_direction = Direction.Right;
+            movable.MoveDirection = Direction.Right;
         }
 
         public void GoUp()
@@ -339,7 +339,7 @@ namespace Omniplatformer
             {
                 movable.StartClimbing();
             }
-            movable.move_direction = Direction.Up;
+            movable.MoveDirection = Direction.Up;
         }
 
         public void GoDown()
@@ -353,13 +353,13 @@ namespace Omniplatformer
             {
                 Duck();
             }
-            movable.move_direction = Direction.Down;
+            movable.MoveDirection = Direction.Down;
         }
 
         public void StopMoving()
         {
             var movable = (PlayerMoveComponent)Player;
-            movable.move_direction = Direction.None;
+            movable.MoveDirection = Direction.None;
         }
 
         public void Jump()
@@ -382,13 +382,13 @@ namespace Omniplatformer
         public void Stand()
         {
             var x = (PositionComponent)Player;
-            x.SetLocalHalfsize(x.WorldPosition.halfsize * 2);
+            x.SetLocalHalfsize(x.WorldPosition.Halfsize * 2);
         }
 
         public void Duck()
         {
             var x = (PositionComponent)Player;
-            x.SetLocalHalfsize(x.WorldPosition.halfsize / 2);
+            x.SetLocalHalfsize(x.WorldPosition.Halfsize / 2);
         }
 
         // fps is assumed to be 30 while we're tick-based

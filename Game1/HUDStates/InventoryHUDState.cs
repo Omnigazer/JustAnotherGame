@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Facebook.Yoga;
 using Omniplatformer.Components;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Objects.Inventory;
@@ -29,15 +30,13 @@ namespace Omniplatformer.HUDStates
         EquipView EquipView { get; set; }
 
         Item MouseStorage { get; set; }
+        private Inventory PlayerInventory { get; set; }
 
-        // TODO: TEMPORARY
-        Inventory inv;
-
-        public InventoryHUDState(Inventory inv)
+        public InventoryHUDState(Inventory playerInventory)
         {
             playerHUD = new HUDContainer();
             // TODO: remove this reference
-            this.inv = inv;
+            this.PlayerInventory = playerInventory;
             SetupControls();
             Game.onTargetInventoryOpen += onTargetInventoryOpen;
             Game.onTargetInventoryClosed += onTargetInventoryClosed;
@@ -46,17 +45,20 @@ namespace Omniplatformer.HUDStates
 
         public override void RegisterChildren()
         {
-            PlayerInventoryView = new InventoryView(this, inv);
-            var x = PlayerInventoryView.Node;
-            x.Top = 20;
-            x.Right = 20;
-            x.PositionType = Facebook.Yoga.YogaPositionType.Absolute;
-            x.FlexDirection = Facebook.Yoga.YogaFlexDirection.Row;
-            x.Wrap = Facebook.Yoga.YogaWrap.Wrap;
+            PlayerInventoryView = new InventoryView(this, PlayerInventory)
+            {
+                Node =
+                {
+                    Top = 20,
+                    Right = 20,
+                    PositionType = Facebook.Yoga.YogaPositionType.Absolute,
+                    FlexDirection = Facebook.Yoga.YogaFlexDirection.Row,
+                    Wrap = Facebook.Yoga.YogaWrap.Wrap
+                }
+            };
 
-            TargetInventoryView = new InventoryView(this, inv) { Visible = false };
-            x = TargetInventoryView.Node;
-            x.PositionType = Facebook.Yoga.YogaPositionType.Absolute;
+            TargetInventoryView = new InventoryView(this)
+                {Visible = false, Node = {PositionType = YogaPositionType.Absolute}};
 
             EquipView = new EquipView(this, Game.Player);
 
@@ -68,21 +70,11 @@ namespace Omniplatformer.HUDStates
 
         private void onTargetInventoryOpen(object sender, InventoryEventArgs e)
         {
-            SetTargetInventory(e.Inventory);
+            TargetInventoryView.SetInventory(e.Inventory);
             TargetInventoryView.Visible = true;
         }
 
         private void onTargetInventoryClosed(object sender, EventArgs e)
-        {
-            ClearTargetInventory();
-        }
-
-        public void SetTargetInventory(Inventory inv)
-        {
-            TargetInventoryView.SetInventory(inv);
-        }
-
-        public void ClearTargetInventory()
         {
             TargetInventoryView.Visible = false;
             TargetInventoryView.SetInventory(null);
@@ -131,7 +123,6 @@ namespace Omniplatformer.HUDStates
             spriteBatch.Begin();
             if (MouseStorage != null)
             {
-                var mouse_pos = Mouse.GetState().Position;
                 GraphicsService.DrawScreen(((RenderComponent)MouseStorage).Texture, new Rectangle(mouse_pos, new Point(60, 60)), Color.White, 0, Vector2.Zero);
             }
             spriteBatch.End();
@@ -142,10 +133,10 @@ namespace Omniplatformer.HUDStates
             Action noop = delegate { };
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
-                {  Keys.Left, (inv.MoveLeft, noop, false) },
-                {  Keys.Up, (inv.MoveUp, noop, false) },
-                {  Keys.Right, (inv.MoveRight, noop, false) },
-                {  Keys.Down, (inv.MoveDown, noop, false) },                
+                {  Keys.Left, (PlayerInventory.MoveLeft, noop, false) },
+                {  Keys.Up, (PlayerInventory.MoveUp, noop, false) },
+                {  Keys.Right, (PlayerInventory.MoveRight, noop, false) },
+                {  Keys.Down, (PlayerInventory.MoveDown, noop, false) },
                 {  Keys.C, (Game.CloseChest, noop, false) },
                 {  Keys.Escape, (Game.CloseInventory, noop, false) },
                 {  Keys.I, (Game.CloseInventory, noop, false) }

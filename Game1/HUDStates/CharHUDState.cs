@@ -25,15 +25,12 @@ namespace Omniplatformer.HUDStates
             {
                 playerHUD
             };
-            //col.RegisterChild();
             Root.RegisterChild(col);
-            // Root.RegisterChild(playerHUD);
             col = new Column()
             {
                 view
             };
             Root.RegisterChild(col);
-            // Root.RegisterChild(view);
             SetupGUI();
         }
 

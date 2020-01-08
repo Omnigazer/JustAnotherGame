@@ -87,20 +87,4 @@ namespace Omniplatformer.Utility
             return decodeObject(inner);
         }
     }
-
-    /*
-    public class SomeClass
-    {
-        SomeClass(Deserialzer deserializer)
-        {
-            fieldA = deserializer.decodeInt("int");
-            fieldB = deserializer.decodeObject("object");
-        }
-
-        static SomeClass method(Deserialzer deserializer)
-        {
-            return new SomeClass(deserializer);
-        }
-    }
-    */
 }

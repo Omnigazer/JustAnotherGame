@@ -17,9 +17,8 @@ namespace Omniplatformer.Objects.Terrain
 
         public Liquid(Vector2 coords, Vector2 halfsize, Vector2 origin, bool tile = false)
         {
-            Tickable = false;
             Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Liquid = true, Solid = false, Friction = 0.2f, Tile = tile });
-            Components.Add(new RenderComponent(this, Color.Aqua * 0.5f, Layers.Liquid) { Tile = tile });
+            Components.Add(new RenderComponent(this, Color.Aqua * 0.5f, z_index: Layers.Liquid));
         }
 
         public override object AsJson()

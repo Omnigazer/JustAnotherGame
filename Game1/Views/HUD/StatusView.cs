@@ -36,7 +36,7 @@ namespace Omniplatformer.Views.HUD
             {
                 displayMessage(msg);
             }
-            hud.status_messages.Clear();
+            hud.StatusMessages.Clear();
         }
 
         public override void DrawSelf()

@@ -18,13 +18,6 @@ namespace Omniplatformer.Animations
 
         }
 
-        public override void End()
-        {
-            base.End();
-            // TODO: just in case, watch this
-            Drawable.Opacity = 1;
-        }
-
         public override void Tick(float dt)
         {
             base.Tick(dt);

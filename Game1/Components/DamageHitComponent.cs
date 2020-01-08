@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Objects;
+using Omniplatformer.Components.Character;
 
 namespace Omniplatformer.Components
 {
@@ -21,20 +22,16 @@ namespace Omniplatformer.Components
         public Vector2 Knockback { get; set; }
         public override bool EligibleTarget(GameObject target) => target.Team != GameObject.Team;
 
-        public DamageHitComponent(GameObject obj, int damage) : base(obj)
+        public DamageHitComponent(GameObject obj, int damage, Vector2? knockback = null) : base(obj)
         {
             Damage = damage;
-        }
-
-        public DamageHitComponent(GameObject obj, int damage, Vector2 knockback) : base(obj)
-        {
-            Damage = damage;
-            Knockback = knockback;
+            Knockback = knockback ?? Vector2.Zero;
         }
 
         public override void ApplyEffect(GameObject target)
         {
-            target.ApplyDamage(DetermineDamage());
+            var damageable = (HitPointComponent)target;
+            damageable?.ApplyDamage(DetermineDamage());
             ApplyKnockback(target);
         }
 

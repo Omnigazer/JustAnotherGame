@@ -27,12 +27,16 @@ namespace Omniplatformer.HUDStates
 {
     public class EditorHUDState : HUDState
     {
-        HUDContainer playerHUD;
-
         // editor's state
-        public Dictionary<string, Func<Vector2, Vector2, Vector2, GameObject>> PositionalConstructors;// = new Dictionary<string, Func<GameObject>>();
+        public Dictionary<string, Func<Vector2, Vector2, Vector2, GameObject>> PositionalConstructors { get; set; }
         public string CurrentConstructor { get; set; }
         public bool PinMode { get; set; }
+        public int current_tile = 2;
+        int brush_size = 1;
+        float current_block_width = 8;
+        float current_block_height = 8;
+        // whether the current tile applies to background
+        public bool background = true;
 
         // mouse position on last tick
         Point last_position = Point.Zero;
@@ -55,12 +59,11 @@ namespace Omniplatformer.HUDStates
 
         public EditorHUDState()
         {
-            playerHUD = new HUDContainer();
             SetupControls();
             InitObjectConstructors();
             RegisterHandlers();
             var picker = new TilePicker();
-            Root.RegisterChild(playerHUD);
+            Root.RegisterChild(new HUDContainer());
             Root.RegisterChild(picker);
             SetupGUI();
         }
@@ -137,15 +140,15 @@ namespace Omniplatformer.HUDStates
         {
             PositionalConstructors = new Dictionary<string, Func<Vector2, Vector2, Vector2, GameObject>>()
             {
-                { "SolidPlatform", (coords, halfsize, origin) => { return new SolidPlatform(coords, halfsize, origin); } },
-                { "MovingPlatform", (coords, halfsize, origin) => { return new MovingPlatform(coords, halfsize); } },
-                { "Liquid", (coords, halfsize, origin) => { return new Liquid(coords, halfsize, origin); } },
-                { "ForegroundQuad", (coords, halfsize, origin) => { return new ForegroundQuad(coords, halfsize, origin); } },
-                { "Ladder", (coords, halfsize, origin) => { return new Ladder(coords, halfsize); } },
-                { "Zombie", (coords, halfsize, origin) => { return new Zombie(coords); } },
-                { "Goblin", (coords, halfsize, origin) => { return new Goblin(coords); } },
-                { "GoblinShaman", (coords, halfsize, origin) => { return new GoblinShaman(coords); } },
-                { "Chest", (coords, halfsize, origin) => { return new Chest(coords, halfsize); } },
+                { "SolidPlatform", (coords, halfsize, origin) => new SolidPlatform(coords, halfsize, origin)},
+                { "MovingPlatform", (coords, halfsize, origin) => new MovingPlatform(coords, halfsize)},
+                { "DestructibleObject", (coords, halfsize, origin) => new DestructibleObject(coords, halfsize)},
+                { "Liquid", (coords, halfsize, origin) => new Liquid(coords, halfsize, origin)},
+                { "ForegroundQuad", (coords, halfsize, origin) => new ForegroundQuad(coords, halfsize, origin)},
+                { "Ladder", (coords, halfsize, origin) => new Ladder(coords, halfsize)},
+                { "Goblin", (coords, halfsize, origin) => new Goblin(coords)},
+                { "GoblinShaman", (coords, halfsize, origin) => new GoblinShaman(coords)},
+                { "Chest", (coords, halfsize, origin) => new Chest(coords, halfsize)},
             };
             // CurrentConstructor = PositionalConstructors.Keys.First();
         }
@@ -171,10 +174,10 @@ namespace Omniplatformer.HUDStates
 
         public override IEnumerable<string> GetStatusMessages()
         {
-            yield return String.Format("Current constructor: {0}", CurrentConstructor);
-            yield return String.Format("Current group: {0}", CurrentGroupName);
-            yield return String.Format("Current object: {0}", Game.GetObjectAtCursor());
-            foreach (var msg in status_messages)
+            yield return $"Current constructor: {CurrentConstructor}";
+            yield return $"Current group: {CurrentGroupName}";
+            yield return $"Current object: {Game.GetObjectAtCursor()}";
+            foreach (var msg in StatusMessages)
             {
                 yield return msg;
             }
@@ -184,9 +187,6 @@ namespace Omniplatformer.HUDStates
         {
             var spriteBatch = GraphicsService.Instance;
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null);
-            var mouse_pos = Mouse.GetState().Position;
-            mouse_pos = new Point(mouse_pos.X, -mouse_pos.Y);
-            // var rect = new Rectangle(Mouse.GetState().Position, new Point((int)(current_block_width * Game.RenderSystem.Camera.Zoom), (int)(current_block_height * Game.RenderSystem.Camera.Zoom)));
             var rect = new Rectangle(Mouse.GetState().Position, new Point((int)(current_block_width), (int)(current_block_height)));
             // rect = Game.GameToScreen(rect, new Vector2(0, 1));
 
@@ -197,16 +197,12 @@ namespace Omniplatformer.HUDStates
             var color = t.color ?? Color.White;
 
             GraphicsService.DrawScreen(tex, rect, color, 0, origin, scale: Game.RenderSystem.Camera.Zoom, tiled: tiled);
-            // GraphicsService.DrawScreen(tex, rect, Color.Gray, 0, new Vector2(0.5f, 0.5f), scale: 1, tiled: tiled);
             spriteBatch.End();
         }
 
         #region Tiles
         public void DrawCurrentTile()
         {
-            var spriteBatch = GraphicsService.Instance;
-
-            var mouse_pos = Mouse.GetState().Position;
             Vector2 mouse_coords = Game.RenderSystem.ScreenToGame(mouse_pos);
             var x = (int)mouse_coords.X / PhysicsSystem.TileSize;
             var y = (int)mouse_coords.Y / PhysicsSystem.TileSize;
@@ -218,9 +214,6 @@ namespace Omniplatformer.HUDStates
                 }
             }
         }
-
-        public int current_tile = 2;
-        public bool background = true;
         public void DrawTile(int x, int y)
         {
             if (GameContent.Instance.atlas_meta.ContainsKey((short)current_tile))
@@ -236,8 +229,6 @@ namespace Omniplatformer.HUDStates
                 spriteBatch.End();
             }
         }
-
-        int brush_size = 1;
         public void EnlargeBrush()
         {
             brush_size++;
@@ -251,15 +242,13 @@ namespace Omniplatformer.HUDStates
         public void PlaceTiles(short? type = null)
         {
             type = (short)(type ?? current_tile);
-            var pos = Mouse.GetState().Position;
-            var click_coords = GetInGameCoords(pos);
+            var click_coords = GetInGameCoords(mouse_pos);
             var (x, y) = Game.PhysicsSystem.GetTileIndices(click_coords);
             bool rebuild = false;
             for (int i = x; i < x + brush_size; i++)
             {
                 for (int j = y; j < y + brush_size; j++)
                 {
-                    // DrawTile(i, j);
                     rebuild = PlaceTile(i, j, type.Value) || rebuild;
                 }
             }
@@ -306,7 +295,7 @@ namespace Omniplatformer.HUDStates
 
         public void SetupControls()
         {
-            bool continuous_size = true;
+            const bool continuous_size = true;
             Action noop = delegate { };
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
@@ -519,9 +508,6 @@ namespace Omniplatformer.HUDStates
             tele_obj = null;
         }
 
-        float current_block_width = 8;
-        float current_block_height = 8;
-
         public void HandleDragMode()
         {
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
@@ -544,12 +530,6 @@ namespace Omniplatformer.HUDStates
                 halfsize = new Vector2(Math.Abs(halfsize.X), Math.Abs(halfsize.Y));
                 var origin = new Vector2(0, 1);
                 Game.Log(click_coords.ToString());
-                /*
-                click_coords = new Vector2(
-                    ((int)click_coords.X / PhysicsSystem.TileSize) * PhysicsSystem.TileSize,
-                    ((int)click_coords.Y / PhysicsSystem.TileSize) * PhysicsSystem.TileSize
-                    );
-                */
                 var obj = PositionalConstructors[CurrentConstructor](click_coords, halfsize, origin);
                 CurrentGroup.Add(obj);
                 Game.AddToMainScene(obj);

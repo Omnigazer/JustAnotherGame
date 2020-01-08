@@ -11,23 +11,17 @@ namespace Omniplatformer.Objects.Items
 {
     public class WieldedItem : Item
     {
-        // public int Damage { get; set; }
-        // public Vector2 Knockback { get; set; }
-        public override GameObject Source => _source?.Source ?? this;
-        private GameObject _source;
+        readonly Vector2 knockback = new Vector2(4, 3);
+        readonly Vector2 halfsize = new Vector2(3, 25);
+        readonly Texture2D texture = GameContent.Instance.cursor;
 
-        public WieldedItem(int damage, Texture2D texture = null)
+        public WieldedItem(int damage)
         {
-            if (texture == null)
-                texture = GameContent.Instance.cursor;
             Team = Team.Friend;
-            // Damage = damage;
-            var Knockback = new Vector2(4, 3);
-            var halfsize = new Vector2(3, 25);
             Descriptors.Add(Descriptor.RightHandSlot);
             Components.Add(new PhysicsComponent(this, Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)));
             Components.Add(new RenderComponent(this, Color.White, texture));
-            Components.Add(new MeleeDamageHitComponent(this, damage, Knockback));
+            Components.Add(new MeleeDamageHitComponent(this, damage, knockback: knockback));
         }
 
         public override void OnEquip(Character character)
@@ -36,7 +30,7 @@ namespace Omniplatformer.Objects.Items
             // draw-related
             var item_pos = (PositionComponent)this;
             item_pos.SetParent(character, AnchorPoint.RightHand);
-            Game.AddToMainScene(this);
+            // character.CurrentScene.RegisterObject(this);
         }
 
         public override void OnUnequip(Character character)
@@ -44,7 +38,7 @@ namespace Omniplatformer.Objects.Items
             SetWielder(null);
             var item_pos = (PositionComponent)this;
             item_pos.ClearParent();
-            Game.RemoveFromMainScene(this);
+            // character.CurrentScene.UnregisterObject(this);
         }
 
         public override object AsJson()
@@ -68,7 +62,7 @@ namespace Omniplatformer.Objects.Items
 
         public void SetWielder(GameObject source)
         {
-            _source = source;
+            Source = source;
         }
     }
 }

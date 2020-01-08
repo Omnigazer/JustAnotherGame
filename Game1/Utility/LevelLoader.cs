@@ -50,7 +50,7 @@ namespace Omniplatformer.Utility
                     // var obj = (GameObject)type.GetMethod("FromJson").Invoke(null, new object[] { (JObject)obj_data });
                     var obj = (GameObject)deserializer.decodeObject((JObject)obj_data);
                     var pos = (PositionComponent)obj;
-                    pos.local_position.Coords += origin;
+                    pos.AdjustPosition(origin);
                 }
                 // objects = SerializeService.Instance.GetObjects();
                 return storage.Values.ToList();
@@ -89,9 +89,9 @@ namespace Omniplatformer.Utility
                 foreach (var obj in group)
                 {
                     var pos = (PositionComponent)obj;
-                    pos.local_position.Coords -= origin;
+                    pos.AdjustPosition(-origin);
                     list.Add(obj.AsJson());
-                    pos.local_position.Coords += origin;
+                    pos.AdjustPosition(origin);
                 }
                 serializer.Serialize(writer, new { objects = list });
             }

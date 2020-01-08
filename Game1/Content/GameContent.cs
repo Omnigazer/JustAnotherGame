@@ -53,9 +53,9 @@ namespace Omniplatformer.Content
             Instance = new GameContent(content);
         }
 
-        private GameContent(ContentManager Content)
+        private GameContent(ContentManager content)
         {
-            this.Content = Content;
+            Content = content;
             //load images
             atlas = Content.Load<Texture2D>("Textures/atlas");
             atlas_meta = AtlasMetaImporter.NewImportTileMetadata("Content/Textures/atlas.atlas");
@@ -102,11 +102,6 @@ namespace Omniplatformer.Content
 
             //load fonts
             defaultFont = Content.Load<SpriteFont>("Fonts/DefaultFont");
-        }
-
-        public void LoadLevel()
-        {
-            // level = LoadJson(Path.Combine(Content.RootDirectory, "Data", @"json.txt"));
         }
     }
 }

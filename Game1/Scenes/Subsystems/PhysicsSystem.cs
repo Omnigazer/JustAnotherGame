@@ -94,8 +94,8 @@ namespace Omniplatformer.Scenes.Subsystems
 
         public (float kx, float ky) GetCollisionTime(DynamicPhysicsComponent obj, PhysicsComponent other)
         {
-            float px = Math.Abs(obj.WorldPosition.Center.X - other.WorldPosition.Center.X) - (obj.WorldPosition.halfsize.X + other.WorldPosition.halfsize.X);
-            float py = Math.Abs(obj.WorldPosition.Center.Y - other.WorldPosition.Center.Y) - (obj.WorldPosition.halfsize.Y + other.WorldPosition.halfsize.Y);
+            float px = Math.Abs(obj.WorldPosition.Center.X - other.WorldPosition.Center.X) - (obj.WorldPosition.Halfsize.X + other.WorldPosition.Halfsize.X);
+            float py = Math.Abs(obj.WorldPosition.Center.Y - other.WorldPosition.Center.Y) - (obj.WorldPosition.Halfsize.Y + other.WorldPosition.Halfsize.Y);
 
             return (px, py);
         }
@@ -166,7 +166,6 @@ namespace Omniplatformer.Scenes.Subsystems
             return processTilemapCollision();
         }
 
-        // Yeah, and air resistance
         protected void ApplyGravity(DynamicPhysicsComponent movable, float dt)
         {
             if (movable.InverseMass == 0)
@@ -186,7 +185,7 @@ namespace Omniplatformer.Scenes.Subsystems
                 float air_control = 150f;
                 float v_air = 0.004f * movable.InverseMass;
                 float h_air = 0.004f * movable.InverseMass;
-                if (movable.move_direction != Direction.None)
+                if (movable.MoveDirection != Direction.None)
                     h_air *= air_control;
                 movable.HorizontalSpeed += (chassis_speed - movable.HorizontalSpeed) * h_air * dt;
                 movable.VerticalSpeed += (-movable.HorizontalSpeed) * v_air * dt;
@@ -209,33 +208,37 @@ namespace Omniplatformer.Scenes.Subsystems
                 switch (dir)
                 {
                     case Direction.Up:
-                        {
-                            movable.VerticalSpeed = Math.Min(0, movable.VerticalSpeed);
-                            break;
-                        }
+                    {
+                        movable.VerticalSpeed = Math.Min(0, movable.VerticalSpeed);
+                        break;
+                    }
                     case Direction.Left:
-                        {
-                            movable.HorizontalSpeed = Math.Max(0, movable.HorizontalSpeed);
-                            if(movable is PlayerMoveComponent)
-                            movable.GetComponent<PlayerMoveComponent>().ChassisSpeed = Math.Max(0, movable.GetComponent<PlayerMoveComponent>().ChassisSpeed);
-                            break;
-                        }
+                    {
+                        movable.HorizontalSpeed = Math.Max(0, movable.HorizontalSpeed);
+                        if (movable is PlayerMoveComponent)
+                            movable.GetComponent<PlayerMoveComponent>().ChassisSpeed = Math.Max(0,
+                                movable.GetComponent<PlayerMoveComponent>().ChassisSpeed);
+                        break;
+                    }
                     case Direction.Right:
-                        {
-                            movable.HorizontalSpeed = Math.Min(0, movable.HorizontalSpeed);
-                            if (movable is PlayerMoveComponent)
-                                movable.GetComponent<PlayerMoveComponent>().ChassisSpeed = Math.Min(0, movable.GetComponent<PlayerMoveComponent>().ChassisSpeed);
-                            break;
-                        }
+                    {
+                        movable.HorizontalSpeed = Math.Min(0, movable.HorizontalSpeed);
+                        if (movable is PlayerMoveComponent)
+                            movable.GetComponent<PlayerMoveComponent>().ChassisSpeed = Math.Min(0,
+                                movable.GetComponent<PlayerMoveComponent>().ChassisSpeed);
+                        break;
+                    }
                     case Direction.Down:
-                        {
-                            movable.VerticalSpeed = Math.Max(0, movable.VerticalSpeed);
-                            movable.CurrentGround = target;
-                            break;
-                        }
+                    {
+                        movable.VerticalSpeed = Math.Max(0, movable.VerticalSpeed);
+                        movable.CurrentGround = target;
+                        break;
+                    }
                 }
+
                 PinTo(movable, target_pos, dir);
             }
+
             // TODO: reimplement this
             /*
             else if (target.Liquid)
@@ -255,25 +258,25 @@ namespace Omniplatformer.Scenes.Subsystems
             {
                 case Direction.Right:
                     {
-                        var new_x = target_position.Center.X - (target_position.halfsize.X + subject.WorldPosition.halfsize.X);
+                        var new_x = target_position.Center.X - (target_position.Halfsize.X + subject.WorldPosition.Halfsize.X);
                         subject.SetWorldCenter(new Vector2(new_x, subject.WorldPosition.Center.Y));
                         break;
                     }
                 case Direction.Left:
                     {
-                        var new_x = target_position.Center.X + (target_position.halfsize.X + subject.WorldPosition.halfsize.X);
+                        var new_x = target_position.Center.X + (target_position.Halfsize.X + subject.WorldPosition.Halfsize.X);
                         subject.SetWorldCenter(new Vector2(new_x, subject.WorldPosition.Center.Y));
                         break;
                     }
                 case Direction.Up:
                     {
-                        var new_y = target_position.Center.Y - (target_position.halfsize.Y + subject.WorldPosition.halfsize.Y);
+                        var new_y = target_position.Center.Y - (target_position.Halfsize.Y + subject.WorldPosition.Halfsize.Y);
                         subject.SetWorldCenter(new Vector2(subject.WorldPosition.Center.X, new_y));
                         break;
                     }
                 case Direction.Down:
                     {
-                        var new_y = target_position.Center.Y + (target_position.halfsize.Y + subject.WorldPosition.halfsize.Y);
+                        var new_y = target_position.Center.Y + (target_position.Halfsize.Y + subject.WorldPosition.Halfsize.Y);
                         subject.SetWorldCenter(new Vector2(subject.WorldPosition.Center.X, new_y));
                         break;
                     }

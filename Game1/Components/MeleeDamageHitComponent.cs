@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Omniplatformer.Components.Character;
+using Omniplatformer.Components.Physics;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 using Omniplatformer.Objects.Characters;
@@ -15,25 +17,34 @@ namespace Omniplatformer.Components
     /// </summary>
     class MeleeDamageHitComponent : DamageHitComponent
     {
-        public MeleeDamageHitComponent(GameObject obj, int damage) : base(obj, damage)
+        public float Range { get; set; }
+        public MeleeDamageHitComponent(GameObject obj, int damage, float range = 0, Vector2? knockback = null) : base(obj, damage, knockback)
         {
+            // Range = range;
+            Range = 60;
         }
 
-        public MeleeDamageHitComponent(GameObject obj, int damage, Vector2 knockback) : base(obj, damage, knockback)
+        public void MeleeHit()
         {
+            GameObject obj = GetMeleeTarget(Range);
+            if (obj != null)
+                Hit(obj);
+        }
+
+        protected GameObject GetMeleeTarget(float range)
+        {
+            var pos = GetComponent<PositionComponent>();
+            return pos.GetClosestObject(new Vector2(range * (int)pos.WorldPosition.FaceDirection, 0), x => x.Hittable && x.GameObject.Team != Team.Friend);
         }
 
         protected override int DetermineDamage()
         {
-            // TODO: be ready to access the component's ultimate source and get the skill from there (if any)
-            // also could extract this into Skills.GetBonusDamage(Skill.Melee) or something
-            // GameService.Player.Skills.TryGetValue(Skill.Melee, out int skill_value);
+            // TODO: could extract this into Skills.GetBonusDamage(Skill.Melee) or something
             int skill_value = 0;
-            // TODO: possibly extract skill to characters
-            var source = this.GameObject.Source as Player;
-            if (source != null)
+            var skillable = this.GameObject.Source?.GetComponent<SkillComponent>();
+            if (skillable != null)
             {
-                skill_value = source.Skills.ContainsKey(Skill.Melee) ? source.Skills[Skill.Melee] : 0;
+                skill_value = skillable.Skills.ContainsKey(Skill.Melee) ? skillable.Skills[Skill.Melee] : 0;
             }
             return base.DetermineDamage() + skill_value;
         }

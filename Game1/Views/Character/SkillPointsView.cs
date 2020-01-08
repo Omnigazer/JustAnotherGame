@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Content;
 using Omniplatformer.Objects.Characters;
 using Omniplatformer.Services;
@@ -28,7 +29,7 @@ namespace Omniplatformer.Views.Character
         public void DrawAvailablePoints()
         {
             var spriteBatch = GraphicsService.Instance;
-            var points = Player.SkillPoints;
+            var points = Player.GetComponent<SkillComponent>().SkillPoints;
             var rect = GlobalRect;
             spriteBatch.Draw(GameContent.Instance.whitePixel, rect, Color.Gray);
             rect.Inflate(-5, -5);

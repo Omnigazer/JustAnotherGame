@@ -14,7 +14,7 @@ namespace Omniplatformer.Utility.Extensions
             int result = x.CompareTo(y);
 
             if (result == 0)
-                return 1;   // Handle equality as beeing greater
+                return 1;   // Handle equality as being greater
             else
                 return result;
         }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Omniplatformer.Objects;
+using Omniplatformer.Components.Character;
 
 namespace Omniplatformer.Components
 {
@@ -28,8 +29,9 @@ namespace Omniplatformer.Components
         public override void ApplyEffect(GameObject target)
         {
             var damage = DetermineDamage();
-            target.ApplyDamage(damage);
-            GameObject.Source.ApplyDamage(-damage);
+            var damageable = (HitPointComponent)target;
+            damageable?.ApplyDamage(damage);
+            ((HitPointComponent)GameObject.Source)?.ApplyDamage(-damage);
         }
 
         protected virtual int DetermineDamage()

@@ -45,27 +45,28 @@ namespace Omniplatformer.HUDStates
     {
         // Internal flags
         // tracks key press/release
-        public static Dictionary<Keys, bool> release_map = new Dictionary<Keys, bool>();
+        protected static Dictionary<Keys, bool> release_map = new Dictionary<Keys, bool>();
         protected bool lmb_pressed;
         protected bool rmb_pressed;
-        static int last_scroll_value;
+        protected static int last_scroll_value;
         protected Point mouse_pos;
-        public static Point? last_click_pos;
-        ViewControl captured_element;
+        protected ViewControl captured_element;
 
-        public List<string> status_messages = new List<string>();
+        public List<string> StatusMessages { get; set; } = new List<string>();
         protected Game1 Game => GameService.Instance;
         // Root window
         public Root Root { get; set; }
 
         // Events
-        protected event EventHandler<MouseEventArgs> MouseMove = delegate { };
-        protected event EventHandler<MouseEventArgs> MouseUp = delegate { };
-        protected event EventHandler<MouseEventArgs> MouseDown = delegate { };
         protected event EventHandler<MouseEventArgs> MouseWheelUp = delegate { };
         protected event EventHandler<MouseEventArgs> MouseWheelDown = delegate { };
         // Keyboard controls
         public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
+
+        public HUDState()
+        {
+            Root = new Root();
+        }
 
         // public static GameObject MouseStorage { get; set; }
 
@@ -75,17 +76,15 @@ namespace Omniplatformer.HUDStates
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             Root.Draw();
             DrawCursor();
-            // DrawStorage();
             spriteBatch.End();
         }
 
         protected virtual void DrawCursor()
         {
-            Point cursor_position = Mouse.GetState().Position;
             Point cursor_size = new Point(24, 48);
-            var rect = new Rectangle(cursor_position, cursor_size);
+            var rect = new Rectangle(mouse_pos, cursor_size);
             // Draw directly via the SpriteBatch instance bypassing y-axis flip
-            GraphicsService.Instance.Draw(GameContent.Instance.cursor, rect, Color.White);
+            GraphicsService.DrawScreen(GameContent.Instance.cursor, rect, Color.White, 0, Vector2.Zero);
         }
 
         public virtual IEnumerable<string> GetStatusMessages()
@@ -117,10 +116,6 @@ namespace Omniplatformer.HUDStates
             HandleMouseEvents();
         }
 
-        public HUDState()
-        {
-            Root = new Root();
-        }
 
         public virtual void RegisterChildren() { }
 

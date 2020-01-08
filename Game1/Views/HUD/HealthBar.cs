@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Content;
 using Omniplatformer.Objects.Characters;
 using Omniplatformer.Scenes.Subsystems;
@@ -57,8 +58,9 @@ namespace Omniplatformer.Views.HUD
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
+            var damageable = (HitPointComponent)Player;
             Rectangle inner_rect = GlobalRect;
-            inner_rect.Width = (int)(GlobalRect.Width * ((float)Player.CurrentHitPoints / Player.MaxHitPoints));
+            inner_rect.Width = (int)(GlobalRect.Width * (damageable.CurrentHitPoints / damageable.MaxHitPoints));
             var source_rect = new Rectangle((int)(bar_loop / loop_period), 0, GameContent.Instance.testLiquid.Width / 2, GameContent.Instance.testLiquid.Height);
             ApplyDistort();
 

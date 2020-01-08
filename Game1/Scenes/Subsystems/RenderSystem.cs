@@ -94,10 +94,6 @@ namespace Omniplatformer.Scenes.Subsystems
         public void Clear()
         {
             drawables.Clear();
-            // tiles.Clear();
-            // background_tiles.Clear();
-            // BackBuffer.Dispose();
-            // TileBuffer.Dispose();
             CurrentBackground = GameContent.Instance.whitePixel;
         }
 
@@ -134,8 +130,7 @@ namespace Omniplatformer.Scenes.Subsystems
 
         public void RegisterDrawable(RenderComponent drawable)
         {
-            if (!drawable.Tile)
-                drawables.Add(drawable.ZIndex, drawable);
+            drawables.Add(drawable.ZIndex, drawable);
         }
 
         // !TODO: manage adding and removing tiles on the fly
@@ -152,20 +147,10 @@ namespace Omniplatformer.Scenes.Subsystems
             GraphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Camera.TranslationMatrix);
             // spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Matrix.Identity);
-
-            // sample foreground
-            // spriteBatch.Draw(GameContent.Instance.greenPixel, new Rectangle((new Vector2(-600, -1500)).ToPoint(), new Point(400, 400)), Color.White);
-            //var location = new Point(200, 200);
             foreach (var (zindex, drawable) in drawables)
             {
                 drawable.DrawToForeground();
             }
-            /*
-            var location = ScreenToView(new Point(200, 200)).ToPoint();
-            var size = new Point(400, 400);
-            var green_rect = new Rectangle(location, size);
-            spriteBatch.Draw(GameContent.Instance.greenPixel, green_rect, Color.White);
-            */
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Immediate, new MinAlphaBlendState());
@@ -178,12 +163,9 @@ namespace Omniplatformer.Scenes.Subsystems
             var lightMask = GameContent.Instance.lightMask;
             var spriteBatch = GraphicsService.Instance;
             GraphicsDevice.SetRenderTarget(lightsTarget);
-            // GraphicsDevice.Clear(Color.DarkSlateGray);
             GraphicsDevice.Clear(GetAmbientLightColor());
 
             // Draw to the light mask (world coords)
-            // Draw light from registered projectiles
-            // DrawObjectsLightMasks(projectiles);
             DrawObjectsLightMasks();
 
             // Draw to the light mask (screen coords)
@@ -196,7 +178,6 @@ namespace Omniplatformer.Scenes.Subsystems
             spriteBatch.End();
         }
 
-        // public void DrawObjectsLightMasks(List<Projectile> projectiles)
         public void DrawObjectsLightMasks()
         {
             var lightMask = GameContent.Instance.lightMask;
@@ -216,9 +197,6 @@ namespace Omniplatformer.Scenes.Subsystems
             // Light mask
             lightsTarget = new RenderTarget2D(
             GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
-
-            //healthLightsTarget = new RenderTarget2D(
-            //GraphicsDevice, GameContent.Instance.healthBarLightMask.Width, GameContent.Instance.healthBarLightMask.Height);
 
             // Main scene
             mainTarget = new RenderTarget2D(
@@ -295,25 +273,14 @@ namespace Omniplatformer.Scenes.Subsystems
             GraphicsDevice.SetRenderTarget(mainTarget);
             GraphicsDevice.Clear(Color.Transparent);
 
-            /*
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
-            tilemap.Draw();
-            spriteBatch.End();
-            */
-
             DrawBackground();
             DrawToBackgroundLayer();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
             // spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            var rect = Camera.GetRectangle();
-
             foreach (var (zindex, drawable) in drawables)
-            // foreach (var (zindex, drawable) in drawables.Where(x => !x.Value.Hidden).Take(10000))
             {
-                //if (rect.Intersects(drawable.pos.GetRectangle()))
-                //if(rect.Intersects(drawable.GetComponent<PositionComponent>().GetRectangle()))
                 drawable.Draw();
             }
 
@@ -328,13 +295,6 @@ namespace Omniplatformer.Scenes.Subsystems
             spriteBatch.Begin(SpriteSortMode.Immediate, new MultiplyBlendState());
             spriteBatch.Draw(lightsTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
-
-            /*
-            spriteBatch.Begin(SpriteSortMode.Immediate, new MultiplyBlendState());
-            spriteBatch.Draw(lightsTarget, Vector2.Zero, Color.White);
-            spriteBatch.End();
-            */
-
         }
 
         public void DrawToHUD()
@@ -343,7 +303,6 @@ namespace Omniplatformer.Scenes.Subsystems
             GraphicsDevice.SetRenderTarget(HUDTarget);
             GraphicsDevice.Clear(Color.Transparent);
             Game.HUDState.Draw();
-            // DrawCursor();
         }
 
         public void RenderLayers()
@@ -368,38 +327,11 @@ namespace Omniplatformer.Scenes.Subsystems
             spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
-            /*
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            // Draw the foreground on top of main scene
-            if (with_foreground)
-                spriteBatch.Draw(secretTarget, Vector2.Zero, Color.White);
-            // spriteBatch.Draw(finalSecretTarget, Vector2.Zero, Color.White);
-            spriteBatch.End();
-
-            spriteBatch.Begin(SpriteSortMode.Immediate, new MultiplyBlendState());
-            spriteBatch.Draw(lightsTarget, Vector2.Zero, Color.White);
-            spriteBatch.End();
-            */
-
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             spriteBatch.Draw(HUDTarget, Vector2.Zero, Color.White);
             // spriteBatch.Draw(lightsTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
         }
-
-        //public Rectangle ScreenToGame(Rectangle rect)
-        //{
-
-            /*
-            var viewport = GraphicsDevice.Viewport;
-            // Flip the camera
-            rect.Location = new Point(rect.Location.X, viewport.Height - rect.Location.Y + rect.Height);
-            rect.Location -= new Point(viewport.Width / 2, viewport.Height / 2);
-            var position = ((PositionComponent)player).center.ToPoint();
-            rect.Location += position;
-            return rect;
-            */
-        //}
 
         public Vector2 ScreenToView(Point point)
         {
@@ -424,6 +356,7 @@ namespace Omniplatformer.Scenes.Subsystems
             return base_color * alpha;
         }
 
+        // Default light mask
         public Color GetAmbientLightColor()
         {
             float offset_loop = Math.Abs(day_loop - day_loop_length / 2);

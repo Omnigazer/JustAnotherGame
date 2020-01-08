@@ -6,13 +6,10 @@
         public Projectile(GameObject source = null)
         {
             TTL = default_ttl;
-            _source = source;
+            Source = source;
         }
 
-        private GameObject _source;
-
         public float TTL { get; set; }
-        public override GameObject Source => _source?.Source ?? this;
         public override void Tick(float dt)
         {
             TTL -= dt;

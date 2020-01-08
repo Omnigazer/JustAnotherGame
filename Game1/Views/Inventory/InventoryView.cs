@@ -10,18 +10,14 @@ namespace Omniplatformer.Views.Inventory
     public class InventoryView : ViewControl
     {
         public Objects.Inventory.Inventory Inventory { get; set; }
-        public WieldedItem CursorItem { get; set; }
         public IInventoryController controller;
-        const int slot_width = 70, slot_height = 70;
-        const int slot_margin = 15;
 
-        public InventoryView(IInventoryController controller, Objects.Inventory.Inventory inventory)
+        public InventoryView(IInventoryController controller, Objects.Inventory.Inventory inventory = null)
         {
             this.controller = controller;
             Inventory = inventory;
-            MouseEnter += InventoryView_MouseEnter;
-            MouseLeave += InventoryView_MouseLeave;
-            InitSlots();
+            if (Inventory != null)
+                InitSlots();
         }
 
         public override void SetupNode()
@@ -40,6 +36,7 @@ namespace Omniplatformer.Views.Inventory
 
         public void InitSlots()
         {
+            const int slot_width = 70, slot_height = 70, slot_margin = 15;
             Children.Clear();
             foreach (var slot in Inventory.slots)
             {
@@ -59,16 +56,6 @@ namespace Omniplatformer.Views.Inventory
                 var view = (InventorySlotView)sender;
                 controller.OnSlotClick(view.Slot);
             }
-        }
-
-        private void InventoryView_MouseLeave(object sender, System.EventArgs e)
-        {
-            GameService.Instance.Log("InventoryView MouseLeave");
-        }
-
-        private void InventoryView_MouseEnter(object sender, System.EventArgs e)
-        {
-            GameService.Instance.Log("InventoryView MouseEnter");
         }
     }
 }

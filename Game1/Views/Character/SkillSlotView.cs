@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Content;
 using Omniplatformer.Enums;
 using Omniplatformer.HUDStates;
@@ -27,7 +28,7 @@ namespace Omniplatformer.Views.Character
         {
             if (e.Button == MouseButton.Left)
             {
-                GameService.Player.UpgradeSkill(Skill);
+                GameService.Player.GetComponent<SkillComponent>().UpgradeSkill(Skill);
             }
         }
 
@@ -41,7 +42,7 @@ namespace Omniplatformer.Views.Character
             var spriteBatch = GraphicsService.Instance;
             spriteBatch.Draw(GameContent.Instance.whitePixel, GlobalRect, Color.Gray);
             spriteBatch.DrawString(GameContent.Instance.defaultFont, Skill.ToString(), GlobalRect.Location.ToVector2(), Color.White);
-            spriteBatch.DrawString(GameContent.Instance.defaultFont, GameService.Player.GetSkill(Skill, false).ToString(), GlobalRect.Location.ToVector2() + new Vector2(200, 0), Color.White);
+            spriteBatch.DrawString(GameContent.Instance.defaultFont, GameService.Player.GetComponent<SkillComponent>().GetSkill(Skill, false).ToString(), GlobalRect.Location.ToVector2() + new Vector2(200, 0), Color.White);
         }
     }
 }

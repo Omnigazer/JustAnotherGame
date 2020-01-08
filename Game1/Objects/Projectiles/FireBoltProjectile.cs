@@ -47,7 +47,7 @@ namespace Omniplatformer.Objects.Projectiles
             var spark = new Particle(movable.WorldPosition.Coords);
             var s_movable = (DynamicPhysicsComponent)spark;
             s_movable.ApplyImpulse(new Vector2(x, y));
-            Game.AddToMainScene(spark);
+            CurrentScene.RegisterObject(spark);
         }
 
         float current_dt;

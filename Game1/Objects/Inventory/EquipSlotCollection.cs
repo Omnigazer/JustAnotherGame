@@ -31,12 +31,5 @@ namespace Omniplatformer.Objects.Inventory
                 yield return slot;
             }
         }
-
-        /*
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return miscSlots.GetEnumerator();
-        }
-        */
     }
 }

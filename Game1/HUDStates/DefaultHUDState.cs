@@ -27,31 +27,27 @@ namespace Omniplatformer.HUDStates
         public override void RegisterChildren()
         {
             Root.RegisterChild(playerHUD);
-            var logs = new LogView(Game.Logs);
-            logs.Node.PositionType = Facebook.Yoga.YogaPositionType.Absolute;
-            logs.Node.Right = 50;
-            logs.Node.Top = 200;
+            var logs = new LogView(Game.Logs)
+            {
+                Node = {PositionType = Facebook.Yoga.YogaPositionType.Absolute, Right = 50, Top = 200}
+            };
             Root.RegisterChild(logs);
-        }
-
-        public override void Draw()
-        {
-            base.Draw();
         }
 
         public override IEnumerable<string> GetStatusMessages()
         {
-            yield return String.Format("Current object: {0}", Game.GetObjectAtCursor());
-            foreach (var msg in status_messages)
+            yield return $"Current object: {Game.GetObjectAtCursor()}";
+            foreach (var msg in StatusMessages)
             {
                 yield return msg;
             }
-            status_messages.Clear();
+            StatusMessages.Clear();
         }
 
         public void SetupControls()
         {
-            Action noop = delegate { };
+            static void noop() { }
+
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
                 {  Keys.A, (Game.WalkLeft, noop, true) },
@@ -72,13 +68,13 @@ namespace Omniplatformer.HUDStates
         }
 
         private void onMouseUp(object sender, MouseEventArgs e)
-        {            
+        {
             Game.PerformMouseAction(e, false);
         }
 
         private void onMouseDown(object sender, MouseEventArgs e)
         {
-            Game.PerformMouseAction(e, true);            
+            Game.PerformMouseAction(e, true);
         }
     }
 }

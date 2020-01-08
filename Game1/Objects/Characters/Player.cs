@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Omniplatformer.Components;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Content;
@@ -22,8 +23,6 @@ namespace Omniplatformer.Objects.Characters
     {
         // Character constants
         const float max_hitpoints = 50;
-        const float max_mana = 10;
-        const float mana_regen_rate = 0.1f / 60;
         const int inv_frames = 100;
 
         public bool EquipLocked { get; set; }
@@ -36,40 +35,18 @@ namespace Omniplatformer.Objects.Characters
         public Inventory.Inventory Inventory { get; set; } = new Inventory.Inventory();
         public EquipSlotCollection EquipSlots { get; set; } = new EquipSlotCollection();
 
-
-        //
-
-        // RPG elements
-        public int CurrentExperience { get; set; }
-        public int MaxExperience { get; set; } = 1000; // first-level max-experience
-        public int Level { get; set; }
-        public int SkillPoints { get; set; }
-
-        public Dictionary<Skill, int> Skills = new Dictionary<Skill, int>();
-
         // spans from 0.6 to 0.2 with a weight of 20
         public float MeleeAttackRate => (float)(60 - 40 * ((float)Skills[Melee] / (Skills[Melee] + 20))) / 100f;
 
-        public Dictionary<ManaType, float> CurrentMana { get; set; } = new Dictionary<ManaType, float>();
-        // public Dictionary<ManaType, float> MaxMana { get; set; }
+        // Helpers
+
+        // TODO: possibly cache this
+        public Dictionary<Skill, int> Skills => GetComponent<SkillComponent>().Skills;
 
         public Player()
         {
             InitComponents();
             Team = Team.Friend;
-            MaxHitPoints = max_hitpoints;
-            CurrentHitPoints = MaxHitPoints;
-            SkillPoints = 4;
-
-            foreach (Skill skill in Enum.GetValues(typeof(Skill)))
-            {
-                Skills.Add(skill, 0);
-            }
-
-            foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
-            {
-                CurrentMana[type] = MaxMana(type);
-            }
         }
 
         void InitComponents()
@@ -79,8 +56,16 @@ namespace Omniplatformer.Objects.Characters
             phys.AddAnchor(AnchorPoint.RightHand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
             phys.AddAnchor(AnchorPoint.LeftHand, new Position(new Vector2(-0.45f, -0.05f), Vector2.Zero, 0.6f));
             Components.Add(phys);
-            Components.Add(new CharacterRenderComponent(this, GameContent.Instance.character));
+            Components.Add(new CharacterRenderComponent(this, Color.Gray, GameContent.Instance.character));
             Components.Add(new BonusComponent(this));
+            Components.Add(new SkillComponent(this));
+            Components.Add(new ManaComponent(this));
+            Components.Add(new ExperienceComponent(this));
+
+            var damageable = new HitPointComponent(this, max_hitpoints);
+            damageable._onDamage += OnDamage;
+            damageable._onBeginDestroy += (sender, e) => onDestroy();
+            Components.Add(damageable);
         }
 
         public void StartBlocking()
@@ -109,97 +94,34 @@ namespace Omniplatformer.Objects.Characters
             pos2.SetParent(this, AnchorPoint.LeftHand);
         }
 
-        public float MaxMana(ManaType manaType)
+        public void OnDamage(object sender, DamageEventArgs e)
         {
-            var x = (Skill)Enum.Parse(typeof(Skill), manaType.ToString());
-            if (Skills.ContainsKey(x))
-                return GetSkill(x);
-            return 0;
-        }
-
-        public void EarnExperience(int value)
-        {
-            CurrentExperience += value;
-            while (CurrentExperience > MaxExperience)
+            var hit_points = GetComponent<HitPointComponent>();
+            var drawable = GetComponent<CharacterRenderComponent>();
+            if (e.Damage >= 0)
             {
-                LevelUp();
+                drawable.StartAnimation(AnimationType.Hit, inv_frames);
+                hit_points.Vulnerable = false;
             }
-        }
-
-        public void LevelUp()
-        {
-            Level++;
-            CurrentExperience -= MaxExperience;
-            MaxExperience += 1000 * Level;
-
-            // Increase some basic stats
-            MaxHitPoints += 2;
-            CurrentHitPoints += 2;
-
-            // Increase skill points
-            SkillPoints += 4;
-        }
-
-        public int GetSkill(Skill skill, bool modified = true)
-        {
-            if (modified)
-            {
-                var bonusable = GetComponent<BonusComponent>();
-                return Skills[skill] + bonusable.SkillBonuses[skill].Sum();
-            }
-            else
-            {
-                return Skills[skill];
-            }
-        }
-
-        public void UpgradeSkill(Skill skill)
-        {
-            if (!Skills.ContainsKey(skill))
-            {
-                Skills.Add(skill, 0);
-            }
-
-            if (SkillPoints >= Skills[skill] + 1)
-            {
-                SkillPoints -= Skills[skill] + 1;
-                Skills[skill]++;
-            }
-        }
-
-        public override void ApplyDamage(float damage)
-        {
-            if (Vulnerable || damage <= 0)
-            {
-                var drawable = GetComponent<CharacterRenderComponent>();
-                if (damage >= 0)
-                {
-                    drawable.StartAnimation(AnimationType.Hit, inv_frames);
-                    Vulnerable = false;
-                }
-                CurrentHitPoints -= damage;
-                drawable._onAnimationEnd += Drawable__onAnimationEnd;
-                if (CurrentHitPoints <= 0)
-                {
-                    onDestroy();
-                }
-            }
+            drawable._onAnimationEnd += Drawable__onAnimationEnd;
         }
 
         private void Drawable__onAnimationEnd(object sender, AnimationEventArgs e)
         {
+            var hit_points = GetComponent<HitPointComponent>();
             var drawable = (CharacterRenderComponent)sender;
             if (e.animation == AnimationType.Hit)
             {
                 drawable._onAnimationEnd -= Drawable__onAnimationEnd;
-                Vulnerable = true;
+                hit_points.Vulnerable = true;
             }
         }
 
         // Fit all per-frame instructions in here for now
         public override void Tick(float dt)
         {
-            RegenerateMana(dt);
+            var manable = GetComponent<ManaComponent>();
+            manable.RegenerateMana(dt);
             base.Tick(dt);
         }
 
@@ -254,7 +176,7 @@ namespace Omniplatformer.Objects.Characters
                 direction.Normalize();
                 direction *= 20;
                 var boulder = new Boulder((x ?? pos.WorldPosition).Coords);
-                Game.AddToMainScene(boulder);
+                CurrentScene.RegisterObject(boulder);
                 ((DynamicPhysicsComponent)boulder).ApplyImpulse(direction);
             }
             // Spells.LifeDrain.Cast(this);
@@ -267,9 +189,10 @@ namespace Omniplatformer.Objects.Characters
 
         public void PerformItemAction(WieldedItem item, bool is_down)
         {
+            var cooldownable = GetComponent<CooldownComponent>();
             if (!is_down)
             {
-                if (!Blocking && TryCooldown("Melee", (int)(30 * MeleeAttackRate)))
+                if (!Blocking && cooldownable.TryCooldown("Melee", (int)(30 * MeleeAttackRate)))
                 {
                     EquipLocked = true;
                     var drawable = GetComponent<CharacterRenderComponent>();
@@ -287,19 +210,6 @@ namespace Omniplatformer.Objects.Characters
             else
                 StopBlocking();
         }
-        public void MeleeHit(WieldedItem weapon)
-        {
-            GameObject obj = GetMeleeTarget(range: 60);
-            var damager = (HitComponent)weapon;
-            if (obj != null)
-                damager?.Hit(obj);
-        }
-
-        public GameObject GetMeleeTarget(float range)
-        {
-            var pos = GetComponent<PositionComponent>();
-            return pos.GetClosestObject(new Vector2(range * (int)pos.WorldPosition.face_direction, 0), x => x.Hittable && x.GameObject.Team != Team.Friend);
-        }
 
         private void onAttackend(object sender, AnimationEventArgs e)
         {
@@ -307,7 +217,8 @@ namespace Omniplatformer.Objects.Characters
             drawable._onAnimationHit -= onAttackend;
             if (e.animation == AnimationType.Attack)
             {
-                MeleeHit(WieldedItem);
+                var damager = (MeleeDamageHitComponent)WieldedItem;
+                damager.MeleeHit();
                 EquipLocked = false;
             }
         }
@@ -315,34 +226,6 @@ namespace Omniplatformer.Objects.Characters
         #endregion
 
         #region Gameplay logic
-
-        public void ReplenishMana(ManaType type, float amount)
-        {
-            CurrentMana[type] += amount;
-            CurrentMana[type] = Math.Min(CurrentMana[type], MaxMana(type));
-        }
-
-        public override bool SpendMana(ManaType type, float amount)
-        {
-            if (CurrentMana[type] >= amount)
-            {
-                CurrentMana[type] -= amount;
-                return true;
-            }
-            else
-                return false;
-        }
-
-        public void RegenerateMana(float dt)
-        {
-            foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
-            {
-                var bonusable = GetComponent<BonusComponent>();
-                CurrentMana[type] += (mana_regen_rate + bonusable.ManaRegenBonuses[type].Sum()) * dt;
-                CurrentMana[type] = Math.Min(CurrentMana[type], MaxMana(type));
-            }
-
-        }
 
         // should be applying this to a component instead
         // public void Pickup(Collectible item)
@@ -361,7 +244,7 @@ namespace Omniplatformer.Objects.Characters
                 // all this code should be in player's pickup
                 var x = item as Item;
                 Inventory.AddItem(x);
-                Game.RemoveFromMainScene(item);
+                CurrentScene.UnregisterObject(item);
             }
             // GetBonus(item.Bonus);
             // item.onDestroy();

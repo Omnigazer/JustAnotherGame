@@ -17,9 +17,8 @@ namespace Omniplatformer.Objects.Terrain
 
         public SolidPlatform(Vector2 coords, Vector2 halfsize, Vector2 origin, bool tile = false)
         {
-            Tickable = false;
             Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Solid = true, Friction = 0.1f, Tile = tile });
-            var c = new RenderComponent(this) { Tile = tile };
+            var c = new RenderComponent(this);
             if (tile)
             {
                 c.Texture = GameContent.Instance.testTile;
@@ -35,21 +34,6 @@ namespace Omniplatformer.Objects.Terrain
                 Position = PositionJson.ToJson(this)
             };
         }
-
-        /*
-        public static GameObject FromJson(JObject data)
-        {
-            Guid id = Guid.Parse(data["Id"].ToString());
-            SolidPlatform platform = (SolidPlatform)SerializeService.Instance.LocateObject(id);
-            if (platform == null)
-            {
-                var (coords, halfsize, origin) = PositionJson.FromJson(data);
-                platform = new SolidPlatform(coords, halfsize, origin);
-                SerializeService.Instance.RegisterObject(platform);
-            }
-            return platform;
-        }
-        */
 
         public static GameObject FromJson(Deserializer deserializer)
         {

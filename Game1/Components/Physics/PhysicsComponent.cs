@@ -12,7 +12,7 @@ namespace Omniplatformer.Components.Physics
         public bool Liquid { get; set; }
         public virtual bool Climbable { get; set; }
         public virtual bool Pickupable { get; set; }
-        public virtual bool Hittable { get; set; }
+        public bool Hittable { get; set; }
 
         public PhysicsComponent(GameObject obj, Vector2 coords, Vector2 halfsize): base(obj, coords, halfsize)
         {

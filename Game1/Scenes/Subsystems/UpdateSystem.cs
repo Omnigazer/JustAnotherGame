@@ -10,10 +10,7 @@ namespace Omniplatformer.Scenes.Subsystems
         // TODO: extract this to a separate component?
         public List<IUpdatable> Objects { get; set; } = new List<IUpdatable>();
 
-        public UpdateSystem()
-        {
-
-        }
+        public UpdateSystem() { }
 
         public void RegisterObject(IUpdatable obj)
         {

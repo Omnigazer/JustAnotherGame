@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Omniplatformer.Components;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Enums;
@@ -15,8 +16,26 @@ namespace Omniplatformer.Objects
     public abstract class GameObject
     {
         public Scene CurrentScene { get; set; }
-        public bool Tickable { get; set; }
         public Guid Id { get; set; }
+
+        protected List<Component> Components { get; set; }
+        // protected Game1 Game => GameService.Instance;
+        public Team Team { get; set; }
+        private GameObject _source;
+        public GameObject Source {
+            get => _source?.Source ?? this;
+            set => _source = value;
+        }
+        // public virtual GameObject Source => this;
+        public List<Descriptor> Descriptors { get; set; } = new List<Descriptor>();
+        public event EventHandler _onDestroy = delegate { };
+
+        public GameObject()
+        {
+            Id = Id == Guid.Empty ? Guid.NewGuid() : Id;
+            Components = new List<Component>();
+            Components.Add(new CooldownComponent(this));
+        }
 
         public T GetComponent<T>() where T : Component
         {
@@ -33,35 +52,12 @@ namespace Omniplatformer.Objects
             return new { };
         }
 
-        protected List<Component> Components { get; set; }
-        protected Dictionary<string, float> Cooldowns { get; set; }
-        public Game1 Game => GameService.Instance;
-
-        // Candidates for component extraction
-        // public virtual bool Draggable { get; set; }
-        // public virtual bool Hidden { get; set; }
-        public Team Team { get; set; }
-        public virtual GameObject Source => this;
-        public List<Descriptor> Descriptors { get; set; } = new List<Descriptor>();
-
-        // Graphics
-        // SpriteBatch spriteBatch;
-        public event EventHandler _onDestroy = delegate { };
         public virtual void onDestroy()
         {
             _onDestroy(this, new EventArgs());
         }
 
-        public GameObject()
-        {
-            Id = Id == Guid.Empty ? Guid.NewGuid() : Id;
-            Components = new List<Component>();
-            Cooldowns = new Dictionary<string, float>();
-            Tickable = true;
-            Team = Team.Neutral;
-        }
-
-        // Process a single game frame
+        // Process current frame
         public virtual void Tick(float dt)
         {
             // foreach (var c in Components)
@@ -69,26 +65,6 @@ namespace Omniplatformer.Objects
             {
                 Components[i].Tick(dt);
             }
-            foreach (var (key, ticks) in Cooldowns.ToList())
-            {
-                Cooldowns[key] = Math.Max(ticks - dt, 0);
-            }
-        }
-
-        // TODO: move this into a damageable component
-        public virtual void ApplyDamage(float damage)
-        {
-
-        }
-
-        public bool TryCooldown(string key, int value)
-        {
-            if (!Cooldowns.ContainsKey(key) || Cooldowns[key] <= 0)
-            {
-                Cooldowns.SetOrAdd(key, value);
-                return true;
-            }
-            return false;
         }
 
         // Typecasts
@@ -110,6 +86,11 @@ namespace Omniplatformer.Objects
         public static explicit operator HitComponent(GameObject obj)
         {
             return obj?.GetComponent<HitComponent>();
+        }
+
+        public static explicit operator HitPointComponent(GameObject obj)
+        {
+            return obj?.GetComponent<HitPointComponent>();
         }
 
         public static explicit operator BonusComponent(GameObject obj)

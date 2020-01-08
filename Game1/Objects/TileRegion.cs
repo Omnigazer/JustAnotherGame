@@ -34,11 +34,6 @@ namespace Omniplatformer.Objects
             MiddleLayer.SetData();
         }
 
-        public void DrawBack()
-        {
-            BackLayer.Draw();
-        }
-
         public void Draw()
         {
             MiddleLayer.Draw();

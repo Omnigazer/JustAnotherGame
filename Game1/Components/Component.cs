@@ -12,8 +12,7 @@ namespace Omniplatformer.Components
     {
         public GameObject GameObject { get; set; }
         public Scene Scene => GameObject.CurrentScene;
-        public string Tag { get; set; }
-        public Component(GameObject obj)
+        protected Component(GameObject obj)
         {
             GameObject = obj;
         }

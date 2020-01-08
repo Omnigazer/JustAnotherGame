@@ -8,21 +8,17 @@ namespace Omniplatformer.Components.Rendering
 {
     public class TileMapRenderComponent : RenderComponent
     {
-        public GraphicsDevice GraphicsDevice => GameObject.Game.GraphicsDevice;
-        VertexBuffer BackBuffer { get; set; }
-
         int RegionWidth => (GameService.Instance.RenderSystem.Camera.ViewportWidth) / PhysicsSystem.TileSize;
         int RegionHeight => (GameService.Instance.RenderSystem.Camera.ViewportHeight) / PhysicsSystem.TileSize;
 
         TileRegion[] regions = new TileRegion[4];
 
+        // current region indices
         int region_i, region_j;
+        // player's current quadrant in region
         bool to_the_right, to_the_high;
 
-        public TileMapRenderComponent(GameObject obj) : base(obj)
-        {
-            ZIndex = 1;
-        }
+        public TileMapRenderComponent(GameObject obj) : base(obj) { }
 
         public void RebuildBuffers(bool force = false)
         {

@@ -10,9 +10,8 @@ namespace Omniplatformer.Objects.Terrain
     {
         public BackgroundQuad(Vector2 center, Vector2 halfsize, Vector2 origin, bool tiled = false)
         {
-            Tickable = false;
             Components.Add(new PhysicsComponent(this, center, halfsize, origin) { Solid = false, Tile = tiled });
-            Components.Add(new RenderComponent(this, Color.Gray) { Tile = tiled });
+            Components.Add(new RenderComponent(this, Color.Gray));
         }
 
         public override object AsJson()

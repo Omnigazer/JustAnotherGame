@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json.Linq;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Enums;
@@ -14,19 +15,16 @@ namespace Omniplatformer.Objects.Terrain
             // TODO: supply colors / textures to the component
             Components.Add(new PhysicsComponent(this, center, halfsize) { Solid = true, Hittable = true });
             Components.Add(new WallRenderComponent(this, Color.Yellow));
+            var damageable = new HitPointComponent(this, 10);
+            Components.Add(damageable);
+            damageable._onBeginDestroy += StartDeathAnimation;
         }
-        // TODO: should be extracted to damageable component
-        float hit_points = 10;
 
-        public override void ApplyDamage(float damage)
+        private void StartDeathAnimation(object sender, System.EventArgs e)
         {
-            hit_points -= damage;
-            if (hit_points <= 0)
-            {
-                var drawable = GetComponent<AnimatedRenderComponent>();
-                drawable._onAnimationEnd += onDeathAnimationEnd;
-                drawable.StartAnimation(AnimationType.Death, 50);
-            }
+            var drawable = GetComponent<AnimatedRenderComponent>();
+            drawable._onAnimationEnd += onDeathAnimationEnd;
+            drawable.StartAnimation(AnimationType.Death, 50);
         }
 
         private void onDeathAnimationEnd(object sender, AnimationEventArgs e)

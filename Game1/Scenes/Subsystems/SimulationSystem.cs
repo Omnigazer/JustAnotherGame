@@ -11,15 +11,11 @@ namespace Omniplatformer.Scenes.Subsystems
         // TODO: extract this to a separate component?
         public List<GameObject> Objects { get; set; } = new List<GameObject>();
 
-        public SimulationSystem()
-        {
-
-        }
+        public SimulationSystem() { }
 
         public void RegisterObject(GameObject obj)
         {
-            if (obj.Tickable)
-                Objects.Add(obj);
+            Objects.Add(obj);
         }
 
         public void UnregisterObject(GameObject obj)

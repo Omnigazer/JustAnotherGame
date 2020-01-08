@@ -10,11 +10,6 @@ namespace Omniplatformer.Objects.Items
 {
     public class Shield : Item
     {
-        // public int Damage { get; set; }
-        // public Vector2 Knockback { get; set; }
-        public override GameObject Source => _source?.Source ?? this;
-        private GameObject _source;
-
         public Shield(Texture2D texture = null)
         {
             if (texture == null)
@@ -34,7 +29,7 @@ namespace Omniplatformer.Objects.Items
             var item_pos = (PositionComponent)this;
             item_pos.SetParent(character, AnchorPoint.LeftHand);
             item_pos.SetLocalCenter(new Vector2(5, 5));
-            Game.AddToMainScene(this);
+            // character.CurrentScene.RegisterObject(this);
         }
 
         public override void OnUnequip(Character character)
@@ -42,7 +37,7 @@ namespace Omniplatformer.Objects.Items
             SetWielder(null);
             var item_pos = (PositionComponent)this;
             item_pos.ClearParent();
-            Game.RemoveFromMainScene(this);
+            // character.CurrentScene.UnregisterObject(this);
         }
 
         public override object AsJson()
@@ -64,7 +59,7 @@ namespace Omniplatformer.Objects.Items
 
         public void SetWielder(GameObject source)
         {
-            _source = source;
+            Source = source;
         }
     }
 }

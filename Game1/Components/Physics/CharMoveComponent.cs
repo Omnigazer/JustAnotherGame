@@ -10,7 +10,6 @@ namespace Omniplatformer.Components.Physics
     {
         // Movement constants
         protected const float max_fall_speed = 20;
-        protected const float water_friction = 0.35f;
 
         // Movement dynamic caps
         public float MaxMoveSpeed { get; set; }
@@ -39,7 +38,6 @@ namespace Omniplatformer.Components.Physics
         public override void ResetCollisionFlags()
         {
             // default all interactions to false
-            IsOnGround = false;
             IsInLiquid = false;
             LiquidImmersion = 0f;
             IsNextToCeiling = false;
@@ -52,12 +50,10 @@ namespace Omniplatformer.Components.Physics
 
         public override bool ProcessCollision(Direction direction, PhysicsComponent obj)
         {
-            // TODO: make the component acquisition less costly
-            var pos = GetComponent<PositionComponent>();
             if (obj.Solid)
             {
-                if (direction == Direction.Down) { IsOnGround = true; }
-                else if (direction == Direction.Up) { IsNextToCeiling = true; }
+                // if (direction == Direction.Down) { IsOnGround = true; }
+                if (direction == Direction.Up) { IsNextToCeiling = true; }
                 else if (direction == Direction.Left)
                     IsNextToLeftWall = true;
                 else if (direction == Direction.Right)
@@ -89,7 +85,7 @@ namespace Omniplatformer.Components.Physics
         public virtual void ProcessWalking(float dt)
         {
             var pos = GetComponent<PositionComponent>();
-            switch (move_direction)
+            switch (MoveDirection)
             {
                 case Direction.Left:
                     {
@@ -103,17 +99,6 @@ namespace Omniplatformer.Components.Physics
                         pos.SetLocalFace(HorizontalDirection.Right);
                         // CurrentMovement += new Vector2(move_speed, 0);
                         CurrentMovement += new Vector2(Acceleration * dt, 0);
-                        break;
-                    }
-                default:
-                    {
-                        // CurrentMovement = new Vector2(0, CurrentMovement.Y);
-                        // if (CurrentPlatform != null)
-                        if (IsOnGround)
-                        {
-                            // Math.Sign()
-                            // CurrentMovement += new Vector2(GetHorizontalFriction(), 0);
-                        }
                         break;
                     }
             }

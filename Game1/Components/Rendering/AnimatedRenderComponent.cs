@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.Animations;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
@@ -20,21 +21,10 @@ namespace Omniplatformer.Components.Rendering
 
     public class AnimatedRenderComponent : RenderComponent
     {
-        // protected Animation CurrentAnimation { get; set; }
-        /// <summary>
-        /// Maps animation type to the tuple (current ticks, duration, current step)
-        /// </summary>
-        // protected Dictionary<AnimationType, (float, float, int)> CurrentAnimations { get; set; } = new Dictionary<AnimationType, (float, float, int)>();
         private Dictionary<AnimationType, Animation> Animations { get; set; } = new Dictionary<AnimationType, Animation>();
 
-        public AnimatedRenderComponent(GameObject obj) : base(obj)
-        {
-
-        }
-
-        public AnimatedRenderComponent(GameObject obj, Color color) : base(obj, color)
-        {
-        }
+        public AnimatedRenderComponent(GameObject obj) : base(obj) { }
+        public AnimatedRenderComponent(GameObject obj, Color color, Texture2D texture = null, int z_index = 0) : base(obj, color, texture, z_index) { }
 
         public void AddAnimation(Animation animation)
         {
@@ -46,32 +36,9 @@ namespace Omniplatformer.Components.Rendering
         /// </summary>
         /// <param name="animation"></param>
         /// <param name="length" description="length in ticks"></param>
-        public void StartAnimation(AnimationType animation, float length, bool interrupt = false)
+        public void StartAnimation(AnimationType animation, float length)
         {
-            /*
-            // TODO: implement interruption logic here
-            if (CurrentAnimations.ContainsKey(animation))
-            {
-                if (interrupt)
-                    CurrentAnimations[animation] = (0, length, 0);
-            }
-            else
-                CurrentAnimations.Add(animation, (0, length, 0));
-            */
             Animations[animation].Start(length);
-        }
-
-        public void EndAnimation(AnimationType animation)
-        {
-            Animations[animation].End();
-            onAnimationEnd(animation);
-            /*
-            CurrentAnimations.Remove(animation);
-            PositionComponent pos = GetComponent<PositionComponent>();
-            pos.ResetAnchors();
-            onAnimationEnd(animation);
-            // CurrentAnimation = Animation.Default;
-            */
         }
 
         // TODO: extract this
@@ -93,28 +60,6 @@ namespace Omniplatformer.Components.Rendering
             {
                 animation.Tick(dt);
             }
-            /*
-            foreach (var (animation, (ticks, length, current_step)) in CurrentAnimations.ToList())
-            {
-                CurrentAnimations[animation] = (ticks + dt, length, current_step);
-                if (ticks + dt >= length)
-                {
-                    EndAnimation(animation);
-                }
-            }
-            */
-            /*
-            if (CurrentAnimation != Animation.Default && ++current_animation_ticks >= current_animation_length)
-            {
-                EndAnimation();
-            }
-            */
-        }
-
-        // TODO: get a state for this
-        public override void Draw()
-        {
-            base.Draw();
         }
     }
 }

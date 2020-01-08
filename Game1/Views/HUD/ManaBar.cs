@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Content;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects.Characters;
@@ -11,7 +12,7 @@ namespace Omniplatformer.Views.HUD
 {
     abstract class ManaBar : ViewControl, IUpdatable
     {
-        public Player Player => GameService.Player;
+        public ManaComponent Player => GameService.Player.GetComponent<ManaComponent>();
 
         protected int bar_loop = 0;
         protected int loop_period = 8;

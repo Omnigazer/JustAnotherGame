@@ -21,14 +21,14 @@ namespace Omniplatformer.Animations
 
         public override void End()
         {
-            Drawable.Color = Color.White;
+            Drawable.Color = Drawable.DefaultColor;
             base.End();
         }
 
         public override void Tick(float dt)
         {
-            base.Tick(dt);
             Drawable.Color = Color.Red;
+            base.Tick(dt);
         }
     }
 }

@@ -1,46 +1,33 @@
-﻿using Omniplatformer.Components.Rendering;
+﻿using Omniplatformer.Components;
+using Omniplatformer.Components.Character;
+using Omniplatformer.Components.Rendering;
 using Omniplatformer.Enums;
 using Omniplatformer.Services;
 using Omniplatformer.Utility;
 using Omniplatformer.Utility.DataStructs;
+using System;
 
 namespace Omniplatformer.Objects
 {
     public abstract class Character : GameObject
     {
-        float _currentHitPoints;
-        public float CurrentHitPoints { get => _currentHitPoints; set => _currentHitPoints = value.LimitToRange(0, MaxHitPoints); }
-        public float MaxHitPoints { get; set; }
-        public bool Vulnerable { get; set; }
-        public bool Aggressive { get; set; }
+        // TODO: refactor this
         public virtual int ExpReward => 300;
 
-        public Character()
-        {
-            CurrentHitPoints = MaxHitPoints = 50;
-            Vulnerable = true;
-        }
-
-        // Generic characters currently have no need for mana
-        public virtual bool SpendMana(ManaType type, float amount) => true;
+        public Character() { }
 
         public override void onDestroy()
         {
+            var expable = GameService.Player.GetComponent<ExperienceComponent>();
             // TODO: find another approach for earning exp
-            GameService.Player.EarnExperience(ExpReward);
+            expable.EarnExperience(ExpReward);
             base.onDestroy();
         }
 
-        public override void ApplyDamage(float damage)
+        public void ApplyStun(float duration)
         {
-            CurrentHitPoints -= damage;
-            var drawable = GetComponent<CharacterRenderComponent>();
-            drawable.StartAnimation(AnimationType.Hit, 15);
-            Cooldowns.SetOrAdd("Stun", 8);
-            if (CurrentHitPoints <= 0)
-            {
-                onDestroy();
-            }
+            var cooldownable = GetComponent<CooldownComponent>();
+            cooldownable.Cooldowns.SetOrAdd("Stun", duration);
         }
 
         public override object AsJson()

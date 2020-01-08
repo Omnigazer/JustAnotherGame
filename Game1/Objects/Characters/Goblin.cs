@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Omniplatformer.Components;
+using Omniplatformer.Components.Behavior;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Content;
@@ -15,146 +18,40 @@ namespace Omniplatformer.Objects.Characters
 {
     public class Goblin : Character
     {
-        // internal counters for "random movement"
-        /*
-        float ticks = 0;
-        int amp = 300;
-        */
-
-        float current_dt;
-        IEnumerator behaviorGen()
-        {
-            var movable = GetComponent<DynamicPhysicsComponent>();
-            while (true)
-            {
-                float walk_time = RandomGen.NextFloat(150, 600);
-                movable.move_direction = Direction.Right;
-                for (float t = 0; t < walk_time; t += current_dt)
-                {
-                    yield return null;
-                }
-
-                movable.move_direction = Direction.None;
-                for (float t = 0; t < RandomGen.NextFloat(700, 2000); t += current_dt)
-                {
-                    yield return null;
-                }
-
-                movable.move_direction = Direction.Left;
-                for (float t = 0; t < walk_time; t += current_dt)
-                {
-                    yield return null;
-                }
-
-                movable.move_direction = Direction.None;
-                for (float t = 0; t < RandomGen.NextFloat(700, 2000); t += current_dt)
-                {
-                    yield return null;
-                }
-            }
-        }
-        IEnumerator Behavior { get; set; }
-
         public Goblin(Vector2 coords)
         {
-            Behavior = behaviorGen();
             Team = Team.Enemy;
-            CurrentHitPoints = MaxHitPoints = 8;
             var halfsize = new Vector2(20, 26);
             // Components.Add(new PositionComponent(this, coords, halfsize));
+            Components.Add(new GoblinBehaviorComponent(this));
+            Components.Add(new ThrowAttackComponent(this));
             Components.Add(new CharMoveComponent(this, coords, halfsize, movespeed: 1.8f));
-            Components.Add(new CharacterRenderComponent(this, GameContent.Instance.character, Color.Green));
+            Components.Add(new CharacterRenderComponent(this, Color.Green, GameContent.Instance.character));
             Components.Add(new DamageHitComponent(this, damage: 2, knockback: new Vector2(3, 2)));
+
+            var damageable = new HitPointComponent(this, 8);
+            damageable._onDamage += OnDamage;
+            damageable._onBeginDestroy += (sender, e) => onDestroy();
+            Components.Add(damageable);
         }
 
-        public void MoveTowardsPlayer()
+        public void OnDamage(object sender, EventArgs e)
         {
-            var player_pos = GameService.Player.GetComponent<PositionComponent>();
+            Aggravate();
+        }
+
+        // Aggravate everyone in the 1000 radius
+        public void Aggravate()
+        {
             var pos = GetComponent<PositionComponent>();
-            var movable = GetComponent<CharMoveComponent>();
-            var drawable = GetComponent<CharacterRenderComponent>();
-            if (TryCooldown("Cast", 120))
+            foreach (var obj in CurrentScene.PhysicsSystem.GetObjectsAroundPosition(pos.WorldPosition, 1000)
+                                                          .Where(x => x.Team == Team.Enemy))
             {
-                float force = 30;
-                var distance = player_pos.WorldPosition.Coords - pos.WorldPosition.Coords;
-                var direction = BallisticsHelper.GetThrowVector(force, Boulder.InverseMass, distance.X, distance.Y);
-
-                drawable.StartAnimation(AnimationType.Cast, 20);
-                EventHandler<AnimationEventArgs> handler = null;
-                handler = (sender, e) =>
+                var behavior = obj.GetComponent<BehaviorComponent>();
+                if (behavior != null)
                 {
-                    if (e.animation == AnimationType.Cast)
-                    {
-                        if (direction != null)
-                        {
-                            var boulder = new Boulder((pos.WorldPosition).Coords) { Team = Team.Enemy };
-                            Game.AddToMainScene(boulder);
-                            var b_movable = (DynamicPhysicsComponent)boulder;
-                            b_movable.ApplyImpulse(direction.Value);
-                        }
-
-                        // Spells.FireBolt.Cast(this, player_pos.WorldPosition);
-                        drawable._onAnimationEnd -= handler;
-                    }
-                };
-                drawable._onAnimationEnd += handler;
-            }
-            if (Cooldowns.TryGetValue("Stun", out float val) && val > 0)
-            {
-                movable.move_direction = Direction.None;
-            }
-            else
-            {
-                movable.move_direction = pos.WorldPosition.Center.X < player_pos.WorldPosition.Center.X ? Direction.Right : Direction.Left;
-            }
-            movable.move_direction = Direction.None;
-        }
-
-        /*
-        public void WalkAbout()
-        {
-            var movable = GetComponent<CharMoveComponent>();
-            if (ticks > amp / 2)
-            {
-                movable.move_direction = Direction.Right;
-            }
-            else
-            {
-                movable.move_direction = Direction.Left;
-            }
-            ticks = (ticks + 1) % amp;
-        }
-        */
-
-        public override void ApplyDamage(float damage)
-        {
-            Aggressive = true;
-            var pos = GetComponent<PositionComponent>();
-
-            // Aggravate everyone in the 1000 radius
-            foreach (var obj in CurrentScene.PhysicsSystem.GetObjectsAroundPosition(pos.WorldPosition, 1000))
-            {
-                if (obj is Character)
-                {
-                    var character = obj as Character;
-                    character.Aggressive = true;
+                    behavior.Aggressive = true;
                 }
-            }
-            base.ApplyDamage(damage);
-        }
-
-        public override void Tick(float dt)
-        {
-            base.Tick(dt);
-            if (Aggressive)
-            {
-                MoveTowardsPlayer();
-            }
-            else
-            {
-                // WalkAbout();
-                current_dt = dt;
-                Behavior.MoveNext();
             }
         }
 
@@ -162,7 +59,6 @@ namespace Omniplatformer.Objects.Characters
         {
             var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
             var goblin = new Goblin(coords);
-            // SerializeService.Instance.RegisterObject(zombie);
             return goblin;
         }
     }

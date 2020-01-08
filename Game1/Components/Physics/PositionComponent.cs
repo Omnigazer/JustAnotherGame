@@ -8,92 +8,18 @@ using Omniplatformer.Utility.Extensions;
 
 namespace Omniplatformer.Components.Physics
 {
-    public struct Position
-    {
-        public static Vector2 DefaultOrigin => new Vector2(0.5f, 0.5f);
-        public Vector2 Coords { get; set; }
-        public Vector2 Center => Coords + halfsize - 2 * halfsize * Origin;
-        // public Vector2 Center => Coords;
-        public Vector2 halfsize;
-
-        // The rotation origin
-        public Vector2 Origin { get; set; }
-        public float RotationAngle { get; set; }
-        public HorizontalDirection face_direction;
-
-        // used for from-position object initializers
-        public Position(Position position)
-        {
-            Coords = position.Coords;
-            halfsize = position.halfsize;
-            Origin = position.Origin;
-            RotationAngle = position.RotationAngle;
-            face_direction = position.face_direction;
-        }
-
-        public Position(Vector2 coords, Vector2 halfsize, float angle = 0, HorizontalDirection dir = HorizontalDirection.Right)
-        {
-            Coords = coords;
-            this.halfsize = halfsize;
-            RotationAngle = angle;
-            face_direction = dir;
-            Origin = Position.DefaultOrigin;
-            // Origin = new Vector2(GameService.Instance.origin, GameService.Instance.origin);
-            // Origin = Vector2.Zero;
-        }
-
-        public Position(Vector2 coords, Vector2 halfsize, float angle, Vector2 origin, HorizontalDirection dir = HorizontalDirection.Right)
-        {
-            Coords = coords;
-            this.halfsize = halfsize;
-            RotationAngle = angle;
-            face_direction = dir;
-            Origin = origin;
-        }
-
-        public static Position operator *(Position a, Position b)
-        {
-            var dir_multiplier = (int)b.face_direction;
-            var v = new Vector2(a.Coords.X * dir_multiplier, a.Coords.Y);
-            return new Position(
-                    Vector2.Transform(v, Matrix.CreateRotationZ(-b.RotationAngle) * Matrix.CreateTranslation(b.Coords.X, b.Coords.Y, 0)),
-                    a.halfsize,
-                    dir_multiplier * a.RotationAngle + b.RotationAngle,
-                    a.Origin,
-                    (HorizontalDirection)((int)a.face_direction * (int)b.face_direction)
-                );
-            //
-        }
-
-        public override string ToString()
-        {
-            return $"x:{Coords.X} y:{Coords.Y} halfsize:{halfsize.X} {halfsize.Y}";
-        }
-    }
-
     public abstract class PositionComponent : Component
     {
         // TODO: TEST
-        public PositionComponent parent_pos;
-        public AnchorPoint parent_anchor = AnchorPoint.Default;
+        protected PositionComponent parent_pos;
+        protected AnchorPoint parent_anchor = AnchorPoint.Default;
+        protected Position local_position;
 
-        public Position local_position;
         public Position WorldPosition => parent_pos != null ? local_position * parent_pos.GetAnchor(parent_anchor) : local_position;
-
         public Dictionary<AnchorPoint, Position> DefaultAnchors { get; set; } = new Dictionary<AnchorPoint, Position>();
         public Dictionary<AnchorPoint, Position> CurrentAnchors { get; set; } = new Dictionary<AnchorPoint, Position>();
 
-        public PositionComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj)
-        {
-            local_position = new Position(coords, halfsize);
-        }
-
-        public PositionComponent(GameObject obj, Vector2 coords, Vector2 halfsize, float angle) : base(obj)
-        {
-            local_position = new Position(coords, halfsize, angle);
-        }
-
-        public PositionComponent(GameObject obj, Vector2 coords, Vector2 halfsize, float angle, Vector2 origin) : base(obj)
+        protected PositionComponent(GameObject obj, Vector2 coords, Vector2 halfsize, float angle = 0, Vector2? origin = null) : base(obj)
         {
             local_position = new Position(coords, halfsize, angle, origin);
         }
@@ -106,35 +32,27 @@ namespace Omniplatformer.Components.Physics
 
         public Position GetAnchor(AnchorPoint anchor_name)
         {
-            switch (anchor_name)
+            if (CurrentAnchors.ContainsKey(anchor_name))
             {
-                // TODO: test
-                case AnchorPoint.RightHand:
-                    {
-                        var clamped_position = CurrentAnchors[AnchorPoint.RightHand];
-                        var real_position = new Position(clamped_position) { Coords = new Vector2(2 * clamped_position.Center.X * local_position.halfsize.X, 2 * clamped_position.Center.Y * WorldPosition.halfsize.Y) };
-                        return real_position * WorldPosition;
-                        // return real_position;
-                    }
-                case AnchorPoint.LeftHand:
-                    {
-                        var clamped_position = CurrentAnchors[AnchorPoint.LeftHand];
-                        var real_position = new Position(clamped_position) { Coords = new Vector2(2 * clamped_position.Center.X * local_position.halfsize.X, 2 * clamped_position.Center.Y * WorldPosition.halfsize.Y) };
-                        return real_position * WorldPosition;
-                        // return real_position;
-                    }
-                default:
-                    {
-                        return WorldPosition;
-                    }
+                var clamped_position = CurrentAnchors[anchor_name];
+                var real_position = new Position(clamped_position)
+                {
+                    Coords = new Vector2(
+                        2 * clamped_position.Center.X * local_position.Halfsize.X,
+                        2 * clamped_position.Center.Y * local_position.Halfsize.Y
+                        )
+                };
+                return real_position * WorldPosition;
             }
+
+            return WorldPosition;
         }
 
         public void ResetAnchors()
         {
-            foreach (var (name, el) in DefaultAnchors)
+            foreach (var (name, _) in DefaultAnchors)
             {
-                CurrentAnchors[name] = el;
+                ResetAnchor(name);
             }
         }
 
@@ -150,62 +68,59 @@ namespace Omniplatformer.Components.Physics
 
         public Rectangle GetRectangle()
         {
-            var halfsize = WorldPosition.halfsize;
-            var zero = WorldPosition.Center - WorldPosition.halfsize;
-            // zero = new Vector2((int)Math.Round(zero.X, 0, MidpointRounding.ToEven), (int)Math.Round(zero.Y, 0, MidpointRounding.ToEven));
+            var halfsize = WorldPosition.Halfsize;
+            var zero = WorldPosition.Center - WorldPosition.Halfsize;
             return new Rectangle((zero).ToPoint(), new Point((int)halfsize.X * 2, (int)halfsize.Y * 2));
-            // return new Rectangle((zero + new Vector2(WorldPosition.Origin.X * pt.X, WorldPosition.Origin.Y * pt.Y)).ToPoint(), pt);
         }
 
         public IEnumerable<Vector2> GetRectPoints()
         {
             return new List<Vector2>() {
-                WorldPosition.Center - WorldPosition.halfsize,
-                WorldPosition.Center + WorldPosition.halfsize,
-                WorldPosition.Center - new Vector2(WorldPosition.halfsize.X, -WorldPosition.halfsize.Y),
-                WorldPosition.Center + new Vector2(WorldPosition.halfsize.X, -WorldPosition.halfsize.Y)
+                WorldPosition.Center - WorldPosition.Halfsize,
+                WorldPosition.Center + WorldPosition.Halfsize,
+                WorldPosition.Center - new Vector2(WorldPosition.Halfsize.X, -WorldPosition.Halfsize.Y),
+                WorldPosition.Center + new Vector2(WorldPosition.Halfsize.X, -WorldPosition.Halfsize.Y)
             };
         }
 
         public bool Contains(Vector2 pt)
         {
-            if ((pt.X >= WorldPosition.Center.X - WorldPosition.halfsize.X && pt.X <= WorldPosition.Center.X + WorldPosition.halfsize.X) && (pt.Y >= WorldPosition.Center.Y - WorldPosition.halfsize.Y && pt.Y <= WorldPosition.Center.Y + WorldPosition.halfsize.Y))
+            if ((pt.X >= WorldPosition.Center.X - WorldPosition.Halfsize.X && pt.X <= WorldPosition.Center.X + WorldPosition.Halfsize.X) && (pt.Y >= WorldPosition.Center.Y - WorldPosition.Halfsize.Y && pt.Y <= WorldPosition.Center.Y + WorldPosition.Halfsize.Y))
                 return true;
             return false;
         }
 
         public bool Overlaps(Position pos)
         {
-            if (Math.Abs(WorldPosition.Center.X - pos.Center.X) > WorldPosition.halfsize.X + pos.halfsize.X) return false;
-            if (Math.Abs(WorldPosition.Center.Y - pos.Center.Y) > WorldPosition.halfsize.Y + pos.halfsize.Y) return false;
+            if (Math.Abs(WorldPosition.Center.X - pos.Center.X) > WorldPosition.Halfsize.X + pos.Halfsize.X) return false;
+            if (Math.Abs(WorldPosition.Center.Y - pos.Center.Y) > WorldPosition.Halfsize.Y + pos.Halfsize.Y) return false;
             return true;
         }
 
         public Direction Collides(Position other)
         {
-            if (Overlaps(other))
-            {
-                var hd = Math.Abs(WorldPosition.Center.X - other.Center.X) - (WorldPosition.halfsize.X + other.halfsize.X);
-                var vd = Math.Abs(WorldPosition.Center.Y - other.Center.Y) - (WorldPosition.halfsize.Y + other.halfsize.Y);
+            var hd = Math.Abs(WorldPosition.Center.X - other.Center.X) - (WorldPosition.Halfsize.X + other.Halfsize.X);
+            var vd = Math.Abs(WorldPosition.Center.Y - other.Center.Y) - (WorldPosition.Halfsize.Y + other.Halfsize.Y);
 
-                // Now compare them to know the side of collision
-                if (hd > vd && (Math.Abs(vd) > WorldPosition.halfsize.Y || WorldPosition.Center.Y < other.Center.Y))
-                {
-                    if (WorldPosition.Center.X < other.Center.X)
-                        return Direction.Right;
-                    else
-                    {
-                        return Direction.Left;
-                    }
-                }
-                else if (vd > hd)
-                {
-                    if (WorldPosition.Center.Y < other.Center.Y)
-                        return Direction.Up;
-                    else
-                        return Direction.Down;
-                }
+            if (hd > 0 || vd > 0)
+                return Direction.None;
+
+            // Now compare them to know the side of collision
+            if (hd > vd && (Math.Abs(vd) > WorldPosition.Halfsize.Y || WorldPosition.Center.Y < other.Center.Y))
+            {
+                if (WorldPosition.Center.X < other.Center.X)
+                    return Direction.Right;
+                else
+                    return Direction.Left;
             }
+            else if (vd > hd)
+            {
+                if (WorldPosition.Center.Y < other.Center.Y)
+                    return Direction.Up;
+                else
+                    return Direction.Down;
+            }
+
             return Direction.None;
         }
 
@@ -222,14 +137,12 @@ namespace Omniplatformer.Components.Physics
             return (intersection_width, intersection_height);
         }
 
-        // public float GetIntersectionArea(GameObject obj)
         public float GetIntersectionArea(PositionComponent their_pos)
         {
-            (var x, var y) = GetIntersection(their_pos);
+            var (x, y) = GetIntersection(their_pos);
             return x * y;
         }
 
-        // public float GetImmersionShare(GameObject obj)
         public float GetImmersionShare(PositionComponent pos)
         {
             var my_rect = GetRectangle();
@@ -244,7 +157,7 @@ namespace Omniplatformer.Components.Physics
             // TODO: this doesn't work properly with angled directions, should be raycast or something
 
             // rect from vector
-            Rectangle rect = new Rectangle(WorldPosition.Center.ToPoint(), new Vector2(Math.Abs(direction.X), Math.Abs(direction.Y)).ToPoint());
+            Rectangle rect = new Rectangle(WorldPosition.Center.ToPoint() - new Point(0, (int)WorldPosition.Halfsize.Y), new Vector2(Math.Abs(direction.X), Math.Abs(direction.Y)).ToPoint());
             rect.Offset(Math.Min(direction.X, 0), Math.Min(direction.Y, 0));
 
             // IEnumerable<GameObject> list = GameService.Characters.Union(GameService.Objects).Where(x => x.Hittable && rect.Intersects(((PositionComponent)x).GetRectangle()));
@@ -262,7 +175,7 @@ namespace Omniplatformer.Components.Physics
 
         public void SetLocalFace(HorizontalDirection direction)
         {
-            local_position.face_direction = direction;
+            local_position.FaceDirection = direction;
         }
 
         public void SetLocalCenter(Vector2 center)
@@ -284,7 +197,7 @@ namespace Omniplatformer.Components.Physics
 
         public void SetLocalHalfsize(Vector2 halfsize)
         {
-            local_position.halfsize = halfsize;
+            local_position.Halfsize = halfsize;
         }
 
         public void SetParent(GameObject obj, AnchorPoint anchor = AnchorPoint.Default)

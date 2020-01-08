@@ -179,7 +179,7 @@ namespace Omniplatformer.Components.Physics
 
         public void ProcessClimbing()
         {
-            switch (move_direction)
+            switch (MoveDirection)
             {
                 case Direction.Up:
                     {
@@ -222,7 +222,7 @@ namespace Omniplatformer.Components.Physics
         public override void ProcessWalking(float dt)
         {
             var pos = GetComponent<PositionComponent>();
-            switch (move_direction)
+            switch (MoveDirection)
             {
                 case Direction.Left:
                     {
