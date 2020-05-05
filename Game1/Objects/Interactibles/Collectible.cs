@@ -9,23 +9,20 @@ namespace Omniplatformer.Objects.Interactibles
 {
     public class Collectible : GameObject
     {
-        public Collectible(Vector2 center, Vector2 halfsize)
+        public Collectible() { }
+
+        public static Collectible Create()
         {
-            Components.Add(new PhysicsComponent(this, center, halfsize) { Pickupable = true });
-            // TODO: Add Aqua Color to this renderer
+            var collectible = new Collectible();
+            collectible.InitComponents();
+            return collectible;
+        }
+
+        public void InitComponents()
+        {
+            Components.Add(new PhysicsComponent(this, Vector2.Zero, Vector2.Zero) { Pickupable = true });
             Components.Add(new RenderComponent(this, Color.Green));
         }
         public Bonus Bonus { get; set; }
-
-        public override object AsJson()
-        {
-            return new { type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
-        }
-
-        public static GameObject FromJson(JObject data)
-        {
-            var (coords, halfsize, origin) = PositionJson.FromJson(data);
-            return new Collectible(coords, halfsize);
-        }
     }
 }

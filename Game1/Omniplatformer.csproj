@@ -165,7 +165,6 @@
     <Compile Include="Components\Physics\MoveComponent.cs" />
     <Compile Include="Utility\Deserializer.cs" />
     <Compile Include="Utility\ExtensionClass.cs" />
-    <Compile Include="Utility\DataStructs\EquipSlotsJson.cs" />
     <Compile Include="Utility\EventHandlers\MoveEventHandler.cs" />
     <Compile Include="Objects\Characters\Player.cs" />
     <Compile Include="Components\Physics\PositionComponent.cs" />
@@ -184,8 +183,6 @@
     <Compile Include="Objects\GameObject.cs" />
     <Compile Include="Services\GraphicsService.cs" />
     <Compile Include="Objects\Items\WieldedItem.cs" />
-    <Compile Include="Utility\DataStructs\InventoryJson.cs" />
-    <Compile Include="Utility\DataStructs\PositionJson.cs" />
     <Compile Include="Utility\RandomGen.cs" />
     <Compile Include="Utility\Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Utility\TileHelper.cs" />

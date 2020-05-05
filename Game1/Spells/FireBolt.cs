@@ -23,7 +23,9 @@ namespace Omniplatformer.Spells
             {
                 PositionComponent pos = (PositionComponent)caster;
                 Vector2 direction = target.Coords - pos.WorldPosition.Coords;
-                var projectile = new FireBoltProjectile(pos.WorldPosition.Center, direction, caster);
+                var projectile = FireBoltProjectile.Create(caster);
+                projectile.GetComponent<PositionComponent>().SetLocalCoords(pos.WorldPosition.Coords);
+                projectile.SetDirection(direction);
 
                 GameService.Instance.AddToMainScene(projectile);
             }

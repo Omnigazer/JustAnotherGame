@@ -13,16 +13,5 @@ namespace Omniplatformer.Objects.Terrain
             Components.Add(new PhysicsComponent(this, center, halfsize, origin) { Solid = false, Tile = tiled });
             Components.Add(new RenderComponent(this, Color.Gray));
         }
-
-        public override object AsJson()
-        {
-            return new { type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
-        }
-
-        public static GameObject FromJson(Deserializer deserializer)
-        {
-            var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
-            return new BackgroundQuad(coords, halfsize, origin, true);
-        }
     }
 }

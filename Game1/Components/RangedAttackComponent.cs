@@ -10,6 +10,7 @@ namespace Omniplatformer.Components
     public abstract class RangedAttackComponent : Component
     {
         public bool IsAttacking { get; set; }
+        public RangedAttackComponent() { }
         public RangedAttackComponent(GameObject obj) : base(obj) { }
 
         public abstract bool CanAttack();

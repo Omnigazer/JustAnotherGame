@@ -17,13 +17,20 @@ namespace Omniplatformer.Objects.Inventory
 
         public Inventory()
         {
-            for (int i = 0; i < Rows; i++)
-                for (int j = 0; j < Cols; j++)
+
+        }
+
+        public static Inventory Create()
+        {
+            var inventory = new Inventory();
+            for (int i = 0; i < inventory.Rows; i++)
+                for (int j = 0; j < inventory.Cols; j++)
                 {
-                    slots.Add(new InventorySlot(i, j));
+                    inventory.slots.Add(new InventorySlot(i, j));
                 }
             // TODO: make the component ask the inventory about it instead
-            CurrentSlot = slots[0];
+            inventory.CurrentSlot = inventory.slots[0];
+            return inventory;
         }
 
         public void AddItem(Item item)

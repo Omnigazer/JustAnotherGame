@@ -18,6 +18,8 @@ namespace Omniplatformer.Components
     class MeleeDamageHitComponent : DamageHitComponent
     {
         public float Range { get; set; }
+
+        public MeleeDamageHitComponent() { }
         public MeleeDamageHitComponent(GameObject obj, int damage, float range = 0, Vector2? knockback = null) : base(obj, damage, knockback)
         {
             // Range = range;

@@ -23,6 +23,7 @@ namespace Omniplatformer.Components.Physics
             set => CurrentMovement = new Vector2(value, CurrentMovement.Y);
         }
 
+        public MoveComponent() { }
         public MoveComponent(GameObject obj) : base(obj)
         {
 

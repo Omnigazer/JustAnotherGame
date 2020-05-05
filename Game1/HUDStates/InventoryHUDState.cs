@@ -57,8 +57,9 @@ namespace Omniplatformer.HUDStates
                 }
             };
 
+            // TODO: extract this positioning to a parent
             TargetInventoryView = new InventoryView(this)
-                {Visible = false, Node = {PositionType = YogaPositionType.Absolute}};
+                {Visible = false, Node = { Top=370, Right = 20, PositionType = YogaPositionType.Absolute, Wrap = YogaWrap.Wrap, FlexDirection=YogaFlexDirection.Row}};
 
             EquipView = new EquipView(this, Game.Player);
 

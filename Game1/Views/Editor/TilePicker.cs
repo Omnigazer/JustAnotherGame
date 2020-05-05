@@ -25,7 +25,7 @@ namespace Omniplatformer.Views.Editor
             Node.FlexDirection = Facebook.Yoga.YogaFlexDirection.Row;
             Node.Wrap = Facebook.Yoga.YogaWrap.Wrap;
 
-            Children.Clear();
+            Clear();
             Width = slot_width * cols + (cols) * slot_margin * 2;
             Height = slot_height * rows + (rows) * slot_margin * 2;
 

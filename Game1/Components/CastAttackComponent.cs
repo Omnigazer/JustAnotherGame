@@ -13,6 +13,7 @@ namespace Omniplatformer.Components
 {
     public class CastAttackComponent : RangedAttackComponent
     {
+        public CastAttackComponent() { }
         public CastAttackComponent(GameObject obj) : base(obj) { }
 
         public override bool CanAttack()

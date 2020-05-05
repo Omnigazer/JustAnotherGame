@@ -6,6 +6,8 @@ namespace Omniplatformer.Objects.Projectiles
 {
     class Particle : Projectile
     {
+        public Particle() { }
+
         public Particle(Vector2 coords): base()
         {
             TTL = 15;

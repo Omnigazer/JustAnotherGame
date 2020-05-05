@@ -18,21 +18,38 @@ namespace Omniplatformer.Objects.Characters
 {
     public class Goblin : Character
     {
-        public Goblin(Vector2 coords)
+        public Goblin()
         {
             Team = Team.Enemy;
+        }
+
+        public void InitComponents()
+        {
+            var coords = Vector2.Zero;
             var halfsize = new Vector2(20, 26);
-            // Components.Add(new PositionComponent(this, coords, halfsize));
             Components.Add(new GoblinBehaviorComponent(this));
             Components.Add(new ThrowAttackComponent(this));
             Components.Add(new CharMoveComponent(this, coords, halfsize, movespeed: 1.8f));
-            Components.Add(new CharacterRenderComponent(this, Color.Green, GameContent.Instance.character));
+            Components.Add(new CharacterRenderComponent(this, Color.Green, "Textures/character"));
             Components.Add(new DamageHitComponent(this, damage: 2, knockback: new Vector2(3, 2)));
+            Components.Add(new HitPointComponent(this, 8));
+            Compile();
+        }
 
-            var damageable = new HitPointComponent(this, 8);
+        public static Goblin Create(Vector2 coords)
+        {
+            var goblin = new Goblin();
+            goblin.InitComponents();
+            var pos = goblin.GetComponent<PositionComponent>();
+            pos.SetLocalCoords(coords);
+            return goblin;
+        }
+
+        public override void Compile()
+        {
+            var damageable = GetComponent<HitPointComponent>();
             damageable._onDamage += OnDamage;
             damageable._onBeginDestroy += (sender, e) => onDestroy();
-            Components.Add(damageable);
         }
 
         public void OnDamage(object sender, EventArgs e)
@@ -53,13 +70,6 @@ namespace Omniplatformer.Objects.Characters
                     behavior.Aggressive = true;
                 }
             }
-        }
-
-        public static GameObject FromJson(Deserializer deserializer)
-        {
-            var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
-            var goblin = new Goblin(coords);
-            return goblin;
         }
     }
 }

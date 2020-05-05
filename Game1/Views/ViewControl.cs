@@ -205,6 +205,17 @@ namespace Omniplatformer.Views
             Node.AddChild(control.Node);
         }
 
+        public void UnregisterChild(ViewControl control)
+        {
+            Node.RemoveChild(control.Node);
+        }
+
+        public void Clear()
+        {
+            Children.Clear();
+            Node.Clear();
+        }
+
         Point convertToChildCoords(ViewControl child, Point pt)
         {
             return pt - child.Position;

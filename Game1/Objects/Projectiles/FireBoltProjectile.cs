@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using Omniplatformer.Components;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
@@ -11,26 +12,43 @@ namespace Omniplatformer.Objects.Projectiles
 {
     public class FireBoltProjectile : Projectile
     {
+        [JsonProperty]
         IEnumerator behavior;
-        public FireBoltProjectile(Vector2 center, Vector2 direction, GameObject source = null): base(source)
+        public const float speed = 20;
+
+        public FireBoltProjectile()
+        {
+
+        }
+
+        public FireBoltProjectile(Vector2 center, GameObject source = null): base(source)
         {
             Team = source.Team;
+        }
 
-            var proj_movable = new ProjectileMoveComponent(this, center, new Vector2(5, 5)) { InverseMass = 0 };
-            direction.Normalize();
-            float speed = 20;
-            proj_movable.Rotate(-(float)Math.Atan2(direction.Y, direction.X));
-            proj_movable.ApplyImpulse(speed * direction, true);
-
+        public void InitComponents()
+        {
+            var proj_movable = new ProjectileMoveComponent(this, Vector2.Zero, new Vector2(5, 5)) { InverseMass = 0 };
             Components.Add(proj_movable);
             Components.Add(new GlowingRenderComponent(this));
             Components.Add(new DamageHitComponent(this, damage: 4));
             behavior = behaviorGen();
         }
 
-        public override object AsJson()
+        public static FireBoltProjectile Create(GameObject source)
         {
-            return new { type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
+            var bolt = new FireBoltProjectile();
+            bolt.Source = source;
+            bolt.InitComponents();
+            return bolt;
+        }
+
+        public void SetDirection(Vector2 direction)
+        {
+            var proj_movable = GetComponent<ProjectileMoveComponent>();
+            direction.Normalize();
+            proj_movable.Rotate(-(float)Math.Atan2(direction.Y, direction.X));
+            proj_movable.ApplyImpulse(speed * direction, true);
         }
 
         public override void Tick(float dt)

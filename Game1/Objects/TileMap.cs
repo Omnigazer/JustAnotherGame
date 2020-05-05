@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Utility.DataStructs;
+using Newtonsoft.Json;
 
 namespace Omniplatformer.Objects
 {
@@ -15,6 +16,7 @@ namespace Omniplatformer.Objects
     {
         public int GridWidth { get; set; } = 5000;
         public int GridHeight { get; set; } = 5000;
+        [JsonIgnore]
         public (short, short)[,] Grid { get; set; }
 
         public TileMap()

@@ -14,16 +14,30 @@ namespace Omniplatformer.Objects.Items
         int ChaosBonus { get; set; } = 1;
         float ManaRegenBonus { get; set; } = 0.05f / 60;
 
-        public ChaosOrb(Texture2D texture = null)
+        public ChaosOrb()
         {
-            if (texture == null)
-                texture = GameContent.Instance.chaos_orb;
             Team = Team.Friend;
-            // Damage = damage;
+        }
+
+        public static ChaosOrb Create()
+        {
+            var orb = new ChaosOrb();
+            orb.InitComponents();
+            return orb;
+        }
+
+        public void InitComponents()
+        {
+            string texture = "Textures/chaos_orb";
             var halfsize = new Vector2(25, 25);
-            Descriptors.Add(Descriptor.ChannelSlot);
             Components.Add(new PhysicsComponent(this, Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)));
             Components.Add(new GlowingRenderComponent(this, Color.White, texture) { Radius = 200 });
+            Descriptors.Add(Descriptor.ChannelSlot);
+        }
+
+        public ChaosOrb(string texture = null)
+        {
+
         }
 
         public override void OnEquip(Character character)
@@ -40,20 +54,6 @@ namespace Omniplatformer.Objects.Items
             // bonusable.SkillBonuses[Skill.Chaos].Remove(1);
             bonusable.ManaRegenBonuses[ManaType.Chaos].Remove(ManaRegenBonus);
             base.OnUnequip(character);
-        }
-
-        public override object AsJson()
-        {
-            return new
-            {
-                Id,
-                type = GetType().AssemblyQualifiedName
-            };
-        }
-
-        public static GameObject FromJson(Deserializer deserializer)
-        {
-            return new ChaosOrb();
         }
     }
 }

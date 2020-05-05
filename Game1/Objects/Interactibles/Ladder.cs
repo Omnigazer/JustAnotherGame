@@ -9,27 +9,26 @@ namespace Omniplatformer.Objects.Interactibles
 {
     class Ladder : GameObject
     {
-        public Ladder(Vector2 center, Vector2 halfsize)
+        public Ladder()
         {
-            Components.Add(new PhysicsComponent(this, center, halfsize) { Climbable = true });
+
+        }
+
+        public void InitComponents()
+        {
+            Components.Add(new PhysicsComponent(this, Vector2.Zero, Vector2.Zero) { Climbable = true });
             // TODO: Add Purple Color to this renderer
-            Components.Add(new RenderComponent(this, Color.Purple, GameContent.Instance.ladder, 0, true));
+            Components.Add(new RenderComponent(this, Color.Purple, "Textures/ladder", 0, true));
         }
 
-        public override object AsJson()
+        public static Ladder Create(Vector2 coords, Vector2 halfsize)
         {
-            return new
-            {
-                Id,
-                type = GetType().AssemblyQualifiedName,
-                Position = PositionJson.ToJson(this)
-            };
-        }
-
-        public static GameObject FromJson(Deserializer deserializer)
-        {
-            var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
-            return new Ladder(coords, halfsize);
+            var ladder = new Ladder();
+            ladder.InitComponents();
+            var pos = ladder.GetComponent<PositionComponent>();
+            pos.SetLocalCoords(coords);
+            pos.SetLocalHalfsize(halfsize);
+            return ladder;
         }
     }
 }

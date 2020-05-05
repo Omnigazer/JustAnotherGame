@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 using Omniplatformer.Utility;
@@ -13,16 +14,14 @@ namespace Omniplatformer.Components.Character
     {
         const float mana_regen_rate = 0.1f / 60;
 
-        float _currentHitPoints;
-        public float CurrentHitPoints { get => _currentHitPoints; set => _currentHitPoints = value.LimitToRange(0, MaxHitPoints); }
-        public float MaxHitPoints { get; set; }
-
         public Dictionary<ManaType, float> CurrentMana { get; set; } = new Dictionary<ManaType, float>();
         // public Dictionary<ManaType, float> MaxMana { get; set; }
 
         // TODO: possibly cache this
+        [JsonIgnore]
         public Dictionary<Skill, int> Skills => GetComponent<SkillComponent>().Skills;
 
+        public ManaComponent() { }
         public ManaComponent(GameObject obj) : base(obj)
         {
             foreach (ManaType type in Enum.GetValues(typeof(ManaType)))

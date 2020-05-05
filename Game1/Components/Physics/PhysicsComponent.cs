@@ -14,6 +14,8 @@ namespace Omniplatformer.Components.Physics
         public virtual bool Pickupable { get; set; }
         public bool Hittable { get; set; }
 
+        public PhysicsComponent() { }
+
         public PhysicsComponent(GameObject obj, Vector2 coords, Vector2 halfsize): base(obj, coords, halfsize)
         {
 

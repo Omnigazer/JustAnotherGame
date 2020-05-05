@@ -33,6 +33,9 @@ namespace Omniplatformer.Scenes
         public void Save(string json_path)
         {
             JsonSerializer serializer = new JsonSerializer();
+            serializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+            serializer.PreserveReferencesHandling = PreserveReferencesHandling.All;
+            serializer.TypeNameHandling = TypeNameHandling.All;
             BinaryFormatter bf = new BinaryFormatter();
             using (StreamWriter sw = new StreamWriter(json_path))
             using (JsonWriter writer = new JsonTextWriter(sw))
@@ -41,7 +44,8 @@ namespace Omniplatformer.Scenes
                 List<object> list = new List<object>();
                 foreach (var obj in this.PhysicsSystem.objects)
                 {
-                    list.Add(obj.GameObject.AsJson());
+                    // list.Add(obj.GameObject.AsJson());
+                    list.Add(obj.GameObject);
                 }
 
                 List<Tile> tile_list = new List<Tile>();
@@ -69,7 +73,7 @@ namespace Omniplatformer.Scenes
                 using (var fs = new FileStream(tile_path, FileMode.Create))
                     fs.Write(bytes, 0, bytes.Length);
 
-                serializer.Serialize(writer, new { objects = list });
+                serializer.Serialize(writer, list);
             }
         }
 
@@ -104,6 +108,7 @@ namespace Omniplatformer.Scenes
         {
             string json_path = String.Format("Content/Data/{0}.json", name);
             JsonSerializer serializer = new JsonSerializer();
+            serializer.TypeNameHandling = TypeNameHandling.All;
 
             // using (StreamWriter sw = new StreamWriter(json_path))
             // using (JsonWriter writer = new JsonTextWriter(sw))
@@ -111,10 +116,17 @@ namespace Omniplatformer.Scenes
             using (StreamReader sr = new StreamReader(json_path))
             using (JsonReader reader = new JsonTextReader(sr))
             {
+                // var data = serializer.Deserialize<List<object>>(reader);
+
+                var data = serializer.Deserialize<List<object>>(reader);
+                foreach (var obj in data)
+                {
+                    RegisterObject((GameObject)obj);
+                }
+
+                /*
                 JObject data = (JObject)serializer.Deserialize(reader);
-
                 var storage = new Dictionary<Guid, GameObject>();
-
                 foreach (var obj_data in data["objects"])
                 {
                     var deserializer = new Deserializer((JObject)obj_data, storage);
@@ -124,6 +136,7 @@ namespace Omniplatformer.Scenes
                     var obj = (GameObject)deserializer.decodeObject((JObject)obj_data);
                     RegisterObject(obj);
                 }
+                */
                 // objects = SerializeService.Instance.GetObjects();
 
                 /*

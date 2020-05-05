@@ -37,7 +37,7 @@ namespace Omniplatformer.Views.Inventory
         public void InitSlots()
         {
             const int slot_width = 70, slot_height = 70, slot_margin = 15;
-            Children.Clear();
+            Clear();
             foreach (var slot in Inventory.slots)
             {
                 var view = new InventorySlotView(slot)

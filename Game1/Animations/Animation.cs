@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Enums;
+using Newtonsoft.Json;
 
 namespace Omniplatformer.Animations
 {
@@ -13,8 +14,11 @@ namespace Omniplatformer.Animations
     {
         public abstract AnimationType AnimationType { get; }
         public bool Active { get; private set; }
+        [JsonProperty]
         protected float CurrentTime { get; set; }
+        [JsonProperty]
         protected float Duration { get; set; }
+        [JsonProperty]
         protected AnimatedRenderComponent Drawable { get; set; }
 
         public Animation(AnimatedRenderComponent drawable)

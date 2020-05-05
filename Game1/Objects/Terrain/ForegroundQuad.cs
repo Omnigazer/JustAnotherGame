@@ -13,16 +13,5 @@ namespace Omniplatformer.Objects.Terrain
             Components.Add(new PhysicsComponent(this, center, halfsize, origin));
             Components.Add(new ForegroundRenderComponent(this, Color.Green));
         }
-
-        public override object AsJson()
-        {
-            return new { type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
-        }
-
-        public static GameObject FromJson(JObject data)
-        {
-            var (coords, halfsize, origin) = PositionJson.FromJson(data);
-            return new ForegroundQuad(coords, halfsize, origin);
-        }
     }
 }

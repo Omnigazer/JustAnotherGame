@@ -145,10 +145,10 @@ namespace Omniplatformer.HUDStates
                 { "DestructibleObject", (coords, halfsize, origin) => new DestructibleObject(coords, halfsize)},
                 { "Liquid", (coords, halfsize, origin) => new Liquid(coords, halfsize, origin)},
                 { "ForegroundQuad", (coords, halfsize, origin) => new ForegroundQuad(coords, halfsize, origin)},
-                { "Ladder", (coords, halfsize, origin) => new Ladder(coords, halfsize)},
-                { "Goblin", (coords, halfsize, origin) => new Goblin(coords)},
-                { "GoblinShaman", (coords, halfsize, origin) => new GoblinShaman(coords)},
-                { "Chest", (coords, halfsize, origin) => new Chest(coords, halfsize)},
+                { "Ladder", (coords, halfsize, origin) => Ladder.Create(coords, halfsize)},
+                { "Goblin", (coords, halfsize, origin) => Goblin.Create(coords) },
+                { "GoblinShaman", (coords, halfsize, origin) => GoblinShaman.Create(coords)},
+                { "Chest", (coords, halfsize, origin) => Chest.Create(coords, halfsize)},
             };
             // CurrentConstructor = PositionalConstructors.Keys.First();
         }

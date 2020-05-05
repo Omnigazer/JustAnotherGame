@@ -20,16 +20,5 @@ namespace Omniplatformer.Objects.Terrain
             Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Liquid = true, Solid = false, Friction = 0.2f, Tile = tile });
             Components.Add(new RenderComponent(this, Color.Aqua * 0.5f, z_index: Layers.Liquid));
         }
-
-        public override object AsJson()
-        {
-            return new { type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
-        }
-
-        public static GameObject FromJson(JObject data)
-        {
-            var (coords, halfsize, origin) = PositionJson.FromJson(data);
-            return new Liquid(coords, halfsize, origin);
-        }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using Omniplatformer.Components;
 using Omniplatformer.Components.Character;
 using Omniplatformer.Components.Physics;
@@ -15,9 +17,11 @@ namespace Omniplatformer.Objects
 {
     public abstract class GameObject
     {
+        [JsonIgnore]
         public Scene CurrentScene { get; set; }
         public Guid Id { get; set; }
 
+        [JsonProperty]
         protected List<Component> Components { get; set; }
         // protected Game1 Game => GameService.Instance;
         public Team Team { get; set; }
@@ -47,11 +51,6 @@ namespace Omniplatformer.Objects
             return Descriptors.Exists(x => x == descriptor);
         }
 
-        public virtual object AsJson()
-        {
-            return new { };
-        }
-
         public virtual void onDestroy()
         {
             _onDestroy(this, new EventArgs());
@@ -65,6 +64,14 @@ namespace Omniplatformer.Objects
             {
                 Components[i].Tick(dt);
             }
+        }
+
+        public virtual void Compile() { }
+
+        [OnDeserialized]
+        public void onDeserialized(StreamingContext _)
+        {
+            Compile();
         }
 
         // Typecasts

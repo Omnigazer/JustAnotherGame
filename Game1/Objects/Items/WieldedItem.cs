@@ -13,11 +13,22 @@ namespace Omniplatformer.Objects.Items
     {
         readonly Vector2 knockback = new Vector2(4, 3);
         readonly Vector2 halfsize = new Vector2(3, 25);
-        readonly Texture2D texture = GameContent.Instance.cursor;
+        readonly string texture = "Textures/cursor2";
 
-        public WieldedItem(int damage)
+        public WieldedItem()
         {
             Team = Team.Friend;
+        }
+
+        public static WieldedItem Create(int damage)
+        {
+            var item = new WieldedItem();
+            item.InitComponents(damage);
+            return item;
+        }
+
+        public void InitComponents(int damage)
+        {
             Descriptors.Add(Descriptor.RightHandSlot);
             Components.Add(new PhysicsComponent(this, Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)));
             Components.Add(new RenderComponent(this, Color.White, texture));
@@ -39,25 +50,6 @@ namespace Omniplatformer.Objects.Items
             var item_pos = (PositionComponent)this;
             item_pos.ClearParent();
             // character.CurrentScene.UnregisterObject(this);
-        }
-
-        public override object AsJson()
-        {
-            return new
-            {
-                Id,
-                type = GetType().AssemblyQualifiedName,
-                damage = GetComponent<MeleeDamageHitComponent>().Damage
-            };
-        }
-
-        public static GameObject FromJson(Deserializer deserializer)
-        {
-            // var item = new WieldedItem((int)data["damage"]) { Id = id };
-            var data = deserializer.getData();
-            var item = new WieldedItem((int)data["damage"]);
-            // SerializeService.Instance.RegisterObject(item);
-            return item;
         }
 
         public void SetWielder(GameObject source)

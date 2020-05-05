@@ -19,30 +19,13 @@ namespace Omniplatformer.Objects.Terrain
         {
             Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Solid = true, Friction = 0.1f, Tile = tile });
             var c = new RenderComponent(this);
+            /*
             if (tile)
             {
                 c.Texture = GameContent.Instance.testTile;
             }
+            */
             Components.Add(c);
-        }
-
-        public override object AsJson()
-        {
-            return new {
-                Id,
-                type = GetType().AssemblyQualifiedName,
-                Position = PositionJson.ToJson(this)
-            };
-        }
-
-        public static GameObject FromJson(Deserializer deserializer)
-        {
-            var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
-            coords.X = (float)Math.Round(coords.X);
-            coords.Y = (float)Math.Round(coords.Y);
-            var platform = new SolidPlatform(coords, halfsize, origin, true);
-            // SerializeService.Instance.RegisterObject(platform);
-            return platform;
         }
     }
 }

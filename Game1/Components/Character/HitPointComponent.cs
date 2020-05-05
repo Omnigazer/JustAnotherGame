@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 using Omniplatformer.Utility;
@@ -20,11 +21,14 @@ namespace Omniplatformer.Components.Character
     public class HitPointComponent : Component
     {
         public bool Vulnerable { get; set; } = true;
+        [JsonProperty]
         float _currentHitPoints;
+        [JsonIgnore]
         public float CurrentHitPoints { get => _currentHitPoints; set => _currentHitPoints = value.LimitToRange(0, MaxHitPoints); }
         public float MaxHitPoints { get; set; }
         bool is_dying;
 
+        public HitPointComponent() { }
         public HitPointComponent(GameObject obj, float hit_points) : base(obj) { CurrentHitPoints = MaxHitPoints = hit_points; }
 
         public event EventHandler<DamageEventArgs> _onBeginDestroy = delegate { };

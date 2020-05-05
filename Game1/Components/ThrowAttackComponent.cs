@@ -15,6 +15,7 @@ namespace Omniplatformer.Components
 {
     public class ThrowAttackComponent : RangedAttackComponent
     {
+        public ThrowAttackComponent() { }
         public ThrowAttackComponent(GameObject obj) : base(obj) { }
 
         public override bool CanAttack()
@@ -49,7 +50,11 @@ namespace Omniplatformer.Components
                 {
                     if (direction != null)
                     {
-                        var boulder = new Boulder((pos.WorldPosition).Coords) { Team = Team.Enemy };
+                        var boulder = Boulder.Create();
+                        boulder
+                            .GetComponent<PositionComponent>()
+                            .SetLocalCoords((pos.WorldPosition).Coords);
+                        boulder.Team = Team.Enemy;
                         GameService.Instance.AddToMainScene(boulder);
                         var b_movable = (DynamicPhysicsComponent)boulder;
                         b_movable.ApplyImpulse(direction.Value);

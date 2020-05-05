@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using Omniplatformer.Components;
 using Omniplatformer.Components.Character;
 using Omniplatformer.Components.Physics;
@@ -29,11 +31,12 @@ namespace Omniplatformer.Objects.Characters
         public bool Blocking { get; set; }
 
         // public WieldedItem WieldedItem { get => (WieldedItem)EquipSlots.RightHandSlot.Item; private set => WieldItem(value); }
+        [JsonIgnore]
         public WieldedItem WieldedItem => (WieldedItem)EquipSlots.RightHandSlot.Item;
 
         // Equipment and inventory
-        public Inventory.Inventory Inventory { get; set; } = new Inventory.Inventory();
-        public EquipSlotCollection EquipSlots { get; set; } = new EquipSlotCollection();
+        public Inventory.Inventory Inventory { get; set; }
+        public EquipSlotCollection EquipSlots { get; set; }
 
         // spans from 0.6 to 0.2 with a weight of 20
         public float MeleeAttackRate => (float)(60 - 40 * ((float)Skills[Melee] / (Skills[Melee] + 20))) / 100f;
@@ -41,12 +44,20 @@ namespace Omniplatformer.Objects.Characters
         // Helpers
 
         // TODO: possibly cache this
-        public Dictionary<Skill, int> Skills => GetComponent<SkillComponent>().Skills;
+        public Dictionary<Skill, int> Skills => GetComponent<SkillComponent>()?.Skills;
 
         public Player()
         {
-            InitComponents();
             Team = Team.Friend;
+            // TODO: refactor this
+            GameService.Instance.MainScene.Player = this;
+        }
+
+        public override void Compile()
+        {
+            var damageable = GetComponent<HitPointComponent>();
+            damageable._onDamage += OnDamage;
+            damageable._onBeginDestroy += (sender, e) => onDestroy();
         }
 
         void InitComponents()
@@ -56,16 +67,16 @@ namespace Omniplatformer.Objects.Characters
             phys.AddAnchor(AnchorPoint.RightHand, new Position(new Vector2(0.4f, 0.21f), Vector2.Zero));
             phys.AddAnchor(AnchorPoint.LeftHand, new Position(new Vector2(-0.45f, -0.05f), Vector2.Zero, 0.6f));
             Components.Add(phys);
-            Components.Add(new CharacterRenderComponent(this, Color.Gray, GameContent.Instance.character));
+            Components.Add(new CharacterRenderComponent(this, Color.Gray, "Textures/character"));
             Components.Add(new BonusComponent(this));
             Components.Add(new SkillComponent(this));
             Components.Add(new ManaComponent(this));
             Components.Add(new ExperienceComponent(this));
-
+            EquipSlots = EquipSlotCollection.Create();
+            Inventory = Omniplatformer.Objects.Inventory.Inventory.Create();
             var damageable = new HitPointComponent(this, max_hitpoints);
-            damageable._onDamage += OnDamage;
-            damageable._onBeginDestroy += (sender, e) => onDestroy();
             Components.Add(damageable);
+            Compile();
         }
 
         public void StartBlocking()
@@ -125,36 +136,10 @@ namespace Omniplatformer.Objects.Characters
             base.Tick(dt);
         }
 
-        public override object AsJson()
+        public static Player Create()
         {
-            return new {
-                Id,
-                type = GetType().AssemblyQualifiedName,
-                Position = PositionJson.ToJson(this),
-                Inventory = InventoryJson.ToJson(this),
-                EquipSlots = EquipSlotsJson.ToJson(this.EquipSlots)
-            };
-        }
-
-        public static GameObject FromJson(Deserializer deserializer)
-        {
-            var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
             var player = new Player();
-            var pos = (PositionComponent)player;
-            pos.SetLocalCoords(coords);
-            foreach (Item item in InventoryJson.FromJson(deserializer.getData(), deserializer))
-            {
-                player.Inventory.AddItem(item);
-            }
-            player.EquipSlots = EquipSlotsJson.FromJson(deserializer.getData()["EquipSlots"], deserializer);
-            // TODO: refactor this
-            {
-                GameService.Instance.MainScene.Player = player;
-                foreach (var slot in player.EquipSlots.GetSlots().Where(x => x.Item != null))
-                {
-                    slot.OnItemAdd(slot.Item);
-                }
-            }
+            player.InitComponents();
             return player;
         }
 
@@ -175,7 +160,8 @@ namespace Omniplatformer.Objects.Characters
                 var direction = x.Value.Coords - pos.WorldPosition.Coords;
                 direction.Normalize();
                 direction *= 20;
-                var boulder = new Boulder((x ?? pos.WorldPosition).Coords);
+                var boulder = Boulder.Create();
+                boulder.GetComponent<PositionComponent>().SetLocalCoords((x ?? pos.WorldPosition).Coords);
                 CurrentScene.RegisterObject(boulder);
                 ((DynamicPhysicsComponent)boulder).ApplyImpulse(direction);
             }

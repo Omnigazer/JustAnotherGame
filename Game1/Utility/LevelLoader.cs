@@ -76,6 +76,7 @@ namespace Omniplatformer.Utility
             return new Vector2(minx, miny);
         }
 
+        /*
         public static void SaveGroup(List<GameObject> group, string json_path)
         {
             JsonSerializer serializer = new JsonSerializer();
@@ -96,6 +97,7 @@ namespace Omniplatformer.Utility
                 serializer.Serialize(writer, new { objects = list });
             }
         }
+        */
 
         public static int[,] ImageTo2DByteArray(System.Drawing.Bitmap bmp)
         {
@@ -215,14 +217,14 @@ namespace Omniplatformer.Utility
                             }
                         case "goblin":
                             {
-                                list.Add(new Goblin(
+                                list.Add(Goblin.Create(
                                     new Vector2(i * tile_size, (5000 - j - 1) * tile_size)
                                     ));
                                 break;
                             }
                         case "goblin shaman":
                             {
-                                list.Add(new GoblinShaman(
+                                list.Add(GoblinShaman.Create(
                                     new Vector2(i * tile_size, (5000 - j - 1) * tile_size)
                                     ));
                                 break;

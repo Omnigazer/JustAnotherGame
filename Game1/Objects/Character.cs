@@ -29,10 +29,5 @@ namespace Omniplatformer.Objects
             var cooldownable = GetComponent<CooldownComponent>();
             cooldownable.Cooldowns.SetOrAdd("Stun", duration);
         }
-
-        public override object AsJson()
-        {
-            return new { Id, type = GetType().AssemblyQualifiedName, Position = PositionJson.ToJson(this) };
-        }
     }
 }

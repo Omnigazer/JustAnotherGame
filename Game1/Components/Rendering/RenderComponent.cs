@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Content;
 using Omniplatformer.Enums;
@@ -16,24 +17,51 @@ namespace Omniplatformer.Components.Rendering
         public Color DefaultColor { get; set; } = Color.White;
         public Color Color { get; set; }
         public float Opacity { get; set; } = 1;
-        public Texture2D Texture { get; set; }
+        [JsonProperty]
+        string texture_path;
+        Texture2D _texture;
+        [JsonIgnore]
+        public Texture2D Texture {
+            get {
+                if (texture_path == null)
+                    return GameContent.Instance.whitePixel;
+                if (_texture == null)
+                    _texture = GameContent.Instance.Load(texture_path);
+                return _texture;
+            }
+        }
         // offset, size
         public (Vector2, Vector2) TexBounds { get; set; } = (Vector2.Zero, new Vector2(1));
         public bool Tiled { get; set; }
-        public PositionComponent pos { get; set; }
+        // public PositionComponent pos { get; set; }
+        PositionComponent _pos;
+        [JsonIgnore]
+        public PositionComponent pos {
+            get
+            {
+                if (_pos == null)
+                    _pos = GetComponent<PositionComponent>();
+                return _pos;
+            }
+        }
+
+        public RenderComponent()
+        {
+
+        }
+
         public RenderComponent(GameObject obj) : base(obj)
         {
-            pos = GetComponent<PositionComponent>();
+            // pos = GetComponent<PositionComponent>();
             Color = DefaultColor;
         }
 
-        public RenderComponent(GameObject obj, Color color, Texture2D texture = null, int z_index = 0, bool tiled = false) : base(obj)
+        public RenderComponent(GameObject obj, Color color, string texture = null, int z_index = 0, bool tiled = false) : base(obj)
         {
             Color = DefaultColor = color;
-            Texture = texture;
+            texture_path = texture;
             ZIndex = z_index;
             Tiled = tiled;
-            pos = GetComponent<PositionComponent>();
         }
 
         public int CompareTo(RenderComponent obj)

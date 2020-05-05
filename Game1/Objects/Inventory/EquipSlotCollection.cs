@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Omniplatformer.Objects.Inventory
 {
@@ -11,14 +12,23 @@ namespace Omniplatformer.Objects.Inventory
 
         public EquipSlotCollection()
         {
-            MiscSlots = new List<MiscSlot>();
+
+        }
+
+        public static EquipSlotCollection Create()
+        {
+            var collection = new EquipSlotCollection()
+            {
+                MiscSlots = new List<MiscSlot>(),
+                LeftHandSlot = new LeftHandSlot(),
+                RightHandSlot = new RightHandSlot(),
+                ChannelSlot = new ChannelSlot()
+            };
             for (int i = 0; i < 6; i++)
             {
-                MiscSlots.Add(new MiscSlot());
+                collection.MiscSlots.Add(new MiscSlot());
             }
-            LeftHandSlot = new LeftHandSlot();
-            RightHandSlot = new RightHandSlot();
-            ChannelSlot = new ChannelSlot();
+            return collection;
         }
 
         public IEnumerable<Slot> GetSlots()

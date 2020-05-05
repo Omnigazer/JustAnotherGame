@@ -6,6 +6,8 @@ namespace Omniplatformer.Components.Rendering
 {
     class WallRenderComponent : AnimatedRenderComponent
     {
+        public WallRenderComponent() { }
+
         public WallRenderComponent(GameObject obj) : base(obj)
         {
             AddAnimation(new DeathAnimation(this));

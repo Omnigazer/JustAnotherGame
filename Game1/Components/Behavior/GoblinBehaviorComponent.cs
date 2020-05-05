@@ -20,6 +20,10 @@ namespace Omniplatformer.Components.Behavior
         float current_dt;
         IEnumerator Behavior { get; }
 
+        public GoblinBehaviorComponent()
+        {
+            Behavior = WalkBehavior();
+        }
         public GoblinBehaviorComponent(GameObject obj) : base(obj)
         {
             Behavior = WalkBehavior();

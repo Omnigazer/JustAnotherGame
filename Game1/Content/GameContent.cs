@@ -53,6 +53,11 @@ namespace Omniplatformer.Content
             Instance = new GameContent(content);
         }
 
+        public Texture2D Load(string path)
+        {
+            return Content.Load<Texture2D>(path);
+        }
+
         private GameContent(ContentManager content)
         {
             Content = content;

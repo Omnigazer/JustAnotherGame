@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 using Omniplatformer.Utility.Extensions;
@@ -11,13 +12,19 @@ namespace Omniplatformer.Components.Physics
     public abstract class PositionComponent : Component
     {
         // TODO: TEST
+        [JsonProperty]
         protected PositionComponent parent_pos;
+        [JsonProperty]
         protected AnchorPoint parent_anchor = AnchorPoint.Default;
+        [JsonProperty]
         protected Position local_position;
 
+        [JsonIgnore]
         public Position WorldPosition => parent_pos != null ? local_position * parent_pos.GetAnchor(parent_anchor) : local_position;
         public Dictionary<AnchorPoint, Position> DefaultAnchors { get; set; } = new Dictionary<AnchorPoint, Position>();
         public Dictionary<AnchorPoint, Position> CurrentAnchors { get; set; } = new Dictionary<AnchorPoint, Position>();
+
+        public PositionComponent() { }
 
         protected PositionComponent(GameObject obj, Vector2 coords, Vector2 halfsize, float angle = 0, Vector2? origin = null) : base(obj)
         {

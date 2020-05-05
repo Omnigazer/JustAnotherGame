@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 
@@ -19,6 +20,7 @@ namespace Omniplatformer.Components.Physics
         public bool IsNextToRope { get; set; }
         public bool CanClimb { get; set; }
 
+        [JsonProperty]
         protected Vector2 CurrentMovement { get; set; }
 
         // Movement counters and flags
@@ -35,6 +37,8 @@ namespace Omniplatformer.Components.Physics
             get => CurrentMovement.X;
             set => CurrentMovement = new Vector2(value, CurrentMovement.Y);
         }
+
+        public DynamicPhysicsComponent() { }
 
         public DynamicPhysicsComponent(GameObject obj, Vector2 coords, Vector2 halfsize): base(obj, coords, halfsize)
         {

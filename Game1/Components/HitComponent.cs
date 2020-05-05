@@ -9,6 +9,7 @@ namespace Omniplatformer.Components
 {
     public abstract class HitComponent : Component
     {
+        protected HitComponent() { }
         protected HitComponent(GameObject obj) : base(obj)
         {
         }

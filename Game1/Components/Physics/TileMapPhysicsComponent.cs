@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using Omniplatformer.Objects;
 using Omniplatformer.Scenes.Subsystems;
 
@@ -7,9 +8,13 @@ namespace Omniplatformer.Components.Physics
 {
     public class TileMapPhysicsComponent : PhysicsComponent
     {
+        [JsonIgnore]
         PhysicsSystem PhysicsSystem => Scene.PhysicsSystem;
+        [JsonIgnore]
         public (short, short)[,] Grid { get; set; }
         public static int TileSize => PhysicsSystem.TileSize;
+
+        public TileMapPhysicsComponent() { }
 
         public TileMapPhysicsComponent(GameObject obj, (short, short)[,] grid) : base(obj, Vector2.Zero, Vector2.Zero)
         // public TileMapPhysicsComponent(GameObject obj, short[,] grid) : base(obj)

@@ -29,6 +29,7 @@ namespace Omniplatformer.Components.Physics
 
         public float ChassisSpeed { get; set; }
 
+        public PlayerMoveComponent() { }
         public PlayerMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj, coords, halfsize)
         {
             Solid = true;

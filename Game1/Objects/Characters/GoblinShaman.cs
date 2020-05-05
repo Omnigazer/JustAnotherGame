@@ -17,20 +17,37 @@ namespace Omniplatformer.Objects.Characters
 {
     public class GoblinShaman : Character
     {
-        public GoblinShaman(Vector2 coords)
+        public GoblinShaman()
         {
             Team = Team.Enemy;
+        }
+
+        public static GoblinShaman Create(Vector2 coords)
+        {
+            var shaman = new GoblinShaman();
+            shaman.InitComponents();
+            var pos = shaman.GetComponent<PositionComponent>();
+            pos.SetLocalCoords(coords);
+            return shaman;
+        }
+
+        public void InitComponents()
+        {
             var halfsize = new Vector2(15, 20);
             Components.Add(new GoblinBehaviorComponent(this));
             Components.Add(new CastAttackComponent(this));
-            Components.Add(new CharMoveComponent(this, coords, halfsize, movespeed: 1.4f));
-            Components.Add(new CharacterRenderComponent(this, Color.Orange, GameContent.Instance.character));
+            Components.Add(new CharMoveComponent(this, Vector2.Zero, halfsize, movespeed: 1.4f));
+            Components.Add(new CharacterRenderComponent(this, Color.Orange, "Textures/character"));
             Components.Add(new DamageHitComponent(this, damage: 3, knockback: new Vector2(3, 2)));
+            Components.Add(new HitPointComponent(this, 12));
+            Compile();
+        }
 
-            var damageable = new HitPointComponent(this, 12);
+        public override void Compile()
+        {
+            var damageable = GetComponent<HitPointComponent>();
             damageable._onDamage += OnDamage;
             damageable._onBeginDestroy += (sender, e) => onDestroy();
-            Components.Add(damageable);
         }
 
         public void OnDamage(object sender, EventArgs e)
@@ -41,21 +58,13 @@ namespace Omniplatformer.Objects.Characters
         public override void onDestroy()
         {
             // TODO: extract this into a drop component
-            Item drop = new ChaosOrb();
+            Item drop = ChaosOrb.Create();
             var pos = (PhysicsComponent)drop;
             pos.SetLocalCoords(GetComponent<PositionComponent>().WorldPosition.Coords);
             pos.Pickupable = true;
             CurrentScene.RegisterObject(drop);
 
             base.onDestroy();
-        }
-
-        public static GameObject FromJson(Deserializer deserializer)
-        {
-            var (coords, halfsize, origin) = PositionJson.FromJson(deserializer.getData());
-            var shaman = new GoblinShaman(coords);
-            // SerializeService.Instance.RegisterObject(zombie);
-            return shaman;
         }
     }
 }

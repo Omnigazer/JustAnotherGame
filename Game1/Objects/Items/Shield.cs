@@ -10,13 +10,22 @@ namespace Omniplatformer.Objects.Items
 {
     public class Shield : Item
     {
-        public Shield(Texture2D texture = null)
+        public Shield()
         {
-            if (texture == null)
-                texture = GameContent.Instance.shield;
             Team = Team.Friend;
-            // Damage = damage;
+        }
+
+        public static Shield Create()
+        {
+            var shield = new Shield();
+            shield.InitComponents();
+            return shield;
+        }
+
+        public void InitComponents()
+        {
             var halfsize = new Vector2(10, 32);
+            var texture = "Textures/shield";
             Descriptors.Add(Descriptor.LeftHandSlot);
             Components.Add(new PhysicsComponent(this, Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)) { Hittable = true });
             Components.Add(new RenderComponent(this, Color.White, texture, 2));
@@ -38,23 +47,6 @@ namespace Omniplatformer.Objects.Items
             var item_pos = (PositionComponent)this;
             item_pos.ClearParent();
             // character.CurrentScene.UnregisterObject(this);
-        }
-
-        public override object AsJson()
-        {
-            return new
-            {
-                Id,
-                type = GetType().AssemblyQualifiedName
-            };
-        }
-
-        public static GameObject FromJson(Deserializer deserializer)
-        {
-            // var item = new WieldedItem((int)data["damage"]) { Id = id };
-            var data = deserializer.getData();
-            var item = new Shield();
-            return item;
         }
 
         public void SetWielder(GameObject source)
