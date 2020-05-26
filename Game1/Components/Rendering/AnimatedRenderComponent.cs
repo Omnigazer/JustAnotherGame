@@ -26,8 +26,7 @@ namespace Omniplatformer.Components.Rendering
         private Dictionary<AnimationType, Animation> Animations { get; set; } = new Dictionary<AnimationType, Animation>();
 
         public AnimatedRenderComponent() { }
-        public AnimatedRenderComponent(GameObject obj) : base(obj) { }
-        public AnimatedRenderComponent(GameObject obj, Color color, string texture = null, int z_index = 0) : base(obj, color, texture, z_index) { }
+        public AnimatedRenderComponent(Color color, string texture = null, int z_index = 0) : base(color, texture, z_index) { }
 
         public void AddAnimation(Animation animation)
         {

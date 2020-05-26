@@ -24,21 +24,39 @@ namespace Omniplatformer.Objects
         [JsonProperty]
         protected List<Component> Components { get; set; }
         // protected Game1 Game => GameService.Instance;
-        public Team Team { get; set; }
+        protected Team _team;
+        public Team Team { get => Source._team; set => _team = value; }
         private GameObject _source;
         public GameObject Source {
             get => _source?.Source ?? this;
             set => _source = value;
         }
         // public virtual GameObject Source => this;
-        public List<Descriptor> Descriptors { get; set; } = new List<Descriptor>();
+        public HashSet<Descriptor> Descriptors { get; set; } = new HashSet<Descriptor>();
         public event EventHandler _onDestroy = delegate { };
 
         public GameObject()
         {
             Id = Id == Guid.Empty ? Guid.NewGuid() : Id;
             Components = new List<Component>();
-            Components.Add(new CooldownComponent(this));
+        }
+
+        public virtual void InitializeComponents()
+        {
+            RegisterComponent(new CooldownComponent());
+            InitializeCustomComponents();
+            Compile();
+        }
+
+        public virtual void InitializeCustomComponents()
+        {
+
+        }
+
+        public void RegisterComponent(Component c)
+        {
+            Components.Add(c);
+            c.GameObject = this;
         }
 
         public T GetComponent<T>() where T : Component
@@ -48,7 +66,7 @@ namespace Omniplatformer.Objects
 
         public bool HasDescriptor(Descriptor descriptor)
         {
-            return Descriptors.Exists(x => x == descriptor);
+            return Descriptors.Contains(descriptor);
         }
 
         public virtual void onDestroy()
@@ -59,14 +77,24 @@ namespace Omniplatformer.Objects
         // Process current frame
         public virtual void Tick(float dt)
         {
-            // foreach (var c in Components)
             for (int i = 0; i < Components.Count; i++)
             {
                 Components[i].Tick(dt);
             }
         }
 
-        public virtual void Compile() { }
+        public virtual void Compile() {
+            foreach(var c in Components)
+            {
+                c.Compile();
+            }
+            OnCompile();
+        }
+
+        public virtual void OnCompile()
+        {
+
+        }
 
         [OnDeserialized]
         public void onDeserialized(StreamingContext _)

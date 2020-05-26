@@ -13,7 +13,7 @@ namespace Omniplatformer.Components.Rendering
     class CharacterRenderComponent : AnimatedRenderComponent
     {
         public CharacterRenderComponent() { }
-        public CharacterRenderComponent(GameObject obj, Color color, string texture = null) : base(obj, color, texture)
+        public CharacterRenderComponent(Color color, string texture = null) : base(color, texture)
         {
             AddAnimation(new AttackAnimation(this));
             AddAnimation(new HitAnimation(this));

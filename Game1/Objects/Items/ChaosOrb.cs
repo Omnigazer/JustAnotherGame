@@ -14,30 +14,21 @@ namespace Omniplatformer.Objects.Items
         int ChaosBonus { get; set; } = 1;
         float ManaRegenBonus { get; set; } = 0.05f / 60;
 
-        public ChaosOrb()
-        {
-            Team = Team.Friend;
-        }
-
         public static ChaosOrb Create()
         {
             var orb = new ChaosOrb();
-            orb.InitComponents();
+            orb.InitializeComponents();
             return orb;
         }
 
-        public void InitComponents()
+        public override void InitializeCustomComponents()
         {
             string texture = "Textures/chaos_orb";
             var halfsize = new Vector2(25, 25);
-            Components.Add(new PhysicsComponent(this, Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)));
-            Components.Add(new GlowingRenderComponent(this, Color.White, texture) { Radius = 200 });
+            RegisterComponent(new PhysicsComponent(Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)));
+            RegisterComponent(new GlowingRenderComponent(Color.White, texture) { Radius = 200 });
             Descriptors.Add(Descriptor.ChannelSlot);
-        }
-
-        public ChaosOrb(string texture = null)
-        {
-
+            Compile();
         }
 
         public override void OnEquip(Character character)

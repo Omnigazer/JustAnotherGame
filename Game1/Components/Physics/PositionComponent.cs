@@ -24,9 +24,11 @@ namespace Omniplatformer.Components.Physics
         public Dictionary<AnchorPoint, Position> DefaultAnchors { get; set; } = new Dictionary<AnchorPoint, Position>();
         public Dictionary<AnchorPoint, Position> CurrentAnchors { get; set; } = new Dictionary<AnchorPoint, Position>();
 
-        public PositionComponent() { }
+        public PositionComponent() {
+            local_position = new Position { Origin = Position.DefaultOrigin };
+        }
 
-        protected PositionComponent(GameObject obj, Vector2 coords, Vector2 halfsize, float angle = 0, Vector2? origin = null) : base(obj)
+        protected PositionComponent(Vector2 coords, Vector2 halfsize, float angle = 0, Vector2? origin = null)
         {
             local_position = new Position(coords, halfsize, angle, origin);
         }
@@ -205,6 +207,11 @@ namespace Omniplatformer.Components.Physics
         public void SetLocalHalfsize(Vector2 halfsize)
         {
             local_position.Halfsize = halfsize;
+        }
+
+        public void SetLocalOrigin(Vector2 origin)
+        {
+            local_position.Origin = origin;
         }
 
         public void SetParent(GameObject obj, AnchorPoint anchor = AnchorPoint.Default)

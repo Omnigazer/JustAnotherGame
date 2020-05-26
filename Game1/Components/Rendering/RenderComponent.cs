@@ -45,18 +45,9 @@ namespace Omniplatformer.Components.Rendering
             }
         }
 
-        public RenderComponent()
-        {
+        public RenderComponent() { Color = DefaultColor; }
 
-        }
-
-        public RenderComponent(GameObject obj) : base(obj)
-        {
-            // pos = GetComponent<PositionComponent>();
-            Color = DefaultColor;
-        }
-
-        public RenderComponent(GameObject obj, Color color, string texture = null, int z_index = 0, bool tiled = false) : base(obj)
+        public RenderComponent(Color color, string texture = null, int z_index = 0, bool tiled = false)
         {
             Color = DefaultColor = color;
             texture_path = texture;

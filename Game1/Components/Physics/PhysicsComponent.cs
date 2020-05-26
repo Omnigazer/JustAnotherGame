@@ -7,7 +7,6 @@ namespace Omniplatformer.Components.Physics
     {
         public float InverseMass { get; set; } = 1;
         public float Friction { get; set; }
-        public bool Tile { get; set; }
         public bool Solid { get; set; }
         public bool Liquid { get; set; }
         public virtual bool Climbable { get; set; }
@@ -16,12 +15,12 @@ namespace Omniplatformer.Components.Physics
 
         public PhysicsComponent() { }
 
-        public PhysicsComponent(GameObject obj, Vector2 coords, Vector2 halfsize): base(obj, coords, halfsize)
+        public PhysicsComponent(Vector2 coords, Vector2 halfsize): base(coords, halfsize)
         {
 
         }
 
-        public PhysicsComponent(GameObject obj, Vector2 coords, Vector2 halfsize, Vector2 origin) : base(obj, coords, halfsize, 0, origin)
+        public PhysicsComponent(Vector2 coords, Vector2 halfsize, Vector2 origin) : base(coords, halfsize, 0, origin)
         {
 
         }

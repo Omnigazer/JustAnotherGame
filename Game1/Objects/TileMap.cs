@@ -22,10 +22,10 @@ namespace Omniplatformer.Objects
         public TileMap()
         {
             Grid = new (short, short)[GridWidth, GridHeight];
-            var drawable = new TileMapRenderComponent(this);
-            Components.Add(drawable);
-            var physicable = new TileMapPhysicsComponent(this, Grid);
-            Components.Add(physicable);
+            var drawable = new TileMapRenderComponent();
+            RegisterComponent(drawable);
+            var physicable = new TileMapPhysicsComponent(Grid);
+            RegisterComponent(physicable);
         }
 
         public void RegisterTile(Tile tile)

@@ -13,8 +13,7 @@ namespace Omniplatformer.Components
         public Dictionary<Skill, List<int>> SkillBonuses { get; set; } = new Dictionary<Skill, List<int>>();
         public Dictionary<ManaType, List<float>> ManaRegenBonuses { get; set; } = new Dictionary<ManaType, List<float>>();
 
-        public BonusComponent() { }
-        public BonusComponent(GameObject obj) : base(obj)
+        public BonusComponent()
         {
             foreach (Skill skill in Enum.GetValues(typeof(Skill)))
             {

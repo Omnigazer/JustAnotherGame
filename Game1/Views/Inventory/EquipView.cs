@@ -13,12 +13,12 @@ namespace Omniplatformer.Views.Inventory
     /// </summary>
     public class EquipView : ViewControl
     {
-        Player Player { get; set; }
+        EquipSlotCollection EquipSlots { get; set; }
         IInventoryController controller;
 
-        public EquipView(IInventoryController controller, Player player)
+        public EquipView(IInventoryController controller, EquipSlotCollection equip_slots)
         {
-            Player = player;
+            EquipSlots = equip_slots;
             this.controller = controller;
             SetupGUI();
         }
@@ -31,14 +31,15 @@ namespace Omniplatformer.Views.Inventory
 
         public void SetupGUI()
         {
+            Clear();
             var main_equip_slots = new Row()
             {
-                BuildEquipSlot(Player.EquipSlots.RightHandSlot),
-                BuildEquipSlot(Player.EquipSlots.LeftHandSlot),
-                BuildEquipSlot(Player.EquipSlots.ChannelSlot)
+                BuildEquipSlot(EquipSlots.RightHandSlot),
+                BuildEquipSlot(EquipSlots.LeftHandSlot),
+                BuildEquipSlot(EquipSlots.ChannelSlot)
             };
             var misc_slots = new Row();
-            foreach (var slot in Player.EquipSlots.MiscSlots)
+            foreach (var slot in EquipSlots.MiscSlots)
             {
                 misc_slots.RegisterChild(BuildEquipSlot(slot));
             }

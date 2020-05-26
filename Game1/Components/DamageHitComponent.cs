@@ -23,7 +23,7 @@ namespace Omniplatformer.Components
         public override bool EligibleTarget(GameObject target) => target.Team != GameObject.Team;
 
         public DamageHitComponent() { }
-        public DamageHitComponent(GameObject obj, int damage, Vector2? knockback = null) : base(obj)
+        public DamageHitComponent(int damage, Vector2? knockback = null)
         {
             Damage = damage;
             Knockback = knockback ?? Vector2.Zero;

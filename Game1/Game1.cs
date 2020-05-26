@@ -21,6 +21,7 @@ using Omniplatformer.Scenes;
 using Omniplatformer.Scenes.Subsystems;
 using Omniplatformer.Services;
 using Omniplatformer.Utility;
+using Omniplatformer.Components.Character;
 
 namespace Omniplatformer
 {
@@ -80,7 +81,7 @@ namespace Omniplatformer
             // TODO: Add your initialization logic here
             base.Initialize();
             InitServices();
-            LoadLevel(false);
+            LoadLevel();
             defaultHUD = new DefaultHUDState();
             inventoryHUD = new InventoryHUDState(Player.Inventory);
             charHUD = new CharHUDState();
@@ -93,7 +94,7 @@ namespace Omniplatformer
             GameService.Init(this);
         }
 
-        void LoadLevel(bool bitmap)
+        void LoadLevel()
         {
             MainScene = new Level();
             MainScene.RenderSystem = new RenderSystem(this);
@@ -102,10 +103,7 @@ namespace Omniplatformer
             MainScene.Subsystems.Add(MainScene.RenderSystem);
             MainScene.Subsystems.Add(MainScene.PhysicsSystem);
             MainScene.Subsystems.Add(new SimulationSystem());
-            if (bitmap)
-                MainScene.LoadFromBitmap("level1");
-            else
-                MainScene.Load("default_level");
+            MainScene.Load("default_level");
             // TODO: extract this
             Player._onDestroy += GameOver;
         }
@@ -376,7 +374,7 @@ namespace Omniplatformer
 
         public void Fire()
         {
-            Player.Fire();
+            Player.GetComponent<PlayerActionComponent>().Fire();
         }
 
         public void Stand()
@@ -413,12 +411,12 @@ namespace Omniplatformer
         {
             Item item = e.Button switch
             {
-                MouseButton.Left => Player.EquipSlots.RightHandSlot.Item,
-                MouseButton.Right => Player.EquipSlots.LeftHandSlot.Item,
+                MouseButton.Left => Player.GetComponent<EquipComponent>().EquipSlots.RightHandSlot.Item,
+                MouseButton.Right => Player.GetComponent<EquipComponent>().EquipSlots.LeftHandSlot.Item,
                 _ => null
             };
             if (item != null)
-                Player.PerformItemAction((dynamic)item, is_down);
+                Player.GetComponent<PlayerActionComponent>().PerformItemAction((dynamic)item, is_down);
         }
 
         #endregion
@@ -512,6 +510,7 @@ namespace Omniplatformer
                     return String.Format("invalid args");
             });
 
+            /*
             console.AddCommand("savegroup", a =>
             {
                 if (a.Length == 2 && int.TryParse(a[0], out int index))
@@ -523,6 +522,7 @@ namespace Omniplatformer
                 else
                     return String.Format("invalid args");
             });
+            */
 
             console.AddCommand("loadgroup", a =>
             {
@@ -542,25 +542,6 @@ namespace Omniplatformer
                     // UnloadLevel();
                     // return "Level unloaded.";
                     return "Not implemented.";
-                }
-                else
-                    return String.Format("invalid args");
-            });
-
-            console.AddCommand("load", a =>
-            {
-                if (a.Length == 1)
-                {
-                    string arg = a[0];
-                    LoadLevel(arg == "bitmap");
-                    /*
-                    TestScene.Player = Player;
-                    MainScene = TestScene;
-                    AddToMainScene(Player);
-                    MainScene.LoadPlayer(Player);
-                     */
-
-                    return "Done.";
                 }
                 else
                     return String.Format("invalid args");
@@ -594,12 +575,14 @@ namespace Omniplatformer
             Groups.Add(name, group);
         }
 
+        /*
         public void SaveGroup(string name)
         {
             Log(String.Format("Saving group {0}", name));
             string path = String.Format("Content/Data/{0}.json", name);
             LevelLoader.SaveGroup(Groups[name], path);
         }
+        */
         #endregion
     }
 }

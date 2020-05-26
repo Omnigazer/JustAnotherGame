@@ -6,6 +6,7 @@ namespace Omniplatformer.Objects.Items
     {
         public Item()
         {
+            Team = Team.Friend;
             Descriptors.Add(Descriptor.Item);
         }
         public virtual bool CanEquip => false;

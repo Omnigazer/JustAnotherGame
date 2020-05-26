@@ -13,13 +13,6 @@ namespace Omniplatformer.Objects.Inventory
         public List<InventorySlot> slots = new List<InventorySlot>();
         public InventorySlot CurrentSlot;
 
-        // public int row, col;
-
-        public Inventory()
-        {
-
-        }
-
         public static Inventory Create()
         {
             var inventory = new Inventory();

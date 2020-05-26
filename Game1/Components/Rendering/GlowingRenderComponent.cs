@@ -12,8 +12,7 @@ namespace Omniplatformer.Components.Rendering
         public Color GlowColor { get; set; } = Color.Orange;
         public int Radius { get; set; } = 100;
         public GlowingRenderComponent() { }
-        public GlowingRenderComponent(GameObject obj) : base(obj) { }
-        public GlowingRenderComponent(GameObject obj, Color color, string texture = null, int z_index = 0) : base(obj, color, texture, z_index) { }
+        public GlowingRenderComponent(Color color, string texture = null, int z_index = 0) : base(color, texture, z_index) { }
 
         public override void DrawToLightMask()
         {

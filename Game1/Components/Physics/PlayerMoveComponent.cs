@@ -29,8 +29,7 @@ namespace Omniplatformer.Components.Physics
 
         public float ChassisSpeed { get; set; }
 
-        public PlayerMoveComponent() { }
-        public PlayerMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj, coords, halfsize)
+        public PlayerMoveComponent()
         {
             Solid = true;
             MaxMoveSpeed = 5;
@@ -152,16 +151,6 @@ namespace Omniplatformer.Components.Physics
             {
                 if (!IsJumping)
                     ResetJumps();
-            }
-
-            if (obj.Pickupable)
-            {
-                // TODO: definitely extract this into a component
-                var player = (Player)GameObject;
-                // player.GetBonus()
-                // player.Pickup((Collectible)obj);
-                player.Pickup(obj.GameObject);
-                obj.Pickupable = false;
             }
             return false;
         }

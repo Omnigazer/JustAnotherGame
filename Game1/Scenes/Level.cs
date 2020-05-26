@@ -85,24 +85,6 @@ namespace Omniplatformer.Scenes
             }
         }
 
-        public void LoadFromBitmap(string level_name)
-        {
-            string image_path = String.Format("Content/Data/LevelBitmaps/{0}.png", level_name);
-            foreach (var obj in LevelLoader.LoadFromBitmap(image_path))
-            {
-                RegisterObject(obj);
-            }
-
-            // Game.Groups.Add("bitmap", new List<GameObject>());
-            // foreach (var obj in Objects)
-            // {
-                // Game.Groups["bitmap"].Add(obj);
-            //    Game.AddToMainScene(obj);
-            // }
-
-            RenderSystem.CurrentBackground = GameContent.Instance.background;
-        }
-
         // TODO: should be moved to level initializer
         public void Load(string name)
         {

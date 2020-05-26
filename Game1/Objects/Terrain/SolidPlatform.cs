@@ -10,22 +10,20 @@ namespace Omniplatformer.Objects.Terrain
 {
     class SolidPlatform : GameObject
     {
-        public SolidPlatform(Vector2 coords, Vector2 halfsize) : this(coords, halfsize, Position.DefaultOrigin)
+        public override void InitializeCustomComponents()
         {
-
+            RegisterComponent(new PhysicsComponent() { Solid = true, Friction = 0.1f });
+            RegisterComponent(new RenderComponent());
         }
 
-        public SolidPlatform(Vector2 coords, Vector2 halfsize, Vector2 origin, bool tile = false)
+        public static SolidPlatform Create(Vector2 coords, Vector2 halfsize)
         {
-            Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Solid = true, Friction = 0.1f, Tile = tile });
-            var c = new RenderComponent(this);
-            /*
-            if (tile)
-            {
-                c.Texture = GameContent.Instance.testTile;
-            }
-            */
-            Components.Add(c);
+            var quad = new SolidPlatform();
+            quad.InitializeComponents();
+            var pos = quad.GetComponent<PositionComponent>();
+            pos.SetLocalCoords(coords);
+            pos.SetLocalHalfsize(halfsize);
+            return quad;
         }
     }
 }

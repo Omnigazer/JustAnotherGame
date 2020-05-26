@@ -16,30 +16,21 @@ namespace Omniplatformer.Objects.Projectiles
         IEnumerator behavior;
         public const float speed = 20;
 
-        public FireBoltProjectile()
+        public override void InitializeCustomComponents()
         {
-
-        }
-
-        public FireBoltProjectile(Vector2 center, GameObject source = null): base(source)
-        {
-            Team = source.Team;
-        }
-
-        public void InitComponents()
-        {
-            var proj_movable = new ProjectileMoveComponent(this, Vector2.Zero, new Vector2(5, 5)) { InverseMass = 0 };
-            Components.Add(proj_movable);
-            Components.Add(new GlowingRenderComponent(this));
-            Components.Add(new DamageHitComponent(this, damage: 4));
+            var proj_movable = new ProjectileMoveComponent() { InverseMass = 0 };
+            RegisterComponent(proj_movable);
+            RegisterComponent(new GlowingRenderComponent());
+            RegisterComponent(new DamageHitComponent(damage: 4));
             behavior = behaviorGen();
         }
 
         public static FireBoltProjectile Create(GameObject source)
         {
-            var bolt = new FireBoltProjectile();
-            bolt.Source = source;
-            bolt.InitComponents();
+            var bolt = new FireBoltProjectile() { Source = source };
+            bolt.InitializeComponents();
+            var pos = (PositionComponent)bolt;
+            pos.SetLocalHalfsize(new Vector2(5, 5));
             return bolt;
         }
 
@@ -62,7 +53,7 @@ namespace Omniplatformer.Objects.Projectiles
         {
             var movable = GetComponent<ProjectileMoveComponent>();
             float x = RandomGen.NextFloat(-1.5f, 1.5f), y = RandomGen.NextFloat(-1.5f, 1.5f);
-            var spark = new Particle(movable.WorldPosition.Coords);
+            var spark = Particle.Create(movable.WorldPosition.Coords);
             var s_movable = (DynamicPhysicsComponent)spark;
             s_movable.ApplyImpulse(new Vector2(x, y));
             CurrentScene.RegisterObject(spark);

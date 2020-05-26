@@ -15,10 +15,14 @@ namespace Omniplatformer.Components
         public GameObject GameObject { get; set; }
         [JsonIgnore]
         public Scene Scene => GameObject.CurrentScene;
-        public Component() { }
-        protected Component(GameObject obj)
+        JsonSerializerSettings settings;
+
+        public Component()
         {
-            GameObject = obj;
+            settings = new JsonSerializerSettings()
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.All
+            };
         }
 
         public T GetComponent<T>() where T : Component
@@ -27,5 +31,6 @@ namespace Omniplatformer.Components
         }
 
         public virtual void Tick(float dt) { }
+        public virtual void Compile() { }
     }
 }

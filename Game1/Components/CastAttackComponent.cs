@@ -1,8 +1,10 @@
-﻿using Omniplatformer.Components.Physics;
+﻿using Omniplatformer.Components.Character;
+using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 using Omniplatformer.Services;
+using Omniplatformer.Spells;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +15,11 @@ namespace Omniplatformer.Components
 {
     public class CastAttackComponent : RangedAttackComponent
     {
-        public CastAttackComponent() { }
-        public CastAttackComponent(GameObject obj) : base(obj) { }
+        SpellComponent Spell { get; set; }
+        public CastAttackComponent(SpellComponent spell)
+        {
+            Spell = spell;
+        }
 
         public override bool CanAttack()
         {
@@ -36,8 +41,7 @@ namespace Omniplatformer.Components
             {
                 if (e.animation == AnimationType.Cast)
                 {
-                    // TODO: refactor this
-                    Spells.FireBolt.Cast((Objects.Character)this.GameObject, player_pos.WorldPosition);
+                    Spell.Cast(GetComponent<SpellCasterComponent>(), player_pos.WorldPosition);
                     IsAttacking = false;
                     drawable._onAnimationEnd -= Handler;
                 }

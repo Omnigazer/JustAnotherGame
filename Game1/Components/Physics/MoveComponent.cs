@@ -22,13 +22,6 @@ namespace Omniplatformer.Components.Physics
             get => CurrentMovement.X;
             set => CurrentMovement = new Vector2(value, CurrentMovement.Y);
         }
-
-        public MoveComponent() { }
-        public MoveComponent(GameObject obj) : base(obj)
-        {
-
-        }
-
         /*
         protected void onMove(Vector2 displacement)
         {

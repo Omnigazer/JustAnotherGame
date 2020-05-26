@@ -8,10 +8,20 @@ namespace Omniplatformer.Objects.Terrain
 {
     class ForegroundQuad : GameObject
     {
-        public ForegroundQuad(Vector2 center, Vector2 halfsize, Vector2 origin)
+        public override void InitializeCustomComponents()
         {
-            Components.Add(new PhysicsComponent(this, center, halfsize, origin));
-            Components.Add(new ForegroundRenderComponent(this, Color.Green));
+            RegisterComponent(new PhysicsComponent());
+            RegisterComponent(new ForegroundRenderComponent(Color.Green));
+        }
+
+        public static ForegroundQuad Create(Vector2 coords, Vector2 halfsize)
+        {
+            var quad = new ForegroundQuad();
+            quad.InitializeComponents();
+            var pos = quad.GetComponent<PositionComponent>();
+            pos.SetLocalCoords(coords);
+            pos.SetLocalHalfsize(halfsize);
+            return quad;
         }
     }
 }

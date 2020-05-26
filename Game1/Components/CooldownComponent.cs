@@ -11,12 +11,7 @@ namespace Omniplatformer.Components
 {
     public class CooldownComponent : Component
     {
-        public Dictionary<string, float> Cooldowns { get; set; }
-        public CooldownComponent() { }
-        public CooldownComponent(GameObject obj) : base(obj)
-        {
-            Cooldowns = new Dictionary<string, float>();
-        }
+        public Dictionary<string, float> Cooldowns { get; set; } = new Dictionary<string, float>();
 
         public bool TryCooldown(string key, int value)
         {

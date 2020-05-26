@@ -8,10 +8,20 @@ namespace Omniplatformer.Objects.Terrain
 {
     class MovingPlatform : GameObject
     {
-        public MovingPlatform(Vector2 coords, Vector2 halfsize)
+        public override void InitializeCustomComponents()
         {
-            Components.Add(new PlatformMoveComponent(this, coords, halfsize) { Solid = true, Friction = 0.08f });
-            Components.Add(new RenderComponent(this));
+            RegisterComponent(new PlatformMoveComponent() { Solid = true, Friction = 0.08f, InverseMass = 0 });
+            RegisterComponent(new RenderComponent());
+        }
+
+        public static MovingPlatform Create(Vector2 coords, Vector2 halfsize)
+        {
+            var quad = new MovingPlatform();
+            quad.InitializeComponents();
+            var pos = quad.GetComponent<PositionComponent>();
+            pos.SetLocalCoords(coords);
+            pos.SetLocalHalfsize(halfsize);
+            return quad;
         }
     }
 }

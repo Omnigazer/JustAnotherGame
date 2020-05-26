@@ -9,16 +9,20 @@ namespace Omniplatformer.Objects.Terrain
 {
     public class Liquid : GameObject
     {
-
-        public Liquid(Vector2 coords, Vector2 halfsize) : this(coords, halfsize, Position.DefaultOrigin)
+        public override void InitializeCustomComponents()
         {
-
+            RegisterComponent(new PhysicsComponent() { Liquid = true, Solid = false, Friction = 0.2f });
+            RegisterComponent(new RenderComponent(Color.Aqua * 0.5f, z_index: Layers.Liquid));
         }
 
-        public Liquid(Vector2 coords, Vector2 halfsize, Vector2 origin, bool tile = false)
+        public static Liquid Create(Vector2 coords, Vector2 halfsize)
         {
-            Components.Add(new PhysicsComponent(this, coords, halfsize, origin) { Liquid = true, Solid = false, Friction = 0.2f, Tile = tile });
-            Components.Add(new RenderComponent(this, Color.Aqua * 0.5f, z_index: Layers.Liquid));
+            var quad = new Liquid();
+            quad.InitializeComponents();
+            var pos = quad.GetComponent<PositionComponent>();
+            pos.SetLocalCoords(coords);
+            pos.SetLocalHalfsize(halfsize);
+            return quad;
         }
     }
 }

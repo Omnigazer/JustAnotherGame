@@ -16,8 +16,7 @@ namespace Omniplatformer.Components.Physics
 
         public TileMapPhysicsComponent() { }
 
-        public TileMapPhysicsComponent(GameObject obj, (short, short)[,] grid) : base(obj, Vector2.Zero, Vector2.Zero)
-        // public TileMapPhysicsComponent(GameObject obj, short[,] grid) : base(obj)
+        public TileMapPhysicsComponent((short, short)[,] grid) : base(Vector2.Zero, Vector2.Zero)
         {
             Solid = true;
             InverseMass = 0;

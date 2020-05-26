@@ -18,9 +18,6 @@ namespace Omniplatformer.Components.Rendering
         // player's current quadrant in region
         bool to_the_right, to_the_high;
 
-        public TileMapRenderComponent() { }
-        public TileMapRenderComponent(GameObject obj) : base(obj) { }
-
         public void RebuildBuffers(bool force = false)
         {
             Vector2 coords = GameService.Instance.RenderSystem.Camera.Position;

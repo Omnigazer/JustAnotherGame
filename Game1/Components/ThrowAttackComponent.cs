@@ -15,9 +15,6 @@ namespace Omniplatformer.Components
 {
     public class ThrowAttackComponent : RangedAttackComponent
     {
-        public ThrowAttackComponent() { }
-        public ThrowAttackComponent(GameObject obj) : base(obj) { }
-
         public override bool CanAttack()
         {
             float force = 30;

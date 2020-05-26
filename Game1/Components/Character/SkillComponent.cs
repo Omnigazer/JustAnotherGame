@@ -13,8 +13,7 @@ namespace Omniplatformer.Components.Character
         public int SkillPoints { get; set; }
         public Dictionary<Skill, int> Skills = new Dictionary<Skill, int>();
 
-        public SkillComponent() { }
-        public SkillComponent(GameObject obj) : base(obj)
+        public SkillComponent()
         {
             SkillPoints = 4;
             foreach (Skill skill in Enum.GetValues(typeof(Skill)))

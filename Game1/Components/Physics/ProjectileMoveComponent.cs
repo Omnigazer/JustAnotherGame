@@ -8,12 +8,6 @@ namespace Omniplatformer.Components.Physics
     {
         public Vector2 Direction { get; set; }
 
-        public ProjectileMoveComponent() { }
-
-        public ProjectileMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj, coords, halfsize)
-        {
-        }
-
         bool done = false;
 
         public override bool ProcessCollision(Direction direction, PhysicsComponent obj)

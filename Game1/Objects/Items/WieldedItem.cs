@@ -15,24 +15,21 @@ namespace Omniplatformer.Objects.Items
         readonly Vector2 halfsize = new Vector2(3, 25);
         readonly string texture = "Textures/cursor2";
 
-        public WieldedItem()
-        {
-            Team = Team.Friend;
-        }
-
         public static WieldedItem Create(int damage)
         {
             var item = new WieldedItem();
-            item.InitComponents(damage);
+            item.InitializeComponents();
+            var c = item.GetComponent<DamageHitComponent>();
+            c.Damage = damage;
             return item;
         }
 
-        public void InitComponents(int damage)
+        public override void InitializeCustomComponents()
         {
             Descriptors.Add(Descriptor.RightHandSlot);
-            Components.Add(new PhysicsComponent(this, Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)));
-            Components.Add(new RenderComponent(this, Color.White, texture));
-            Components.Add(new MeleeDamageHitComponent(this, damage, knockback: knockback));
+            RegisterComponent(new PhysicsComponent(Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)));
+            RegisterComponent(new RenderComponent(Color.White, texture));
+            RegisterComponent(new MeleeDamageHitComponent(0, knockback: knockback));
         }
 
         public override void OnEquip(Character character)

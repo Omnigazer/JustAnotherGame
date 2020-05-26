@@ -14,21 +14,18 @@ using Omniplatformer.Components.Character;
 
 namespace Omniplatformer.Spells
 {
-    class FireBolt
+    class FireBolt : GameObject
     {
-        public static void Cast(GameObject caster, Position target)
+        public override void InitializeCustomComponents()
         {
-            var manable = caster.GetComponent<ManaComponent>();
-            if (manable?.SpendMana(ManaType.Chaos, 0) ?? true)
-            {
-                PositionComponent pos = (PositionComponent)caster;
-                Vector2 direction = target.Coords - pos.WorldPosition.Coords;
-                var projectile = FireBoltProjectile.Create(caster);
-                projectile.GetComponent<PositionComponent>().SetLocalCoords(pos.WorldPosition.Coords);
-                projectile.SetDirection(direction);
+            RegisterComponent(new FireBoltSpellComponent());
+        }
 
-                GameService.Instance.AddToMainScene(projectile);
-            }
+        public static FireBolt Create()
+        {
+            var bolt = new FireBolt();
+            bolt.InitializeComponents();
+            return bolt;
         }
     }
 }

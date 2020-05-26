@@ -10,16 +10,6 @@ namespace Omniplatformer.Objects.Terrain
 {
     class DestructibleObject : GameObject
     {
-        public DestructibleObject(Vector2 center, Vector2 halfsize)
-        {
-            // TODO: supply colors / textures to the component
-            Components.Add(new PhysicsComponent(this, center, halfsize) { Solid = true, Hittable = true });
-            Components.Add(new WallRenderComponent(this, Color.Yellow));
-            var damageable = new HitPointComponent(this, 10);
-            Components.Add(damageable);
-            damageable._onBeginDestroy += StartDeathAnimation;
-        }
-
         private void StartDeathAnimation(object sender, System.EventArgs e)
         {
             var drawable = GetComponent<AnimatedRenderComponent>();
@@ -33,6 +23,26 @@ namespace Omniplatformer.Objects.Terrain
             {
                 onDestroy();
             }
+        }
+
+
+        public override void InitializeCustomComponents()
+        {
+            RegisterComponent(new PhysicsComponent() { Solid = true, Hittable = true });
+            RegisterComponent(new WallRenderComponent(Color.Yellow));
+            var damageable = new HitPointComponent(10);
+            RegisterComponent(damageable);
+            damageable._onBeginDestroy += StartDeathAnimation;
+        }
+
+        public static DestructibleObject Create(Vector2 coords, Vector2 halfsize)
+        {
+            var quad = new DestructibleObject();
+            quad.InitializeComponents();
+            var pos = quad.GetComponent<PositionComponent>();
+            pos.SetLocalCoords(coords);
+            pos.SetLocalHalfsize(halfsize);
+            return quad;
         }
     }
 }

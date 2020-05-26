@@ -7,11 +7,6 @@ namespace Omniplatformer.Components.Physics
 
     public class PlatformMoveComponent : DynamicPhysicsComponent
     {
-        public PlatformMoveComponent() { }
-        public PlatformMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj, coords, halfsize)
-        {
-        }
-
         // internal position offset counter
         float position = 0;
         int direction = 1;

@@ -15,10 +15,10 @@ namespace Omniplatformer.Objects.Interactibles
     {
         public Inventory.Inventory Inventory { get; set; }
 
-        public void InitComponents()
+        public override void InitializeCustomComponents()
         {
-            Components.Add(new PhysicsComponent(this, Vector2.Zero, Vector2.Zero));
-            Components.Add(new RenderComponent(this, Color.Firebrick));
+            RegisterComponent(new PhysicsComponent(Vector2.Zero, Vector2.Zero));
+            RegisterComponent(new RenderComponent(Color.Firebrick));
             Inventory = Objects.Inventory.Inventory.Create();
             // foreach(var (item, i) in items.Select((x, i) => (x, i)))
         }
@@ -26,7 +26,7 @@ namespace Omniplatformer.Objects.Interactibles
         public static Chest Create(Vector2 coords, Vector2 halfsize, IEnumerable<WieldedItem> items)
         {
             var chest = new Chest();
-            chest.InitComponents();
+            chest.InitializeComponents();
             var pos = chest.GetComponent<PositionComponent>();
             pos.SetLocalCoords(coords);
             pos.SetLocalHalfsize(halfsize);

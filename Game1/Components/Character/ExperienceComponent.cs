@@ -15,12 +15,6 @@ namespace Omniplatformer.Components.Character
         public int MaxExperience { get; set; } = 1000; // first-level max-experience
         public int Level { get; set; }
 
-        public ExperienceComponent() { }
-        public ExperienceComponent(GameObject obj) : base(obj)
-        {
-
-        }
-
         public void EarnExperience(int value)
         {
             CurrentExperience += value;

@@ -14,6 +14,7 @@ using Omniplatformer.Objects.Items;
 using Omniplatformer.Services;
 using Omniplatformer.Views.HUD;
 using Omniplatformer.Views.Inventory;
+using Omniplatformer.Components.Character;
 
 namespace Omniplatformer.HUDStates
 {
@@ -61,7 +62,7 @@ namespace Omniplatformer.HUDStates
             TargetInventoryView = new InventoryView(this)
                 {Visible = false, Node = { Top=370, Right = 20, PositionType = YogaPositionType.Absolute, Wrap = YogaWrap.Wrap, FlexDirection=YogaFlexDirection.Row}};
 
-            EquipView = new EquipView(this, Game.Player);
+            EquipView = new EquipView(this, Game.Player.GetComponent<EquipComponent>().EquipSlots);
 
             Root.RegisterChild(playerHUD);
             Root.RegisterChild(PlayerInventoryView);

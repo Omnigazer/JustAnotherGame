@@ -140,11 +140,11 @@ namespace Omniplatformer.HUDStates
         {
             PositionalConstructors = new Dictionary<string, Func<Vector2, Vector2, Vector2, GameObject>>()
             {
-                { "SolidPlatform", (coords, halfsize, origin) => new SolidPlatform(coords, halfsize, origin)},
-                { "MovingPlatform", (coords, halfsize, origin) => new MovingPlatform(coords, halfsize)},
-                { "DestructibleObject", (coords, halfsize, origin) => new DestructibleObject(coords, halfsize)},
-                { "Liquid", (coords, halfsize, origin) => new Liquid(coords, halfsize, origin)},
-                { "ForegroundQuad", (coords, halfsize, origin) => new ForegroundQuad(coords, halfsize, origin)},
+                { "SolidPlatform", (coords, halfsize, origin) => SolidPlatform.Create(coords, halfsize)},
+                { "MovingPlatform", (coords, halfsize, origin) => MovingPlatform.Create(coords, halfsize)},
+                { "DestructibleObject", (coords, halfsize, origin) => DestructibleObject.Create(coords, halfsize)},
+                { "Liquid", (coords, halfsize, origin) => Liquid.Create(coords, halfsize)},
+                { "ForegroundQuad", (coords, halfsize, origin) => ForegroundQuad.Create(coords, halfsize)},
                 { "Ladder", (coords, halfsize, origin) => Ladder.Create(coords, halfsize)},
                 { "Goblin", (coords, halfsize, origin) => Goblin.Create(coords) },
                 { "GoblinShaman", (coords, halfsize, origin) => GoblinShaman.Create(coords)},

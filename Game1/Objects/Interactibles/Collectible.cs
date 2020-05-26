@@ -14,14 +14,14 @@ namespace Omniplatformer.Objects.Interactibles
         public static Collectible Create()
         {
             var collectible = new Collectible();
-            collectible.InitComponents();
+            collectible.InitializeComponents();
             return collectible;
         }
 
-        public void InitComponents()
+        public override void InitializeCustomComponents()
         {
-            Components.Add(new PhysicsComponent(this, Vector2.Zero, Vector2.Zero) { Pickupable = true });
-            Components.Add(new RenderComponent(this, Color.Green));
+            RegisterComponent(new PhysicsComponent(Vector2.Zero, Vector2.Zero) { Pickupable = true });
+            RegisterComponent(new RenderComponent(Color.Green));
         }
         public Bonus Bonus { get; set; }
     }

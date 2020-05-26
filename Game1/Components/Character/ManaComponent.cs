@@ -21,12 +21,11 @@ namespace Omniplatformer.Components.Character
         [JsonIgnore]
         public Dictionary<Skill, int> Skills => GetComponent<SkillComponent>().Skills;
 
-        public ManaComponent() { }
-        public ManaComponent(GameObject obj) : base(obj)
+        public ManaComponent()
         {
             foreach (ManaType type in Enum.GetValues(typeof(ManaType)))
             {
-                CurrentMana[type] = MaxMana(type);
+                CurrentMana.Add(type, 0);
             }
         }
 
@@ -63,7 +62,11 @@ namespace Omniplatformer.Components.Character
                 CurrentMana[type] += (mana_regen_rate + bonusable.ManaRegenBonuses[type].Sum()) * dt;
                 CurrentMana[type] = Math.Min(CurrentMana[type], MaxMana(type));
             }
+        }
 
+        public override void Tick(float dt)
+        {
+            RegenerateMana(dt);
         }
     }
 }

@@ -23,29 +23,27 @@ namespace Omniplatformer.Objects.Characters
             Team = Team.Enemy;
         }
 
-        public void InitComponents()
+        public override void InitializeCustomComponents()
         {
-            var coords = Vector2.Zero;
-            var halfsize = new Vector2(20, 26);
-            Components.Add(new GoblinBehaviorComponent(this));
-            Components.Add(new ThrowAttackComponent(this));
-            Components.Add(new CharMoveComponent(this, coords, halfsize, movespeed: 1.8f));
-            Components.Add(new CharacterRenderComponent(this, Color.Green, "Textures/character"));
-            Components.Add(new DamageHitComponent(this, damage: 2, knockback: new Vector2(3, 2)));
-            Components.Add(new HitPointComponent(this, 8));
-            Compile();
+            RegisterComponent(new GoblinBehaviorComponent());
+            RegisterComponent(new ThrowAttackComponent());
+            RegisterComponent(new CharMoveComponent() { MaxMoveSpeed = 1.8f });
+            RegisterComponent(new CharacterRenderComponent(Color.Green, "Textures/character"));
+            RegisterComponent(new DamageHitComponent(damage: 2, knockback: new Vector2(3, 2)));
+            RegisterComponent(new HitPointComponent(8));
         }
 
         public static Goblin Create(Vector2 coords)
         {
             var goblin = new Goblin();
-            goblin.InitComponents();
+            goblin.InitializeComponents();
             var pos = goblin.GetComponent<PositionComponent>();
             pos.SetLocalCoords(coords);
+            pos.SetLocalHalfsize(new Vector2(20, 26));
             return goblin;
         }
 
-        public override void Compile()
+        public override void OnCompile()
         {
             var damageable = GetComponent<HitPointComponent>();
             damageable._onDamage += OnDamage;

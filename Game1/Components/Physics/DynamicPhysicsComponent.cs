@@ -6,6 +6,16 @@ using Omniplatformer.Objects;
 
 namespace Omniplatformer.Components.Physics
 {
+    public class CollisionEventArgs : EventArgs
+    {
+        public PhysicsComponent Target { get; set; }
+
+        public CollisionEventArgs(PhysicsComponent target)
+        {
+            Target = target;
+        }
+    }
+
     public class DynamicPhysicsComponent : PhysicsComponent
     {
         const float epsilon = 0.01f;
@@ -19,6 +29,8 @@ namespace Omniplatformer.Components.Physics
         public bool IsNextToWall => IsNextToLeftWall || IsNextToRightWall;
         public bool IsNextToRope { get; set; }
         public bool CanClimb { get; set; }
+
+        public event EventHandler<CollisionEventArgs> OnCollision = delegate { };
 
         [JsonProperty]
         protected Vector2 CurrentMovement { get; set; }
@@ -36,13 +48,6 @@ namespace Omniplatformer.Components.Physics
         {
             get => CurrentMovement.X;
             set => CurrentMovement = new Vector2(value, CurrentMovement.Y);
-        }
-
-        public DynamicPhysicsComponent() { }
-
-        public DynamicPhysicsComponent(GameObject obj, Vector2 coords, Vector2 halfsize): base(obj, coords, halfsize)
-        {
-
         }
 
         public virtual void Move(float dt)
@@ -67,6 +72,7 @@ namespace Omniplatformer.Components.Physics
 
         public virtual bool ProcessCollision(Direction dir, PhysicsComponent obj)
         {
+            OnCollision(this, new CollisionEventArgs(obj));
             return false;
         }
 

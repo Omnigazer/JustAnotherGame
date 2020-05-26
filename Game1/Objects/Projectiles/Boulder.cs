@@ -15,21 +15,23 @@ namespace Omniplatformer.Objects.Projectiles
 
         }
 
-        public void InitComponents()
+        public override void InitializeCustomComponents()
         {
             TTL = 50000;
-            var movable = new ProjectileMoveComponent(this, Vector2.Zero, new Vector2(6, 6)) { Solid = false, Hittable = false, InverseMass = InverseMass };
-            Components.Add(movable);
-            var c = new AnimatedRenderComponent(this, Color.White, "Textures/boulder");
+            var movable = new ProjectileMoveComponent() { Solid = false, Hittable = false, InverseMass = InverseMass };
+            RegisterComponent(movable);
+            var c = new AnimatedRenderComponent(Color.White, "Textures/boulder");
             c.AddAnimation(new Animations.DeathAnimation(c));
-            Components.Add(c);
-            Components.Add(new DamageHitComponent(this, damage: 3));
+            RegisterComponent(c);
+            RegisterComponent(new DamageHitComponent(damage: 3));
         }
 
         public static Boulder Create()
         {
             var boulder = new Boulder();
-            boulder.InitComponents();
+            boulder.InitializeComponents();
+            var pos = (PositionComponent)boulder;
+            pos.SetLocalHalfsize(new Vector2(6, 6));
             return boulder;
         }
 

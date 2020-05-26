@@ -24,10 +24,6 @@ namespace Omniplatformer.Components.Behavior
         {
             Behavior = WalkBehavior();
         }
-        public GoblinBehaviorComponent(GameObject obj) : base(obj)
-        {
-            Behavior = WalkBehavior();
-        }
         IEnumerator WalkBehavior()
         {
             var movable = GetComponent<DynamicPhysicsComponent>();

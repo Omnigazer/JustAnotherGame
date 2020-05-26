@@ -14,17 +14,17 @@ namespace Omniplatformer.Objects.Interactibles
 
         }
 
-        public void InitComponents()
+        public override void InitializeCustomComponents()
         {
-            Components.Add(new PhysicsComponent(this, Vector2.Zero, Vector2.Zero) { Climbable = true });
+            RegisterComponent(new PhysicsComponent(Vector2.Zero, Vector2.Zero) { Climbable = true });
             // TODO: Add Purple Color to this renderer
-            Components.Add(new RenderComponent(this, Color.Purple, "Textures/ladder", 0, true));
+            RegisterComponent(new RenderComponent(Color.Purple, "Textures/ladder", 0, true));
         }
 
         public static Ladder Create(Vector2 coords, Vector2 halfsize)
         {
             var ladder = new Ladder();
-            ladder.InitComponents();
+            ladder.InitializeCustomComponents();
             var pos = ladder.GetComponent<PositionComponent>();
             pos.SetLocalCoords(coords);
             pos.SetLocalHalfsize(halfsize);

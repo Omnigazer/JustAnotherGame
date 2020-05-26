@@ -19,18 +19,9 @@ namespace Omniplatformer.Components.Physics
         // Movement counters and flags
         // public Direction move_direction;
 
-        public CharMoveComponent() { }
-
-        public CharMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize) : base(obj, coords, halfsize)
+        public CharMoveComponent()
         {
             MaxMoveSpeed = 5;
-            Hittable = true;
-            Solid = true;
-        }
-
-        public CharMoveComponent(GameObject obj, Vector2 coords, Vector2 halfsize, float movespeed) : base(obj, coords, halfsize)
-        {
-            MaxMoveSpeed = movespeed;
             Hittable = true;
             Solid = true;
         }

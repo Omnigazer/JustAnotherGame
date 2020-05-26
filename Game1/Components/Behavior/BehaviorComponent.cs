@@ -10,8 +10,5 @@ namespace Omniplatformer.Components.Behavior
     public class BehaviorComponent : Component
     {
         public bool Aggressive { get; set; }
-
-        public BehaviorComponent() { }
-        public BehaviorComponent(GameObject obj) : base(obj) { }
     }
 }
