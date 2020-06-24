@@ -17,7 +17,7 @@ namespace Omniplatformer.Objects.Interactibles
 
         public override void InitializeCustomComponents()
         {
-            RegisterComponent(new PhysicsComponent(Vector2.Zero, Vector2.Zero));
+            RegisterComponent(new PhysicsComponent());
             RegisterComponent(new RenderComponent(Color.Firebrick));
             Inventory = Objects.Inventory.Inventory.Create();
             // foreach(var (item, i) in items.Select((x, i) => (x, i)))

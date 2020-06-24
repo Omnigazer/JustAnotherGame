@@ -36,7 +36,7 @@ namespace Omniplatformer.Animations
         public virtual void End()
         {
             Active = false;
-            Drawable.onAnimationEnd(AnimationType);
+            Drawable.onAnimationEnd.OnNext(AnimationType);
         }
 
         public virtual void Tick(float dt)

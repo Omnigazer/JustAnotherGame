@@ -8,6 +8,7 @@ using Omniplatformer.Spells;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,22 +33,19 @@ namespace Omniplatformer.Components
 
         public override void Attack()
         {
-            var player_pos = GameService.Player.GetComponent<PositionComponent>();
             var drawable = GetComponent<CharacterRenderComponent>();
 
             IsAttacking = true;
+            drawable.onAnimationEnd.Where((animation_type) => animation_type == AnimationType.Cast)
+                                    .Take(1).Subscribe((_) => CastAnimationFinished());
             drawable.StartAnimation(AnimationType.Cast, 30);
-            void Handler(object sender, AnimationEventArgs e)
-            {
-                if (e.animation == AnimationType.Cast)
-                {
-                    Spell.Cast(GetComponent<SpellCasterComponent>(), player_pos.WorldPosition);
-                    IsAttacking = false;
-                    drawable._onAnimationEnd -= Handler;
-                }
-            };
-            drawable._onAnimationEnd += Handler;
-            // drawable.on
+        }
+
+        public void CastAnimationFinished()
+        {
+            var player_pos = GameService.Player.GetComponent<PositionComponent>();
+            Spell.Cast(GetComponent<SpellCasterComponent>(), player_pos.WorldPosition);
+            IsAttacking = false;
         }
     }
 }

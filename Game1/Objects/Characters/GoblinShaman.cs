@@ -43,26 +43,20 @@ namespace Omniplatformer.Objects.Characters
             RegisterComponent(new CharacterRenderComponent(Color.Orange, "Textures/character"));
             RegisterComponent(new DamageHitComponent(damage: 3, knockback: new Vector2(3, 2)));
             RegisterComponent(new HitPointComponent(12));
+            RegisterComponent(new DestructibleComponent());
+            RegisterComponent(new YieldExperienceComponent() { Value = 250 });
+            RegisterComponent(new DropItemComponent());
         }
 
         public override void OnCompile()
         {
             var damageable = GetComponent<HitPointComponent>();
-            damageable._onDamage += OnDamage;
-            damageable._onBeginDestroy += (sender, e) => onDestroy();
+            damageable.OnDamage.Subscribe((damage) => OnDamage());
         }
 
-        public void OnDamage(object sender, EventArgs e)
+        public void OnDamage()
         {
             GetComponent<BehaviorComponent>().Aggressive = true;
-        }
-
-        public override void onDestroy()
-        {
-            // TODO: extract this into a drop component
-            Item drop = ChaosOrb.Create();
-            this.DropItem(drop);
-            base.onDestroy();
         }
     }
 }

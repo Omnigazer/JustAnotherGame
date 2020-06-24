@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Omniplatformer.Objects;
@@ -17,6 +18,8 @@ namespace Omniplatformer.Scenes
         public UpdateSystem UpdateSystem { get; set; }
         public Player Player { get; set; }
 
+        public List<GameObject> Garbage { get; set; } = new List<GameObject>();
+
         public Dictionary<string, List<GameObject>> Groups { get; set; } = new Dictionary<string, List<GameObject>>() { { "default", new List<GameObject>() } };
 
         public Scene()
@@ -30,25 +33,12 @@ namespace Omniplatformer.Scenes
             {
                 system.RegisterObject(obj);
             }
-            obj.CurrentScene = this;
-            obj._onDestroy += Obj__onDestroy;
-        }
-
-        private void Obj__onDestroy(object sender, EventArgs e)
-        {
-            var obj = (GameObject)sender;
-            UnregisterObject(obj);
-            obj._onDestroy -= Obj__onDestroy;
+            obj.CurrentScene = this;            
         }
 
         public void UnregisterObject(GameObject obj)
         {
-            foreach (var system in Subsystems)
-            {
-                system.UnregisterObject(obj);
-            }
-
-            obj.CurrentScene = null;
+            Garbage.Add(obj);
         }
 
         public void ProcessSubsystems(float dt)
@@ -58,6 +48,20 @@ namespace Omniplatformer.Scenes
                 system.Tick(dt);
             }
             UpdateSystem.Tick(dt);
+        }
+
+        public void ProcessRemovals()
+        {
+            foreach(var obj in Garbage)
+            {
+                foreach (var system in Subsystems)
+                {
+                    system.UnregisterObject(obj);
+                }
+
+                obj.CurrentScene = null;
+            }
+            Garbage.Clear();
         }
     }
 }

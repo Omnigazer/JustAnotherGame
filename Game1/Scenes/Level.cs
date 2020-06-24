@@ -101,9 +101,10 @@ namespace Omniplatformer.Scenes
                 // var data = serializer.Deserialize<List<object>>(reader);
 
                 var data = serializer.Deserialize<List<object>>(reader);
-                foreach (var obj in data)
+                foreach (GameObject obj in data)
                 {
-                    RegisterObject((GameObject)obj);
+                    obj.Compile();
+                    RegisterObject(obj);
                 }
 
                 /*

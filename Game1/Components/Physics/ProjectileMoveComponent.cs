@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 
@@ -25,7 +26,7 @@ namespace Omniplatformer.Components.Physics
                 // TODO: might have to extract this
                 // GameObject.onDestroy();
                 CurrentMovement = Vector2.Zero;
-                GameObject.onDestroy();
+                GetComponent<DestructibleComponent>().Destroy();                
                 done = true;
                 return true;
                 // Hit(obj);

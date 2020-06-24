@@ -15,6 +15,7 @@ namespace Omniplatformer.Components.Rendering
 
         // current region indices
         int region_i, region_j;
+
         // player's current quadrant in region
         bool to_the_right, to_the_high;
 
@@ -50,7 +51,7 @@ namespace Omniplatformer.Components.Rendering
         void BuildBuffer(int region_index, int region_i, int region_j)
         {
             int tile_count = RegionWidth * RegionHeight;
-            var grid = ((Objects.TileMap)GameObject).Grid;
+            var grid = ((TileMap)GameObject).Grid;
             // TODO: account for the resolution change
             if (regions[region_index] == null)
                 regions[region_index] = new TileRegion(tile_count);

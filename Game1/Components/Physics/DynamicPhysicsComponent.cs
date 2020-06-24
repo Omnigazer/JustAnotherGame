@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Subjects;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using Omniplatformer.Enums;
@@ -19,8 +20,10 @@ namespace Omniplatformer.Components.Physics
     public class DynamicPhysicsComponent : PhysicsComponent
     {
         const float epsilon = 0.01f;
+
         // Collision interaction flags
         public PhysicsComponent CurrentGround { get; set; }
+
         public bool IsInLiquid { get; set; }
         public float LiquidImmersion { get; set; }
         public bool IsNextToCeiling { get; set; }
@@ -30,7 +33,7 @@ namespace Omniplatformer.Components.Physics
         public bool IsNextToRope { get; set; }
         public bool CanClimb { get; set; }
 
-        public event EventHandler<CollisionEventArgs> OnCollision = delegate { };
+        public Subject<PhysicsComponent> OnCollision = new Subject<PhysicsComponent>();
 
         [JsonProperty]
         protected Vector2 CurrentMovement { get; set; }
@@ -50,6 +53,11 @@ namespace Omniplatformer.Components.Physics
             set => CurrentMovement = new Vector2(value, CurrentMovement.Y);
         }
 
+        public override void Compile()
+        {
+            GameObject.OnLeaveScene.Subscribe((_) => OnCollision.OnCompleted());
+        }
+
         public virtual void Move(float dt)
         {
             AdjustPosition(CurrentMovement * dt);
@@ -67,12 +75,11 @@ namespace Omniplatformer.Components.Physics
 
         public virtual void ProcessMovement(float dt)
         {
-
         }
 
         public virtual bool ProcessCollision(Direction dir, PhysicsComponent obj)
         {
-            OnCollision(this, new CollisionEventArgs(obj));
+            OnCollision.OnNext(obj);
             return false;
         }
 

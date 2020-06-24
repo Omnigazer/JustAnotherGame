@@ -3,6 +3,7 @@ using System.Collections;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using Omniplatformer.Components;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Utility;
@@ -22,6 +23,7 @@ namespace Omniplatformer.Objects.Projectiles
             RegisterComponent(proj_movable);
             RegisterComponent(new GlowingRenderComponent());
             RegisterComponent(new DamageHitComponent(damage: 4));
+            RegisterComponent(new DestructibleComponent());
             behavior = behaviorGen();
         }
 

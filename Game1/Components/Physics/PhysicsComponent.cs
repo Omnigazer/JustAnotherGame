@@ -15,14 +15,12 @@ namespace Omniplatformer.Components.Physics
 
         public PhysicsComponent() { }
 
-        public PhysicsComponent(Vector2 coords, Vector2 halfsize): base(coords, halfsize)
+        public PhysicsComponent(Vector2 coords, Vector2 halfsize) : base(coords, halfsize)
         {
-
         }
 
         public PhysicsComponent(Vector2 coords, Vector2 halfsize, Vector2 origin) : base(coords, halfsize, 0, origin)
         {
-
         }
     }
 }

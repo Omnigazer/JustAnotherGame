@@ -22,6 +22,9 @@ using Omniplatformer.Scenes.Subsystems;
 using Omniplatformer.Services;
 using Omniplatformer.Utility;
 using Omniplatformer.Components.Character;
+using System.Diagnostics;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace Omniplatformer
 {
@@ -32,12 +35,14 @@ namespace Omniplatformer
     {
         // Graphics objects
         public GraphicsDeviceManager graphics;
+
         public Level MainScene { get; set; }
         public RenderSystem RenderSystem => MainScene.RenderSystem;
         public PhysicsSystem PhysicsSystem => MainScene.PhysicsSystem;
 
         // Game objects
         public Player Player => MainScene.Player;
+
         // public Level CurrentLevel { get; set; }
 
         // Editor groups
@@ -46,21 +51,22 @@ namespace Omniplatformer
 
         // HUD states & controls
         public HUDState HUDState { get; set; }
-        HUDState defaultHUD;
-        HUDState inventoryHUD;
-        EditorHUDState editorHUD;
-        HUDState charHUD;
-        bool game_over;
+
+        private HUDState defaultHUD;
+        private HUDState inventoryHUD;
+        private EditorHUDState editorHUD;
+        private HUDState charHUD;
+        private bool game_over;
 
         public GameConsole console;
 
         public Queue<string> Logs { get; set; } = new Queue<string>();
 
         // Events
-        public event EventHandler<InventoryEventArgs> onTargetInventoryOpen = delegate { };
-        public event EventHandler onTargetInventoryClosed = delegate { };
+        public Subject<Inventory> onTargetInventoryOpen = new Subject<Inventory>();
 
         int CurrentSongIndex { get; set; }
+        public Subject<Inventory> onTargetInventoryClosed = new Subject<Inventory>();
 
         public Game1()
         {
@@ -94,7 +100,7 @@ namespace Omniplatformer
             GameService.Init(this);
         }
 
-        void LoadLevel()
+        private void LoadLevel()
         {
             MainScene = new Level();
             MainScene.RenderSystem = new RenderSystem(this);
@@ -105,10 +111,10 @@ namespace Omniplatformer
             MainScene.Subsystems.Add(new SimulationSystem());
             MainScene.Load("default_level");
             // TODO: extract this
-            Player._onDestroy += GameOver;
+            Player.GetComponent<DestructibleComponent>().OnDestroy.Take(1).Subscribe((obj) => GameOver());
         }
 
-        private void GameOver(object sender, EventArgs e)
+        private void GameOver()
         {
             game_over = true;
         }
@@ -154,6 +160,7 @@ namespace Omniplatformer
             }
 
             Simulate(gameTime);
+            MainScene.ProcessRemovals();
             // var song = GameContent.Instance.vampireKiller;
             if (MediaPlayer.State != MediaState.Playing && false)
             {
@@ -204,17 +211,10 @@ namespace Omniplatformer
         public void RemoveFromMainScene(GameObject obj)
         {
             MainScene.UnregisterObject(obj);
-            // TODO: refactor this
-            obj._onDestroy -= GameObject_onDestroy;
-        }
-
-        private void GameObject_onDestroy(object sender, EventArgs e)
-        {
-            var obj = (GameObject)sender;
-            RemoveFromMainScene(obj);
         }
 
         #region Simulate
+
         public void Simulate(GameTime gameTime)
         {
             float time_scale = 60.0f / 1000;
@@ -225,15 +225,18 @@ namespace Omniplatformer
             drawable.RebuildBuffers();
             HUDState.Tick();
         }
-        #endregion
+
+        #endregion Simulate
 
         #region Position logic
+
         public GameObject GetObjectAtCursor()
         {
             var coords = RenderSystem.ScreenToGame(Mouse.GetState().Position);
             return PhysicsSystem.GetObjectAtCoords(coords);
         }
-        #endregion
+
+        #endregion Position logic
 
         #region Player Actions
 
@@ -289,12 +292,12 @@ namespace Omniplatformer
 
         public void OpenTargetInventory(Inventory inv)
         {
-            onTargetInventoryOpen(this, new InventoryEventArgs(inv));
+            onTargetInventoryOpen.OnNext(inv);
         }
 
         public void CloseTargetInventory()
         {
-            onTargetInventoryClosed(this, new EventArgs());
+            onTargetInventoryClosed.OnNext(null);
         }
 
         public void OpenChest()
@@ -390,7 +393,7 @@ namespace Omniplatformer
         }
 
         // fps is assumed to be 30 while we're tick-based
-        float zoom_adjust_rate = 0.2f / 30;
+        private float zoom_adjust_rate = 0.2f / 30;
 
         public void ZoomIn()
         {
@@ -419,10 +422,11 @@ namespace Omniplatformer
                 Player.GetComponent<PlayerActionComponent>().PerformItemAction((dynamic)item, is_down);
         }
 
-        #endregion
+        #endregion Player Actions
 
         #region Console
-        void LoadConsole(SpriteBatch spriteBatch)
+
+        private void LoadConsole(SpriteBatch spriteBatch)
         {
             System.Windows.Forms.Form winGameWindow = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(Window.Handle);
             winGameWindow.Show();
@@ -547,7 +551,8 @@ namespace Omniplatformer
                     return String.Format("invalid args");
             });
         }
-        #endregion
+
+        #endregion Console
 
         #region Level code
         public void SaveLevel(string name)
@@ -583,6 +588,7 @@ namespace Omniplatformer
             LevelLoader.SaveGroup(Groups[name], path);
         }
         */
-        #endregion
+
+        #endregion Level code
     }
 }

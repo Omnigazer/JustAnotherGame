@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
@@ -11,15 +13,6 @@ using Omniplatformer.Utility.Extensions;
 
 namespace Omniplatformer.Components.Rendering
 {
-    public class AnimationEventArgs : EventArgs
-    {
-        public AnimationType animation;
-        public AnimationEventArgs(AnimationType animation)
-        {
-            this.animation = animation;
-        }
-    }
-
     public class AnimatedRenderComponent : RenderComponent
     {
         [JsonProperty]
@@ -33,6 +26,15 @@ namespace Omniplatformer.Components.Rendering
             Animations.Add(animation.AnimationType, animation);
         }
 
+        public override void Compile()
+        {
+            GameObject.OnLeaveScene.Subscribe((_) =>
+            {
+                onAnimationState.OnCompleted();
+                onAnimationEnd.OnCompleted();
+            });
+        }
+
         /// <summary>
         ///
         /// </summary>
@@ -44,17 +46,9 @@ namespace Omniplatformer.Components.Rendering
         }
 
         // TODO: extract this
-        public event EventHandler<AnimationEventArgs> _onAnimationEnd = delegate { };
-        public void onAnimationEnd(AnimationType animation)
-        {
-            _onAnimationEnd(this, new AnimationEventArgs(animation));
-        }
+        public Subject<(AnimationType type, AnimationState state)> onAnimationState = new Subject<(AnimationType, AnimationState)>();
 
-        public event EventHandler<AnimationEventArgs> _onAnimationHit = delegate { };
-        public void onAnimationHit(AnimationType animation)
-        {
-            _onAnimationHit(this, new AnimationEventArgs(animation));
-        }
+        public Subject<AnimationType> onAnimationEnd = new Subject<AnimationType>();
 
         public override void Tick(float dt)
         {

@@ -9,8 +9,7 @@ namespace Omniplatformer.Components.Physics
 {
     public class MoveComponent : Component
     {
-        public Vector2 CurrentMovement { get; set; }
-        public event EventHandler<MoveEventArgs> _onMove = delegate { };
+        public Vector2 CurrentMovement { get; set; }        
         public float VerticalSpeed
         {
             get => CurrentMovement.Y;

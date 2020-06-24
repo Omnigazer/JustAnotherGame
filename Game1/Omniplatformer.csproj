@@ -49,6 +49,7 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Animations\AnimationState.cs" />
     <Compile Include="Animations\Animation.cs" />
     <Compile Include="Animations\CastAnimation.cs" />
     <Compile Include="Animations\HitAnimation.cs" />
@@ -56,6 +57,11 @@
     <Compile Include="Animations\AttackAnimation.cs" />
     <Compile Include="Components\Behavior\BehaviorComponent.cs" />
     <Compile Include="Components\Behavior\GoblinBehaviorComponent.cs" />
+    <Compile Include="Components\Character\AnimatedDestructibleComponent.cs" />
+    <Compile Include="Components\Character\DestructibleComponent.cs" />
+    <Compile Include="Components\Character\DropItemComponent.cs" />
+    <Compile Include="Components\Character\YieldExperienceComponent.cs" />
+    <Compile Include="Components\Character\InvFramesComponent.cs" />
     <Compile Include="Components\Spells\FireBoltSpellComponent.cs" />
     <Compile Include="Components\Spells\SpellComponent.cs" />
     <Compile Include="Components\CastAttackComponent.cs" />
@@ -139,7 +145,7 @@
     <Compile Include="Enums\Bonus.cs" />
     <Compile Include="Objects\Camera.cs" />
     <Compile Include="Components\Rendering\AnimatedRenderComponent.cs" />
-    <Compile Include="Enums\Animation.cs" />
+    <Compile Include="Enums\AnimationType.cs" />
     <Compile Include="Objects\Character.cs" />
     <Compile Include="Components\Rendering\GlowingRenderComponent.cs" />
     <Compile Include="Components\Rendering\WallRenderComponent.cs" />
@@ -212,11 +218,27 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Reactive.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Core.3.0.0\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Interfaces.3.0.0\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Linq.3.0.0\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.PlatformServices.3.0.0\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Windows.Threading, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Windows.Threading.3.0.0\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
+    </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
     <Reference Include="ZeroFormatter, Version=1.6.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ZeroFormatter.1.6.4\lib\net45\ZeroFormatter.dll</HintPath>
     </Reference>

@@ -1,4 +1,6 @@
-﻿namespace Omniplatformer.Objects
+﻿using Omniplatformer.Components.Character;
+
+namespace Omniplatformer.Objects
 {
     public abstract class Projectile : GameObject
     {
@@ -14,7 +16,7 @@
             TTL -= dt;
             if (TTL <= 0)
             {
-                onDestroy();
+                GetComponent<DestructibleComponent>().Destroy();                
             }
             base.Tick(dt);
         }
