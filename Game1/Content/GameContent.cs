@@ -46,7 +46,7 @@ namespace Omniplatformer.Content
         public List<Song> Songs { get; set; } = new List<Song>();
 
         public static GameContent Instance { get; private set; }
-        ContentManager Content { get; set; }
+        private ContentManager Content { get; set; }
 
         public static void Init(ContentManager content)
         {
@@ -81,7 +81,6 @@ namespace Omniplatformer.Content
             healthBarLightMask = Content.Load<Texture2D>("Textures/healthBarlightMask");
             distortMask = Content.Load<Texture2D>("Textures/distortmask");
             // TEST ZONE
-
 
             MultiplyEffect = Content.Load<Effect>("Effects/lighteffect");
             AdditiveEffect = Content.Load<Effect>("Effects/additiveeffect");

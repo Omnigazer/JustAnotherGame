@@ -17,20 +17,20 @@ namespace Omniplatformer.Components.Character
         public override void Compile()
         {
             var movable = GetComponent<DynamicPhysicsComponent>();
-            movable.OnCollision += (sender, e) =>
+            movable.OnCollision.Subscribe((target) =>
             {
                 // TODO: extract this into a component as well
-                if (e.Target.GameObject is Item item && e.Target.Pickupable)
+                if (target.GameObject is Item item && target.Pickupable)
                 {
                     PickupItem(item);
-                    e.Target.Pickupable = false;
+                    target.Pickupable = false;
                 }
-                else if (e.Target.GameObject is Collectible collectible)
+                else if (target.GameObject is Collectible collectible)
                 {
                     GetBonus(collectible.Bonus);
-                    collectible.onDestroy();
+                    collectible.LeaveScene();
                 }
-            };
+            });
         }
 
         public void PickupItem(Item item)

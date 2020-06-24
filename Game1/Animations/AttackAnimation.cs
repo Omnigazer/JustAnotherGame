@@ -15,10 +15,7 @@ namespace Omniplatformer.Animations
         public override AnimationType AnimationType => AnimationType.Attack;
         int current_step;
 
-        public AttackAnimation(AnimatedRenderComponent drawable) : base(drawable)
-        {
-
-        }
+        public AttackAnimation(AnimatedRenderComponent drawable) : base(drawable) { }
 
         public override void Start(float duration)
         {
@@ -31,8 +28,6 @@ namespace Omniplatformer.Animations
             Drawable.pos.ResetAnchor(AnchorPoint.RightHand);
             base.End();
         }
-
-        class A { public static void B() { } }
 
         public override void Tick(float dt)
         {
@@ -63,7 +58,7 @@ namespace Omniplatformer.Animations
                         anchor = new Position(anchor) { RotationAngle = anchor.RotationAngle + forward_step };
                         if (CurrentTime >= (first_backswing_part + forward_part) * Duration)
                         {
-                            Drawable.onAnimationHit(AnimationType.Attack);
+                            Drawable.onAnimationState.OnNext((AnimationType.Attack, AnimationState.AttackHit));
                             current_step++;
                         }
                         break;

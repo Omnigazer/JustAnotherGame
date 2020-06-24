@@ -65,19 +65,6 @@ namespace Omniplatformer.Views
 
         }
 
-        /*
-        public event EventHandler Drag = delegate { };
-        public class DropEventArgs : EventArgs
-        {
-            public GameObject DraggedItem { get; set; }
-            public DropEventArgs(GameObject dragged_item)
-            {
-                DraggedItem = dragged_item;
-            }
-        }
-        public event EventHandler<DropEventArgs> Drop = delegate { };
-        */
-
         public ViewControl onMouseDown(MouseButton button, Point pt)
         {
             foreach (var child in Children.Where(x => x.Visible))

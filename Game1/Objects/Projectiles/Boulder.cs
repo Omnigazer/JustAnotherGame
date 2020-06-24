@@ -1,19 +1,18 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Omniplatformer.Components;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Content;
 using Omniplatformer.Enums;
+using System.Reactive.Linq;
+using Omniplatformer.Components.Character;
 
 namespace Omniplatformer.Objects.Projectiles
 {
     class Boulder : Projectile
     {
         public static float InverseMass => 0.8f;
-        public Boulder()
-        {
-
-        }
 
         public override void InitializeCustomComponents()
         {
@@ -24,6 +23,7 @@ namespace Omniplatformer.Objects.Projectiles
             c.AddAnimation(new Animations.DeathAnimation(c));
             RegisterComponent(c);
             RegisterComponent(new DamageHitComponent(damage: 3));
+            RegisterComponent(new AnimatedDestructibleComponent() { AnimationLength = 50 });
         }
 
         public static Boulder Create()
@@ -33,19 +33,6 @@ namespace Omniplatformer.Objects.Projectiles
             var pos = (PositionComponent)boulder;
             pos.SetLocalHalfsize(new Vector2(6, 6));
             return boulder;
-        }
-
-        public override void onDestroy()
-        {
-            var drawable = GetComponent<AnimatedRenderComponent>();
-            if (drawable != null)
-            {
-                drawable._onAnimationEnd += (sender, e) => {
-                    if (e.animation == AnimationType.Death)
-                        base.onDestroy();
-                };
-                drawable.StartAnimation(AnimationType.Death, 50);
-            }
         }
     }
 }

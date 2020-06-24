@@ -88,10 +88,6 @@ namespace Omniplatformer.Graphics
             {
                 _back_index_buffer[i] = 0;
             }
-            for (int i = 0; i < _backbuffer.Length; i++)
-            {
-                _backbuffer[i] = new VertexPositionColorTexture();
-            }
             tile_index_count = 0;
             tile_vertex_count = 0;
         }

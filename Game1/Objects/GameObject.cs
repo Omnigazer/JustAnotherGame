@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Omniplatformer.Components;
@@ -23,7 +24,6 @@ namespace Omniplatformer.Objects
 
         [JsonProperty]
         protected List<Component> Components { get; set; }
-        // protected Game1 Game => GameService.Instance;
         protected Team _team;
         public Team Team { get => Source._team; set => _team = value; }
         private GameObject _source;
@@ -31,9 +31,9 @@ namespace Omniplatformer.Objects
             get => _source?.Source ?? this;
             set => _source = value;
         }
-        // public virtual GameObject Source => this;
         public HashSet<Descriptor> Descriptors { get; set; } = new HashSet<Descriptor>();
-        public event EventHandler _onDestroy = delegate { };
+        [JsonIgnore]
+        public Subject<GameObject> OnLeaveScene = new Subject<GameObject>();
 
         public GameObject()
         {
@@ -69,9 +69,11 @@ namespace Omniplatformer.Objects
             return Descriptors.Contains(descriptor);
         }
 
-        public virtual void onDestroy()
+        public void LeaveScene()
         {
-            _onDestroy(this, new EventArgs());
+            OnLeaveScene.OnNext(this);
+            OnLeaveScene.OnCompleted();
+            CurrentScene.UnregisterObject(this);            
         }
 
         // Process current frame
@@ -96,11 +98,11 @@ namespace Omniplatformer.Objects
 
         }
 
-        [OnDeserialized]
-        public void onDeserialized(StreamingContext _)
-        {
-            Compile();
-        }
+        //[OnDeserialized]
+        //public void onDeserialized(StreamingContext _)
+        //{
+        //    Compile();
+        //}
 
         // Typecasts
         public static explicit operator RenderComponent(GameObject obj)

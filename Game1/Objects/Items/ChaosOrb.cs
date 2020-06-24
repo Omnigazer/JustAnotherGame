@@ -27,8 +27,7 @@ namespace Omniplatformer.Objects.Items
             var halfsize = new Vector2(25, 25);
             RegisterComponent(new PhysicsComponent(Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)));
             RegisterComponent(new GlowingRenderComponent(Color.White, texture) { Radius = 200 });
-            Descriptors.Add(Descriptor.ChannelSlot);
-            Compile();
+            Descriptors.Add(Descriptor.ChannelSlot);            
         }
 
         public override void OnEquip(Character character)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 
@@ -12,6 +13,7 @@ namespace Omniplatformer.Objects.Projectiles
             var movable = new DynamicPhysicsComponent() { Solid = false, Hittable = false, InverseMass = 10 };
             RegisterComponent(movable);
             RegisterComponent(new GlowingRenderComponent() { Radius = 20 });
+            RegisterComponent(new DestructibleComponent());
         }
 
         public static Particle Create(Vector2 coords)

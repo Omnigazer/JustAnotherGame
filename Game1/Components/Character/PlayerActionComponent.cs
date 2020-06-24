@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Omniplatformer.Animations;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Enums;
@@ -10,6 +11,7 @@ using Omniplatformer.Objects.Projectiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Omniplatformer.Enums.Skill;
@@ -51,7 +53,14 @@ namespace Omniplatformer.Components.Character
             {
                 EquipLocked = true;
                 var drawable = GetComponent<CharacterRenderComponent>();
-                drawable._onAnimationHit += onAttackend;
+                drawable.onAnimationState
+                        .Where((animation) => ((animation.type == AnimationType.Attack) && (animation.state == AnimationState.AttackHit))).FirstAsync()
+                        .Subscribe((_) =>
+                        {
+                            var damager = (MeleeDamageHitComponent)WieldedItem;
+                            damager.MeleeHit();
+                            EquipLocked = false;
+                        });
                 drawable.StartAnimation(AnimationType.Attack, 10);
                 // drawable.StartAnimation(Animation.Attack, 10);
             }
@@ -63,18 +72,6 @@ namespace Omniplatformer.Components.Character
                 StartBlocking();
             else
                 StopBlocking();
-        }
-
-        private void onAttackend(object sender, AnimationEventArgs e)
-        {
-            var drawable = GetComponent<CharacterRenderComponent>();
-            drawable._onAnimationHit -= onAttackend;
-            if (e.animation == AnimationType.Attack)
-            {
-                var damager = (MeleeDamageHitComponent)WieldedItem;
-                damager.MeleeHit();
-                EquipLocked = false;
-            }
         }
 
         public void StartBlocking()

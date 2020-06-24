@@ -39,8 +39,8 @@ namespace Omniplatformer.HUDStates
             // TODO: remove this reference
             this.PlayerInventory = playerInventory;
             SetupControls();
-            Game.onTargetInventoryOpen += onTargetInventoryOpen;
-            Game.onTargetInventoryClosed += onTargetInventoryClosed;
+            Game.onTargetInventoryOpen.Subscribe((inv) => onTargetInventoryOpen(inv));
+            Game.onTargetInventoryClosed.Subscribe((_) => onTargetInventoryClosed());
             SetupGUI();
         }
 
@@ -70,13 +70,13 @@ namespace Omniplatformer.HUDStates
             Root.RegisterChild(EquipView);
         }
 
-        private void onTargetInventoryOpen(object sender, InventoryEventArgs e)
+        private void onTargetInventoryOpen(Inventory inv)
         {
-            TargetInventoryView.SetInventory(e.Inventory);
+            TargetInventoryView.SetInventory(inv);
             TargetInventoryView.Visible = true;
         }
 
-        private void onTargetInventoryClosed(object sender, EventArgs e)
+        private void onTargetInventoryClosed()
         {
             TargetInventoryView.Visible = false;
             TargetInventoryView.SetInventory(null);

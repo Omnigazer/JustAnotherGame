@@ -24,6 +24,7 @@ namespace Omniplatformer.Objects.Characters
     {
         // Character constants
         const float max_hitpoints = 50;
+
         const int inv_frames = 100;
 
         [JsonIgnore]
@@ -34,11 +35,8 @@ namespace Omniplatformer.Objects.Characters
             Team = Team.Friend;
             // TODO: refactor this
             GameService.Instance.MainScene.Player = this;
-        }
-
-        public override void OnCompile()
-        {
-
+            RegisterComponent(new InvFramesComponent() { InvFrames = inv_frames });
+            RegisterComponent(new DestructibleComponent());
         }
 
         public override void InitializeCustomComponents()
@@ -53,11 +51,11 @@ namespace Omniplatformer.Objects.Characters
             RegisterComponent(new SkillComponent());
             RegisterComponent(new ManaComponent());
             RegisterComponent(new ExperienceComponent());
-            RegisterComponent(new InventoryComponent() { Inventory = Objects.Inventory.Inventory.Create() });
+            RegisterComponent(new PlayerInventoryComponent() { Inventory = Objects.Inventory.Inventory.Create() });
             RegisterComponent(new EquipComponent() { EquipSlots = EquipSlotCollection.Create() });
             var damageable = new HitPointComponent(max_hitpoints) { InvFrames = inv_frames };
             RegisterComponent(damageable);
-            Compile();
+            RegisterComponent(new DestructibleComponent());
         }
 
         public static Player Create()

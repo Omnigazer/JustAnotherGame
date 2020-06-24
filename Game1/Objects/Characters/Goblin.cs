@@ -29,8 +29,9 @@ namespace Omniplatformer.Objects.Characters
             RegisterComponent(new ThrowAttackComponent());
             RegisterComponent(new CharMoveComponent() { MaxMoveSpeed = 1.8f });
             RegisterComponent(new CharacterRenderComponent(Color.Green, "Textures/character"));
-            RegisterComponent(new DamageHitComponent(damage: 2, knockback: new Vector2(3, 2)));
             RegisterComponent(new HitPointComponent(8));
+            RegisterComponent(new DestructibleComponent());
+            RegisterComponent(new YieldExperienceComponent() { Value = 100 });
         }
 
         public static Goblin Create(Vector2 coords)
@@ -46,13 +47,7 @@ namespace Omniplatformer.Objects.Characters
         public override void OnCompile()
         {
             var damageable = GetComponent<HitPointComponent>();
-            damageable._onDamage += OnDamage;
-            damageable._onBeginDestroy += (sender, e) => onDestroy();
-        }
-
-        public void OnDamage(object sender, EventArgs e)
-        {
-            Aggravate();
+            damageable.OnDamage.Subscribe((damage) => Aggravate());
         }
 
         // Aggravate everyone in the 1000 radius
