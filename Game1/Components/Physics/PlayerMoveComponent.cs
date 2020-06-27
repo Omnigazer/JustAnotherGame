@@ -10,21 +10,25 @@ namespace Omniplatformer.Components.Physics
     {
         // Movement constants
         const float jump_accel = 4;
+
         const float max_jumpspeed = 24;
         const float soft_jump_cap = 0.3f * max_jumpspeed;
 
         // Movement dynamic caps
         public int max_jumps = 2;
+
         public int max_jump_time = 9; // Max jump time
         const int wall_jump_pin_ticks = 1; // Time required to be spent against the wall to walljump
 
         // Movement counters
         public int remaining_jumps;
+
         public float current_jump_time;
         public float current_pin_time; // represents time spent against a wall or a climbable object, such as a rope
 
         // public bool CanClimb { get; set; }
         public bool IsClimbing { get; set; }
+
         public bool IsJumping { get; set; }
 
         public float ChassisSpeed { get; set; }
@@ -50,7 +54,6 @@ namespace Omniplatformer.Components.Physics
             {
                 ResetJumps();
             }
-
 
             if (IsNextToWall || IsNextToRope)
             {
@@ -140,7 +143,7 @@ namespace Omniplatformer.Components.Physics
             base.ResetCollisionFlags();
         }
 
-        public override bool ProcessCollision(Direction direction, PhysicsComponent obj)
+        public override void ProcessCollision(Direction direction, PhysicsComponent obj)
         {
             base.ProcessCollision(direction, obj);
             if (direction == Direction.Up && obj.Solid)
@@ -152,7 +155,6 @@ namespace Omniplatformer.Components.Physics
                 if (!IsJumping)
                     ResetJumps();
             }
-            return false;
         }
 
         public override float GetUpSpeedCap()

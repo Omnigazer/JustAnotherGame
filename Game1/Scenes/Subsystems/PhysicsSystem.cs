@@ -13,19 +13,62 @@ namespace Omniplatformer.Scenes.Subsystems
         /// The gravity constant
         /// </summary>
         public static float G => 1.1f;
+
         public static int TileSize => 16;
+
         // public List<GameObject> objects = new List<GameObject>();
         public List<PhysicsComponent> objects = new List<PhysicsComponent>();
+
         public List<DynamicPhysicsComponent> dynamics = new List<DynamicPhysicsComponent>();
         public TileMapPhysicsComponent TileMap { get; set; }
 
         public int GridWidth { get; set; }
         public int GridHeight { get; set; }
 
+        // TODO: using max resolution, refactor this
+        private int chunk_width => 2560 / TileSize;
+
+        private int chunk_height => 1440 / TileSize;
+        public List<PhysicsComponent>[,] Chunks;
+
         public PhysicsSystem()
         {
             GridWidth = 5000;
             GridHeight = 5000;
+            Chunks = new List<PhysicsComponent>[GridWidth / chunk_width, GridHeight / chunk_height];
+            for (int i = 0; i < Chunks.GetLength(0); i++)
+                for (int j = 0; j < Chunks.GetLength(1); j++)
+                    Chunks[i, j] = new List<PhysicsComponent>();
+        }
+
+        public IEnumerable<PhysicsComponent> GetEligiblesForCollisions(PhysicsComponent phys)
+        {
+            var (x, y) = GetChunk(phys);
+
+            for (int i = x - 1; i <= x + 1; i++)
+                for (int j = y - 1; j <= y + 1; j++)
+                    foreach (var obj in Chunks[i, j])
+                        if (obj != phys)
+                            yield return obj;
+        }
+
+        public void ProcessChunks()
+        {
+            for (int i = 0; i < Chunks.GetLength(0); i++)
+                for (int j = 0; j < Chunks.GetLength(1); j++)
+                    Chunks[i, j].Clear();
+
+            foreach (var obj in objects)
+            {
+                var (x, y) = GetChunk(obj);
+                Chunks[x, y].Add(obj);
+            }
+        }
+
+        public (int, int) GetChunk(PhysicsComponent phys)
+        {
+            var pos = phys.WorldPosition.Center;
+            return ((int)(pos.X / 2560), (int)(pos.Y / 1440));
         }
 
         public void RegisterObject(GameObject obj)
@@ -67,14 +110,16 @@ namespace Omniplatformer.Scenes.Subsystems
 
         public void Tick(float dt)
         {
+            ProcessChunks();
             // divide dt by this number
             int N = 4;
 
-            for (int i = dynamics.Count - 1; i >= 0; i = Math.Min(i-1, dynamics.Count - 1))
+            for (int j = 0; j < N; j++)
             {
-                var obj = dynamics[i];
-                for (int j = 0; j < N; j++)
+                // for (int i = dynamics.Count - 1; i >= 0; i = Math.Min(i - 1, dynamics.Count - 1))
+                foreach (var obj in dynamics)
                 {
+                    // var obj = dynamics[i];
                     float local_dt = dt / N;
                     // apply external forces
                     ApplyGravity(obj, local_dt);
@@ -83,8 +128,7 @@ namespace Omniplatformer.Scenes.Subsystems
                     ApplyFriction(obj, local_dt);
                     // reset flags?
                     obj.ResetCollisionFlags();
-                    if (ProcessCollisions(obj))
-                        break;
+                    ProcessCollisions(obj);
 
                     // Perform the movement
                     obj.Move(local_dt);
@@ -92,6 +136,7 @@ namespace Omniplatformer.Scenes.Subsystems
             }
         }
 
+        /*
         public (float kx, float ky) GetCollisionTime(DynamicPhysicsComponent obj, PhysicsComponent other)
         {
             float px = Math.Abs(obj.WorldPosition.Center.X - other.WorldPosition.Center.X) - (obj.WorldPosition.Halfsize.X + other.WorldPosition.Halfsize.X);
@@ -100,32 +145,26 @@ namespace Omniplatformer.Scenes.Subsystems
             return (px, py);
         }
 
-        List<(float, PhysicsComponent)> collisionDistanceMap = new List<(float, PhysicsComponent)>();
+        private List<(float, PhysicsComponent)> collisionDistanceMap = new List<(float, PhysicsComponent)>();
+        */
 
-        protected bool ProcessCollisions(DynamicPhysicsComponent obj)
+        protected void ProcessCollisions(DynamicPhysicsComponent obj)
         {
             Direction collision_direction;
-            bool processCollision(PhysicsComponent other_obj)
+            void processCollision(PhysicsComponent other_obj)
             {
                 collision_direction = obj.Collides(other_obj.WorldPosition);
 
                 if (collision_direction == Direction.None)
-                    return false;
-
-                /*
-                if (obj.GameObject is Player)
-                {
-                    GameService.Instance.HUDState.status_messages.Add(other_obj.ToString() + " " + GetCollisionTime(obj, other_obj));
-                }
-                */
+                    return;
 
                 // TODO: remove this workaround
                 if (obj.Solid && other_obj.Solid)
                     ApplyCollisionResponse(obj, other_obj, other_obj.WorldPosition, collision_direction);
-                return obj.ProcessCollision(collision_direction, other_obj);
+                obj.ProcessCollision(collision_direction, other_obj);
             }
 
-            bool processTilemapCollision()
+            void processTilemapCollision()
             {
                 // foreach(Position pos in TileMap.GetTilesFor(obj))
                 foreach (var (i, j) in TileMap.GetTilesFor(obj))
@@ -135,35 +174,34 @@ namespace Omniplatformer.Scenes.Subsystems
                     if (collision_direction != Direction.None)
                     {
                         ApplyCollisionResponse(obj, TileMap, pos, collision_direction);
-                        if (obj.ProcessCollision(collision_direction, TileMap))
-                            return true;
+                        obj.ProcessCollision(collision_direction, TileMap);
                     }
                 }
-
-                return false;
             }
 
+            /*
             collisionDistanceMap.Clear();
-
-            for (int j = objects.Count - 1; j >= 0; j--)
+            foreach (var target in GetEligiblesForCollisions(obj))
+            //for (int j = objects.Count - 1; j >= 0; j--)
             {
-                var other_obj = objects[j];
-                if (obj == other_obj)
+                // var target = objects[j];
+                if (obj == target)
                     continue;
-                var (px, py) = GetCollisionTime(obj, other_obj);
-                collisionDistanceMap.Add((px + py, other_obj));
+                var (px, py) = GetCollisionTime(obj, target);
+                collisionDistanceMap.Add((px + py, target));
                 // processCollision(other_obj);
             }
 
-            collisionDistanceMap.Sort((x, y) => x.Item1.CompareTo(y.Item1));
+            // collisionDistanceMap.Sort((x, y) => x.Item1.CompareTo(y.Item1));
 
-            foreach (var (distance, other) in collisionDistanceMap)
+            // foreach (var (distance, other) in collisionDistanceMap)
+            */
+
+            foreach (var other in GetEligiblesForCollisions(obj))
             {
-                if (processCollision(other))
-                    return true;
+                processCollision(other);
             }
-
-            return processTilemapCollision();
+            processTilemapCollision();
         }
 
         protected void ApplyGravity(DynamicPhysicsComponent movable, float dt)
@@ -190,7 +228,8 @@ namespace Omniplatformer.Scenes.Subsystems
                 movable.HorizontalSpeed += (chassis_speed - movable.HorizontalSpeed) * h_air * dt;
                 movable.VerticalSpeed += (-movable.HorizontalSpeed) * v_air * dt;
             }
-            else if (ground.Solid) {
+            else if (ground.Solid)
+            {
                 float friction = ground.Friction;
                 {
                     var chassis_speed = (movable.GetComponent<PlayerMoveComponent>())?.ChassisSpeed ?? 0;
@@ -208,32 +247,32 @@ namespace Omniplatformer.Scenes.Subsystems
                 switch (dir)
                 {
                     case Direction.Up:
-                    {
-                        movable.VerticalSpeed = Math.Min(0, movable.VerticalSpeed);
-                        break;
-                    }
+                        {
+                            movable.VerticalSpeed = Math.Min(0, movable.VerticalSpeed);
+                            break;
+                        }
                     case Direction.Left:
-                    {
-                        movable.HorizontalSpeed = Math.Max(0, movable.HorizontalSpeed);
-                        if (movable is PlayerMoveComponent)
-                            movable.GetComponent<PlayerMoveComponent>().ChassisSpeed = Math.Max(0,
-                                movable.GetComponent<PlayerMoveComponent>().ChassisSpeed);
-                        break;
-                    }
+                        {
+                            movable.HorizontalSpeed = Math.Max(0, movable.HorizontalSpeed);
+                            if (movable is PlayerMoveComponent)
+                                movable.GetComponent<PlayerMoveComponent>().ChassisSpeed = Math.Max(0,
+                                    movable.GetComponent<PlayerMoveComponent>().ChassisSpeed);
+                            break;
+                        }
                     case Direction.Right:
-                    {
-                        movable.HorizontalSpeed = Math.Min(0, movable.HorizontalSpeed);
-                        if (movable is PlayerMoveComponent)
-                            movable.GetComponent<PlayerMoveComponent>().ChassisSpeed = Math.Min(0,
-                                movable.GetComponent<PlayerMoveComponent>().ChassisSpeed);
-                        break;
-                    }
+                        {
+                            movable.HorizontalSpeed = Math.Min(0, movable.HorizontalSpeed);
+                            if (movable is PlayerMoveComponent)
+                                movable.GetComponent<PlayerMoveComponent>().ChassisSpeed = Math.Min(0,
+                                    movable.GetComponent<PlayerMoveComponent>().ChassisSpeed);
+                            break;
+                        }
                     case Direction.Down:
-                    {
-                        movable.VerticalSpeed = Math.Max(0, movable.VerticalSpeed);
-                        movable.CurrentGround = target;
-                        break;
-                    }
+                        {
+                            movable.VerticalSpeed = Math.Max(0, movable.VerticalSpeed);
+                            movable.CurrentGround = target;
+                            break;
+                        }
                 }
 
                 PinTo(movable, target_pos, dir);

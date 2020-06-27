@@ -9,13 +9,11 @@ namespace Omniplatformer.Components.Physics
     {
         public Vector2 Direction { get; set; }
 
-        bool done = false;
-
-        public override bool ProcessCollision(Direction direction, PhysicsComponent obj)
+        public override void ProcessCollision(Direction direction, PhysicsComponent obj)
         {
-            if (done)
+            if (Disabled)
             {
-                return false;
+                return;
             }
             base.ProcessCollision(direction, obj);
 
@@ -26,17 +24,9 @@ namespace Omniplatformer.Components.Physics
                 // TODO: might have to extract this
                 // GameObject.onDestroy();
                 CurrentMovement = Vector2.Zero;
-                GetComponent<DestructibleComponent>().Destroy();                
-                done = true;
-                return true;
-                // Hit(obj);
+                GetComponent<DestructibleComponent>().Destroy();
+                Disabled = true;
             }
-            return false;
-        }
-
-        public override void ProcessMovement(float dt)
-        {
-            // CurrentMovement = Direction;
         }
     }
 }

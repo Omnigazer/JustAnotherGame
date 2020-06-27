@@ -77,10 +77,9 @@ namespace Omniplatformer.Components.Physics
         {
         }
 
-        public virtual bool ProcessCollision(Direction dir, PhysicsComponent obj)
+        public virtual void ProcessCollision(Direction dir, PhysicsComponent obj)
         {
             OnCollision.OnNext(obj);
-            return false;
         }
 
         public virtual void ResetCollisionFlags()

@@ -13,6 +13,7 @@ namespace Omniplatformer.Components.Physics
 
         // Movement dynamic caps
         public float MaxMoveSpeed { get; set; }
+
         public float ClimbSpeed => 3;
         public float Acceleration { get; set; } = 0.5f;
 
@@ -41,7 +42,7 @@ namespace Omniplatformer.Components.Physics
             base.ResetCollisionFlags();
         }
 
-        public override bool ProcessCollision(Direction direction, PhysicsComponent obj)
+        public override void ProcessCollision(Direction direction, PhysicsComponent obj)
         {
             if (obj.Solid)
             {
@@ -65,7 +66,6 @@ namespace Omniplatformer.Components.Physics
             }
 
             base.ProcessCollision(direction, obj);
-            return false;
         }
 
         public override void ProcessMovement(float dt)
@@ -109,12 +109,10 @@ namespace Omniplatformer.Components.Physics
             CurrentPlatform = null;
         }
 
-
         private void Target_onMove(object sender, MoveEventArgs e)
         {
             Move(e.displacement);
         }
-
 
         public virtual void ProcessLiquid()
         {
@@ -165,8 +163,6 @@ namespace Omniplatformer.Components.Physics
         {
             return -max_fall_speed;
         }
-
-
 
         /*
         public float GetHorizontalFriction()
