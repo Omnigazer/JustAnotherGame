@@ -73,6 +73,16 @@ namespace Omniplatformer.Components.Physics
             CurrentMovement += impulse * (ignore_mass ? 1 : InverseMass);
         }
 
+        /// <summary>
+        /// Applies the specified resistance to the body
+        /// </summary>
+        /// <param name="impulse">The value for the impulse</param>
+        /// <param name="ignore_mass">If set to true, assumes a mass of 1 to set the speed directly.</param>
+        public void ApplyResistance(float value)
+        {
+            CurrentMovement *= 1 - value;
+        }
+
         public virtual void ProcessMovement(float dt)
         {
         }

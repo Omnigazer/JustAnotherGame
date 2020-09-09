@@ -6,7 +6,7 @@ namespace Omniplatformer.Components.Physics
     public class PhysicsComponent : PositionComponent
     {
         public bool Disabled { get; set; }
-        public float InverseMass { get; set; } = 1;
+        public float InverseMass { get; set; } = 0.1f;
         public float Friction { get; set; }
         public bool Solid { get; set; }
         public bool Liquid { get; set; }

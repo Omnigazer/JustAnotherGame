@@ -31,6 +31,7 @@ namespace Omniplatformer.Scenes.Subsystems
 
         // Internal counters
         float light_loop = 0;
+
         const float light_loop_length = 100;
         float day_loop = 0;
         const float day_loop_length = 3600;
@@ -39,7 +40,6 @@ namespace Omniplatformer.Scenes.Subsystems
 
         public Texture2D CurrentBackground { get; set; } = GameContent.Instance.whitePixel;
 
-
         // public List<RenderComponent> drawables = new List<RenderComponent>();
         public SortedList<int, RenderComponent> drawables = new SortedList<int, RenderComponent>(new DuplicateKeyComparer<int>());
 
@@ -47,17 +47,20 @@ namespace Omniplatformer.Scenes.Subsystems
         {
             Game = game;
             GraphicsDevice = game.GraphicsDevice;
+            int width = graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width;
+            int height = graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Height;
+
             Camera = new Camera();
             SetResolution(
-                graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Width,
-                graphics.GraphicsDevice.Adapter.CurrentDisplayMode.Height
+                width,
+                height
                 );
             InitRenderTargets();
             basicEffect = new BasicEffect(GraphicsDevice)
             {
                 TextureEnabled = true,
                 VertexColorEnabled = true,
-                Projection = Matrix.CreateOrthographicOffCenter(0, 2560, 1440, 0, 0, 1),
+                Projection = Matrix.CreateOrthographicOffCenter(0, width, height, 0, 0, 1),
                 Texture = GameContent.Instance.atlas
             };
         }
@@ -255,10 +258,7 @@ namespace Omniplatformer.Scenes.Subsystems
         public void DrawToBackgroundLayer()
         {
             var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Matrix.CreateTranslation(-(int)Camera.Position.X * 0,
-                                            0, 0) *
-                                            Matrix.CreateRotationZ(Camera.Rotation)
-                                            );
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Camera.TranslationMatrix);
             foreach (var (zindex, drawable) in drawables)
             {
                 drawable.DrawToBackground();

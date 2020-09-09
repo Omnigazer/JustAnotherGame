@@ -14,6 +14,11 @@ namespace Omniplatformer.Scenes.Subsystems
         /// </summary>
         public static float G => 1.1f;
 
+        /// <summary>
+        /// The volume of the character
+        /// </summary>
+        public static float CharV => 3f;
+
         public static int TileSize => 16;
 
         // public List<GameObject> objects = new List<GameObject>();
@@ -136,18 +141,6 @@ namespace Omniplatformer.Scenes.Subsystems
             }
         }
 
-        /*
-        public (float kx, float ky) GetCollisionTime(DynamicPhysicsComponent obj, PhysicsComponent other)
-        {
-            float px = Math.Abs(obj.WorldPosition.Center.X - other.WorldPosition.Center.X) - (obj.WorldPosition.Halfsize.X + other.WorldPosition.Halfsize.X);
-            float py = Math.Abs(obj.WorldPosition.Center.Y - other.WorldPosition.Center.Y) - (obj.WorldPosition.Halfsize.Y + other.WorldPosition.Halfsize.Y);
-
-            return (px, py);
-        }
-
-        private List<(float, PhysicsComponent)> collisionDistanceMap = new List<(float, PhysicsComponent)>();
-        */
-
         protected void ProcessCollisions(DynamicPhysicsComponent obj)
         {
             Direction collision_direction;
@@ -159,7 +152,7 @@ namespace Omniplatformer.Scenes.Subsystems
                     return;
 
                 // TODO: remove this workaround
-                if (obj.Solid && other_obj.Solid)
+                if (obj.Solid)
                     ApplyCollisionResponse(obj, other_obj, other_obj.WorldPosition, collision_direction);
                 obj.ProcessCollision(collision_direction, other_obj);
             }
@@ -178,24 +171,6 @@ namespace Omniplatformer.Scenes.Subsystems
                     }
                 }
             }
-
-            /*
-            collisionDistanceMap.Clear();
-            foreach (var target in GetEligiblesForCollisions(obj))
-            //for (int j = objects.Count - 1; j >= 0; j--)
-            {
-                // var target = objects[j];
-                if (obj == target)
-                    continue;
-                var (px, py) = GetCollisionTime(obj, target);
-                collisionDistanceMap.Add((px + py, target));
-                // processCollision(other_obj);
-            }
-
-            // collisionDistanceMap.Sort((x, y) => x.Item1.CompareTo(y.Item1));
-
-            // foreach (var (distance, other) in collisionDistanceMap)
-            */
 
             foreach (var other in GetEligiblesForCollisions(obj))
             {
@@ -277,17 +252,13 @@ namespace Omniplatformer.Scenes.Subsystems
 
                 PinTo(movable, target_pos, dir);
             }
-
             // TODO: reimplement this
-            /*
             else if (target.Liquid)
             {
-                // var pos = movable.GetComponent<PositionComponent>();
-                // TODO: extract this
-                float immersion = movable.GetImmersionShare(target.GameObject);
-                movable.CurrentMovement *= 1 - target.Friction * immersion;
+                float immersion = movable.GetImmersionShare(target);
+                movable.ApplyImpulse(new Vector2(0, G * CharV * immersion));
+                movable.ApplyResistance(target.Friction * immersion);
             }
-            */
         }
 
         // Adjusts the subject's position in case of "penetration"
