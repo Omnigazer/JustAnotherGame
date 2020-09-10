@@ -21,7 +21,6 @@ namespace Omniplatformer.Views.Inventory
 
         private void InventorySlotView_Drag(object sender, EventArgs e)
         {
-
         }
 
         public override void SetupNode()
@@ -50,6 +49,8 @@ namespace Omniplatformer.Views.Inventory
             {
                 var texture = ((RenderComponent)Slot.Item).Texture;
                 spriteBatch.Draw(texture, outer_rect, Color.White);
+                outer_rect.Inflate(-10, -15);
+                spriteBatch.DrawString(GameContent.Instance.defaultFont, Slot.Item.Count.ToString(), new Vector2(outer_rect.Right, outer_rect.Bottom), Color.White);
             }
         }
     }

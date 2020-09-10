@@ -15,12 +15,14 @@ using Omniplatformer.Services;
 using Omniplatformer.Views.HUD;
 using Omniplatformer.Views.Inventory;
 using Omniplatformer.Components.Character;
+using Omniplatformer.Content;
 
 namespace Omniplatformer.HUDStates
 {
     public interface IInventoryController
     {
-        void OnSlotClick(Slot slot);
+        void OnSlotLeftClick(Slot slot);
+        void OnSlotRightClick(Slot slot);
     }
 
     public class InventoryHUDState : HUDState, IInventoryController
@@ -30,7 +32,7 @@ namespace Omniplatformer.HUDStates
         InventoryView TargetInventoryView { get; set; }
         EquipView EquipView { get; set; }
 
-        Item MouseStorage { get; set; }
+        Item MouseStorage;
         private Inventory PlayerInventory { get; set; }
 
         public InventoryHUDState(Inventory playerInventory)
@@ -60,7 +62,7 @@ namespace Omniplatformer.HUDStates
 
             // TODO: extract this positioning to a parent
             TargetInventoryView = new InventoryView(this)
-                {Visible = false, Node = { Top=370, Right = 20, PositionType = YogaPositionType.Absolute, Wrap = YogaWrap.Wrap, FlexDirection=YogaFlexDirection.Row}};
+            { Visible = false, Node = { Top = 370, Right = 20, PositionType = YogaPositionType.Absolute, Wrap = YogaWrap.Wrap, FlexDirection = YogaFlexDirection.Row } };
 
             EquipView = new EquipView(this, Game.Player.GetComponent<EquipComponent>().EquipSlots);
 
@@ -82,35 +84,37 @@ namespace Omniplatformer.HUDStates
             TargetInventoryView.SetInventory(null);
         }
 
-        public void OnSlotClick(Slot slot)
+        public void OnSlotLeftClick(Slot slot)
+        {
+            if (MouseStorage == null)
+                slot.TakeItem(ref MouseStorage);
+            else if (slot.AcceptsItem(MouseStorage))
+                if (slot.Item == null)
+                    slot.PutItem(ref MouseStorage);
+                else
+                {
+                    if (slot.Item.ItemId == MouseStorage.ItemId)
+                        slot.MergeStack(ref MouseStorage);
+                    else
+                        slot.SwapItem(ref MouseStorage);
+                }
+        }
+
+        public void OnSlotRightClick(Slot slot)
         {
             if (MouseStorage == null)
             {
-                MouseStorage = slot.Item;
-                slot.Item = null;
-                if (MouseStorage != null)
-                    slot.OnItemRemove(MouseStorage);
+                if (slot.Item != null)
+                    slot.SplitStack(ref MouseStorage);
             }
-            else
-            {
-                if (slot.AcceptsItem(MouseStorage))
+            else if (slot.AcceptsItem(MouseStorage))
+                if (slot.Item == null)
+                    slot.PutFirstItem(ref MouseStorage);
+                else if (slot.Item.ItemId == MouseStorage.ItemId)
                 {
-                    if (slot.Item == null)
-                    {
-                        slot.Item = MouseStorage;
-                        slot.OnItemAdd(slot.Item);
-                        MouseStorage = null;
-                    }
-                    else
-                    {
-                        var tmp = MouseStorage;
-                        MouseStorage = slot.Item;
-                        slot.Item = tmp;
-                        slot.OnItemRemove(MouseStorage);
-                        slot.OnItemAdd(tmp);
-                    }
+                    if (slot.Item.Count < slot.Item.MaxCount)
+                        slot.MergeFirstItem(ref MouseStorage);
                 }
-            }
         }
 
         public override void Draw()
@@ -122,12 +126,13 @@ namespace Omniplatformer.HUDStates
         public virtual void DrawStorage()
         {
             var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin();
             if (MouseStorage != null)
             {
+                spriteBatch.Begin();
                 GraphicsService.DrawScreen(((RenderComponent)MouseStorage).Texture, new Rectangle(mouse_pos, new Point(60, 60)), Color.White, 0, Vector2.Zero);
+                spriteBatch.DrawString(GameContent.Instance.defaultFont, MouseStorage.Count.ToString(), (mouse_pos + new Point(50, 45)).ToVector2(), Color.White);
+                spriteBatch.End();
             }
-            spriteBatch.End();
         }
 
         public void SetupControls()

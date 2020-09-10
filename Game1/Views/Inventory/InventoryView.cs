@@ -51,10 +51,15 @@ namespace Omniplatformer.Views.Inventory
 
         private void View_MouseUp(object sender, MouseEventArgs e)
         {
-            if(e.Button == MouseButton.Left)
+            if (e.Button == MouseButton.Left)
             {
                 var view = (InventorySlotView)sender;
-                controller.OnSlotClick(view.Slot);
+                controller.OnSlotLeftClick(view.Slot);
+            }
+            else if (e.Button == MouseButton.Right)
+            {
+                var view = (InventorySlotView)sender;
+                controller.OnSlotRightClick(view.Slot);
             }
         }
     }
