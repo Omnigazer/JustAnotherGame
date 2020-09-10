@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects.Items;
@@ -80,6 +81,73 @@ namespace Omniplatformer.Objects.Inventory
         public bool AcceptsItem(Item item) { return AcceptedDescriptors().Intersect(item.Descriptors).Any(); }
         public virtual void OnItemAdd(Item item) { }
         public virtual void OnItemRemove(Item item) { }
+
+        public void TakeItem(ref Item item)
+        {
+            item = Item;
+            Item = null;
+            if (item != null)
+                OnItemRemove(item);
+        }
+
+        public void PutItem(ref Item item)
+        {
+            Item = item;
+            OnItemAdd(Item);
+            item = null;
+        }
+
+        public void MergeStack(ref Item item)
+        {
+            int val = Math.Min(Item.MaxCount - Item.Count, item.Count);
+            Item.Count += val;
+            item.Count -= val;
+            if (item.Count <= 0)
+                item = null;
+        }
+
+        public void SplitStack(ref Item item)
+        {
+            item = Item.Copy();
+            var count = Item.Count / 2;
+            if (count == 0)
+                count++;
+            item.Count = count;
+            Item.Count -= item.Count;
+            if (Item.Count <= 0)
+            {
+                Item = null;
+                OnItemRemove(Item);
+            }
+        }
+
+        public void PutFirstItem(ref Item item)
+        {
+            Item = item.Copy();
+            Item.Count = 1;
+            item.Count--;
+            if (item.Count <= 0)
+                item = null;
+            OnItemAdd(Item);
+        }
+
+        public void MergeFirstItem(ref Item item)
+        {
+            int val = Math.Min(Item.MaxCount - Item.Count, 1);
+            Item.Count += val;
+            item.Count -= val;
+            if (item.Count <= 0)
+                item = null;
+        }
+
+        public void SwapItem(ref Item item)
+        {
+            var tmp = item;
+            item = Item;
+            Item = tmp;
+            OnItemRemove(item);
+            OnItemAdd(tmp);
+        }
     }
 
     public class InventorySlot : Slot
@@ -88,6 +156,7 @@ namespace Omniplatformer.Objects.Inventory
         /// Zero-based slot index
         /// </summary>
         public int Column { get; set; }
+
         public int Row { get; set; }
 
         public bool IsHovered { get; set; }

@@ -59,7 +59,7 @@ namespace Omniplatformer.Views.Inventory
             if (e.Button == MouseButton.Left)
             {
                 var view = (InventorySlotView)sender;
-                controller.OnSlotClick(view.Slot);
+                controller.OnSlotLeftClick(view.Slot);
             }
         }
 

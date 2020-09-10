@@ -20,18 +20,24 @@ namespace Omniplatformer.Objects
     {
         [JsonIgnore]
         public Scene CurrentScene { get; set; }
+
         public Guid Id { get; set; }
 
         [JsonProperty]
         protected List<Component> Components { get; set; }
+
         protected Team _team;
         public Team Team { get => Source._team; set => _team = value; }
         private GameObject _source;
-        public GameObject Source {
+
+        public GameObject Source
+        {
             get => _source?.Source ?? this;
             set => _source = value;
         }
+
         public HashSet<Descriptor> Descriptors { get; set; } = new HashSet<Descriptor>();
+
         [JsonIgnore]
         public Subject<GameObject> OnLeaveScene = new Subject<GameObject>();
 
@@ -43,6 +49,7 @@ namespace Omniplatformer.Objects
 
         public virtual void InitializeComponents()
         {
+            Components = new List<Component>();
             RegisterComponent(new CooldownComponent());
             InitializeCustomComponents();
             Compile();
@@ -50,7 +57,6 @@ namespace Omniplatformer.Objects
 
         public virtual void InitializeCustomComponents()
         {
-
         }
 
         public void RegisterComponent(Component c)
@@ -73,7 +79,7 @@ namespace Omniplatformer.Objects
         {
             OnLeaveScene.OnNext(this);
             OnLeaveScene.OnCompleted();
-            CurrentScene.UnregisterObject(this);            
+            CurrentScene.UnregisterObject(this);
         }
 
         // Process current frame
@@ -85,8 +91,9 @@ namespace Omniplatformer.Objects
             }
         }
 
-        public virtual void Compile() {
-            foreach(var c in Components)
+        public virtual void Compile()
+        {
+            foreach (var c in Components)
             {
                 c.Compile();
             }
@@ -95,7 +102,6 @@ namespace Omniplatformer.Objects
 
         public virtual void OnCompile()
         {
-
         }
 
         //[OnDeserialized]
