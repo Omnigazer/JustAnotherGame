@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Omniplatformer.Components.Character;
+using Omniplatformer.Components.Interactibles;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Objects.Items;
@@ -13,14 +16,15 @@ namespace Omniplatformer.Objects.Interactibles
 {
     class Chest : GameObject
     {
-        public Inventory.Inventory Inventory { get; set; }
+        [JsonIgnore]
+        public Inventory.Inventory Inventory => GetComponent<InventoryComponent>().Inventory;
 
         public override void InitializeCustomComponents()
         {
             RegisterComponent(new PhysicsComponent());
             RegisterComponent(new RenderComponent(Color.Firebrick));
-            Inventory = Objects.Inventory.Inventory.Create();
-            // foreach(var (item, i) in items.Select((x, i) => (x, i)))
+            RegisterComponent(new InventoryComponent() { Inventory = Objects.Inventory.Inventory.Create() });
+            RegisterComponent(new InteractibleInventoryComponent());
         }
 
         public static Chest Create(Vector2 coords, Vector2 halfsize, IEnumerable<WieldedItem> items)

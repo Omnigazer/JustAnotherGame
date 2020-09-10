@@ -62,6 +62,8 @@
     <Compile Include="Components\Character\DropItemComponent.cs" />
     <Compile Include="Components\Character\YieldExperienceComponent.cs" />
     <Compile Include="Components\Character\InvFramesComponent.cs" />
+    <Compile Include="Components\Interactibles\InteractibleInventoryComponent.cs" />
+    <Compile Include="Components\Interactibles\InteractibleComponent.cs" />
     <Compile Include="Components\Rendering\LiquidRenderComponent.cs" />
     <Compile Include="Components\Spells\FireBoltSpellComponent.cs" />
     <Compile Include="Components\Spells\SpellComponent.cs" />
