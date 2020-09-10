@@ -50,6 +50,7 @@ namespace Omniplatformer.HUDStates
 
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
+                {  Keys.Pause, (Game.TogglePause, noop, false) },
                 {  Keys.A, (Game.WalkLeft, noop, true) },
                 {  Keys.D, (Game.WalkRight, noop, true) },
                 {  Keys.S, (Game.Duck, Game.Stand, false) },

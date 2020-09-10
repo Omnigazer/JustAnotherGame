@@ -299,6 +299,7 @@ namespace Omniplatformer.HUDStates
             Action noop = delegate { };
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
+                {  Keys.Pause, (Game.TogglePause, noop, false) },
                 {  Keys.A, (MoveCameraLeft, noop, true) },
                 {  Keys.D, (MoveCameraRight, noop, true) },
                 {  Keys.S, (MoveCameraDown, noop, true) },

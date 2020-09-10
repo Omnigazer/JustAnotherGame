@@ -57,6 +57,7 @@ namespace Omniplatformer
         private EditorHUDState editorHUD;
         private HUDState charHUD;
         private bool game_over;
+        private bool game_paused;
 
         public GameConsole console;
 
@@ -114,6 +115,10 @@ namespace Omniplatformer
             Player.GetComponent<DestructibleComponent>().OnDestroy.Take(1).Subscribe((obj) => GameOver());
         }
 
+        public void TogglePause()
+        {
+            game_paused = !game_paused;
+        }
         private void GameOver()
         {
             game_over = true;
@@ -220,6 +225,8 @@ namespace Omniplatformer
             float time_scale = 60.0f / 1000;
             float dt = time_scale * (float)gameTime.ElapsedGameTime.Milliseconds;
             MainScene.ProcessSubsystems(dt);
+            if (!game_paused)
+                MainScene.ProcessSubsystems(dt);
             // TODO: include this as a subsystem
             var drawable = (TileMapRenderComponent)MainScene.TileMap;
             drawable.RebuildBuffers();
