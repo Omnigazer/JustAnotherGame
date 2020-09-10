@@ -14,17 +14,32 @@ namespace Omniplatformer.Components.Physics
         // TODO: TEST
         [JsonProperty]
         protected PositionComponent parent_pos;
+
         [JsonProperty]
         protected AnchorPoint parent_anchor = AnchorPoint.Default;
+
         [JsonProperty]
         protected Position local_position;
 
         [JsonIgnore]
-        public Position WorldPosition => parent_pos != null ? local_position * parent_pos.GetAnchor(parent_anchor) : local_position;
+        public Position WorldPosition
+        {
+            get
+            {
+                if (parent_pos != null)
+                {
+                    return local_position * parent_pos.GetAnchor(parent_anchor);
+                }
+                else
+                    return local_position;
+            }
+        }
+
         public Dictionary<AnchorPoint, Position> DefaultAnchors { get; set; } = new Dictionary<AnchorPoint, Position>();
         public Dictionary<AnchorPoint, Position> CurrentAnchors { get; set; } = new Dictionary<AnchorPoint, Position>();
 
-        public PositionComponent() {
+        public PositionComponent()
+        {
             local_position = new Position { Origin = Position.DefaultOrigin };
         }
 
@@ -46,7 +61,13 @@ namespace Omniplatformer.Components.Physics
                 var clamped_position = CurrentAnchors[anchor_name];
                 var real_position = new Position(clamped_position)
                 {
+                    /*
                     Coords = new Vector2(
+                        2 * clamped_position.Center.X * local_position.Halfsize.X,
+                        2 * clamped_position.Center.Y * local_position.Halfsize.Y
+                        )
+                    */
+                    Center = new Vector2(
                         2 * clamped_position.Center.X * local_position.Halfsize.X,
                         2 * clamped_position.Center.Y * local_position.Halfsize.Y
                         )
@@ -72,13 +93,14 @@ namespace Omniplatformer.Components.Physics
 
         public void AdjustPosition(Vector2 displacement)
         {
-            local_position.Coords += displacement;
+            local_position.Center += displacement;
         }
 
         public Rectangle GetRectangle()
         {
-            var halfsize = WorldPosition.Halfsize;
-            var zero = WorldPosition.Center - WorldPosition.Halfsize;
+            var pos = this.WorldPosition;
+            var halfsize = pos.Halfsize;
+            var zero = pos.Center - pos.Halfsize;
             return new Rectangle((zero).ToPoint(), new Point((int)halfsize.X * 2, (int)halfsize.Y * 2));
         }
 
@@ -99,32 +121,36 @@ namespace Omniplatformer.Components.Physics
             return false;
         }
 
-        public bool Overlaps(Position pos)
+        public bool Overlaps(Position target_pos)
         {
-            if (Math.Abs(WorldPosition.Center.X - pos.Center.X) > WorldPosition.Halfsize.X + pos.Halfsize.X) return false;
-            if (Math.Abs(WorldPosition.Center.Y - pos.Center.Y) > WorldPosition.Halfsize.Y + pos.Halfsize.Y) return false;
+            var pos = this.WorldPosition;
+            if (Math.Abs(pos.Center.X - target_pos.Center.X) > pos.Halfsize.X + target_pos.Halfsize.X) return false;
+            if (Math.Abs(pos.Center.Y - target_pos.Center.Y) > pos.Halfsize.Y + target_pos.Halfsize.Y) return false;
             return true;
         }
 
         public Direction Collides(Position other)
         {
-            var hd = Math.Abs(WorldPosition.Center.X - other.Center.X) - (WorldPosition.Halfsize.X + other.Halfsize.X);
-            var vd = Math.Abs(WorldPosition.Center.Y - other.Center.Y) - (WorldPosition.Halfsize.Y + other.Halfsize.Y);
+            // TODO: test
+            var pos = this.WorldPosition;
+
+            var hd = Math.Abs(pos.Center.X - other.Center.X) - (pos.Halfsize.X + other.Halfsize.X);
+            var vd = Math.Abs(pos.Center.Y - other.Center.Y) - (pos.Halfsize.Y + other.Halfsize.Y);
 
             if (hd > 0 || vd > 0)
                 return Direction.None;
 
             // Now compare them to know the side of collision
-            if (hd > vd && (Math.Abs(vd) > WorldPosition.Halfsize.Y || WorldPosition.Center.Y < other.Center.Y))
+            if (hd > vd && (Math.Abs(vd) > pos.Halfsize.Y || pos.Center.Y < other.Center.Y))
             {
-                if (WorldPosition.Center.X < other.Center.X)
+                if (pos.Center.X < other.Center.X)
                     return Direction.Right;
                 else
                     return Direction.Left;
             }
             else if (vd > hd)
             {
-                if (WorldPosition.Center.Y < other.Center.Y)
+                if (pos.Center.Y < other.Center.Y)
                     return Direction.Up;
                 else
                     return Direction.Down;
@@ -189,19 +215,24 @@ namespace Omniplatformer.Components.Physics
 
         public void SetLocalCenter(Vector2 center)
         {
-            var diff = local_position.Center - local_position.Coords;
-            SetLocalCoords(center - diff);
+            local_position.Center = center;
+            // var diff = local_position.Center - local_position.Coords;
+            // SetLocalCoords(center - diff);
         }
 
         public void SetWorldCenter(Vector2 center)
         {
-            var diff = local_position.Center - local_position.Coords + (parent_pos?.WorldPosition.Coords ?? Vector2.Zero);
-            SetLocalCoords(center - diff);
+            // var diff = local_position.Center - local_position.Coords + (parent_pos?.WorldPosition.Coords ?? Vector2.Zero);
+            // SetLocalCoords(center - diff);
+            var diff = (parent_pos?.WorldPosition.Center ?? Vector2.Zero);
+            SetLocalCenter(center - diff);
         }
 
         public void SetLocalCoords(Vector2 coords)
         {
-            local_position.Coords = coords;
+            // local_position.Coords = coords;
+            var diff = local_position.Center - local_position.Coords;
+            SetLocalCenter(coords - diff);
         }
 
         public void SetLocalHalfsize(Vector2 halfsize)

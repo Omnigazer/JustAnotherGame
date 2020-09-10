@@ -43,7 +43,7 @@ namespace Omniplatformer.HUDStates
         // object currently being mouse-dragged
         GameObject tele_obj = null;
 
-        Dictionary<string, (Texture2D, Vector2, bool, Color?)> textures = new Dictionary<string, (Texture2D, Vector2, bool, Color?)>()
+        Dictionary<string, (Texture2D, Vector2?, bool, Color?)> textures = new Dictionary<string, (Texture2D, Vector2?, bool, Color?)>()
         {
             { "Ladder", (GameContent.Instance.ladder, new Vector2(0.5f, 0.5f), true, Color.White) },
             { "Chest", (null, new Vector2(0.5f, 0.5f), false, Color.Firebrick) }
@@ -190,9 +190,9 @@ namespace Omniplatformer.HUDStates
             var rect = new Rectangle(Mouse.GetState().Position, new Point((int)(current_block_width), (int)(current_block_height)));
             // rect = Game.GameToScreen(rect, new Vector2(0, 1));
 
-            textures.TryGetValue(CurrentConstructor, out (Texture2D tex, Vector2 origin, bool tiled, Color? color) t);
+            textures.TryGetValue(CurrentConstructor, out (Texture2D tex, Vector2? origin, bool tiled, Color? color) t);
             var tex = t.tex ?? GameContent.Instance.whitePixel;
-            var origin = t.origin;
+            var origin = t.origin ?? Position.DefaultOrigin;
             var tiled = t.tiled;
             var color = t.color ?? Color.White;
 
