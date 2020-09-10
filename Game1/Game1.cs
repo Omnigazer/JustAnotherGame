@@ -25,6 +25,8 @@ using Omniplatformer.Components.Character;
 using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Linq;
+using Omniplatformer.Components.Interactibles;
 
 namespace Omniplatformer
 {
@@ -299,6 +301,7 @@ namespace Omniplatformer
 
         public void OpenTargetInventory(Inventory inv)
         {
+            HUDState = inventoryHUD;
             onTargetInventoryOpen.OnNext(inv);
         }
 
@@ -307,19 +310,14 @@ namespace Omniplatformer
             onTargetInventoryClosed.OnNext(null);
         }
 
-        public void OpenChest()
+        public void Interact()
         {
             var player_pos = (PositionComponent)Player;
 
-            foreach (var obj in PhysicsSystem.GetOverlappingObjects(player_pos))
+            var obj = PhysicsSystem.GetOverlappingObjects(player_pos).First(x => x.GetComponent<InteractibleComponent>() != null);
+            if (obj != null)
             {
-                // TODO: refactor this into a component
-                if (obj is Chest)
-                {
-                    HUDState = inventoryHUD;
-                    OpenTargetInventory(((Chest)obj).Inventory);
-                    break;
-                }
+                obj.GetComponent<InteractibleComponent>().Interact();
             }
         }
 

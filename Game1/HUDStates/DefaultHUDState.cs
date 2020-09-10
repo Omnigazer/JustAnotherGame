@@ -29,7 +29,7 @@ namespace Omniplatformer.HUDStates
             Root.RegisterChild(playerHUD);
             var logs = new LogView(Game.Logs)
             {
-                Node = {PositionType = Facebook.Yoga.YogaPositionType.Absolute, Right = 50, Top = 200}
+                Node = { PositionType = Facebook.Yoga.YogaPositionType.Absolute, Right = 50, Top = 200 }
             };
             Root.RegisterChild(logs);
         }
@@ -59,7 +59,7 @@ namespace Omniplatformer.HUDStates
                 {  Keys.I, (Game.OpenInventory, noop, false) },
                 {  Keys.Z, (Game.Fire, noop, false) },
                 {  Keys.C, (Game.OpenChar, noop, false) },
-                {  Keys.E, (Game.OpenChest, noop, false) },
+                {  Keys.E, (Game.Interact, noop, false) },
                 {  Keys.OemMinus, (Game.ZoomOut, noop, true) },
                 {  Keys.OemPlus, (Game.ZoomIn, noop, true) },
                 {  Keys.OemCloseBrackets, (Game.ResetZoom, noop, true) },
