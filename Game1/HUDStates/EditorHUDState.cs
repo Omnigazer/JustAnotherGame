@@ -22,32 +22,39 @@ using Omniplatformer.Utility.DataStructs;
 using Omniplatformer.Views.Editor;
 using Omniplatformer.Views.HUD;
 using Omniplatformer.Utility.Extensions;
+using Omniplatformer.HUDStates.Editor.Factories;
 
 namespace Omniplatformer.HUDStates
 {
     public class EditorHUDState : HUDState
     {
         // editor's state
-        public Dictionary<string, Func<Vector2, Vector2, Vector2, GameObject>> PositionalConstructors { get; set; }
-        public string CurrentConstructor { get; set; }
         public bool PinMode { get; set; }
+
         public int current_tile = 2;
         int brush_size = 1;
         float current_block_width = 8;
         float current_block_height = 8;
+
         // whether the current tile applies to background
         public bool background = true;
 
         // mouse position on last tick
         Point last_position = Point.Zero;
+
         // object currently being mouse-dragged
         GameObject tele_obj = null;
 
+        public List<EditorFactory> factories = new List<EditorFactory>();
+        EditorFactory CurrentFactory { get; set; }
+
+        /*
         Dictionary<string, (Texture2D, Vector2?, bool, Color?)> textures = new Dictionary<string, (Texture2D, Vector2?, bool, Color?)>()
         {
             { "Ladder", (GameContent.Instance.ladder, new Vector2(0.5f, 0.5f), true, Color.White) },
             { "Chest", (null, new Vector2(0.5f, 0.5f), false, Color.Firebrick) }
         };
+        */
 
         public override void Tick()
         {
@@ -98,7 +105,7 @@ namespace Omniplatformer.HUDStates
         {
             if (e.Button == MouseButton.Left)
             {
-                if (CurrentConstructor != null)
+                if (CurrentFactory != null)
                     ApplyConstructor();
                 else
                 {
@@ -127,7 +134,7 @@ namespace Omniplatformer.HUDStates
 
         public override void Draw()
         {
-            if (CurrentConstructor != null)
+            if (CurrentFactory != null)
                 DrawCurrentBlock();
             else
                 DrawCurrentTile();
@@ -138,19 +145,14 @@ namespace Omniplatformer.HUDStates
 
         public void InitObjectConstructors()
         {
-            PositionalConstructors = new Dictionary<string, Func<Vector2, Vector2, Vector2, GameObject>>()
+            factories = new List<EditorFactory>()
             {
-                { "SolidPlatform", (coords, halfsize, origin) => SolidPlatform.Create(coords, halfsize)},
-                { "MovingPlatform", (coords, halfsize, origin) => MovingPlatform.Create(coords, halfsize)},
-                { "DestructibleObject", (coords, halfsize, origin) => DestructibleObject.Create(coords, halfsize)},
-                { "Liquid", (coords, halfsize, origin) => Liquid.Create(coords, halfsize)},
-                { "ForegroundQuad", (coords, halfsize, origin) => ForegroundQuad.Create(coords, halfsize)},
-                { "Ladder", (coords, halfsize, origin) => Ladder.Create(coords, halfsize)},
-                { "Goblin", (coords, halfsize, origin) => Goblin.Create(coords) },
-                { "GoblinShaman", (coords, halfsize, origin) => GoblinShaman.Create(coords)},
-                { "Chest", (coords, halfsize, origin) => Chest.Create(coords, halfsize)},
+                new SolidPlatformFactory(),
+                new LiquidFactory(),
+                new ForegroundQuadFactory(),
+                new GoblinFactory(),
+                new GoblinShamanFactory(),
             };
-            // CurrentConstructor = PositionalConstructors.Keys.First();
         }
 
         public void DrawLogger()
@@ -174,7 +176,7 @@ namespace Omniplatformer.HUDStates
 
         public override IEnumerable<string> GetStatusMessages()
         {
-            yield return $"Current constructor: {CurrentConstructor}";
+            yield return $"Current Factory: {CurrentFactory}";
             yield return $"Current group: {CurrentGroupName}";
             yield return $"Current object: {Game.GetObjectAtCursor()}";
             foreach (var msg in StatusMessages)
@@ -185,19 +187,15 @@ namespace Omniplatformer.HUDStates
 
         public void DrawCurrentBlock()
         {
-            var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null);
-            var rect = new Rectangle(Mouse.GetState().Position, new Point((int)(current_block_width), (int)(current_block_height)));
-            // rect = Game.GameToScreen(rect, new Vector2(0, 1));
-
-            textures.TryGetValue(CurrentConstructor, out (Texture2D tex, Vector2? origin, bool tiled, Color? color) t);
-            var tex = t.tex ?? GameContent.Instance.whitePixel;
-            var origin = t.origin ?? Position.DefaultOrigin;
-            var tiled = t.tiled;
-            var color = t.color ?? Color.White;
-
-            GraphicsService.DrawScreen(tex, rect, color, 0, origin, scale: Game.RenderSystem.Camera.Zoom, tiled: tiled);
-            spriteBatch.End();
+            if (CurrentFactory != null)
+            {
+                var spriteBatch = GraphicsService.Instance;
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, Game.RenderSystem.Camera.TranslationMatrix);
+                var click_coords = GetInGameCoords(Mouse.GetState().Position);
+                var halfsize = new Vector2(current_block_width / 2, current_block_height / 2);
+                CurrentFactory.Draw(click_coords, halfsize);
+                spriteBatch.End();
+            }
         }
 
         #region Tiles
@@ -284,8 +282,8 @@ namespace Omniplatformer.HUDStates
             var drawable = (TileMapRenderComponent)Game.MainScene.TileMap;
             drawable.RebuildBuffers(true);
         }
-        #endregion
 
+        #endregion Tiles
 
         int increment = 8;
         public void IncreaseWidth() => current_block_width += increment;
@@ -375,25 +373,21 @@ namespace Omniplatformer.HUDStates
 
         public void SetPrevConstructor()
         {
-            var keys = PositionalConstructors.Keys.ToList();
-            var i = (keys.IndexOf(CurrentConstructor) - 1 + keys.Count) % keys.Count;
-            CurrentConstructor = keys[i];
-            Game.Log($"Current constructor: {CurrentConstructor}");
-            // CurrentConstructor = PositionalConstructors.
+            var i = (factories.IndexOf(CurrentFactory) - 1 + factories.Count) % factories.Count;
+            CurrentFactory = factories[i];
+            Game.Log($"Current Factory: {CurrentFactory}");
         }
 
         public void SetNextConstructor()
         {
-            var keys = PositionalConstructors.Keys.ToList();
-            var i = (keys.IndexOf(CurrentConstructor) + 1 + keys.Count) % keys.Count;
-            CurrentConstructor = keys[i];
-            Game.Log($"Current constructor: {CurrentConstructor}");
-            // CurrentConstructor = PositionalConstructors.
+            var i = (factories.IndexOf(CurrentFactory) + 1 + factories.Count) % factories.Count;
+            CurrentFactory = factories[i];
+            Game.Log($"Current Factory: {CurrentFactory}");
         }
 
         public void ClearConstructor()
         {
-            CurrentConstructor = null;
+            CurrentFactory = null;
         }
 
         float cam_speed = 15;
@@ -431,7 +425,7 @@ namespace Omniplatformer.HUDStates
 
                 float? current_length = null;
                 Vector2? current_pt = null;
-                foreach(var pt in obj_pos.GetRectPoints())
+                foreach (var pt in obj_pos.GetRectPoints())
                 {
                     float length = (pt - ingame_pos).Length();
                     if ((!current_length.HasValue || current_length > length) && length < 60)
@@ -531,7 +525,9 @@ namespace Omniplatformer.HUDStates
                 halfsize = new Vector2(Math.Abs(halfsize.X), Math.Abs(halfsize.Y));
                 var origin = new Vector2(0, 1);
                 Game.Log(click_coords.ToString());
-                var obj = PositionalConstructors[CurrentConstructor](click_coords, halfsize, origin);
+                // var obj = PositionalConstructors[CurrentConstructor](click_coords, halfsize, origin);
+                var obj = CurrentFactory.Call(click_coords, halfsize);
+
                 CurrentGroup.Add(obj);
                 Game.AddToMainScene(obj);
             }

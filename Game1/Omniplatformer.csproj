@@ -82,6 +82,12 @@
     <Compile Include="Components\Physics\Position.cs" />
     <Compile Include="Components\RangedAttackComponent.cs" />
     <Compile Include="Components\ThrowAttackComponent.cs" />
+    <Compile Include="HUDStates\Editor\Factories\EditorFactory .cs" />
+    <Compile Include="HUDStates\Editor\Factories\ForegroundQuadFactory.cs" />
+    <Compile Include="HUDStates\Editor\Factories\LiquidFactory.cs" />
+    <Compile Include="HUDStates\Editor\Factories\SolidPlatformFactory.cs" />
+    <Compile Include="HUDStates\Editor\Factories\GoblinShamanFactory.cs" />
+    <Compile Include="HUDStates\Editor\Factories\GoblinFactory.cs" />
     <Compile Include="Objects\Characters\GoblinShaman.cs" />
     <Compile Include="Objects\Characters\Goblin.cs" />
     <Compile Include="Components\Physics\DynamicPhysicsComponent.cs" />
