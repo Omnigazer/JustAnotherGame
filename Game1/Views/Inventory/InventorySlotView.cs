@@ -33,9 +33,6 @@ namespace Omniplatformer.Views.Inventory
         public override void DrawSelf()
         {
             var spriteBatch = GraphicsService.Instance;
-            var scissor = spriteBatch.GraphicsDevice.ScissorRectangle;
-            if (scissor.Size == new Point())
-                return;
             Rectangle outer_rect = GlobalRect;
             float alpha = Hover || Slot.IsCurrent ? 1 : 0.6f;
             // float alpha = 1;

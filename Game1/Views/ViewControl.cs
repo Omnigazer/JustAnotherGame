@@ -250,16 +250,20 @@ namespace Omniplatformer.Views
             CurrentScissors = GraphicsService.GraphicsDevice.ScissorRectangle;
             var rect = GlobalRect;
             rect.Inflate(BorderThickness, BorderThickness);
-            GraphicsService.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(CurrentScissors, rect);
-            var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, raster);
-            DrawSelf();
-            spriteBatch.End();
-            GraphicsService.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(CurrentScissors, GlobalRect);
-
-            foreach (var control in VisibleChildren)
+            var scissor = Rectangle.Intersect(CurrentScissors, rect);
+            GraphicsService.GraphicsDevice.ScissorRectangle = scissor;
+            if (scissor.Size != new Point() || Parent.Node.Overflow == YogaOverflow.Visible)
             {
-                control.Draw();
+                var spriteBatch = GraphicsService.Instance;
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, raster);
+                DrawSelf();
+                spriteBatch.End();
+                GraphicsService.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(CurrentScissors, GlobalRect);
+
+                foreach (var control in VisibleChildren)
+                {
+                    control.Draw();
+                }
             }
             GraphicsService.GraphicsDevice.ScissorRectangle = CurrentScissors;
         }
