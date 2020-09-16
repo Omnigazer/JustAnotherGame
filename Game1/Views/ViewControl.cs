@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Facebook.Yoga;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.HUDStates;
 using Omniplatformer.Objects;
 using Omniplatformer.Scenes.Subsystems;
@@ -16,25 +17,33 @@ namespace Omniplatformer.Views
     {
         public YogaNode Node;
 
-        public Point Position => new Point((int)Node.LayoutX, (int)Node.LayoutY);
+        public Point Position => new Point((int)Node.LayoutX + Parent?.OffsetH ?? 0, (int)Node.LayoutY + Parent?.OffsetV ?? 0);
         public Point GlobalPosition => Parent != null ? Parent.GlobalPosition + Position : Position;
+
         // public int Width { get => (int)Node.Width.Value; set => Node.Width = value; }
         // public int Height { get => (int)Node.Height.Value; set => Node.Height = value; }
         public int Width { get => (int)Node.LayoutWidth - 2 * BorderThickness; set => Node.Width = value; }
+
         public int Height { get => (int)Node.LayoutHeight - 2 * BorderThickness; set => Node.Height = value; }
         public int RelativeWidth { set => Node.Width = YogaValue.Percent(value); }
         public int RelativeHeight { set => Node.Height = YogaValue.Percent(value); }
         public int Margin { get => (int)Node.Margin.Value; set => Node.Margin = value; }
         public int Padding { get => (int)Node.Padding.Value; set => Node.Padding = value; }
 
+        public int OffsetV { get; set; }
+        public int OffsetH { get; set; }
+
         public Rectangle LocalRect => new Rectangle(Position, new Point((int)Node.LayoutWidth, (int)Node.LayoutHeight));
+
         // public Rectangle GlobalRect => new Rectangle(GlobalPosition, new Point((int)Node.LayoutWidth, (int)Node.LayoutHeight));
         public Rectangle GlobalRect => new Rectangle(GlobalPosition + new Point(BorderThickness), new Point((int)Node.LayoutWidth - 2 * BorderThickness, (int)Node.LayoutHeight - 2 * BorderThickness));
+
         // public int BorderThickness { get => (int)Node.BorderWidth; set => Node.BorderWidth = value; }
         public int BorderThickness { get; set; }
 
         //public int BorderThickness { get => (int)Node.Padding.Value; set => Node.Padding = value; }
         public ViewControl Parent { get; set; }
+
         public ViewControl Root => Parent?.Root ?? this;
         public List<ViewControl> Children { get; set; } = new List<ViewControl>();
         public IEnumerable<ViewControl> VisibleChildren => Children?.Where(x => x.Visible);
@@ -46,13 +55,32 @@ namespace Omniplatformer.Views
 
         public virtual bool ConsumesEvents => true;
 
+        /// <summary>
+        /// Rasterizer state for scissor rect testing
+        /// </summary>
+        static RasterizerState raster = new RasterizerState() { ScissorTestEnable = true };
+
+        /// <summary>
+        /// Cached scissor rectangle of the control's parent
+        /// </summary>
+        Rectangle CurrentScissors { get; set; }
+
         // Events
         public event EventHandler<MouseEventArgs> MouseMove = delegate { };
+
         public event EventHandler MouseEnter = delegate { };
+
         public event EventHandler MouseLeave = delegate { };
+
         public event EventHandler<MouseEventArgs> MouseDown = delegate { };
+
         public event EventHandler<MouseEventArgs> MouseUp = delegate { };
+
         public event EventHandler<MouseEventArgs> MouseClick = delegate { };
+
+        public event EventHandler<MouseEventArgs> MouseWheelUp = delegate { };
+
+        public event EventHandler<MouseEventArgs> MouseWheelDown = delegate { };
 
         public ViewControl()
         {
@@ -62,7 +90,6 @@ namespace Omniplatformer.Views
 
         public virtual void SetupNode()
         {
-
         }
 
         public ViewControl onMouseDown(MouseButton button, Point pt)
@@ -78,7 +105,7 @@ namespace Omniplatformer.Views
                     }
                 }
             }
-            if(ConsumesEvents)
+            if (ConsumesEvents)
             {
                 MouseDown(this, new MouseEventArgs(button, pt));
                 return this;
@@ -94,48 +121,54 @@ namespace Omniplatformer.Views
             return;
         }
 
-        /*
-        public virtual GameObject onDrag(Point pt)
+        public void onMouseWheelUp(Point pt)
         {
-            foreach(var child in VisibleChildren)
+            foreach (var child in Children.Where(x => x.Visible))
             {
-                if (child.Rect.Contains(pt))
+                if (child.LocalRect.Contains(pt))
                 {
-                    var res = child.onDrag(convertToChildCoords(child, pt));
-                    if (res != null)
-                        return res;
+                    if (child.Node.Overflow == YogaOverflow.Scroll)
+                    {
+                        child.ScrollUp();
+                        return;
+                    }
+                    else
+                        child.onMouseWheelUp(convertToChildCoords(child, pt));
                 }
             }
-            if (IsDragSource)
-            {
-                var obj = DragObject;
-                Drag(this, new EventArgs());
-                DragObject = null;
-                return obj;
-            }
-            return null;
+            MouseWheelUp(this, new MouseEventArgs());
         }
 
-        public virtual bool onDrop(Point pt, GameObject item)
+        public void onMouseWheelDown(Point pt)
         {
-            foreach (var child in VisibleChildren)
+            foreach (var child in Children.Where(x => x.Visible))
             {
-                if (child.Rect.Contains(pt))
+                if (child.LocalRect.Contains(pt))
                 {
-                    if (child.onDrop(convertToChildCoords(child, pt), item))
-                        return true;
+                    if (child.Node.Overflow == YogaOverflow.Scroll)
+                    {
+                        child.ScrollDown();
+                        return;
+                    }
+                    else
+                        child.onMouseWheelDown(convertToChildCoords(child, pt));
                 }
             }
-            if (IsDropTarget)
-            {
-                // TODO: refactor this
-                Drop(this, new DropEventArgs(item));
-                DragObject = item;
-                return true;
-            }
-            return false;
+            MouseWheelDown(this, new MouseEventArgs());
         }
-        */
+
+        public void ScrollUp()
+        {
+            OffsetV += 25;
+            OffsetV = Math.Min(OffsetV, 0);
+        }
+
+        public void ScrollDown()
+        {
+            OffsetV -= 25;
+            int max_offset = (int)Children[Children.Count - 1].Node.LayoutY - Height;
+            OffsetV = Math.Min(0, Math.Max(OffsetV, -max_offset));
+        }
 
         public void onMouseMove(Point pt)
         {
@@ -210,16 +243,25 @@ namespace Omniplatformer.Views
 
         public virtual void DrawSelf()
         {
-
         }
 
         public virtual void Draw()
         {
+            CurrentScissors = GraphicsService.GraphicsDevice.ScissorRectangle;
+            var rect = GlobalRect;
+            rect.Inflate(BorderThickness, BorderThickness);
+            GraphicsService.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(CurrentScissors, rect);
+            var spriteBatch = GraphicsService.Instance;
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, raster);
             DrawSelf();
+            spriteBatch.End();
+            GraphicsService.GraphicsDevice.ScissorRectangle = Rectangle.Intersect(CurrentScissors, GlobalRect);
+
             foreach (var control in VisibleChildren)
             {
                 control.Draw();
             }
+            GraphicsService.GraphicsDevice.ScissorRectangle = CurrentScissors;
         }
 
         public void DrawBorder(Color? color = null)
@@ -237,7 +279,6 @@ namespace Omniplatformer.Views
 
         void IUpdatable.Tick(float dt)
         {
-
         }
     }
 }

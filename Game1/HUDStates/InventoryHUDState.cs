@@ -146,7 +146,7 @@ namespace Omniplatformer.HUDStates
                 {  Keys.Down, (PlayerInventory.MoveDown, noop, false) },
                 {  Keys.C, (Game.CloseChest, noop, false) },
                 {  Keys.Escape, (Game.CloseInventory, noop, false) },
-                {  Keys.I, (Game.CloseInventory, noop, false) }
+                {  Keys.I, (Game.CloseInventory, noop, false) },
             };
         }
     }

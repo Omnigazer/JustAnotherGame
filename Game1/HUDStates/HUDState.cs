@@ -46,6 +46,7 @@ namespace Omniplatformer.HUDStates
         // Internal flags
         // tracks key press/release
         protected static Dictionary<Keys, bool> release_map = new Dictionary<Keys, bool>();
+
         protected bool lmb_pressed;
         protected bool rmb_pressed;
         protected static int last_scroll_value;
@@ -54,12 +55,15 @@ namespace Omniplatformer.HUDStates
 
         public List<string> StatusMessages { get; set; } = new List<string>();
         protected Game1 Game => GameService.Instance;
+
         // Root window
         public Root Root { get; set; }
 
         // Events
         protected event EventHandler<MouseEventArgs> MouseWheelUp = delegate { };
+
         protected event EventHandler<MouseEventArgs> MouseWheelDown = delegate { };
+
         // Keyboard controls
         public Dictionary<Keys, (Action, Action, bool)> Controls { get; set; } = new Dictionary<Keys, (Action, Action, bool)>();
 
@@ -68,13 +72,13 @@ namespace Omniplatformer.HUDStates
             Root = new Root();
         }
 
-        // public static GameObject MouseStorage { get; set; }
-
         public virtual void Draw()
         {
             var spriteBatch = GraphicsService.Instance;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            var (w, h) = Game.RenderSystem.GetResolution();
+            spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, w, h);
             Root.Draw();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             DrawCursor();
             spriteBatch.End();
         }
@@ -161,19 +165,19 @@ namespace Omniplatformer.HUDStates
                 mouse_pos = mouse.Position;
             }
 
-            if(mouse.ScrollWheelValue != last_scroll_value)
+            if (mouse.ScrollWheelValue != last_scroll_value)
             {
                 if (mouse.ScrollWheelValue > last_scroll_value)
-                    MouseWheelUp(this, new MouseEventArgs());
+                    Root.onMouseWheelUp(mouse.Position);
                 else
-                    MouseWheelDown(this, new MouseEventArgs());
+                    Root.onMouseWheelDown(mouse.Position);
                 last_scroll_value = mouse.ScrollWheelValue;
             }
 
             // Left mouse button
             if (mouse.LeftButton == ButtonState.Pressed && !lmb_pressed)
             {
-                if(!lmb_pressed && !rmb_pressed)
+                if (!lmb_pressed && !rmb_pressed)
                     captured_element = Root.onMouseDown(MouseButton.Left, mouse.Position);
                 else
                 {

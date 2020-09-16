@@ -80,8 +80,8 @@ namespace Omniplatformer.HUDStates
             Root.MouseDown += OnMouseDown;
             Root.MouseUp += OnMouseUp;
             Root.MouseMove += OnMouseMove;
-            MouseWheelUp += EditorHUDState_MouseWheelUp;
-            MouseWheelDown += EditorHUDState_MouseWheelDown;
+            Root.MouseWheelUp += EditorHUDState_MouseWheelUp;
+            Root.MouseWheelDown += EditorHUDState_MouseWheelDown;
         }
 
         private void EditorHUDState_MouseWheelDown(object sender, MouseEventArgs e)
@@ -199,6 +199,7 @@ namespace Omniplatformer.HUDStates
         }
 
         #region Tiles
+
         public void DrawCurrentTile()
         {
             Vector2 mouse_coords = Game.RenderSystem.ScreenToGame(mouse_pos);
