@@ -2,10 +2,10 @@
 using Microsoft.Xna.Framework;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Content;
-using Omniplatformer.Objects.Inventory;
+using Omniplatformer.Objects.InventoryNS;
 using Omniplatformer.Services;
 
-namespace Omniplatformer.Views.Inventory
+namespace Omniplatformer.Views.InventoryNS
 {
     public class InventorySlotView : ViewControl
     {

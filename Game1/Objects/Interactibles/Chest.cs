@@ -17,13 +17,13 @@ namespace Omniplatformer.Objects.Interactibles
     class Chest : GameObject
     {
         [JsonIgnore]
-        public Inventory.Inventory Inventory => GetComponent<InventoryComponent>().Inventory;
+        public InventoryNS.Inventory Inventory => GetComponent<InventoryComponent>().Inventory;
 
         public override void InitializeCustomComponents()
         {
             RegisterComponent(new PhysicsComponent());
             RegisterComponent(new RenderComponent(Color.Firebrick));
-            RegisterComponent(new InventoryComponent() { Inventory = Objects.Inventory.Inventory.Create() });
+            RegisterComponent(new InventoryComponent() { Inventory = Objects.InventoryNS.Inventory.Create() });
             RegisterComponent(new InteractibleInventoryComponent());
         }
 

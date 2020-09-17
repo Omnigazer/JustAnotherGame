@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Omniplatformer.Objects.Inventory
+namespace Omniplatformer.Objects.InventoryNS
 {
     public class EquipSlotCollection // : IEnumerable<EquipSlot>
     {

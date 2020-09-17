@@ -1,18 +1,19 @@
 ﻿using Omniplatformer.HUDStates;
 using Omniplatformer.Objects.Items;
 using Omniplatformer.Services;
+using Omniplatformer.Objects.InventoryNS;
 
-namespace Omniplatformer.Views.Inventory
+namespace Omniplatformer.Views.InventoryNS
 {
     /// <summary>
     /// Handles the inventory view logic
     /// </summary>
     public class InventoryView : ViewControl
     {
-        public Objects.Inventory.Inventory Inventory { get; set; }
+        public Inventory Inventory { get; set; }
         public IInventoryController controller;
 
-        public InventoryView(IInventoryController controller, Objects.Inventory.Inventory inventory = null)
+        public InventoryView(IInventoryController controller, Inventory inventory = null)
         {
             this.controller = controller;
             Inventory = inventory;
@@ -25,7 +26,7 @@ namespace Omniplatformer.Views.Inventory
             // Node.Padding = 15;
         }
 
-        public void SetInventory(Objects.Inventory.Inventory inv)
+        public void SetInventory(Inventory inv)
         {
             Inventory = inv;
             if (Inventory != null)

@@ -15,7 +15,7 @@ using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 using Omniplatformer.Objects.Characters;
 using Omniplatformer.Objects.Interactibles;
-using Omniplatformer.Objects.Inventory;
+using Omniplatformer.Objects.InventoryNS;
 using Omniplatformer.Objects.Items;
 using Omniplatformer.Scenes;
 using Omniplatformer.Scenes.Subsystems;

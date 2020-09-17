@@ -11,7 +11,7 @@ using Omniplatformer.Components.Rendering;
 using Omniplatformer.Content;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects.Interactibles;
-using Omniplatformer.Objects.Inventory;
+using Omniplatformer.Objects.InventoryNS;
 using Omniplatformer.Objects.Items;
 using Omniplatformer.Objects.Projectiles;
 using Omniplatformer.Services;
@@ -28,7 +28,7 @@ namespace Omniplatformer.Objects.Characters
         const int inv_frames = 100;
 
         [JsonIgnore]
-        public Inventory.Inventory Inventory => GetComponent<InventoryComponent>().Inventory;
+        public InventoryNS.Inventory Inventory => GetComponent<InventoryComponent>().Inventory;
 
         public Player()
         {
@@ -51,7 +51,7 @@ namespace Omniplatformer.Objects.Characters
             RegisterComponent(new SkillComponent());
             RegisterComponent(new ManaComponent());
             RegisterComponent(new ExperienceComponent());
-            RegisterComponent(new PlayerInventoryComponent() { Inventory = Objects.Inventory.Inventory.Create() });
+            RegisterComponent(new PlayerInventoryComponent() { Inventory = Objects.InventoryNS.Inventory.Create() });
             RegisterComponent(new EquipComponent() { EquipSlots = EquipSlotCollection.Create() });
             var damageable = new HitPointComponent(max_hitpoints) { InvFrames = inv_frames };
             RegisterComponent(damageable);

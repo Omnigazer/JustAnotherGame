@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using Facebook.Yoga;
 using Omniplatformer.Components;
 using Omniplatformer.Components.Rendering;
-using Omniplatformer.Objects.Inventory;
+using Omniplatformer.Objects.InventoryNS;
 using Omniplatformer.Objects.Items;
 using Omniplatformer.Services;
 using Omniplatformer.Views.HUD;
-using Omniplatformer.Views.Inventory;
+using Omniplatformer.Views.InventoryNS;
 using Omniplatformer.Components.Character;
 using Omniplatformer.Content;
 

@@ -7,7 +7,7 @@ using Omniplatformer.Components.Physics;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 using Omniplatformer.Objects.Interactibles;
-using Omniplatformer.Objects.Inventory;
+using Omniplatformer.Objects.InventoryNS;
 using Omniplatformer.Objects.Items;
 
 namespace Omniplatformer.Components.Character

@@ -1,5 +1,5 @@
 ﻿using Omniplatformer.Objects;
-using Omniplatformer.Objects.Inventory;
+using Omniplatformer.Objects.InventoryNS;
 using System;
 using System.Collections.Generic;
 using System.Linq;

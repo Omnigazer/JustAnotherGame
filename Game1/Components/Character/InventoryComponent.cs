@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
-using Omniplatformer.Objects.Inventory;
+using Omniplatformer.Objects.InventoryNS;
 
 namespace Omniplatformer.Components.Character
 {

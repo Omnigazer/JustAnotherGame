@@ -2,11 +2,11 @@
 using Omniplatformer.Content;
 using Omniplatformer.HUDStates;
 using Omniplatformer.Objects.Characters;
-using Omniplatformer.Objects.Inventory;
+using Omniplatformer.Objects.InventoryNS;
 using Omniplatformer.Services;
 using Omniplatformer.Views.BasicControls;
 
-namespace Omniplatformer.Views.Inventory
+namespace Omniplatformer.Views.InventoryNS
 {
     /// <summary>
     /// Handles the character equipment view logic

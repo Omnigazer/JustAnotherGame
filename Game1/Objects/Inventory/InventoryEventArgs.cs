@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Omniplatformer.Objects.Inventory
+namespace Omniplatformer.Objects.InventoryNS
 {
     public class InventoryEventArgs : EventArgs
     {

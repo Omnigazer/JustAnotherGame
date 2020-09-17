@@ -5,7 +5,7 @@ using Omniplatformer.Enums;
 using Omniplatformer.Objects.Items;
 using Omniplatformer.Services;
 
-namespace Omniplatformer.Objects.Inventory
+namespace Omniplatformer.Objects.InventoryNS
 {
     public class Inventory
     {

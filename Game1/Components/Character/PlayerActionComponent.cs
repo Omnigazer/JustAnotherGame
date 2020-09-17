@@ -5,7 +5,7 @@ using Omniplatformer.Components.Rendering;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 using Omniplatformer.Objects.Characters;
-using Omniplatformer.Objects.Inventory;
+using Omniplatformer.Objects.InventoryNS;
 using Omniplatformer.Objects.Items;
 using Omniplatformer.Objects.Projectiles;
 using System;
