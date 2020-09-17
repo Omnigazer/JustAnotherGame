@@ -519,31 +519,6 @@ namespace Omniplatformer
                     return String.Format("invalid args");
             });
 
-            /*
-            console.AddCommand("savegroup", a =>
-            {
-                if (a.Length == 2 && int.TryParse(a[0], out int index))
-                {
-                    string name = a[1];
-                    SaveGroup(name);
-                    return "Group saved.";
-                }
-                else
-                    return String.Format("invalid args");
-            });
-            */
-
-            console.AddCommand("loadgroup", a =>
-            {
-                if (a.Length == 1)
-                {
-                    LoadGroup(a[0]);
-                    return "Loaded.";
-                }
-                else
-                    return String.Format("invalid args");
-            });
-
             console.AddCommand("unloadlevel", a =>
             {
                 if (a.Length == 0)
@@ -566,33 +541,6 @@ namespace Omniplatformer
             string path = String.Format("Content/Data/{0}.json", name);
             MainScene.Save(path);
         }
-
-        /// <summary>
-        /// Load group of objects, or "location"
-        /// </summary>
-        /// <param name="name"></param>
-        public void LoadGroup(string name, Vector2? origin = null)
-        {
-            Log(String.Format("Loading group '{0}'", name));
-            string path = String.Format("Content/Data/{0}.json", name);
-
-            var group = LevelLoader.LoadGroup(path, origin ?? ((PositionComponent)Player).WorldPosition.Coords);
-            foreach (var obj in group)
-            {
-                AddToMainScene(obj);
-                // CurrentLevel.objects.Add(obj);
-            }
-            Groups.Add(name, group);
-        }
-
-        /*
-        public void SaveGroup(string name)
-        {
-            Log(String.Format("Saving group {0}", name));
-            string path = String.Format("Content/Data/{0}.json", name);
-            LevelLoader.SaveGroup(Groups[name], path);
-        }
-        */
 
         #endregion Level code
     }

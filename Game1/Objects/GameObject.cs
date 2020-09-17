@@ -21,8 +21,6 @@ namespace Omniplatformer.Objects
         [JsonIgnore]
         public Scene CurrentScene { get; set; }
 
-        public Guid Id { get; set; }
-
         [JsonProperty]
         protected List<Component> Components { get; set; }
 
@@ -43,7 +41,6 @@ namespace Omniplatformer.Objects
 
         public GameObject()
         {
-            Id = Id == Guid.Empty ? Guid.NewGuid() : Id;
             Components = new List<Component>();
         }
 

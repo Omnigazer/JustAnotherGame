@@ -131,7 +131,6 @@
     <Compile Include="Utility\GridContainer.cs" />
     <Compile Include="Graphics\TileBuffer.cs" />
     <Compile Include="Scenes\Level.cs" />
-    <Compile Include="Utility\LevelLoader.cs" />
     <Compile Include="Objects\Interactibles\Chest.cs" />
     <Compile Include="Objects\Terrain\BackgroundQuad.cs" />
     <Compile Include="Objects\Projectiles\Boulder.cs" />
@@ -184,7 +183,6 @@
     <Compile Include="Objects\Terrain\Liquid.cs" />
     <Compile Include="Enums\ManaType.cs" />
     <Compile Include="Components\Physics\MoveComponent.cs" />
-    <Compile Include="Utility\Deserializer.cs" />
     <Compile Include="Utility\ExtensionClass.cs" />
     <Compile Include="Utility\EventHandlers\MoveEventHandler.cs" />
     <Compile Include="Objects\Characters\Player.cs" />
