@@ -226,7 +226,6 @@ namespace Omniplatformer
         {
             float time_scale = 60.0f / 1000;
             float dt = time_scale * (float)gameTime.ElapsedGameTime.Milliseconds;
-            MainScene.ProcessSubsystems(dt);
             if (!game_paused)
                 MainScene.ProcessSubsystems(dt);
             // TODO: include this as a subsystem
