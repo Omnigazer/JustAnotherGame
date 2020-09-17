@@ -68,9 +68,9 @@ namespace Omniplatformer
         // Events
         public Subject<Inventory> onTargetInventoryOpen = new Subject<Inventory>();
 
-        int CurrentSongIndex { get; set; }
         public Subject<Inventory> onTargetInventoryClosed = new Subject<Inventory>();
 
+        private int CurrentSongIndex { get; set; }
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -293,7 +293,7 @@ namespace Omniplatformer
         }
 
         // TODO: maybe all of these should be "CloseMenu()"
-        public void CloseChar()
+        public void SetDefaultHUD()
         {
             HUDState = defaultHUD;
             Log("Default mode");

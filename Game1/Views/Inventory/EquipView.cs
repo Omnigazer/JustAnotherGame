@@ -47,7 +47,7 @@ namespace Omniplatformer.Views.InventoryNS
             RegisterChild(misc_slots);
         }
 
-        public InventorySlotView BuildEquipSlot(Slot slot)
+        public InventorySlotView BuildEquipSlot(ItemSlot slot)
         {
             var view = new InventorySlotView(slot);
             view.MouseClick += Slot_view_MouseUp;

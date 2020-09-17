@@ -203,7 +203,7 @@
     <Compile Include="Objects\Terrain\MovingPlatform.cs" />
     <Compile Include="Objects\GameObject.cs" />
     <Compile Include="Services\GraphicsService.cs" />
-    <Compile Include="Objects\Items\WieldedItem.cs" />
+    <Compile Include="Objects\Items\WoodenClub.cs" />
     <Compile Include="Utility\RandomGen.cs" />
     <Compile Include="Utility\Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Utility\TileHelper.cs" />

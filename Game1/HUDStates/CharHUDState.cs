@@ -39,7 +39,7 @@ namespace Omniplatformer.HUDStates
             Action noop = delegate { };
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
-                {  Keys.C, (Game.CloseChar, noop, false) }
+                {  Keys.C, (Game.SetDefaultHUD, noop, false) }
             };
         }
     }

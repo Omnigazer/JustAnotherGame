@@ -21,8 +21,8 @@ namespace Omniplatformer.HUDStates
 {
     public interface IInventoryController
     {
-        void OnSlotLeftClick(Slot slot);
-        void OnSlotRightClick(Slot slot);
+        void OnSlotLeftClick(ItemSlot slot);
+        void OnSlotRightClick(ItemSlot slot);
     }
 
     public class InventoryHUDState : HUDState, IInventoryController
@@ -84,7 +84,7 @@ namespace Omniplatformer.HUDStates
             TargetInventoryView.SetInventory(null);
         }
 
-        public void OnSlotLeftClick(Slot slot)
+        public void OnSlotLeftClick(ItemSlot slot)
         {
             if (MouseStorage == null)
                 slot.TakeItem(ref MouseStorage);
@@ -100,7 +100,7 @@ namespace Omniplatformer.HUDStates
                 }
         }
 
-        public void OnSlotRightClick(Slot slot)
+        public void OnSlotRightClick(ItemSlot slot)
         {
             if (MouseStorage == null)
             {
@@ -140,10 +140,6 @@ namespace Omniplatformer.HUDStates
             Action noop = delegate { };
             Controls = new Dictionary<Keys, (Action, Action, bool)>()
             {
-                {  Keys.Left, (PlayerInventory.MoveLeft, noop, false) },
-                {  Keys.Up, (PlayerInventory.MoveUp, noop, false) },
-                {  Keys.Right, (PlayerInventory.MoveRight, noop, false) },
-                {  Keys.Down, (PlayerInventory.MoveDown, noop, false) },
                 {  Keys.C, (Game.CloseChest, noop, false) },
                 {  Keys.Escape, (Game.CloseInventory, noop, false) },
                 {  Keys.I, (Game.CloseInventory, noop, false) },

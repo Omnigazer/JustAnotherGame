@@ -49,9 +49,6 @@ namespace Omniplatformer.Views
         public IEnumerable<ViewControl> VisibleChildren => Children?.Where(x => x.Visible);
         public bool Hover { get; private set; }
         public bool Visible { get => Node.Display == YogaDisplay.Flex; set => Node.Display = value ? YogaDisplay.Flex : YogaDisplay.None; }
-        public bool IsDragSource { get; set; } = false;
-        protected virtual GameObject DragObject { get; set; }
-        public bool IsDropTarget { get; set; } = false;
 
         public virtual bool ConsumesEvents => true;
 

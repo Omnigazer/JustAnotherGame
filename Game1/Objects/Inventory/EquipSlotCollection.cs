@@ -12,7 +12,6 @@ namespace Omniplatformer.Objects.InventoryNS
 
         public EquipSlotCollection()
         {
-
         }
 
         public static EquipSlotCollection Create()
@@ -31,12 +30,12 @@ namespace Omniplatformer.Objects.InventoryNS
             return collection;
         }
 
-        public IEnumerable<Slot> GetSlots()
+        public IEnumerable<ItemSlot> GetSlots()
         {
             yield return ChannelSlot;
             yield return LeftHandSlot;
             yield return RightHandSlot;
-            foreach(var slot in MiscSlots)
+            foreach (var slot in MiscSlots)
             {
                 yield return slot;
             }

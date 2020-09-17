@@ -27,7 +27,7 @@ namespace Omniplatformer.Objects.Interactibles
             RegisterComponent(new InteractibleInventoryComponent());
         }
 
-        public static Chest Create(Vector2 coords, Vector2 halfsize, IEnumerable<WieldedItem> items)
+        public static Chest Create(Vector2 coords, Vector2 halfsize, IEnumerable<WoodenClub> items)
         {
             var chest = new Chest();
             chest.InitializeComponents();
@@ -44,9 +44,9 @@ namespace Omniplatformer.Objects.Interactibles
             return chest;
         }
 
-        public static Chest Create(Vector2 coords, Vector2 halfsize, params WieldedItem[] items)
+        public static Chest Create(Vector2 coords, Vector2 halfsize, params WoodenClub[] items)
         {
-            return Create(coords, halfsize, (IEnumerable<WieldedItem>)items);
+            return Create(coords, halfsize, (IEnumerable<WoodenClub>)items);
         }
     }
 }

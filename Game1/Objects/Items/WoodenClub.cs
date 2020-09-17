@@ -9,15 +9,15 @@ using Omniplatformer.Utility;
 
 namespace Omniplatformer.Objects.Items
 {
-    public class WieldedItem : Item
+    public class WoodenClub : Item
     {
         readonly Vector2 knockback = new Vector2(4, 3);
         readonly Vector2 halfsize = new Vector2(3, 25);
-        readonly string texture = "Textures/cursor2";
+        readonly string texture = "Textures/wooden_club";
 
-        public static WieldedItem Create(int damage)
+        public static WoodenClub Create(int damage)
         {
-            var item = new WieldedItem();
+            var item = new WoodenClub();
             item.InitializeComponents();
             var c = item.GetComponent<DamageHitComponent>();
             c.Damage = damage;
@@ -38,7 +38,7 @@ namespace Omniplatformer.Objects.Items
             // draw-related
             var item_pos = (PositionComponent)this;
             item_pos.SetParent(character, AnchorPoint.RightHand);
-            // character.CurrentScene.RegisterObject(this);
+            character.CurrentScene.RegisterObject(this);
         }
 
         public override void OnUnequip(Character character)
@@ -46,7 +46,7 @@ namespace Omniplatformer.Objects.Items
             SetWielder(null);
             var item_pos = (PositionComponent)this;
             item_pos.ClearParent();
-            // character.CurrentScene.UnregisterObject(this);
+            character.CurrentScene.UnregisterObject(this);
         }
 
         public void SetWielder(GameObject source)

@@ -9,14 +9,11 @@ namespace Omniplatformer.Views.InventoryNS
 {
     public class InventorySlotView : ViewControl
     {
-        public Slot Slot { get; set; }
-        // protected override GameObject DragObject { get => Slot.Item; set => Slot.Item = (WieldedItem)value; }
+        public ItemSlot Slot { get; set; }
 
-        public InventorySlotView(Slot slot)
+        public InventorySlotView(ItemSlot slot)
         {
             Slot = slot;
-            IsDragSource = true;
-            IsDropTarget = true;
         }
 
         private void InventorySlotView_Drag(object sender, EventArgs e)
@@ -34,17 +31,11 @@ namespace Omniplatformer.Views.InventoryNS
         {
             var spriteBatch = GraphicsService.Instance;
             Rectangle outer_rect = GlobalRect;
-            float alpha = Hover || Slot.IsCurrent ? 1 : 0.6f;
+            float alpha = Hover ? 1 : 0.6f;
             // float alpha = 1;
             spriteBatch.Draw(GameContent.Instance.whitePixel, outer_rect, Color.Gray * alpha);
             outer_rect.Inflate(-5, -5);
-            /*
-            if (slot.item != null)
-            {
-                var renderable = (RenderComponent)slot.item;
-                spriteBatch.Draw(renderable.Texture, outer_rect, Color.White);
-            }
-            */
+
             if (Slot.Item != null)
             {
                 var texture = ((RenderComponent)Slot.Item).Texture;

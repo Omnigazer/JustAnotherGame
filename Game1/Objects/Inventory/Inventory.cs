@@ -11,8 +11,7 @@ namespace Omniplatformer.Objects.InventoryNS
     {
         public int Rows => 4;
         public int Cols => 8;
-        public List<InventorySlot> slots = new List<InventorySlot>();
-        public InventorySlot CurrentSlot;
+        public List<ItemSlot> slots = new List<ItemSlot>();
 
         public static Inventory Create()
         {
@@ -20,10 +19,8 @@ namespace Omniplatformer.Objects.InventoryNS
             for (int i = 0; i < inventory.Rows; i++)
                 for (int j = 0; j < inventory.Cols; j++)
                 {
-                    inventory.slots.Add(new InventorySlot(i, j));
+                    inventory.slots.Add(new ItemSlot());
                 }
-            // TODO: make the component ask the inventory about it instead
-            inventory.CurrentSlot = inventory.slots[0];
             return inventory;
         }
 
@@ -32,52 +29,38 @@ namespace Omniplatformer.Objects.InventoryNS
             slots.Find(slot => slot.Item == null).Item = item;
         }
 
-        public void SetCurrentSlot(InventorySlot slot)
+        public ItemSlot GetSlotForItem(string item_id, int count)
         {
-            CurrentSlot.IsCurrent = false;
-            CurrentSlot = slot;
-            slot.IsCurrent = true;
+            // TODO: improve this
+            foreach (var slot in slots)
+            {
+                if (slot.Item != null && slot.Item.ItemId == item_id && slot.Item.Count >= count)
+                    return slot;
+            }
+            return null;
         }
 
-        public InventorySlot GetSlot(int row, int col)
+        public bool HasItem(string item_id, int count)
         {
-            return slots[row * Cols + col];
+            return GetSlotForItem(item_id, count) != null;
         }
 
-        public void MoveLeft()
+        public ItemSlot GetEmptySlot()
         {
-            int row = CurrentSlot.Row, col = CurrentSlot.Column;
-            col = (col - 1 + Cols) % Cols;
-            SetCurrentSlot(GetSlot(row, col));
+            foreach (var slot in slots)
+            {
+                if (slot.Item == null)
+                    return slot;
+            }
+            return null;
         }
 
-        public void MoveUp()
-        {
-            int row = CurrentSlot.Row, col = CurrentSlot.Column;
-            row = (row - 1 + Rows) % Rows;
-            SetCurrentSlot(GetSlot(row, col));
-        }
-
-        public void MoveRight()
-        {
-            int row = CurrentSlot.Row, col = CurrentSlot.Column;
-            col = (col + 1 + Cols) % Cols;
-            SetCurrentSlot(GetSlot(row, col));
-        }
-
-        public void MoveDown()
-        {
-            int row = CurrentSlot.Row, col = CurrentSlot.Column;
-            row = (row + 1 + Rows) % Rows;
-            SetCurrentSlot(GetSlot(row, col));
-        }
     }
 
-    public abstract class Slot
+    public class ItemSlot
     {
         public Item Item { get; set; }
-        public bool IsCurrent { get; set; }
-        protected virtual IEnumerable<Descriptor> AcceptedDescriptors() { return Enumerable.Empty<Descriptor>(); }
+        protected virtual IEnumerable<Descriptor> AcceptedDescriptors() { yield return Descriptor.Item; }
         public bool AcceptsItem(Item item) { return AcceptedDescriptors().Intersect(item.Descriptors).Any(); }
         public virtual void OnItemAdd(Item item) { }
         public virtual void OnItemRemove(Item item) { }
@@ -150,30 +133,7 @@ namespace Omniplatformer.Objects.InventoryNS
         }
     }
 
-    public class InventorySlot : Slot
-    {
-        /// <summary>
-        /// Zero-based slot index
-        /// </summary>
-        public int Column { get; set; }
-
-        public int Row { get; set; }
-
-        public bool IsHovered { get; set; }
-        public bool IsHighlighted => IsCurrent || IsHovered;
-        protected override IEnumerable<Descriptor> AcceptedDescriptors()
-        {
-            yield return Descriptor.Item;
-        }
-
-        public InventorySlot(int row, int column)
-        {
-            Row = row;
-            Column = column;
-        }
-    }
-
-    public class EquipSlot : Slot
+    public class EquipSlot : ItemSlot
     {
         protected override IEnumerable<Descriptor> AcceptedDescriptors()
         {
@@ -209,7 +169,7 @@ namespace Omniplatformer.Objects.InventoryNS
         }
     }
 
-    public class MiscSlot : Slot
+    public class MiscSlot : ItemSlot
     {
         protected override IEnumerable<Descriptor> AcceptedDescriptors()
         {
@@ -227,7 +187,7 @@ namespace Omniplatformer.Objects.InventoryNS
         }
     }
 
-    public class ChannelSlot : Slot
+    public class ChannelSlot : ItemSlot
     {
         protected override IEnumerable<Descriptor> AcceptedDescriptors()
         {

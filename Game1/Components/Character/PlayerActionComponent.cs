@@ -32,7 +32,7 @@ namespace Omniplatformer.Components.Character
         public Dictionary<Skill, int> Skills => GetComponent<SkillComponent>()?.Skills;
 
         [JsonIgnore]
-        public WieldedItem WieldedItem => (WieldedItem)EquipSlots.RightHandSlot.Item;
+        public WoodenClub WieldedItem => (WoodenClub)EquipSlots.RightHandSlot.Item;
 
         [JsonIgnore]
         public EquipSlotCollection EquipSlots => GetComponent<EquipComponent>().EquipSlots;
@@ -41,7 +41,7 @@ namespace Omniplatformer.Components.Character
         {
         }
 
-        public void PerformItemAction(WieldedItem item, bool is_down)
+        public void PerformItemAction(WoodenClub item, bool is_down)
         {
             if (!is_down)
             {
@@ -65,7 +65,6 @@ namespace Omniplatformer.Components.Character
                             EquipLocked = false;
                         });
                 drawable.StartAnimation(AnimationType.Attack, 10);
-                // drawable.StartAnimation(Animation.Attack, 10);
             }
         }
 
