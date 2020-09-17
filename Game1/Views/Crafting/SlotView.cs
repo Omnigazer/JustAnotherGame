@@ -7,17 +7,13 @@ using Omniplatformer.Services;
 
 namespace Omniplatformer.Views.InventoryNS
 {
-    public class InventorySlotView : ViewControl
+    public class SlotView : ViewControl
     {
         public ItemSlot Slot { get; set; }
 
-        public InventorySlotView(ItemSlot slot)
+        public SlotView(ItemSlot slot)
         {
             Slot = slot;
-        }
-
-        private void InventorySlotView_Drag(object sender, EventArgs e)
-        {
         }
 
         public override void SetupNode()
@@ -35,15 +31,16 @@ namespace Omniplatformer.Views.InventoryNS
             // float alpha = 1;
             spriteBatch.Draw(GameContent.Instance.whitePixel, outer_rect, Color.Gray * alpha);
             outer_rect.Inflate(-5, -5);
-
             if (Slot.Item != null)
             {
                 var texture = ((RenderComponent)Slot.Item).Texture;
                 spriteBatch.Draw(texture, outer_rect, Color.White);
-                outer_rect.Inflate(-10, -20);
-                var count = Slot.Item.Count;
+                int count = Slot.Item.Count;
                 if (count != 1)
+                {
+                    outer_rect.Inflate(-10, -20);
                     spriteBatch.DrawString(GameContent.Instance.defaultFont, count.ToString(), new Vector2(outer_rect.Right, outer_rect.Bottom), Color.White);
+                }
             }
         }
     }

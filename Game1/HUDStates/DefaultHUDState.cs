@@ -59,6 +59,7 @@ namespace Omniplatformer.HUDStates
                 {  Keys.I, (Game.OpenInventory, noop, false) },
                 {  Keys.Z, (Game.Fire, noop, false) },
                 {  Keys.C, (Game.OpenChar, noop, false) },
+                {  Keys.B, (Game.OpenCraft, noop, false) },
                 {  Keys.E, (Game.Interact, noop, false) },
                 {  Keys.OemMinus, (Game.ZoomOut, noop, true) },
                 {  Keys.OemPlus, (Game.ZoomIn, noop, true) },

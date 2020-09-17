@@ -58,6 +58,7 @@ namespace Omniplatformer
         private HUDState inventoryHUD;
         private EditorHUDState editorHUD;
         private HUDState charHUD;
+        private HUDState craftHUD;
         private bool game_over;
         private bool game_paused;
 
@@ -94,6 +95,7 @@ namespace Omniplatformer
             defaultHUD = new DefaultHUDState();
             inventoryHUD = new InventoryHUDState(Player.Inventory);
             charHUD = new CharHUDState();
+            craftHUD = new CraftHUDState(Player.Inventory);
             editorHUD = new EditorHUDState();
             HUDState = defaultHUD;
         }
@@ -289,6 +291,12 @@ namespace Omniplatformer
         {
             HUDState = charHUD;
             Log("Char mode");
+        }
+
+        public void OpenCraft()
+        {
+            HUDState = craftHUD;
+            Log("Craft mode");
         }
 
         // TODO: maybe all of these should be "CloseMenu()"

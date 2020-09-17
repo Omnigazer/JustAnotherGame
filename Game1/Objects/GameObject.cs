@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.Serialization;
@@ -99,6 +100,27 @@ namespace Omniplatformer.Objects
 
         public virtual void OnCompile()
         {
+        }
+
+        public GameObject Clone()
+        {
+            using (MemoryStream ms = new MemoryStream(65536))
+            using (StreamWriter sw = new StreamWriter(ms) { AutoFlush = true })
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+                serializer.PreserveReferencesHandling = PreserveReferencesHandling.All;
+                serializer.TypeNameHandling = TypeNameHandling.All;
+                serializer.Serialize(writer, this);
+                using (StreamReader sr = new StreamReader(ms))
+                using (JsonReader reader = new JsonTextReader(sr))
+                {
+                    ms.Seek(0, SeekOrigin.Begin);
+                    var obj = (GameObject)serializer.Deserialize(reader);
+                    return obj;
+                }
+            }
         }
 
         //[OnDeserialized]

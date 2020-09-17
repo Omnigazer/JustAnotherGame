@@ -1,6 +1,8 @@
-﻿namespace Omniplatformer.Views.BasicControls
+﻿using Microsoft.Xna.Framework;
+
+namespace Omniplatformer.Views.BasicControls
 {
-    public class Column: ViewControl
+    public class Column : ViewControl
     {
         public Column()
         {

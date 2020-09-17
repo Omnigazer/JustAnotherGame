@@ -16,6 +16,7 @@ using Omniplatformer.Views.HUD;
 using Omniplatformer.Views.InventoryNS;
 using Omniplatformer.Components.Character;
 using Omniplatformer.Content;
+using Omniplatformer.Components.Items;
 
 namespace Omniplatformer.HUDStates
 {
@@ -70,6 +71,21 @@ namespace Omniplatformer.HUDStates
             Root.RegisterChild(PlayerInventoryView);
             Root.RegisterChild(TargetInventoryView);
             Root.RegisterChild(EquipView);
+            Root.MouseClick += (sender, e) =>
+            {
+                ConsumeCursorItem();
+            };
+        }
+
+        private void ConsumeCursorItem()
+        {
+            var consumable = MouseStorage?.GetComponent<ConsumableComponent>();
+            if (consumable != null)
+            {
+                consumable.ApplyEffect();
+                if (--MouseStorage.Count == 0)
+                    MouseStorage = null;
+            }
         }
 
         private void onTargetInventoryOpen(Inventory inv)

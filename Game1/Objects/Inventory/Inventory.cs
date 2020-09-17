@@ -65,6 +65,17 @@ namespace Omniplatformer.Objects.InventoryNS
         public virtual void OnItemAdd(Item item) { }
         public virtual void OnItemRemove(Item item) { }
 
+        /// <summary>
+        /// Destroys the specified number of items in the inventory
+        /// </summary>
+        /// <param name="count"></param>
+        public void DrainItem(int count)
+        {
+            Item.Count -= count;
+            if (Item.Count == 0)
+                Item = null;
+        }
+
         public void TakeItem(ref Item item)
         {
             item = Item;
@@ -91,7 +102,7 @@ namespace Omniplatformer.Objects.InventoryNS
 
         public void SplitStack(ref Item item)
         {
-            item = Item.Copy();
+            item = (Item)Item.Clone();
             var count = Item.Count / 2;
             if (count == 0)
                 count++;
@@ -106,7 +117,7 @@ namespace Omniplatformer.Objects.InventoryNS
 
         public void PutFirstItem(ref Item item)
         {
-            Item = item.Copy();
+            Item = (Item)item.Clone();
             Item.Count = 1;
             item.Count--;
             if (item.Count <= 0)

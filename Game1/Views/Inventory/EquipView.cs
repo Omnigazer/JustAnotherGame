@@ -15,6 +15,7 @@ namespace Omniplatformer.Views.InventoryNS
     {
         EquipSlotCollection EquipSlots { get; set; }
         IInventoryController controller;
+        public override bool ConsumesEvents => false;
 
         public EquipView(IInventoryController controller, EquipSlotCollection equip_slots)
         {

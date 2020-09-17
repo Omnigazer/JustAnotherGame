@@ -1,4 +1,5 @@
 ﻿using Omniplatformer.Enums;
+using System;
 
 namespace Omniplatformer.Objects.Items
 {
@@ -18,12 +19,5 @@ namespace Omniplatformer.Objects.Items
         public virtual void OnUnequip(Character character) { }
 
         public string ItemId => GetType().ToString();
-
-        public Item Copy()
-        {
-            var item = (Item)MemberwiseClone();
-            item.InitializeComponents();
-            return item;
-        }
     }
 }

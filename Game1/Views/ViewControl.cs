@@ -163,7 +163,8 @@ namespace Omniplatformer.Views
         public void ScrollDown()
         {
             OffsetV -= 25;
-            int max_offset = (int)Children[Children.Count - 1].Node.LayoutY - Height;
+            var last_child = Children[Children.Count - 1];
+            int max_offset = (int)last_child.Node.LayoutY + last_child.Height - Height;
             OffsetV = Math.Min(0, Math.Max(OffsetV, -max_offset));
         }
 
