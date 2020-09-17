@@ -313,7 +313,7 @@ namespace Omniplatformer
         {
             var player_pos = (PositionComponent)Player;
 
-            var obj = PhysicsSystem.GetOverlappingObjects(player_pos).First(x => x.GetComponent<InteractibleComponent>() != null);
+            var obj = PhysicsSystem.GetOverlappingObjects(player_pos).FirstOrDefault(x => x.GetComponent<InteractibleComponent>() != null);
             if (obj != null)
             {
                 obj.GetComponent<InteractibleComponent>().Interact();
