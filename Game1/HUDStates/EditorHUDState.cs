@@ -152,6 +152,7 @@ namespace Omniplatformer.HUDStates
                 new ForegroundQuadFactory(),
                 new GoblinFactory(),
                 new GoblinShamanFactory(),
+                new BushFactory()
             };
         }
 

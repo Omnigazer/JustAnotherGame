@@ -87,6 +87,7 @@
     <Compile Include="HUDStates\CraftHUDState.cs" />
     <Compile Include="HUDStates\Editor\Factories\EditorFactory .cs" />
     <Compile Include="HUDStates\Editor\Factories\ForegroundQuadFactory.cs" />
+    <Compile Include="HUDStates\Editor\Factories\BushFactory.cs" />
     <Compile Include="HUDStates\Editor\Factories\LiquidFactory.cs" />
     <Compile Include="HUDStates\Editor\Factories\SolidPlatformFactory.cs" />
     <Compile Include="HUDStates\Editor\Factories\GoblinShamanFactory.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Components\DamageHitComponent.cs" />
     <Compile Include="Components\HitComponent.cs" />
     <Compile Include="Enums\Skill.cs" />
+    <Compile Include="Objects\Interactibles\Bush.cs" />
     <Compile Include="Objects\Inventory\EquipSlotCollection.cs" />
     <Compile Include="HUDStates\EditorHUDState.cs" />
     <Compile Include="HUDStates\DefaultHUDState.cs" />
