@@ -78,6 +78,7 @@ namespace Omniplatformer
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Content.RootDirectory = "Content";
             // IsFixedTimeStep = false;
+            // graphics.SynchronizeWithVerticalRetrace = false;
         }
 
         /// <summary>
@@ -115,6 +116,17 @@ namespace Omniplatformer
             MainScene.Subsystems.Add(MainScene.PhysicsSystem);
             MainScene.Subsystems.Add(new SimulationSystem());
             MainScene.Load("default_level");
+
+            /*
+            var tilemap = new TileMap();
+            MainScene.RegisterObject(tilemap);
+            MainScene.TileMap = tilemap;
+            Player player = Player.Create();
+            MainScene.RegisterObject(player);
+            player.GetComponent<PositionComponent>().SetWorldCenter(new Vector2(25000, 25000));
+            RenderSystem.CurrentBackground = GameContent.Instance.background;
+            */
+
             // TODO: extract this
             Player.GetComponent<DestructibleComponent>().OnDestroy.Take(1).Subscribe((obj) => GameOver());
         }
@@ -123,6 +135,7 @@ namespace Omniplatformer
         {
             game_paused = !game_paused;
         }
+
         private void GameOver()
         {
             game_over = true;
@@ -226,8 +239,9 @@ namespace Omniplatformer
 
         public void Simulate(GameTime gameTime)
         {
-            float time_scale = 60.0f / 1000;
-            float dt = time_scale * (float)gameTime.ElapsedGameTime.Milliseconds;
+            float time_scale = 60.0f / 1000_0000;
+            // float dt = time_scale * (float)gameTime.ElapsedGameTime.Milliseconds;
+            float dt = time_scale * gameTime.ElapsedGameTime.Ticks;
             if (!game_paused)
                 MainScene.ProcessSubsystems(dt);
             // TODO: include this as a subsystem
@@ -484,6 +498,17 @@ namespace Omniplatformer
                 return String.Format("invalid args");
             });
 
+            console.AddCommand("moveto", a =>
+            {
+                if (a.Length == 2)
+                {
+                    int first = int.Parse(a[0]), second = int.Parse(a[1]);
+                    var pos = Player.GetComponent<PositionComponent>();
+                    pos.SetLocalCenter(new Vector2(first * PhysicsSystem.TileSize, second * PhysicsSystem.TileSize));
+                }
+                return String.Format("invalid args");
+            });
+
             console.AddCommand("savelevel", a =>
             {
                 if (a.Length == 1)
@@ -542,6 +567,7 @@ namespace Omniplatformer
         #endregion Console
 
         #region Level code
+
         public void SaveLevel(string name)
         {
             Log("Saving level");
