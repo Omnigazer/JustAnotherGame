@@ -117,6 +117,7 @@
     <Compile Include="Objects\Items\Recipes\ItemRecipe.cs" />
     <Compile Include="Objects\Items\WoodenStick.cs" />
     <Compile Include="Utility\Extensions\GameObjectExtensions.cs" />
+    <Compile Include="Utility\JsonConverters\TextureConverter.cs" />
     <Compile Include="Views\BasicControls\Label.cs" />
     <Compile Include="Views\Crafting\CraftView.cs" />
     <Compile Include="Views\Character\CharView.cs" />

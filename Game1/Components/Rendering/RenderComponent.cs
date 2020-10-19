@@ -7,6 +7,7 @@ using Omniplatformer.Content;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 using Omniplatformer.Services;
+using Omniplatformer.Utility.JsonConverters;
 
 namespace Omniplatformer.Components.Rendering
 {
@@ -17,21 +18,9 @@ namespace Omniplatformer.Components.Rendering
         public Color DefaultColor { get; set; } = Color.White;
         public Color Color { get; set; }
         public float Opacity { get; set; } = 1;
-        [JsonProperty]
-        string texture_path;
-        Texture2D _texture;
-        [JsonIgnore]
-        public Texture2D Texture {
-            get {
-                if (texture_path == null)
-                    return GameContent.Instance.whitePixel;
-                if (_texture == null)
-                    _texture = GameContent.Instance.Load(texture_path);
-                return _texture;
-            }
-        }
-        // offset, size
-        public (Vector2, Vector2) TexBounds { get; set; } = (Vector2.Zero, new Vector2(1));
+
+        [JsonProperty, JsonConverter(typeof(TextureConverter))]
+        public Texture2D Texture { get; set; }
         public bool Tiled { get; set; }
         // public PositionComponent pos { get; set; }
         PositionComponent _pos;
@@ -50,7 +39,7 @@ namespace Omniplatformer.Components.Rendering
         public RenderComponent(Color color, string texture = null, int z_index = 0, bool tiled = false)
         {
             Color = DefaultColor = color;
-            texture_path = texture;
+            Texture = GameContent.Instance.Load(texture);
             ZIndex = z_index;
             Tiled = tiled;
         }

@@ -48,6 +48,8 @@ namespace Omniplatformer.Content
         public static GameContent Instance { get; private set; }
         private ContentManager Content { get; set; }
 
+        public Dictionary<string, Texture2D> TextureCache = new Dictionary<string, Texture2D>();
+
         public static void Init(ContentManager content)
         {
             Instance = new GameContent(content);
@@ -55,7 +57,13 @@ namespace Omniplatformer.Content
 
         public Texture2D Load(string path)
         {
-            return Content.Load<Texture2D>(path);
+            if (path == null)
+                return null;
+            if (!TextureCache.ContainsKey(path))
+            {
+                TextureCache.Add(path, Content.Load<Texture2D>(path));
+            }
+            return TextureCache[path];
         }
 
         private GameContent(ContentManager content)
