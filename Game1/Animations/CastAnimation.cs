@@ -14,11 +14,9 @@ namespace Omniplatformer.Animations
     /// </summary>
     public class CastAnimation : Animation
     {
-        public override AnimationType AnimationType => AnimationType.Cast;
-
         public CastAnimation(AnimatedRenderComponent drawable) : base(drawable)
         {
-
+            AnimationType = AnimationType.Cast;
         }
     }
 }

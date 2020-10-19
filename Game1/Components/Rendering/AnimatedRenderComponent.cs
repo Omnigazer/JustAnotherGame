@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Omniplatformer.Animations;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
+using Omniplatformer.Services;
 using Omniplatformer.Utility.Extensions;
 
 namespace Omniplatformer.Components.Rendering
@@ -20,6 +21,8 @@ namespace Omniplatformer.Components.Rendering
 
         public AnimatedRenderComponent() { }
         public AnimatedRenderComponent(Color color, string texture = null, int z_index = 0) : base(color, texture, z_index) { }
+
+        public Rectangle? Rect { get; set; }
 
         public void AddAnimation(Animation animation)
         {
@@ -56,6 +59,24 @@ namespace Omniplatformer.Components.Rendering
             {
                 animation.Tick(dt);
             }
+        }
+
+        public override void Draw()
+        {
+            var texture = getCurrentSprite();
+            var frame_rect = Rect;
+
+            var rect = pos.GetRectangle();
+            GraphicsService.DrawGame(
+                texture,
+                rect,
+                GetColor() * Opacity,
+                rotation: pos.WorldPosition.RotationAngle,
+                clamped_origin: pos.WorldPosition.Origin,
+                tiled: Tiled,
+                flipped: pos.WorldPosition.FaceDirection == HorizontalDirection.Left,
+                source_rect: frame_rect
+            );
         }
     }
 }

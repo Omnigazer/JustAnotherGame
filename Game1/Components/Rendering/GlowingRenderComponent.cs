@@ -14,6 +14,10 @@ namespace Omniplatformer.Components.Rendering
         public GlowingRenderComponent() { }
         public GlowingRenderComponent(Color color, string texture = null, int z_index = 0) : base(color, texture, z_index) { }
 
+        public override void Draw()
+        {
+        }
+
         public override void DrawToLightMask()
         {
             var positionable = GetComponent<PositionComponent>();

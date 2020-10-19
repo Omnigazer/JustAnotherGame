@@ -1,4 +1,5 @@
-﻿using Omniplatformer.Components.Character;
+﻿using Newtonsoft.Json;
+using Omniplatformer.Components.Character;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Enums;
@@ -16,7 +17,9 @@ namespace Omniplatformer.Components
 {
     public class CastAttackComponent : RangedAttackComponent
     {
+        [JsonProperty]
         SpellComponent Spell { get; set; }
+
         public CastAttackComponent(SpellComponent spell)
         {
             Spell = spell;

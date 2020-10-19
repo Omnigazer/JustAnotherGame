@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Omniplatformer.Components.Character;
 using Omniplatformer.Components.Interactibles;
@@ -16,6 +17,7 @@ namespace Omniplatformer.Objects.Interactibles
 {
     class Bush : GameObject
     {
+        [JsonIgnore]
         public InventoryNS.Inventory Inventory => GetComponent<InventoryComponent>().Inventory;
 
         public override void InitializeCustomComponents()

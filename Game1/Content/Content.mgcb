@@ -275,6 +275,18 @@
 /processorParam:TextureFormat=Color
 /build:Textures/distortmask.png
 
+#begin Textures/fire_bolt.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/fire_bolt.png
+
 #begin Textures/healthBarLightMask.png
 /importer:TextureImporter
 /processor:TextureProcessor

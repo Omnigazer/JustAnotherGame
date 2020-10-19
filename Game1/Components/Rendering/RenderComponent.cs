@@ -15,17 +15,22 @@ namespace Omniplatformer.Components.Rendering
     {
         // public bool Hidden;
         public int ZIndex { get; set; } = Layers.Default;
+
         public Color DefaultColor { get; set; } = Color.White;
         public Color Color { get; set; }
         public float Opacity { get; set; } = 1;
 
         [JsonProperty, JsonConverter(typeof(TextureConverter))]
         public Texture2D Texture { get; set; }
+
         public bool Tiled { get; set; }
+
         // public PositionComponent pos { get; set; }
         PositionComponent _pos;
+
         [JsonIgnore]
-        public PositionComponent pos {
+        public PositionComponent pos
+        {
             get
             {
                 if (_pos == null)

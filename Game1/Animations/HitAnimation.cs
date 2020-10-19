@@ -12,11 +12,9 @@ namespace Omniplatformer.Animations
 {
     public class HitAnimation : Animation
     {
-        public override AnimationType AnimationType => AnimationType.Hit;
-
         public HitAnimation(AnimatedRenderComponent drawable) : base(drawable)
         {
-
+            AnimationType = AnimationType.Hit;
         }
 
         public override void End()

@@ -49,6 +49,7 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Animations\SpritesheetAnimation.cs" />
     <Compile Include="Animations\AnimationState.cs" />
     <Compile Include="Animations\Animation.cs" />
     <Compile Include="Animations\CastAnimation.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Components\Interactibles\InteractibleComponent.cs" />
     <Compile Include="Components\Items\HealingConsumableComponent.cs" />
     <Compile Include="Components\Items\ConsumableComponent.cs" />
+    <Compile Include="Components\Rendering\LoopMode.cs" />
     <Compile Include="Components\Rendering\LiquidRenderComponent.cs" />
     <Compile Include="Components\Spells\FireBoltSpellComponent.cs" />
     <Compile Include="Components\Spells\SpellComponent.cs" />
@@ -217,8 +219,6 @@
     <Compile Include="Objects\Items\WoodenClub.cs" />
     <Compile Include="Utility\RandomGen.cs" />
     <Compile Include="Utility\Extensions\SpriteBatchExtensions.cs" />
-    <Compile Include="Utility\TileHelper.cs" />
-    <Compile Include="Utility\LegacyTileHelper.cs" />
     <Compile Include="Objects\TileRegion.cs" />
   </ItemGroup>
   <ItemGroup>

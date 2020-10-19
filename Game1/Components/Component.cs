@@ -13,17 +13,9 @@ namespace Omniplatformer.Components
     public abstract class Component
     {
         public GameObject GameObject { get; set; }
+
         [JsonIgnore]
         public Scene Scene => GameObject.CurrentScene;
-        JsonSerializerSettings settings;
-
-        public Component()
-        {
-            settings = new JsonSerializerSettings()
-            {
-                PreserveReferencesHandling = PreserveReferencesHandling.All
-            };
-        }
 
         public T GetComponent<T>() where T : Component
         {

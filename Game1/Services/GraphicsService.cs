@@ -6,8 +6,10 @@ namespace Omniplatformer.Services
     public static class GraphicsService
     {
         static Game1 game;
+
         // public static RenderSystem RenderSystem => game.RenderSystem;
         public static SpriteBatch Instance { get; private set; }
+
         public static GraphicsDevice GraphicsDevice => game.GraphicsDevice;
 
         public static void Init(SpriteBatch spriteBatch, Game1 game)
@@ -40,16 +42,15 @@ namespace Omniplatformer.Services
                 // bounds.Inflate(0 * bounds.Width, 0 * bounds.Height);
             }
 
-
             // var origin = new Vector2(texture.Bounds.Width * clamped_origin.X, texture.Bounds.Height * clamped_origin.Y);
             var origin = new Vector2(bounds.Width * clamped_origin.X, bounds.Height * clamped_origin.Y);
             bounds = source_rect ?? bounds;
             var screen_rect = rect;// game.GameToScreen(rect, clamped_origin);
-            //if (origin.Length() > 0)
-               // screen_rect.Offset(rect.Size.X * clamped_origin.X, rect.Size.Y * clamped_origin.Y);
-            // if (clamped_origin.Length() > 0) { if (origin.Length() > 0) { } }
-            // var bounds = texture.Bounds;
-            // bounds.Inflate((x_tiles - 1) * bounds.Width,  (y_tiles - 1) * bounds.Height);
+                                   //if (origin.Length() > 0)
+                                   // screen_rect.Offset(rect.Size.X * clamped_origin.X, rect.Size.Y * clamped_origin.Y);
+                                   // if (clamped_origin.Length() > 0) { if (origin.Length() > 0) { } }
+                                   // var bounds = texture.Bounds;
+                                   // bounds.Inflate((x_tiles - 1) * bounds.Width,  (y_tiles - 1) * bounds.Height);
             Instance.Draw(texture: texture, destinationRectangle: screen_rect, color: color, rotation: rotation, origin: origin,
                 effects: SpriteEffects.None, layerDepth: 0, sourceRectangle: bounds); // default parameters
         }
@@ -64,10 +65,9 @@ namespace Omniplatformer.Services
                 // bounds.Inflate(0 * bounds.Width, 0 * bounds.Height);
             }
 
-
             // var origin = new Vector2(texture.Bounds.Width * clamped_origin.X, texture.Bounds.Height * clamped_origin.Y);
-            var origin = new Vector2(bounds.Width * clamped_origin.X, bounds.Height * clamped_origin.Y);
             bounds = source_rect ?? bounds;
+            var origin = new Vector2(bounds.Width * clamped_origin.X, bounds.Height * clamped_origin.Y);
             var screen_rect = GameToScreen(rect, clamped_origin);
             if (origin.Length() > 0)
                 screen_rect.Offset(rect.Size.X * clamped_origin.X, rect.Size.Y * clamped_origin.Y);
