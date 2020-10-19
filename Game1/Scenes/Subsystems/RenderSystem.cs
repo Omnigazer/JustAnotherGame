@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -119,16 +120,18 @@ namespace Omniplatformer.Scenes.Subsystems
 
         public void RegisterObject(GameObject obj)
         {
-            var drawable = (RenderComponent)obj;
-            if (drawable != null)
-                RegisterDrawable(drawable);
+            foreach (RenderComponent c in obj.Components.Where(comp => comp is RenderComponent))
+            {
+                RegisterDrawable(c);
+            }
         }
 
         public void UnregisterObject(GameObject obj)
         {
-            var drawable = (RenderComponent)obj;
-            if (drawable != null)
-                RemoveFromDrawables(drawable);
+            foreach (RenderComponent c in obj.Components.Where(comp => comp is RenderComponent))
+            {
+                RemoveFromDrawables(c);
+            }
         }
 
         public void RegisterDrawable(RenderComponent drawable)

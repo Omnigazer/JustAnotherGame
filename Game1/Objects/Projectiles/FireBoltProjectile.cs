@@ -26,6 +26,7 @@ namespace Omniplatformer.Objects.Projectiles
             var c = new AnimatedRenderComponent(Color.White, "Textures/fire_bolt");
             c.AddAnimation(new Animations.SpritesheetAnimation(c) { AnimationType = Enums.AnimationType.Default, MaxFrames = 22, Columns = 4, Mode = LoopMode.Loop, Texture = GameContent.Instance.Load("Textures/fire_bolt") });
             c.StartAnimation(Enums.AnimationType.Default, 20);
+            RegisterComponent(new GlowingRenderComponent());
             RegisterComponent(c);
             RegisterComponent(new DamageHitComponent(damage: 4));
             RegisterComponent(new DestructibleComponent());

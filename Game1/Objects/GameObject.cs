@@ -23,7 +23,7 @@ namespace Omniplatformer.Objects
         public Scene CurrentScene { get; set; }
 
         [JsonProperty]
-        protected List<Component> Components { get; set; }
+        public List<Component> Components { get; set; }
 
         protected Team _team;
         public Team Team { get => Source._team; set => _team = value; }
