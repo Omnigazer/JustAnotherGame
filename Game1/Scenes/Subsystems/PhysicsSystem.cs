@@ -152,7 +152,7 @@ namespace Omniplatformer.Scenes.Subsystems
                     return;
 
                 // TODO: remove this workaround
-                if (obj.Solid)
+                if (obj.ShouldImpactObject(other_obj, collision_direction))
                     ApplyCollisionResponse(obj, other_obj, other_obj.WorldPosition, collision_direction);
                 obj.ProcessCollision(collision_direction, other_obj);
             }

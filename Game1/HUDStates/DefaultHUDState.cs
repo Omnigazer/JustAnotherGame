@@ -53,7 +53,7 @@ namespace Omniplatformer.HUDStates
                 {  Keys.Pause, (Game.TogglePause, noop, false) },
                 {  Keys.A, (Game.WalkLeft, noop, true) },
                 {  Keys.D, (Game.WalkRight, noop, true) },
-                {  Keys.S, (Game.Duck, Game.Stand, false) },
+                {  Keys.S, (Game.Crouch, Game.Stand, false) },
                 {  Keys.W, (Game.GoUp, noop, true) },
                 {  Keys.Space, (Game.Jump, Game.StopJumping, false) },
                 {  Keys.I, (Game.OpenInventory, noop, false) },

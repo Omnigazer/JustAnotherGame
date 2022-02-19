@@ -378,7 +378,7 @@ namespace Omniplatformer
             }
             else
             {
-                Duck();
+                Crouch();
             }
             movable.MoveDirection = Direction.Down;
         }
@@ -392,7 +392,13 @@ namespace Omniplatformer
         public void Jump()
         {
             var movable = (PlayerMoveComponent)Player;
-            movable.Jump();
+            if (movable.IsCrouching)
+            {
+                movable.StartDropping();
+                movable.Stand();
+            }
+            else
+                movable.Jump();
         }
 
         public void StopJumping()
@@ -406,16 +412,17 @@ namespace Omniplatformer
             Player.GetComponent<PlayerActionComponent>().Fire();
         }
 
-        public void Stand()
+        public void Crouch()
         {
-            var x = (PositionComponent)Player;
-            x.SetLocalHalfsize(x.WorldPosition.Halfsize * 2);
+            var movable = (PlayerMoveComponent)Player;
+            movable.Crouch();
         }
 
-        public void Duck()
+        public void Stand()
         {
-            var x = (PositionComponent)Player;
-            x.SetLocalHalfsize(x.WorldPosition.Halfsize / 2);
+            var movable = (PlayerMoveComponent)Player;
+            movable.IsDropping = false;
+            movable.Stand();
         }
 
         // fps is assumed to be 30 while we're tick-based

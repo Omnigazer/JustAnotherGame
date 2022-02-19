@@ -8,28 +8,27 @@ namespace Omniplatformer.Components.Physics
 {
     public class PlayerMoveComponent : CharMoveComponent
     {
-        // Movement constants
+        /* Movement constants */
         const float jump_accel = 4;
-
         const float max_jumpspeed = 24;
         const float soft_jump_cap = 0.3f * max_jumpspeed;
 
-        // Movement dynamic caps
+        /* Movement dynamic caps */
         public int max_jumps = 2;
-
         public int max_jump_time = 9; // Max jump time
         const int wall_jump_pin_ticks = 1; // Time required to be spent against the wall to walljump
 
-        // Movement counters
+        /* Movement counters */
         public int remaining_jumps;
-
         public float current_jump_time;
         public float current_pin_time; // represents time spent against a wall or a climbable object, such as a rope
+        int drop_transparency_counter; // checks how many frames player has been inside a drop-platform
 
-        // public bool CanClimb { get; set; }
+        /* Movement flags */
         public bool IsClimbing { get; set; }
-
         public bool IsJumping { get; set; }
+        public bool IsCrouching { get; set; }
+        public bool IsDropping { get; set; }
 
         public float ChassisSpeed { get; set; }
 
@@ -101,6 +100,16 @@ namespace Omniplatformer.Components.Physics
             IsClimbing = false;
         }
 
+        public void StartDropping()
+        {
+            IsDropping = true;
+        }
+
+        public void StopDropping()
+        {
+            IsDropping = false;
+        }
+
         public void Jump()
         {
             if (CanJump() && !IsJumping)
@@ -119,6 +128,24 @@ namespace Omniplatformer.Components.Physics
                 // ClearCurrentPlatform();
                 remaining_jumps--;
             }
+        }
+
+        public void Crouch()
+        {
+            if (IsCrouching)
+                return;
+
+            IsCrouching = true;
+            SetLocalHalfsize(WorldPosition.Halfsize / 2);
+        }
+
+        public void Stand()
+        {
+            if (!IsCrouching)
+                return;
+
+            IsCrouching = false;
+            SetLocalHalfsize(WorldPosition.Halfsize * 2);
         }
 
         public void StopJumping()
@@ -140,30 +167,47 @@ namespace Omniplatformer.Components.Physics
         public override void ResetCollisionFlags()
         {
             CanClimb = false;
+            if (drop_transparency_counter > 0)
+                drop_transparency_counter--;
             base.ResetCollisionFlags();
         }
 
-        public override void ProcessCollision(Direction direction, PhysicsComponent obj)
+        public override bool ShouldImpactObject(PhysicsComponent target, Direction dir)
         {
-            base.ProcessCollision(direction, obj);
-            // TODO: refactor this
-            if (obj.Solid)
+            if (target.DropPlatform)
             {
-                if (direction == Direction.Up)
+                if (IsDropping || dir != Direction.Down || drop_transparency_counter > 0)
                 {
-                    StopJumping();
+                    drop_transparency_counter = 2;
+                    return false;
                 }
-                if (direction == Direction.Down)
+            }
+
+            return target.Solid || target.Liquid;
+        }
+
+        public override void ProcessCollision(Direction direction, PhysicsComponent target)
+        {
+            base.ProcessCollision(direction, target);
+            // TODO: refactor this
+            if (ShouldImpactObject(target, direction))
+                if (target.Solid)
+                {
+                    if (direction == Direction.Up)
+                    {
+                        StopJumping();
+                    }
+                    if (direction == Direction.Down)
+                    {
+                        if (!IsJumping)
+                            ResetJumps();
+                    }
+                }
+                else if (target.Liquid)
                 {
                     if (!IsJumping)
                         ResetJumps();
                 }
-            }
-            else if (obj.Liquid)
-            {
-                if (!IsJumping)
-                    ResetJumps();
-            }
         }
 
         public override float GetUpSpeedCap()

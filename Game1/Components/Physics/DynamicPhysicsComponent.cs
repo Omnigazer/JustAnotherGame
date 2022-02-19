@@ -87,6 +87,11 @@ namespace Omniplatformer.Components.Physics
         {
         }
 
+        public virtual bool ShouldImpactObject(PhysicsComponent obj, Direction dir)
+        {
+            return Solid;
+        }
+
         public virtual void ProcessCollision(Direction dir, PhysicsComponent obj)
         {
             OnCollision.OnNext(obj);

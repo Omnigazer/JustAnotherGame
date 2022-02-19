@@ -10,6 +10,7 @@ namespace Omniplatformer.Components.Physics
         public float Friction { get; set; }
         public bool Solid { get; set; }
         public bool Liquid { get; set; }
+        public bool DropPlatform { get; set; }
         public virtual bool Climbable { get; set; }
         public virtual bool Pickupable { get; set; }
         public bool Hittable { get; set; }
