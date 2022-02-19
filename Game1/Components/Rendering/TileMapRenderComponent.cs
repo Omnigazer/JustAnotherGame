@@ -50,6 +50,9 @@ namespace Omniplatformer.Components.Rendering
         /// <param name="region_j">Y coordinate of the region in the grid</param>
         void BuildBuffer(int region_index, int region_i, int region_j)
         {
+            if (region_i < 0 || region_j < 0)
+                return;
+
             int tile_count = RegionWidth * RegionHeight;
             var grid = ((TileMap)GameObject).Grid;
             // TODO: account for the resolution change
