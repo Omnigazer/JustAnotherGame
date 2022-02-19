@@ -16,6 +16,7 @@ namespace Omniplatformer.Objects
     {
         public int GridWidth { get; set; } = 5000;
         public int GridHeight { get; set; } = 5000;
+
         [JsonIgnore]
         public (short, short)[,] Grid { get; set; }
 

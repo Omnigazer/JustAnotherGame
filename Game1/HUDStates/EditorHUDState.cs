@@ -37,7 +37,7 @@ namespace Omniplatformer.HUDStates
         float current_block_height = 8;
 
         // whether the current tile applies to background
-        public bool background = true;
+        public bool background = false;
 
         // mouse position on last tick
         Point last_position = Point.Zero;

@@ -116,16 +116,7 @@ namespace Omniplatformer
             MainScene.Subsystems.Add(MainScene.PhysicsSystem);
             MainScene.Subsystems.Add(new SimulationSystem());
             MainScene.Load("default_level");
-
-            /*
-            var tilemap = new TileMap();
-            MainScene.RegisterObject(tilemap);
-            MainScene.TileMap = tilemap;
-            Player player = Player.Create();
-            MainScene.RegisterObject(player);
-            player.GetComponent<PositionComponent>().SetWorldCenter(new Vector2(25000, 25000));
-            RenderSystem.CurrentBackground = GameContent.Instance.background;
-            */
+            // MainScene.Init();
 
             // TODO: extract this
             Player.GetComponent<DestructibleComponent>().OnDestroy.Take(1).Subscribe((obj) => GameOver());
@@ -514,6 +505,12 @@ namespace Omniplatformer
                     pos.SetLocalCenter(new Vector2(first * PhysicsSystem.TileSize, second * PhysicsSystem.TileSize));
                 }
                 return String.Format("invalid args");
+            });
+
+            console.AddCommand("save", a =>
+            {
+                SaveLevel("default_level");
+                return ("Level saved");
             });
 
             console.AddCommand("savelevel", a =>

@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Omniplatformer.Components.Physics;
 using Omniplatformer.Content;
 using Omniplatformer.Objects;
+using Omniplatformer.Objects.Characters;
 using Omniplatformer.Services;
 using Omniplatformer.Utility;
 using Omniplatformer.Utility.DataStructs;
 using ZeroFormatter;
+
 // using System.Drawing;
 // using System.Drawing.Imaging;
 
@@ -21,13 +25,14 @@ namespace Omniplatformer.Scenes
         // public List<GameObject> objects = new List<GameObject>();
         // public IEnumerable<GameObject> Objects => new List<GameObject>();
         Game1 Game => GameService.Instance;
+
         // public List<Character> characters = new List<Character>();
         public Texture2D Background { get; set; }
+
         public Objects.TileMap TileMap { get; set; }
 
         public Level()
         {
-
         }
 
         public void Save(string json_path)
@@ -58,7 +63,7 @@ namespace Omniplatformer.Scenes
                             // char type = grid[i, j] == 1 ? 's' : 'b';
                             var s = new Tile()
                             {
-                                Type = grid[i,j],
+                                Type = grid[i, j],
                                 Row = i,
                                 Col = j
                             };
@@ -79,10 +84,21 @@ namespace Omniplatformer.Scenes
 
         public void AddGroup(List<GameObject> group)
         {
-            foreach(var obj in group)
+            foreach (var obj in group)
             {
                 RegisterObject(obj);
             }
+        }
+
+        public void Init()
+        {
+            var tilemap = new TileMap();
+            RegisterObject(tilemap);
+            TileMap = tilemap;
+            Player player = Player.Create();
+            RegisterObject(player);
+            player.GetComponent<PositionComponent>().SetWorldCenter(new Vector2(25000, 25000));
+            RenderSystem.CurrentBackground = GameContent.Instance.background;
         }
 
         // TODO: should be moved to level initializer
@@ -147,7 +163,8 @@ namespace Omniplatformer.Scenes
                 var container = ZeroFormatterSerializer.Deserialize<GridContainer>(fs);
                 List<Tile> tiles = container.List;
 
-                foreach (Tile tile in tiles) {
+                foreach (Tile tile in tiles)
+                {
                     // TileMap.RegisterTile(new Tile() { Col = tile.Col, Row = tile.Row, Type = ((short)tile.Type, 0) });
                     TileMap.RegisterTile(tile);
                     /*
@@ -184,4 +201,5 @@ namespace Omniplatformer.Scenes
 
             RenderSystem.CurrentBackground = GameContent.Instance.background;
         }
-    }}
+    }
+}
