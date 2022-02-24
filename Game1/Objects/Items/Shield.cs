@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Omniplatformer.Components.Actions;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Content;
@@ -23,6 +24,7 @@ namespace Omniplatformer.Objects.Items
             var texture = "Textures/shield";
             Descriptors.Add(Descriptor.LeftHandSlot);
             RegisterComponent(new PhysicsComponent(Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)) { Hittable = true });
+            RegisterComponent(new BlockActionComponent());
             RegisterComponent(new RenderComponent(Color.White, texture, 2));
         }
 

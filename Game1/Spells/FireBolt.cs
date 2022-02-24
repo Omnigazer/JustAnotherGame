@@ -11,6 +11,9 @@ using Omniplatformer.Objects;
 using Omniplatformer.Objects.Projectiles;
 using Omniplatformer.Services;
 using Omniplatformer.Components.Character;
+using Omniplatformer.Components.Actions;
+using Omniplatformer.Components.Rendering;
+using Omniplatformer.Content;
 
 namespace Omniplatformer.Spells
 {
@@ -18,7 +21,9 @@ namespace Omniplatformer.Spells
     {
         public override void InitializeCustomComponents()
         {
+            RegisterComponent(new RenderComponent(Color.White, "Textures/fire_bolt"));
             RegisterComponent(new FireBoltSpellComponent());
+            RegisterComponent(new CastSpellActionComponent());
         }
 
         public static FireBolt Create()

@@ -30,6 +30,9 @@ namespace Omniplatformer.Objects.Characters
         [JsonIgnore]
         public InventoryNS.Inventory Inventory => GetComponent<InventoryComponent>().Inventory;
 
+        [JsonIgnore]
+        public PlayerActionComponent Actionable => GetComponent<PlayerActionComponent>();
+
         public Player()
         {
             Team = Team.Friend;
@@ -50,6 +53,7 @@ namespace Omniplatformer.Objects.Characters
             RegisterComponent(new BonusComponent());
             RegisterComponent(new SkillComponent());
             RegisterComponent(new ManaComponent());
+            RegisterComponent(new PlayerCasterComponent());
             RegisterComponent(new ExperienceComponent());
             RegisterComponent(new PlayerInventoryComponent() { Inventory = Objects.InventoryNS.Inventory.Create() });
             RegisterComponent(new EquipComponent() { EquipSlots = EquipSlotCollection.Create() });

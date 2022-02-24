@@ -1,4 +1,6 @@
 ﻿using Omniplatformer.Services;
+using Omniplatformer.Views.BasicControls;
+using Omniplatformer.Views.Character;
 
 namespace Omniplatformer.Views.HUD
 {
@@ -14,6 +16,7 @@ namespace Omniplatformer.Views.HUD
 
         public void SetupGUI()
         {
+            var col = new Column();
             Padding = 5;
             foreach (var bar in new ViewControl[] {
                 new HealthBar(),
@@ -25,9 +28,17 @@ namespace Omniplatformer.Views.HUD
                 new SorceryManaBar()
             })
             {
-                RegisterChild(bar);
+                col.RegisterChild(bar);
                 GameService.Instance.MainScene.UpdateSystem.RegisterObject(bar);
             }
+            RegisterChild(col);
+
+            var view = new QuickSlotViewCollection();
+            col = new Column()
+            {
+                view
+            };
+            RegisterChild(col);
         }
     }
 }

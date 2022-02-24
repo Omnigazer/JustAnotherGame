@@ -14,6 +14,7 @@ using Omniplatformer.Content;
 using Omniplatformer.Enums;
 using Omniplatformer.Objects;
 using Omniplatformer.Objects.Characters;
+using Omniplatformer.Components.Actions;
 using Omniplatformer.Objects.Interactibles;
 using Omniplatformer.Objects.InventoryNS;
 using Omniplatformer.Objects.Items;
@@ -400,7 +401,7 @@ namespace Omniplatformer
 
         public void Fire()
         {
-            Player.GetComponent<PlayerActionComponent>().Fire();
+            Player.Actionable.Fire();
         }
 
         public void Crouch()
@@ -414,6 +415,20 @@ namespace Omniplatformer
             var movable = (PlayerMoveComponent)Player;
             movable.IsDropping = false;
             movable.Stand();
+        }
+
+        public void SetCurrentQuickSlot(int index)
+        {
+            var actionable = Player.Actionable;
+            if (index == actionable.CurrentQuickSlot)
+            {
+                actionable.CurrentQuickSlot = null;
+            }
+            else
+            {
+                index = index.LimitToRange(0, actionable.QuickSlots.Count - 1);
+                actionable.CurrentQuickSlot = index;
+            }
         }
 
         // fps is assumed to be 30 while we're tick-based
@@ -436,14 +451,27 @@ namespace Omniplatformer
 
         public void PerformMouseAction(MouseEventArgs e, bool is_down)
         {
-            Item item = e.Button switch
+            var actionable = Player.Actionable;
+            var equippable = Player.GetComponent<EquipComponent>();
+            int? slot_index = actionable.CurrentQuickSlot;
+            ActionComponent action;
+            if (slot_index.HasValue)
             {
-                MouseButton.Left => Player.GetComponent<EquipComponent>().EquipSlots.RightHandSlot.Item,
-                MouseButton.Right => Player.GetComponent<EquipComponent>().EquipSlots.LeftHandSlot.Item,
-                _ => null
-            };
-            if (item != null)
-                Player.GetComponent<PlayerActionComponent>().PerformItemAction((dynamic)item, is_down);
+                action = actionable.QuickSlots[slot_index.Value];
+            }
+            else
+            {
+                action = e.Button switch
+                {
+                    MouseButton.Left => equippable.EquipSlots.RightHandSlot.Item?.GetComponent<ActionComponent>(),
+                    MouseButton.Right => equippable.EquipSlots.LeftHandSlot.Item?.GetComponent<ActionComponent>(),
+                    _ => null
+                };
+            }
+            if (action != null)
+            {
+                actionable.PerformAction((dynamic)action, e, is_down);
+            }
         }
 
         #endregion Player Actions

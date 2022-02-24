@@ -56,11 +56,16 @@
     <Compile Include="Animations\HitAnimation.cs" />
     <Compile Include="Animations\DeathAnimation.cs" />
     <Compile Include="Animations\AttackAnimation.cs" />
+    <Compile Include="Components\Actions\BlockActionComponent.cs" />
+    <Compile Include="Components\Actions\CastSpellActionComponent.cs" />
+    <Compile Include="Components\Actions\MeleeAttackActionComponent.cs" />
+    <Compile Include="Components\Actions\ActionComponent.cs" />
     <Compile Include="Components\Behavior\BehaviorComponent.cs" />
     <Compile Include="Components\Behavior\GoblinBehaviorComponent.cs" />
     <Compile Include="Components\Character\AnimatedDestructibleComponent.cs" />
     <Compile Include="Components\Character\DestructibleComponent.cs" />
     <Compile Include="Components\Character\DropItemComponent.cs" />
+    <Compile Include="Components\Character\PlayerCasterComponent.cs" />
     <Compile Include="Components\Character\YieldExperienceComponent.cs" />
     <Compile Include="Components\Character\InvFramesComponent.cs" />
     <Compile Include="Components\Interactibles\InteractibleInventoryComponent.cs" />
@@ -121,6 +126,7 @@
     <Compile Include="Utility\Extensions\GameObjectExtensions.cs" />
     <Compile Include="Utility\JsonConverters\TextureConverter.cs" />
     <Compile Include="Views\BasicControls\Label.cs" />
+    <Compile Include="Views\Character\QuickSlotViewCollection.cs" />
     <Compile Include="Views\Crafting\CraftView.cs" />
     <Compile Include="Views\Character\CharView.cs" />
     <Compile Include="Views\BasicControls\Column.cs" />

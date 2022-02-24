@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Omniplatformer.Components;
+using Omniplatformer.Components.Actions;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
 using Omniplatformer.Content;
@@ -29,6 +30,7 @@ namespace Omniplatformer.Objects.Items
             Descriptors.Add(Descriptor.RightHandSlot);
             RegisterComponent(new PhysicsComponent(Vector2.Zero, halfsize, new Vector2(0.5f, 0.1f)));
             RegisterComponent(new RenderComponent(Color.White, texture));
+            RegisterComponent(new MeleeAttackActionComponent());
             RegisterComponent(new MeleeDamageHitComponent(0, knockback: knockback));
         }
 

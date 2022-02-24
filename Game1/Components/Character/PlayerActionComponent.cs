@@ -2,7 +2,9 @@
 using Omniplatformer.Animations;
 using Omniplatformer.Components.Physics;
 using Omniplatformer.Components.Rendering;
+using Omniplatformer.Components.Actions;
 using Omniplatformer.Enums;
+using Omniplatformer.HUDStates;
 using Omniplatformer.Objects;
 using Omniplatformer.Objects.Characters;
 using Omniplatformer.Objects.InventoryNS;
@@ -18,10 +20,14 @@ using static Omniplatformer.Enums.Skill;
 
 namespace Omniplatformer.Components.Character
 {
-    class PlayerActionComponent : Component
+    public class PlayerActionComponent : Component
     {
         public bool EquipLocked { get; set; }
         public bool Blocking { get; set; }
+
+        public int? CurrentQuickSlot { get; set; }
+
+        public List<ActionComponent> QuickSlots = new ActionComponent[9].ToList();
 
         // Helpers
         // spans from 0.6 to 0.2 with a weight of 20
@@ -37,16 +43,29 @@ namespace Omniplatformer.Components.Character
         [JsonIgnore]
         public EquipSlotCollection EquipSlots => GetComponent<EquipComponent>().EquipSlots;
 
-        public void PerformItemAction(Item item, bool is_down)
+        public void PerformAction(ActionComponent action, MouseEventArgs e, bool is_down)
         {
         }
 
-        public void PerformItemAction(WoodenClub item, bool is_down)
+        public void PerformAction(MeleeAttackActionComponent action, MouseEventArgs e, bool is_down)
         {
-            if (!is_down)
+            if (is_down)
             {
                 TrySwing();
             }
+        }
+
+        public void PerformAction(BlockActionComponent action, MouseEventArgs e, bool is_down)
+        {
+            if (is_down)
+                StartBlocking();
+            else
+                StopBlocking();
+        }
+
+        public void PerformAction(CastSpellActionComponent action, MouseEventArgs e, bool is_down)
+        {
+            action.Perform(GameObject, e, is_down);
         }
 
         public void TrySwing()
@@ -66,14 +85,6 @@ namespace Omniplatformer.Components.Character
                         });
                 drawable.StartAnimation(AnimationType.Attack, 10);
             }
-        }
-
-        public void PerformItemAction(Shield item, bool is_down)
-        {
-            if (is_down)
-                StartBlocking();
-            else
-                StopBlocking();
         }
 
         public void StartBlocking()

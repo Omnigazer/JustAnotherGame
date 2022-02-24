@@ -40,7 +40,7 @@ namespace Omniplatformer.Views.InventoryNS
             {
                 var texture = ((RenderComponent)Slot.Item).Texture;
                 spriteBatch.Draw(texture, outer_rect, Color.White);
-                outer_rect.Inflate(-10, -20);
+                outer_rect.Inflate(-10, -10);
                 var count = Slot.Item.Count;
                 if (count != 1)
                     spriteBatch.DrawString(GameContent.Instance.defaultFont, count.ToString(), new Vector2(outer_rect.Right, outer_rect.Bottom), Color.White);

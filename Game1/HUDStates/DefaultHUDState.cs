@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Omniplatformer.Views.HUD;
+using Omniplatformer.Views.BasicControls;
+using Omniplatformer.Views.Character;
 
 namespace Omniplatformer.HUDStates
 {
@@ -26,7 +28,12 @@ namespace Omniplatformer.HUDStates
 
         public override void RegisterChildren()
         {
-            Root.RegisterChild(playerHUD);
+            var col = new Column()
+            {
+                playerHUD
+            };
+            Root.RegisterChild(col);
+
             var logs = new LogView(Game.Logs)
             {
                 Node = { PositionType = Facebook.Yoga.YogaPositionType.Absolute, Right = 50, Top = 200 }
@@ -65,7 +72,18 @@ namespace Omniplatformer.HUDStates
                 {  Keys.OemPlus, (Game.ZoomIn, noop, true) },
                 {  Keys.OemCloseBrackets, (Game.ResetZoom, noop, true) },
                 {  Keys.F11, (Game.OpenEditor, noop, false) },
-                {  Keys.F12, (Game.RenderSystem.ToggleFullScreen, noop, false) }
+                {  Keys.F12, (Game.RenderSystem.ToggleFullScreen, noop, false) },
+
+                // Quick slots
+                {  Keys.D1, (() => Game.SetCurrentQuickSlot(0), noop, false) },
+                {  Keys.D2, (() => Game.SetCurrentQuickSlot(1), noop, false) },
+                {  Keys.D3, (() => Game.SetCurrentQuickSlot(2), noop, false) },
+                {  Keys.D4, (() => Game.SetCurrentQuickSlot(3), noop, false) },
+                {  Keys.D5, (() => Game.SetCurrentQuickSlot(4), noop, false) },
+                {  Keys.D6, (() => Game.SetCurrentQuickSlot(5), noop, false) },
+                {  Keys.D7, (() => Game.SetCurrentQuickSlot(6), noop, false) },
+                {  Keys.D8, (() => Game.SetCurrentQuickSlot(7), noop, false) },
+                {  Keys.D9, (() => Game.SetCurrentQuickSlot(8), noop, false) },
             };
         }
 
